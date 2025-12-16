@@ -1,8 +1,38 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Wallet\Http\Controllers\AccountController;
 use Modules\Wallet\Http\Controllers\WalletController;
+use Modules\Wallet\Http\Controllers\TransactionController;
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('wallets', WalletController::class)->names('wallet');
-});
+Route::middleware(["auth"])
+	->prefix("apps")
+	->name("apps.")
+	->group(function () {
+		// Account Routes
+		Route::resource("accounts", AccountController::class)->names("wallet");
+
+		// Wallet Routes
+		Route::prefix("accounts/{account}/wallets")->group(function () {
+			Route::get("/{wallet}", [WalletController::class, "show"])->name(
+				"wallet.wallets.show"
+			);
+			Route::post("/", [WalletController::class, "createWallet"])->name(
+				"wallet.wallets.store"
+			);
+		});
+
+		// Transaction Routes
+		Route::prefix("accounts/{account}/wallets/{wallet}/transactions")->group(
+			function () {
+				Route::post("/deposit", [
+					TransactionController::class,
+					"deposit",
+				])->name("wallet.transactions.deposit");
+				Route::post("withdraw", [
+					TransactionController::class,
+					"withdraw",
+				])->name("wallet.transactions.withdraw");
+			}
+		);
+	});

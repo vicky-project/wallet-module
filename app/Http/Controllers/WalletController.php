@@ -2,55 +2,89 @@
 
 namespace Modules\Wallet\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Bavix\Wallet\Models\Wallet;
+use Bavix\Wallet\Models\Transaction;
+use Carbon\Carbon;
+use Modules\Wallet\Models\Account;
 
 class WalletController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('wallet::index');
-    }
+	public function show(Account $account, Wallet $wallet)
+	{
+		$this->authorize("view", $account);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('wallet::create');
-    }
+		// Get transactions grouped by period (month)
+		$transactions = $wallet
+			->transactions()
+			->orderBy("created_at", "desc")
+			->get()
+			->groupBy(function ($transaction) {
+				return Carbon::parse($transaction->created_at)->format("F Y");
+			});
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
+		return view(
+			"wallet::wallets.show",
+			compact("account", "wallet", "transactions")
+		);
+	}
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('wallet::show');
-    }
+	public function createWallet(Request $request, Account $account)
+	{
+		$request->validate([
+			"name" => "required|string|max:255",
+			"slug" => "required|string|unique:wallets,slug",
+		]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('wallet::edit');
-    }
+		$wallet = $account->createWallet([
+			"name" => $request->name,
+			"slug" => $request->slug,
+		]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+		return redirect()
+			->route("wallet.accounts.show", $account)
+			->with("success", "Wallet created successfully.");
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+	public function transfer(Request $request, Account $account, Wallet $wallet)
+	{
+		$request->validate([
+			"to_wallet_id" => "required|exists:wallets,id",
+			"amount" => "required|numeric|min:0.01",
+			"description" => "nullable|string",
+		]);
+
+		$toWallet = Wallet::find($request->to_wallet_id);
+
+		$transfer = $wallet->transfer($toWallet, $request->amount, [
+			"description" => $request->description,
+		]);
+
+		if ($transfer) {
+			return back()->with("success", "Transfer successful.");
+		}
+
+		return back()->withErrors("Transfer failed.");
+	}
+
+	public function showImportForm(Account $account, Wallet $wallet)
+	{
+		$this->authorize("view", $account);
+
+		return view("wallet::wallets.import", compact("account", "wallet"));
+	}
+
+	public function import(Request $request, Account $account, Wallet $wallet)
+	{
+		$request->validate([
+			"file" => "required|file|mimes:csv,xlsx,xls",
+		]);
+
+		// TODO: Implement your import class logic here
+		// Example: (new TransactionImport($wallet))->process($request->file('file'));
+
+		return back()->with("success", "File uploaded successfully. Processing...");
+	}
 }
