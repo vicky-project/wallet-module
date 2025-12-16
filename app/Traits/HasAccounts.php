@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Financial\Traits;
+namespace Modules\Wallet\Traits;
 
 use Modules\Wallet\Models\Account;
 use Illuminate\Database\Eloquent\Relations\HasMany;

@@ -10,7 +10,7 @@ use Bavix\Wallet\Models\Transaction;
 use Carbon\Carbon;
 use Modules\Wallet\Models\Account;
 
-class WalletController extends Controller
+class TransactionController extends Controller
 {
 	public function deposit(Request $request, Account $account, Wallet $wallet)
 	{
