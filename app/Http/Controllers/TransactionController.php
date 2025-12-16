@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\VWallet\Http\Controllers;
+namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
