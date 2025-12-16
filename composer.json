@@ -16,7 +16,7 @@
 	},
 	"require": {
 		"bavix/laravel-wallet": "^11.4",
-		"vicky-project/menumagament-module": "^1.0",
+		"vicky-project/menumanagement-module": "^1.0",
 		"vicky-project/viewmanager-module": "^1.0"
 	},
 	"autoload": {
