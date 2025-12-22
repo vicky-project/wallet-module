@@ -1,11 +1,10 @@
-@if(Module::has('ViewManager'))
-@extends('viewmanager::layouts.app')
+@if(Module::has('Core'))
+@extends('core::layouts.app')
 @else 
 @extends('wallet::layouts.app')
 @endif
 
 @section('title', 'Accounts')
-@section('page-title', 'Accounts')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -16,9 +15,7 @@
   @endif
   <a href="{{ route('wallet.accounts.create') }}" class="btn bg-primary">
     @if(Module::has('ViewManager'))
-    <svg class="icon">
-      <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg#cil-plus') }}"></use>
-    </svg>
+    <i class="fas fa-fw fa-plus"></i>
     New Account
     @else 
     <i class="bi bi-plus-circle"></i> New Account
