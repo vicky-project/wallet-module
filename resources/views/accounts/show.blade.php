@@ -53,7 +53,7 @@
         @csrf
         <div class="modal-body">
           <div class="mb-3">
-            <label for="wallet-name" class="form-label">Wallet Name <span>*</span></label>
+            <label for="wallet-name" class="form-label">Wallet Name <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="name" id="wallet-name" placeholder="Enter wallet name..." required>
           </div>
           <div class="mb-3">

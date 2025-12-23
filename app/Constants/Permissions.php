@@ -12,6 +12,7 @@ class Permissions
 	const MANAGE_ACCOUNTS = "financial.wallets.manage";
 
 	const VIEW_WALLETS = "financial.wallets.wallet.view";
+	const CREATE_WALLETS = "financial.wallets.wallet.create";
 
 	public static function all(): array
 	{
@@ -22,6 +23,8 @@ class Permissions
 			self::EDIT_ACCOUNTS => "Edit accounts",
 			self::DELETE_ACCOUNTS => "Delete account",
 			self::MANAGE_ACCOUNTS => "Manage accounts",
+
+			self::VIEW_WALLETS => "Create wallets",
 		];
 	}
 }

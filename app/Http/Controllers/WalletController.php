@@ -9,11 +9,20 @@ use Bavix\Wallet\Models\Wallet;
 use Bavix\Wallet\Models\Transaction;
 use Carbon\Carbon;
 use Modules\Wallet\Models\Account;
+use Modules\Wallet\Constants\Permissions;
 
 class WalletController extends BaseController
 {
 	public function __construct()
 	{
+		if ($this->isPermissionMiddlewareExists()) {
+			$this->middleware("permission:" . Permissions::VIEW_WALLETS)->only([
+				"show",
+			]);
+		}
+		$this->middleware("permission:" . Permissions::CREATE_WALLETS)->only([
+			"createWallet",
+		]);
 	}
 
 	public function show(Account $account, Wallet $wallet)
