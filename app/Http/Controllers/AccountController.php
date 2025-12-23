@@ -26,7 +26,19 @@ class AccountController extends Controller
 
 	public function create()
 	{
-		return view("wallet::accounts.create");
+		$currencies = collect(config("money.currencies"))
+			->keys()
+			->mapWithKeys(
+				fn($currency) => [
+					$currency =>
+						config("money.currencies")[$currency]["name"] .
+						" (" .
+						config("money.currencies")[$currency]["symbol"] .
+						")",
+				]
+			)
+			->toArray();
+		return view("wallet::accounts.create", compact("currencies"));
 	}
 
 	public function store(Request $request)
@@ -44,6 +56,7 @@ class AccountController extends Controller
 			"type" => $request->type,
 			"description" => $request->description,
 			"currency" => $request->currency,
+			"is_active" => (bool) $request->is_active,
 		]);
 
 		// Create default wallet for account
@@ -53,7 +66,7 @@ class AccountController extends Controller
 		]);
 
 		return redirect()
-			->route("wallet.accounts.index")
+			->route("apps.wallet.index")
 			->with("success", "Account created successfully.");
 	}
 
