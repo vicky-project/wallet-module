@@ -27,8 +27,6 @@ class WalletController extends BaseController
 
 	public function show(Account $account, Wallet $wallet)
 	{
-		$this->authorize("view", $account);
-
 		// Get transactions grouped by period (month)
 		$transactions = $wallet
 			->transactions()
