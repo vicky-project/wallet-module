@@ -49,13 +49,13 @@ class WalletController extends BaseController
 		]);
 
 		$meta = [
-			"description" => $request->description ?? "",
-			"initial_balance" => $request->initial_balance ?? 0,
-			"created_at" => now()->toDateTimeString(),
+			"created_by" => auth()->id(),
 		];
 
 		$wallet = $account->createWallet([
 			"name" => $request->name,
+			"description" => $request->description ?? null,
+			"balance" => $request->initial_balance ?? 0,
 			"meta" => $meta,
 		]);
 
