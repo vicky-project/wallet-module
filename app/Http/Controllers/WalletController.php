@@ -3,15 +3,19 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Modules\Core\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Auth;
 use Bavix\Wallet\Models\Wallet;
 use Bavix\Wallet\Models\Transaction;
 use Carbon\Carbon;
 use Modules\Wallet\Models\Account;
 
-class WalletController extends Controller
+class WalletController extends BaseController
 {
+	public function __construct()
+	{
+	}
+
 	public function show(Account $account, Wallet $wallet)
 	{
 		$this->authorize("view", $account);
@@ -35,12 +39,17 @@ class WalletController extends Controller
 	{
 		$request->validate([
 			"name" => "required|string|max:255",
-			"slug" => "required|string|unique:wallets,slug",
 		]);
+
+		$meta = [
+			"description" => $request->description ?? "",
+			"initial_balance" => $request->initial_balance ?? 0,
+			"created_at" => now()->toDateTimeString(),
+		];
 
 		$wallet = $account->createWallet([
 			"name" => $request->name,
-			"slug" => $request->slug,
+			"meta" => $meta,
 		]);
 
 		return redirect()

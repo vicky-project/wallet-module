@@ -53,8 +53,16 @@
         @csrf
         <div class="modal-body">
           <div class="mb-3">
-            <label for="wallet-name" class="form-label">Wallet Name</label>
-            <input type="text" class="form-control" name="name" id="wallet-name" required>
+            <label for="wallet-name" class="form-label">Wallet Name <span>*</span></label>
+            <input type="text" class="form-control" name="name" id="wallet-name" placeholder="Enter wallet name..." required>
+          </div>
+          <div class="mb-3">
+            <label for="wallet-initial-balance" class="form-label">Initi Balance</label>
+            <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="0">
+          </div>
+          <div class="mb-3">
+            <label for="wallet-description" class="form-label">Description</label>
+            <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet-description.."></textarea>
           </div>
         </div>
         <div class="modal-footer">
