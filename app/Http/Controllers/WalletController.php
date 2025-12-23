@@ -60,7 +60,7 @@ class WalletController extends BaseController
 		]);
 
 		return redirect()
-			->route("wallet.accounts.show", $account)
+			->route("apps.wallet.show", $account)
 			->with("success", "Wallet created successfully.");
 	}
 
