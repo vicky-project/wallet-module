@@ -1,32 +1,23 @@
 @if(Module::has('Core'))
-@extends('core::layouts.app')
+  @extends('core::layouts.app')
 @else 
-@extends('wallet::layouts.app')
+  @extends('wallet::layouts.app')
 @endif
 
 @section('title', 'Accounts')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-  @if(Module::has('ViewManager'))
-  <h1></h1>
-  @else 
-  <h1><i class="bi bi-credit-card"></i> My Accounts</h1>
-  @endif
-  <a href="{{ route('wallet.accounts.create') }}" class="btn bg-primary">
-    @if(Module::has('ViewManager'))
+  <h1><i class="fas fa-wallet"></i> My Accounts</h1>
+  <a href="{{ route('apps.accounts.create') }}" class="btn bg-primary">
     <i class="fas fa-fw fa-plus"></i>
-    New Account
-    @else 
-    <i class="bi bi-plus-circle"></i> New Account
-    @endif
   </a>
 </div>
 
 <div class="row">
   @forelse ($accounts as $account)
   <div class="col col-md-6 col-lg-4 mb-4">
-    <div class="card wallet-card h-100" onclick="window.location='{{ route('wallet.accounts.show', $account) }}'">
+    <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.accounts.show', $account) }}'">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div></div>
