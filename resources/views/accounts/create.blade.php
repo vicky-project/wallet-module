@@ -25,7 +25,7 @@
       <div class="col-md-4">
         <label for="account-type" class="form-label">Type</label>
         <select name="type" class="form-select" id="account-type">
-          @foreach(AccountType->cases() as $type)
+          @foreach(AccountType::cases() as $type)
           <option value="{{$type->value}}">{{ $type->value}}</option>
           @endforeach
         </select>
