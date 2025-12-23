@@ -3,7 +3,7 @@
 namespace Modules\Wallet\Models;
 
 use Bavix\Wallet\Interfaces\Wallet;
-use Bavix\Wallet\Traits\HasWallets;
+use Bavix\Wallet\Traits\HasWallet;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +11,7 @@ use Bavix\Wallet\Models\Wallet as WalletModel;
 
 class Account extends Model implements Wallet
 {
-	use HasWallets;
+	use HasWallet;
 
 	protected $fillable = [
 		"user_id",
