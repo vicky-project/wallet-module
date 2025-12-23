@@ -1,4 +1,4 @@
-@if(Module::has('Core'))
+@if(Module::has('Core') && Module::isEnabled('Core'))
   @extends('core::layouts.app')
 @else 
   @extends('wallet::layouts.app')

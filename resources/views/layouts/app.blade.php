@@ -25,7 +25,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('virtualwallet.accounts.index') }}">
+            <a class="navbar-brand" href="{{ route('apps.wallet.index') }}">
                 <i class="bi bi-wallet2"></i> Virtual Wallet
             </a>
             <div class="navbar-nav ms-auto">
