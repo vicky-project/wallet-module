@@ -59,12 +59,6 @@ class AccountController extends Controller
 			"is_active" => (bool) $request->is_active,
 		]);
 
-		// Create default wallet for account
-		$account->createWallet([
-			"name" => $request->name . " - Main Wallet",
-			"slug" => "main-wallet",
-		]);
-
 		return redirect()
 			->route("apps.wallet.index")
 			->with("success", "Account created successfully.");
