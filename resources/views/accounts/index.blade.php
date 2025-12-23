@@ -16,7 +16,11 @@
     <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.wallet.show', $account) }}'">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
-          <div></div>
+          <div>
+            <h3 class="card-title">{{$account->name}}</h3>
+            <span class="small ms-1">{{ $account->type }}</span>
+            <p class="card-text">{{ $account->description }}</p>
+          </div>
           <span class="badge bg-{{ $account->is_active ? 'success' : 'secondary' }}">
             {{ $account->is_active ? "Active" : "Inactive" }}
           </span>
