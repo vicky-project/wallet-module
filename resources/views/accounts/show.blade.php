@@ -12,6 +12,9 @@
       <i class="fas fa-plus"></i>
     </button>
   </div>
+  <div class="text-end">
+    <h5>{{ $account->name }}</h5>
+  </div>
 </div>
 <div class="row">
   @forelse($wallets as $wallet)
