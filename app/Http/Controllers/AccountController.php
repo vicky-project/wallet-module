@@ -66,7 +66,7 @@ class AccountController extends Controller
 
 	public function show(Account $account)
 	{
-		dd($account->wallets()->all());
+		dd($account->wallets()->get());
 		$wallets = $account
 			->wallets()
 			->with("transactions")
