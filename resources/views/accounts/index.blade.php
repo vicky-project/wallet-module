@@ -1,8 +1,4 @@
-@if(Module::has('Core') && Module::isEnabled('Core'))
-  @extends('core::layouts.app')
-@else 
-  @extends('wallet::layouts.app')
-@endif
+@extends('core::layouts.app')
 
 @section('title', 'Accounts')
 
