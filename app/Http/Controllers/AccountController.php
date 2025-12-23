@@ -67,7 +67,6 @@ class AccountController extends Controller
 	public function show(Account $account)
 	{
 		$wallets = $account->wallets()->get();
-		dd($account, $wallets);
 
 		return view("wallet::accounts.show", compact("account", "wallets"));
 	}
