@@ -17,15 +17,19 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>
-            <h3 class="card-title">{{$account->name}}</h3>
-            <span class="small ms-1">{{ $account->type }}</span>
-            <p class="card-text">{{ $account->description }}</p>
+            <h5 class="card-title">{{$account->name}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ $account->type }}</h6>
           </div>
           <span class="badge bg-{{ $account->is_active ? 'success' : 'secondary' }}">
             {{ $account->is_active ? "Active" : "Inactive" }}
           </span>
         </div>
         <p class="card-text">{{ $account->description }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <small class="text-muted">{{ $account->currency}}</small>
+          <small class="text-muted">{{$account->created_at->format('d M, Y')}}</small>
+          <span>{{ $account->wallets_count ?? 0}} Wallets</span>
+        </div>
       </div>
     </div>
   </div>
