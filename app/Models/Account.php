@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Bavix\Wallet\Models\Wallet as WalletModel;
 
-class Account extends Wallet
+class Account extends Model implements Wallet
 {
 	use HasWallets;
 
