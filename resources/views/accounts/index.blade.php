@@ -27,7 +27,7 @@
   </div>
   @empty
   <div class="col col-12">
-    <div class="alert bg-info text-white d-flex align-items-center" role="alert">
+    <div class="alert alert-warning" role="alert">
       <p>You haven't created any accounts yet. Click the button above to create your first account.</p>
     </div>
   </div>
