@@ -3,6 +3,16 @@
 @section('title', $account->name)
 
 @section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+</div>
 <div class="row">
   @forelse($wallets as $wallet)
   <div class="col-md-6 col-lg-4 mb-3">
@@ -27,5 +37,29 @@
     </div>
   </div>
   @endforelse
+</div>
+
+<div class="modal fade" id="createWalletModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Wallet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ route('apps.wallet.wallets.store', $account) }}">
+        @csrf
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="wallet-name" class="form-label">Wallet Name</label>
+            <input type="text" class="form-control" name="name" id="wallet-name" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 @endsection
