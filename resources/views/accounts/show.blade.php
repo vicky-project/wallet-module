@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-  @foreach($wallets as $wallet)
+  @forelse($wallets as $wallet)
   <div class="col-md-6 col-lg-4 mb-3">
     <div class="card card-wallet" onclick="window.location='{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}'">
       <div class="card-body">
@@ -20,6 +20,12 @@
       </div>
     </div>
   </div>
-  @endforeach
+  @empty
+  <div class="col-12 col-lg-12">
+    <div class="alert alert-warning" role="alert">
+      <p class="text-muted">You don't have any wallets. Please create one first.</p>
+    </div>
+  </div>
+  @endforelse
 </div>
 @endsection
