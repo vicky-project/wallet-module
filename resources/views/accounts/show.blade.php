@@ -30,8 +30,8 @@
           <small class="text-muted">Slug: {{ $wallet->slug }}</small>
         </p>
         <div class="d-flex justify-content-between">
-          <span class="badge text-bg-secondary">{{ $wallet->meta['currency'] ?? '' }}</span>
-          <span class="badge text-bg-info">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
+          <span class="badge text-bg-secondary p-2">{{ $wallet->meta['currency'] ?? '' }}</span>
+          <span class="badge text-bg-info p-2">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
           <div class="btn-group">
             <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
               <i class="fas fa-fw fa-pen"></i>
