@@ -14,7 +14,7 @@ Route::middleware(["auth"])
 
 		// Wallet Routes
 		Route::prefix("accounts/{account}")
-			->name("wallet.")
+			->name("wallets.")
 			->group(function () {
 				Route::resource("wallets", WalletController::class);
 				//Route::post("/", [WalletController::class, "createWallet"])->name(
