@@ -22,7 +22,7 @@
       </div>
       <div class="mb-3">
         <label for="wallet-initial-balance" class="form-label">Initial Balance</label>
-        <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="{{ old('initial_balance', $wallet->meta['initial_balance']) }}">
+        <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="{{ old('initial_balance', $wallet->meta['initial_balance'] ?? 0) }}">
       </div>
       <div class="mb-3">
         <label for="wallet-description" class="form-label">Description</label>
