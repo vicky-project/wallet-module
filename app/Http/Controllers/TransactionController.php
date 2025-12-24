@@ -19,7 +19,7 @@ class TransactionController extends Controller
 
 	public function deposit(Request $request, Account $account, Wallet $wallet)
 	{
-		dd($wallet, $request->all());
+		dd($wallet->with(["transactions"]), $request->all());
 	}
 
 	public function withdraw(Request $request, Account $account, Wallet $wallet)
