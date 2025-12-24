@@ -35,7 +35,6 @@ class AccountController extends Controller
 			"name" => "required|string|max:255",
 			"type" => "required|string",
 			"description" => "nullable|string",
-			"currency" => "required|string|size:3",
 		]);
 
 		$account = Account::create([
@@ -43,7 +42,6 @@ class AccountController extends Controller
 			"name" => $request->name,
 			"type" => $request->type,
 			"description" => $request->description,
-			"currency" => $request->currency,
 			"is_active" => (bool) $request->is_active,
 		]);
 
@@ -85,14 +83,12 @@ class AccountController extends Controller
 			"name" => "required|string|max:255",
 			"type" => "required|string",
 			"description" => "nullable|string",
-			"currency" => "required|string|size:3",
 		]);
 
 		$account->update([
 			"name" => $request->name,
 			"type" => $request->type,
 			"description" => $request->description,
-			"currency" => $request->currency,
 		]);
 
 		return redirect()

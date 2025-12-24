@@ -20,7 +20,7 @@
       <input type="hidden" name="user_id" value="{{ \Auth::id() }}">
       <div class="col-md-4">
         <label for="account-name" class="form-label">Name</label>
-        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="account-name" required>
+        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="account-name" placeholder="Enter account name..." required>
         @error('name')
         <div class="invalid-feedback">{{$message}}</div>
         @enderror
