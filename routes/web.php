@@ -13,7 +13,7 @@ Route::middleware(["auth"])
 		Route::resource("accounts", AccountController::class)->names("wallet");
 
 		// Wallet Routes
-		Route::prefix("accounts/{account}/wallets")->group(function () {
+		Route::prefix("accounts/{account}")->group(function () {
 			Route::resource("wallets", WalletController::class);
 			//Route::post("/", [WalletController::class, "createWallet"])->name(
 			//	"wallet.wallets.store"
