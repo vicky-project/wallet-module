@@ -67,7 +67,7 @@
           </div>
           <div class="mb-3">
             <label for="wallet-description" class="form-label">Description</label>
-            <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet-description.."></textarea>
+            <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet.."></textarea>
           </div>
         </div>
         <div class="modal-footer">

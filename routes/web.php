@@ -16,7 +16,7 @@ Route::middleware(["auth"])
 		Route::prefix("accounts/{account}")
 			->name("wallet.")
 			->group(function () {
-				Route::resource("wallets", WalletController::class);
+				Route::resource("wallets", WalletController::class)->except(["index"]);
 				//Route::post("/", [WalletController::class, "createWallet"])->name(
 				//	"wallet.wallets.store"
 				//);
