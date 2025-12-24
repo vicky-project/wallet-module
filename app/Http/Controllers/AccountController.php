@@ -26,19 +26,7 @@ class AccountController extends Controller
 
 	public function create()
 	{
-		$currencies = collect(config("money.currencies"))
-			->keys()
-			->mapWithKeys(
-				fn($currency) => [
-					$currency =>
-						config("money.currencies")[$currency]["name"] .
-						" (" .
-						config("money.currencies")[$currency]["symbol"] .
-						")",
-				]
-			)
-			->toArray();
-		return view("wallet::accounts.create", compact("currencies"));
+		return view("wallet::accounts.create");
 	}
 
 	public function store(Request $request)
@@ -67,8 +55,23 @@ class AccountController extends Controller
 	public function show(Account $account)
 	{
 		$wallets = $account->wallets()->get();
+		$currencies = collect(config("money.currencies"))
+			->keys()
+			->mapWithKeys(
+				fn($currency) => [
+					$currency =>
+						config("money.currencies")[$currency]["name"] .
+						" (" .
+						config("money.currencies")[$currency]["symbol"] .
+						")",
+				]
+			)
+			->toArray();
 
-		return view("wallet::accounts.show", compact("account", "wallets"));
+		return view(
+			"wallet::accounts.show",
+			compact("account", "wallets", "currencies")
+		);
 	}
 
 	public function edit(Account $account)

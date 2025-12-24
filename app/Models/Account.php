@@ -14,14 +14,7 @@ class Account extends Model implements Wallet
 {
 	use HasWallet, HasWallets;
 
-	protected $fillable = [
-		"user_id",
-		"name",
-		"type",
-		"description",
-		"currency",
-		"is_active",
-	];
+	protected $fillable = ["user_id", "name", "type", "description", "is_active"];
 
 	public function user(): BelongsTo
 	{

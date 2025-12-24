@@ -49,6 +49,7 @@ class WalletController extends BaseController
 		]);
 
 		$meta = [
+			"currency" => $request->currency ?? "",
 			"initial_balance" => $request->initial_balance ?? 0,
 			"created_by" => auth()->id(),
 		];
@@ -67,7 +68,22 @@ class WalletController extends BaseController
 
 	public function edit(Request $request, Account $account, Wallet $wallet)
 	{
-		return view("wallet::wallets.edit", compact("account", "wallet"));
+		$currencies = collect(config("money.currencies"))
+			->keys()
+			->mapWithKeys(
+				fn($currency) => [
+					$currency =>
+						config("money.currencies")[$currency]["name"] .
+						" (" .
+						config("money.currencies")[$currency]["symbol"] .
+						")",
+				]
+			)
+			->toArray();
+		return view(
+			"wallet::wallets.edit",
+			compact("account", "wallet", "currencies")
+		);
 	}
 
 	public function transfer(Request $request, Account $account, Wallet $wallet)

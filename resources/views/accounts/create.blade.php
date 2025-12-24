@@ -37,14 +37,6 @@
         @enderror
       </div>
       <div class="col-md-4">
-        <label for="account-currency" class="form-label">Currency</label>
-        <select class="form-select" name="currency" id="account-currency">
-          @foreach($currencies as $currency => $name)
-          <option value="{{$currency}}" @selected($currency ==="IDR")>{{$name}}</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="col-md-4">
         <label for="account-description" class="form-label">Description</label>
         <textarea name="description" class="form-control" id="account-description" placeholder="Describe your account detail..."></textarea>
       </div>
