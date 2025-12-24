@@ -3,22 +3,18 @@
 @section('title', $wallet->name)
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center">
-  <span>Left</span>
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
+  <div>
+    <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <a href="{{ route('apps.wallet.transactions.create', [$account, $wallet]) }}" role="button" class="btn btn-primary">
+      <i class="fas fa-plus"></i>
+    </a>
+  </div>
   <h5>Transactions</h5>
 </div>
 <div class="card">
-  <div class="card-header text-end">
-    <div class="float-start me-auto">
-      <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
-        <i class="fas fa-arrow-left"></i>
-      </a>
-      <a href="{{ route('apps.wallet.transactions.create', [$account, $wallet]) }}" role="button" class="btn btn-primary">
-        <i class="fas fa-plus"></i>
-      </a>
-    </div>
-    <h5 class="card-title">Transactions</h5>
-  </div>
   <div class="card-body">
     @forelse($transactions as $date => $transaction)
     <div class="card">
