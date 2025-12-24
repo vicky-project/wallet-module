@@ -20,7 +20,7 @@
       <input type="hidden" name="user_id" value="{{ \Auth::id() }}">
       <div class="col-md-4">
         <label for="account-name" class="form-label">Name</label>
-        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="account-name" placeholder="Enter account name..." required>
+        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="account-name" placeholder="Enter account name..." value="{{ old('name') }}" required>
         @error('name')
         <div class="invalid-feedback">{{$message}}</div>
         @enderror
@@ -29,7 +29,7 @@
         <label for="account-type" class="form-label">Type</label>
         <select name="type" class="form-select @error('type') is-invalid @enderror" id="account-type">
           @foreach(AccountType::cases() as $type)
-          <option value="{{$type->value}}">{{ str($type->value)->upper() }}</option>
+          <option value="{{$type->value}}" @selected(old('type') === $type->value)>{{ str($type->value)->upper() }}</option>
           @endforeach
         </select>
         @error('type')
@@ -38,11 +38,11 @@
       </div>
       <div class="col-md-4">
         <label for="account-description" class="form-label">Description</label>
-        <textarea name="description" class="form-control" id="account-description" placeholder="Describe your account detail..."></textarea>
+        <textarea name="description" class="form-control" id="account-description" placeholder="Describe your account detail...">{{ old('description') }}</textarea>
       </div>
       <div class="col-md-4">
         <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" role="switch" name="is_active" id="account-is-active" checked>
+          <input type="checkbox" class="form-check-input" role="switch" name="is_active" id="account-is-active" @checked(old('is_active') ?? true)>
           <label for="account-is-active" class="form-check-label">Active</label>
         </div>
       </div>
