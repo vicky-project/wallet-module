@@ -26,6 +26,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
+          {{ dd(number_format((float) $wallet->balance, 2, ',', '.')) }}
           <x-money amount="{{number_format((float) $wallet->balance, 2, '.', ',')}}" currency="{{ $wallet->meta['currency']}}" />
         </h3>
         <p class="card-text">
