@@ -33,7 +33,7 @@
         <p class="card-text">
           <small class="text-muted">{{ $wallet->description }}</small>
         </p>
-        <form method="POST" action="{{ route('apps.wallet.wallets.refresh-balance'  [$account, $wallet]) }}" id="refresh-balance">
+        <form method="POST" action="{{ route('apps.wallet.wallets.refresh-balance', [$account, $wallet]) }}" id="refresh-balance">
           @csrf
         </form>
         <div class="d-flex justify-content-between">
