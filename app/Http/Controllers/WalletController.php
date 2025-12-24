@@ -104,7 +104,9 @@ class WalletController extends BaseController
 	) {
 		$wallet->refreshBalance();
 
-		return back()->with("success", "Balance updated.");
+		return redirect()
+			->route("apps.wallet.wallets.show", [$account, $wallet])
+			->with("success", "Balance updated.");
 	}
 
 	public function transfer(Request $request, Account $account, Wallet $wallet)
