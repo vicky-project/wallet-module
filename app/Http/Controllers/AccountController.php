@@ -52,7 +52,10 @@ class AccountController extends Controller
 
 	public function show(Account $account)
 	{
-		$wallets = $account->wallets()->get();
+		$wallets = $account
+			->wallets()
+			->withCount("transactions")
+			->get();
 		$currencies = collect(config("money.currencies"))
 			->keys()
 			->mapWithKeys(

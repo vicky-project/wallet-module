@@ -33,9 +33,6 @@
         <p class="card-text">
           <small class="text-muted">{{ $wallet->description }}</small>
         </p>
-        <form method="POST" action="{{ route('apps.wallet.wallets.refresh', [$account, $wallet]) }}" id="refresh-balance">
-          @csrf
-        </form>
         <div class="d-flex justify-content-between">
           <span class="badge text-bg-secondary p-2">{{ $wallet->meta['currency'] ?? '' }}</span>
           <span class="badge text-bg-info p-2">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
@@ -104,4 +101,9 @@
     </div>
   </div>
 </div>
+
+<form method="POST" action="{{ route('apps.wallet.wallets.refresh', [$account, $wallet]) }}" id="refresh-balance">
+  @csrf
+  <input type="hidden" name="_refresh" value="1">
+</form>
 @endsection

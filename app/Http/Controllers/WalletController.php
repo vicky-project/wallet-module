@@ -22,6 +22,7 @@ class WalletController extends BaseController
 		}
 		$this->middleware("permission:" . Permissions::CREATE_WALLETS)->only([
 			"createWallet",
+			"store",
 		]);
 	}
 
