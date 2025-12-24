@@ -40,9 +40,9 @@
             <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
               <i class="fas fa-fw fa-pen"></i>
             </a>
-            <button type="button" class="btn btn-sm btn-outline-warning" title="Refresh Balance" onclick="document.getElementById('refresh-balance').submit();">
+            <a href="{{ route('apps.wallet.wallets.refresh', [$account, $wallet]) }}" type="button" class="btn btn-sm btn-outline-warning" title="Refresh Balance">
               <i class="fas fa-fw fa-sync-alt"></i>
-            </button>
+            </a>
             <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
               <i class="fas fa-fw fa-eye"></i>
             </a>
