@@ -2,6 +2,8 @@
 
 @section('title', $account->name)
 
+@use('Illuminate\Support\Number')
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
@@ -27,7 +29,7 @@
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
           <x-money amount="{{number_format((float) $wallet->balance, 2, ',', '.')}}" currency="{{ $wallet->meta['currency']}}" />
-          @money(number_format((float) $wallet->balance, 2, ',', ' '), $wallet->meta['currency'])
+          {{ Number::currency($wallet->balance, in: $wallet->meta['currency']) }}
         </h3>
         <p class="card-text">
           <small class="text-muted">Slug: {{ $wallet->slug }}</small>
