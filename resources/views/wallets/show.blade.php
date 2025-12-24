@@ -14,35 +14,31 @@
   </div>
   <h5>Transactions</h5>
 </div>
-<div class="card">
-  <div class="card-body">
-    @forelse($transactions as $date => $transaction)
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title">{{ $date }}</h5>
-      </div>
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item d-flex justify-content-between">
-            <strong>Total</strong>
-            <span class="text-muted">{{ $transaction['total'] }}</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <strong>Deposit</strong>
-            <span class="text-success">{{ $transaction['deposit'] }}</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <strong>Withdraw</strong>
-            <span class="text-danger">{{ $transaction['withdraw'] }}</span>
-          </li>
-        </ul>
-      </div>
+@forelse($transactions as $date => $transaction)
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title">{{ $date }}</h5>
     </div>
-    @empty
-    <div class="alert alert-warning" role="alert">
-      <p class="text-muted text-center">No transactions recorded.</p>
+    <div class="card-body">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>Total</strong>
+          <span class="text-muted">{{ $transaction['total'] }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>Deposit</strong>
+          <span class="text-success">{{ $transaction['deposit'] }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <strong>Withdraw</strong>
+          <span class="text-danger">{{ $transaction['withdraw'] }}</span>
+        </li>
+      </ul>
     </div>
-    @endforelse
   </div>
-</div>
+@empty
+  <div class="alert alert-warning" role="alert">
+    <p class="text-muted text-center">No transactions recorded.</p>
+  </div>
+@endforelse
 @endsection
