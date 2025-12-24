@@ -22,8 +22,9 @@ Route::middleware(["auth"])
 		// Transaction Routes
 		Route::prefix("accounts/{account}/wallets/{wallet}/transactions")->group(
 			function () {
-				Route::resource("transactions", TransactionController::class);
-				
+				Route::get("/create", [TransactionController::class, "create"])->name(
+					"wallet.transactions.create"
+				);
 				Route::post("/deposit", [
 					TransactionController::class,
 					"deposit",

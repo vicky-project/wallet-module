@@ -9,30 +9,12 @@
       <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
         <i class="fas fa-arrow-left"></i>
       </a>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
+      <a href="{{ route('apps.wallet.transactions.create', [$account, $wallet]) }}" role="button" class="btn btn-primary">
         <i class="fas fa-plus"></i>
-      </button>
+      </a>
     </div>
     <h5 class="card-title"></h5>
   </div>
   <div class="card-body"></div>
-</div>
-
-<div class="modal fade" id="createTransactionModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create Transaction</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <form method="POST" action="{{ route('apps.wallet.wallets.store') }}">
-        @csrf
-        <div class="modal-body"></div>
-        <div class="modal-footer"></div>
-      </form>
-    </div>
-  </div>
 </div>
 @endsection

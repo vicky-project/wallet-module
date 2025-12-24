@@ -16,16 +16,8 @@ class TransactionController extends Controller
 	{
 	}
 
-	public function store(Request $request, Account $account, Wallet $wallet)
+	public function create(Request $request, Account $account, Wallet $wallet)
 	{
-	}
-
-	public function show(
-		Request $request,
-		Account $account,
-		Wallet $wallet,
-		Transaction $transaction
-	) {
 	}
 
 	public function deposit(Request $request, Account $account, Wallet $wallet)
