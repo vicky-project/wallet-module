@@ -88,4 +88,25 @@ class AccountController extends Controller
 
 		return view("wallet::accounts.edit", compact("account", "currencies"));
 	}
+
+	public function store(Request $request, Account $account)
+	{
+		$request->validate([
+			"name" => "required|string|max:255",
+			"type" => "required|string",
+			"description" => "nullable|string",
+			"currency" => "required|string|size:3",
+		]);
+
+		$account = $account->update([
+			"name" => $request->name,
+			"type" => $request->type,
+			"description" => $request->description,
+			"currency" => $request->currency,
+		]);
+
+		return redirect()
+			->route("apps.wallet.index")
+			->with("success", "Edit account for: {$account->name} successfuly.");
+	}
 }
