@@ -25,7 +25,15 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item d-flex justify-content-between">
             <strong>Total</strong>
-            <span class="text-muted">{{ $transaction->count() }}</span>
+            <span class="text-muted">{{ $transaction['total'] }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <strong>Deposit</strong>
+            <span class="text-success">{{ $transaction['deposit'] }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <strong>Withdraw</strong>
+            <span class="text-danger">{{ $transaction['withdraw'] }}</span>
           </li>
         </ul>
       </div>

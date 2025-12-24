@@ -38,15 +38,14 @@ class WalletController extends BaseController
 			->map(function ($transaction) {
 				return [
 					"total" => $transaction->count(),
-					"deposit" => $transaction->filter(
-						fn($item) => $item->type === "deposit"
-					),
-					"withdraw" => $transaction->filter(
-						fn($item) => $item->type === "withdraw"
-					),
+					"deposit" => $transaction
+						->filter(fn($item) => $item->type === "deposit")
+						->count(),
+					"withdraw" => $transaction
+						->filter(fn($item) => $item->type === "withdraw")
+						->count(),
 				];
 			});
-		dd($transactions);
 
 		return view(
 			"wallet::wallets.show",
