@@ -9,6 +9,9 @@
       <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
         <i class="fas fa-arrow-left"></i>
       </a>
+      <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-success" role="button">
+        <i class="fas fa-pen"></i>
+      </a>
       <a href="{{ route('apps.wallet.transactions.create', [$account, $wallet]) }}" role="button" class="btn btn-primary">
         <i class="fas fa-plus"></i>
       </a>

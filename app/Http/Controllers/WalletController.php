@@ -64,6 +64,11 @@ class WalletController extends BaseController
 			->with("success", "Wallet created successfully.");
 	}
 
+	public function edit(Request $request, Account $account, Wallet $wallet)
+	{
+		return view("wallet::wallets.edit", compact("account", "wallet"));
+	}
+
 	public function transfer(Request $request, Account $account, Wallet $wallet)
 	{
 		$request->validate([
