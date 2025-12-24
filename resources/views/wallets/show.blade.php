@@ -27,7 +27,8 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <form method="POST" action="{{ route('apps.') }}">
+      <form method="POST" action="{{ route('apps.wallet.wallets.store') }}">
+        @csrf
         <div class="modal-body"></div>
         <div class="modal-footer"></div>
       </form>

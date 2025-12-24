@@ -17,17 +17,13 @@ Route::middleware(["auth"])
 			->name("wallet.")
 			->group(function () {
 				Route::resource("wallets", WalletController::class)->except(["index"]);
-				//Route::post("/", [WalletController::class, "createWallet"])->name(
-				//	"wallet.wallets.store"
-				//);
-				//Route::get("/{wallet}", [WalletController::class, "show"])->name(
-				//	"wallet.wallets.show"
-				//);
 			});
 
 		// Transaction Routes
 		Route::prefix("accounts/{account}/wallets/{wallet}/transactions")->group(
 			function () {
+				Route::resource("transactions", TransactionController::class);
+				
 				Route::post("/deposit", [
 					TransactionController::class,
 					"deposit",

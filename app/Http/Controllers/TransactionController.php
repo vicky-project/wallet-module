@@ -12,6 +12,22 @@ use Modules\Wallet\Models\Account;
 
 class TransactionController extends Controller
 {
+	public function index(Request $request)
+	{
+	}
+
+	public function store(Request $request, Account $account, Wallet $wallet)
+	{
+	}
+
+	public function show(
+		Request $request,
+		Account $account,
+		Wallet $wallet,
+		Transaction $transaction
+	) {
+	}
+
 	public function deposit(Request $request, Account $account, Wallet $wallet)
 	{
 		// ...
