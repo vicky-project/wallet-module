@@ -98,7 +98,7 @@ class AccountController extends Controller
 			"currency" => "required|string|size:3",
 		]);
 
-		$account = $account->update([
+		$account->update([
 			"name" => $request->name,
 			"type" => $request->type,
 			"description" => $request->description,
