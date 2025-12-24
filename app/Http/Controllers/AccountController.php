@@ -55,7 +55,7 @@ class AccountController extends Controller
 		$wallets = $account
 			->wallets()
 			->get()
-			->map(fn($wallet) => $walet->withCount("transactions"));
+			->map(fn($wallet) => $wallet->withCount("transactions"));
 		dd($wallets);
 
 		$currencies = collect(config("money.currencies"))
