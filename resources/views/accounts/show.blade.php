@@ -29,10 +29,9 @@
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
           @money($wallet->balance, $wallet->meta['currency'], true)
-          {{ Number::currency($wallet->balance, in: $wallet->meta['currency']) }}
         </h3>
         <p class="card-text">
-          <small class="text-muted">Slug: {{ $wallet->slug }}</small>
+          <small class="text-muted">{{ $wallet->description }}</small>
         </p>
         <div class="d-flex justify-content-between">
           <span class="badge text-bg-secondary p-2">{{ $wallet->meta['currency'] ?? '' }}</span>
