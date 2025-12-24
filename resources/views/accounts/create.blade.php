@@ -12,7 +12,7 @@
         <i class="fas fa-arrow-left"></i>
       </a>
     </div>
-    <h5 class="card-title">Create Wallet</h5>
+    <h5 class="card-title">Create Account</h5>
   </div>
   <div class="card-body">
     <form method="POST" action="{{ route('apps.wallet.store') }}" class="row g-3 needs-validation" novalidate>

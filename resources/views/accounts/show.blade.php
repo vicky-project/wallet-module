@@ -36,7 +36,7 @@
   @empty
   <div class="col-12 col-lg-12">
     <div class="alert alert-warning" role="alert">
-      <p class="text-muted">You don't have any wallets. Please create one first.</p>
+      <p class="text-muted">You don't have any wallets yet. Please create one first.</p>
     </div>
   </div>
   @endforelse
@@ -47,7 +47,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Create Wallet</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
       <form method="POST" action="{{ route('apps.wallet.wallets.store', $account) }}">
         @csrf
