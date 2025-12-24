@@ -16,7 +16,20 @@
     <h5 class="card-title">Transactions</h5>
   </div>
   <div class="card-body">
-    @forelse($transactions as $transaction)
+    @forelse($transactions as $date => $transaction)
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">{{ $date }}</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <strong>Total</strong>
+            <span class="text-muted">{{ $transaction->count() }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
     @empty
     <div class="alert alert-warning" role="alert">
       <p class="text-muted text-center">No transactions recorded.</p>

@@ -35,7 +35,7 @@ class WalletController extends BaseController
 			->groupBy(function ($transaction) {
 				return Carbon::parse($transaction->created_at)->format("F Y");
 			});
-		dd($transactions);
+
 		return view(
 			"wallet::wallets.show",
 			compact("account", "wallet", "transactions")
