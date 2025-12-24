@@ -27,7 +27,7 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <form>
+      <form method="POST" action="{{ route('apps.') }}">
         <div class="modal-body"></div>
         <div class="modal-footer"></div>
       </form>

@@ -8,6 +8,9 @@
     <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button">
       <i class="fas fa-arrow-left"></i>
     </a>
+    <a href="{{ route('apps.wallet.edit', $account) }}" class="btn btn-success" role="button">
+      <i class="fas fa-edit"></i>
+    </a>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
       <i class="fas fa-plus"></i>
     </button>

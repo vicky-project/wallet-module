@@ -42,7 +42,7 @@ class WalletController extends BaseController
 		);
 	}
 
-	public function createWallet(Request $request, Account $account)
+	public function store(Request $request, Account $account)
 	{
 		$request->validate([
 			"name" => "required|string|max:255",
