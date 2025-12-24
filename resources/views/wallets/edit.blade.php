@@ -28,7 +28,7 @@
         <label for="account-currency" class="form-label">Currency</label>
         <select class="form-select" name="currency" id="account-currency">
           @foreach($currencies as $currency => $name)
-          <option value="{{$currency}}" @selected($currency ==="IDR")>{{$name}}</option>
+          <option value="{{$currency}}" @selected($currency === $wallet->meta['currency'] ?? 'IDR')>{{$name}}</option>
           @endforeach
         </select>
       </div>

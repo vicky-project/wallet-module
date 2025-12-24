@@ -25,12 +25,12 @@
     <div class="card card-wallet" onclick="window.location='{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}'">
       <div class="card-body">
         <h5 class="card-title">{{ $wallet->name }}</h5>
-        <h3 class="text-success">@money(number_format($wallet->balance, 2), $account->currency)</h3>
+        <h3 class="text-success">{{ $wallet->balance }}</h3>
         <p class="card-text">
           <small class="text-muted">Slug: {{ $wallet->slug }}</small>
         </p>
         <div class="d-flex justify-content-between">
-          <span class="text-muted">{{ $wallet->meta['currency'] ?? '' }}</span>
+          <span class="badge text-bg-secondary">{{ $wallet->meta['currency'] ?? '' }}</span>
           <span class="badge text-bg-info">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
           <div class="btn-group">
             <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
