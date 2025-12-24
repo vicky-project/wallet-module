@@ -89,7 +89,7 @@ class AccountController extends Controller
 		return view("wallet::accounts.edit", compact("account", "currencies"));
 	}
 
-	public function store(Request $request, Account $account)
+	public function update(Request $request, Account $account)
 	{
 		$request->validate([
 			"name" => "required|string|max:255",
