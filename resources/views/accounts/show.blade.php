@@ -5,10 +5,10 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button">
+    <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button" title="Back">
       <i class="fas fa-arrow-left"></i>
     </a>
-    <a href="{{ route('apps.wallet.edit', $account) }}" class="btn btn-success" role="button">
+    <a href="{{ route('apps.wallet.edit', $account) }}" class="btn btn-success" role="button" title="Edit Account">
       <i class="fas fa-pen"></i>
     </a>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
@@ -30,8 +30,15 @@
           <small class="text-muted">Slug: {{ $wallet->slug }}</small>
         </p>
         <div class="d-flex justify-content-between">
-          <span class="badge badge-info">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
-          <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button">View Transactions</a>
+          <span class="badge text-bg-info">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
+          <div class="btn-group">
+            <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
+              <i class="fas fa-fw fa-pen"></i>
+            </a>
+            <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
+          </div>
+            <i class="fas fa-fw fa-eye"></i>
+          </a>
         </div>
       </div>
     </div>
