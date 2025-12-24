@@ -12,10 +12,6 @@ use Modules\Wallet\Models\Account;
 
 class TransactionController extends Controller
 {
-	public function index(Request $request)
-	{
-	}
-
 	public function create(Request $request, Account $account, Wallet $wallet)
 	{
 		return view("wallet::wallets.create", compact("account", "wallet"));
@@ -23,7 +19,7 @@ class TransactionController extends Controller
 
 	public function deposit(Request $request, Account $account, Wallet $wallet)
 	{
-		// ...
+		dd($wallet, $request->all());
 	}
 
 	public function withdraw(Request $request, Account $account, Wallet $wallet)
