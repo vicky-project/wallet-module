@@ -19,7 +19,14 @@ class TransactionController extends Controller
 
 	public function deposit(Request $request, Account $account, Wallet $wallet)
 	{
-		dd($wallet->with(["transactions"])->get(), $request->all());
+		$wallet->deposit((int) $request->amount);
+
+		return redirect()
+			->route("apps.wallet.wallets.show", [$account, $wallet])
+			->with(
+				"success",
+				"Successful add deposit with amount: {$request->amount}"
+			);
 	}
 
 	public function withdraw(Request $request, Account $account, Wallet $wallet)
