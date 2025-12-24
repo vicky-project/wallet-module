@@ -3,6 +3,10 @@
 @section('title', $wallet->name)
 
 @section('content')
+<div class="d-flex justify-content-between align-items-center">
+  <span>Left</span>
+  <h5>Transactions</h5>
+</div>
 <div class="card">
   <div class="card-header text-end">
     <div class="float-start me-auto">
