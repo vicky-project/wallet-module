@@ -105,7 +105,7 @@ class WalletController extends BaseController
 		$wallet->refreshBalance();
 
 		return redirect()
-			->route("apps.wallet.wallets.show", [$account, $wallet])
+			->route("apps.wallet.show", [$account])
 			->with("success", "Balance updated.");
 	}
 
