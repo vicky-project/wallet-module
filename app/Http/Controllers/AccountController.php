@@ -69,7 +69,7 @@ class AccountController extends Controller
 
 		return view(
 			"wallet::accounts.show",
-			compact("account", "wallets", "total", "currencies")
+			compact("account", "wallets", "currencies")
 		);
 	}
 
