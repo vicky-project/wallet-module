@@ -101,9 +101,4 @@
     </div>
   </div>
 </div>
-
-<form method="POST" action="{{ route('apps.wallet.refresh', [$account, $wallet]) }}" id="refresh-balance">
-  @csrf
-  <input type="hidden" name="_refresh" value="1">
-</form>
 @endsection
