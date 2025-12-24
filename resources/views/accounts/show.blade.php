@@ -30,6 +30,7 @@
           <small class="text-muted">Slug: {{ $wallet->slug }}</small>
         </p>
         <div class="d-flex justify-content-between">
+          <span class="text-muted">{{ $wallet->meta['currency'] ?? '' }}</span>
           <span class="badge text-bg-info">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
           <div class="btn-group">
             <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">

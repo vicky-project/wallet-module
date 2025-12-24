@@ -26,7 +26,6 @@
         </div>
         <p class="card-text">{{ $account->description }}</p>
         <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted">{{ $account->currency}}</small>
           <small class="text-muted">{{$account->created_at->format('d M, Y')}}</small>
           <span>{{ $account->wallets_count ?? 0}} Wallets</span>
         </div>
