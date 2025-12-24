@@ -104,7 +104,6 @@ class WalletController extends BaseController
 		Wallet $wallet
 	) {
 		$wallet->refreshBalance();
-		dd($wallet->balance);
 
 		return back()->with("success", "Balance updated.");
 	}
