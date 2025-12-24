@@ -13,7 +13,7 @@
     <h5 class="card-title">Create Transaction</h5>
   </div>
   <div class="card-body">
-    <ul class="nav nav-tabs nav-underline nav-justified" id="formWalletTab" role="tablist">
+    <ul class="nav nav-underline nav-justified" id="formWalletTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button type="button" class="nav-link active" id="deposit-tab" data-bs-toggle="tab" data-bs-target="#deposit" role="tab" aria-controls="deposit" aria-selected="true">Deposit</button>
       </li>
