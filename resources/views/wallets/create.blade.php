@@ -6,7 +6,7 @@
 <div class="card">
   <div class="card-header text-end">
     <div class="float-start me-auto">
-      <a href="" class="btn btn-secondary" role="button">
+      <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-secondary" role="button">
         <i class="fas fa-arrow-left"></i>
       </a>
     </div>
@@ -26,13 +26,19 @@
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="deposit" role="tabpanel" aria-labelledby="deposit-tab" tabindex="0">
-        <h1>Deposit</h1>
+        <div class="row m-2">
+          <h1>Deposit</h1>
+        </div>
       </div>
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
-        <h1>Withdraw</h1>
+        <div class="row m-2">
+          <h1>Withdraw</h1>
+        </div>
       </div>
       <div class="tab-pane" id="upload" role="tabpanel" aria-labelledby="upload-tab" tabindex="0">
-        <h1>Upload</h1>
+        <div class="row m-2">
+          <h1>Upload</h1>
+        </div>
       </div>
     </div>
   </div>
