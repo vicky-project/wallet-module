@@ -23,7 +23,8 @@ class TransactionController extends Controller
 			"description" => $request->description ?? null,
 			"date" => $request->date_at ?? null,
 		];
-		$wallet->deposit((int) $request->amount);
+
+		$wallet->deposit((int) $request->amount, $meta);
 
 		return redirect()
 			->route("apps.wallet.wallets.show", [$account, $wallet])
@@ -35,6 +36,18 @@ class TransactionController extends Controller
 
 	public function withdraw(Request $request, Account $account, Wallet $wallet)
 	{
-		// ...
+		$meta = [
+			"description" => $request->description ?? null,
+			"date" => $request->date_at ?? null,
+		];
+
+		$wallet->withdraw((int) $request->amount, $meta);
+
+		return redirect()
+			->route("apps.wallet.wallets.show", [$account, $wallet])
+			->with(
+				"success",
+				"Successful add withdraw with amount: {$request->amount}"
+			);
 	}
 }

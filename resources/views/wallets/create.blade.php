@@ -38,7 +38,7 @@
           </div>
           <div class="mb-3">
             <label for="deposit-date-at" class="form-label">Date</label>
-            <input type="datetime" class="form-control" name="date_at" id="deposit-date-at" value="{{ now()->toDateTimeString() }}">
+            <input type="date" class="form-control" name="date_at" id="deposit-date-at">
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
@@ -49,8 +49,26 @@
         </form>
       </div>
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
-        <form method="POST" action="" class="row mt-2">
+        <form method="POST" action="{{ route('apps.wallet.transactions.withdraw', [$account, $wallet]) }}" class="row mt-2">
           @csrf
+          <div class="mb-3">
+            <label for="withdraw-amount" class="form-label">Amount</label>
+            <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="0">
+          </div>
+          <div class="mb-3">
+            <label for="withdraw-description" class="form-label">Description</label>
+            <input type="text" class="form-control" name="description" id="withdraw-description">
+          </div>
+          <div class="mb-3">
+            <label for="withdraw-date-at" class="form-label">Date</label>
+            <input type="date" class="form-control" name="date_at" id="withdraw-date-at">
+          </div>
+          <div class="pt-2 mt-2 border-top border-primary">
+            <button type="submit" class="btn btn-block btn-success">
+              <i class="fas fa-save"></i>
+              Save
+            </button>
+          </div>
         </form>
       </div>
       <div class="tab-pane" id="upload" role="tabpanel" aria-labelledby="upload-tab" tabindex="0">
