@@ -36,9 +36,9 @@
               <i class="fas fa-fw fa-pen"></i>
             </a>
             <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
+              <i class="fas fa-fw fa-eye"></i>
+            </a>
           </div>
-            <i class="fas fa-fw fa-eye"></i>
-          </a>
         </div>
       </div>
     </div>
