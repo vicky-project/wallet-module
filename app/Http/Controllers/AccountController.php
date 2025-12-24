@@ -52,10 +52,9 @@ class AccountController extends Controller
 
 	public function show(Account $account)
 	{
-		$wallets = $account
-			->wallets()
-			->withCount("transactions")
-			->get();
+		$wallet = $account->wallets();
+		$wallets = $wallet->get();
+		$total = $wallet->transactions()->count();
 		$currencies = collect(config("money.currencies"))
 			->keys()
 			->mapWithKeys(
@@ -71,7 +70,7 @@ class AccountController extends Controller
 
 		return view(
 			"wallet::accounts.show",
-			compact("account", "wallets", "currencies")
+			compact("account", "wallets", "total", "currencies")
 		);
 	}
 
