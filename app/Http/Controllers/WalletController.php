@@ -49,6 +49,7 @@ class WalletController extends BaseController
 		]);
 
 		$meta = [
+			"initial_balance" => $request->initial_balance ?? 0,
 			"created_by" => auth()->id(),
 		];
 
