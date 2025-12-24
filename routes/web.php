@@ -19,7 +19,7 @@ Route::middleware(["auth"])
 				Route::post("wallets/{wallet}/refresh", [
 					WalletController::class,
 					"refreshBalance",
-				])->name("wallets.refresh");
+				])->name("refresh");
 				Route::resource("wallets", WalletController::class)->except(["index"]);
 			});
 
