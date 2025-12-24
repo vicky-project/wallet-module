@@ -18,6 +18,7 @@ class TransactionController extends Controller
 
 	public function create(Request $request, Account $account, Wallet $wallet)
 	{
+		return view("wallet::wallets.create", compact("account", "wallet"));
 	}
 
 	public function deposit(Request $request, Account $account, Wallet $wallet)

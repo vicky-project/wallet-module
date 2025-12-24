@@ -13,8 +13,15 @@
         <i class="fas fa-plus"></i>
       </a>
     </div>
-    <h5 class="card-title"></h5>
+    <h5 class="card-title">Transactions</h5>
   </div>
-  <div class="card-body"></div>
+  <div class="card-body">
+    @forelse($transactions as $transaction)
+    @empty
+    <div class="alert alert-warning" role="alert">
+      <p class="text-muted">No transactions recorded.</p>
+    </div>
+    @endforelse
+  </div>
 </div>
 @endsection
