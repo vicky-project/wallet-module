@@ -13,7 +13,7 @@
     <a href="{{ route('apps.wallet.edit', $account) }}" class="btn btn-success" role="button" title="Edit Account">
       <i class="fas fa-pen"></i>
     </a>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
       <i class="fas fa-plus"></i>
     </button>
   </div>
@@ -43,7 +43,7 @@
             <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
               <i class="fas fa-fw fa-pen"></i>
             </a>
-            <button class="btn btn-sm btn-outline-warning" title="Refresh Balance" onclick="document.getElementById('refresh-balance').submit();">
+            <button type="button" class="btn btn-sm btn-outline-warning" title="Refresh Balance" onclick="document.getElementById('refresh-balance').submit();">
               <i class="fas fa-fw fa-sync-alt"></i>
             </button>
             <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
