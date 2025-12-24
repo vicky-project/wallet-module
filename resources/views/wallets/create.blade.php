@@ -30,15 +30,16 @@
           @csrf
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" min="0" value="0" id="deposit-amount">
+            <input type="number" class="form-control" name="amount" min="0" value="0" id="deposit-amount" placeholder="How many
+            ..">
           </div>
           <div class="mb-3">
             <label for="deposit-description" class="form-label">Description</label>
-            <input type="text" class="form-control" name="description" id="deposit-description">
+            <input type="text" class="form-control" name="description" id="deposit-description" placeholder="What is name...">
           </div>
           <div class="mb-3">
             <label for="deposit-date-at" class="form-label">Date</label>
-            <input type="date" class="form-control" name="date_at" id="deposit-date-at">
+            <input type="datetime-local" class="form-control" name="date_at" id="deposit-date-at" placeholder="d-m-Y H:i:s">
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
@@ -53,15 +54,15 @@
           @csrf
           <div class="mb-3">
             <label for="withdraw-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="0">
+            <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="0" placeholder="How many...">
           </div>
           <div class="mb-3">
             <label for="withdraw-description" class="form-label">Description</label>
-            <input type="text" class="form-control" name="description" id="withdraw-description">
+            <input type="text" class="form-control" name="description" id="withdraw-description" placeholder="What is name...">
           </div>
           <div class="mb-3">
             <label for="withdraw-date-at" class="form-label">Date</label>
-            <input type="date" class="form-control" name="date_at" id="withdraw-date-at">
+            <input type="datetime-local" class="form-control" name="date_at" id="withdraw-date-at" placeholder="d-m-Y H:i:s">
           </div>
           <div class="pt-2 mt-2 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
