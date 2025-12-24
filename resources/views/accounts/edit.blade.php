@@ -8,7 +8,7 @@
 <div class="card">
   <div class="card-header text-end">
     <div class="float-start me-auto">
-      <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button">
+      <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
         <i class="fas fa-arrow-left"></i>
       </a>
     </div>
