@@ -97,6 +97,16 @@ class WalletController extends BaseController
 		);
 	}
 
+	public function refreshBalance(
+		Request $request,
+		Account $account,
+		Wallet $wallet
+	) {
+		$wallet->refreshBalance();
+
+		return back()->with("success", "Balance updated.");
+	}
+
 	public function transfer(Request $request, Account $account, Wallet $wallet)
 	{
 		$request->validate([

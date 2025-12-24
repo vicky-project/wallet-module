@@ -25,6 +25,7 @@ class TransactionController extends Controller
 		];
 
 		$wallet->deposit((int) $request->amount, $meta);
+		$wallet->refreshBalance();
 
 		return redirect()
 			->route("apps.wallet.wallets.show", [$account, $wallet])
@@ -42,6 +43,7 @@ class TransactionController extends Controller
 		];
 
 		$wallet->withdraw((int) $request->amount, $meta);
+		$wallet->refreshBalance();
 
 		return redirect()
 			->route("apps.wallet.wallets.show", [$account, $wallet])

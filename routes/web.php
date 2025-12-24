@@ -17,6 +17,10 @@ Route::middleware(["auth"])
 			->name("wallet.")
 			->group(function () {
 				Route::resource("wallets", WalletController::class)->except(["index"]);
+				Route::post("/wallets/{wallet}/refresh", [
+					WalletController::class,
+					"refreshBalance",
+				])->name("wallets.refresh-balance");
 			});
 
 		// Transaction Routes

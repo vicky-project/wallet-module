@@ -33,6 +33,9 @@
         <p class="card-text">
           <small class="text-muted">{{ $wallet->description }}</small>
         </p>
+        <form method="POST" action="{{ route('apps.wallet.wallets.refresh-balance'  [$account, $wallet]) }}" id="refresh-balance">
+          @csrf
+        </form>
         <div class="d-flex justify-content-between">
           <span class="badge text-bg-secondary p-2">{{ $wallet->meta['currency'] ?? '' }}</span>
           <span class="badge text-bg-info p-2">{{ $wallet->transactions_count ?? 0 }} Transactions</span>
@@ -40,6 +43,9 @@
             <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
               <i class="fas fa-fw fa-pen"></i>
             </a>
+            <button class="btn btn-sm btn-outline-warning" title="Refresh Balance" onclick="document.getElementById('refresh-balance').submit();">
+              <i class="fas fa-fw fa-sync-alt"></i>
+            </button>
             <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
               <i class="fas fa-fw fa-eye"></i>
             </a>
