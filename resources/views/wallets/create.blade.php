@@ -32,6 +32,14 @@
             <label for="deposit-amount" class="form-label">Amount</label>
             <input type="number" class="form-control" name="amount" min="0" value="0" id="deposit-amount">
           </div>
+          <div class="mb-3">
+            <label for="deposit-description" class="form-label">Description</label>
+            <input type="text" class="form-control" name="description" id="deposit-description">
+          </div>
+          <div class="mb-3">
+            <label for="deposit-date-at" class="form-label">Date</label>
+            <input type="datetime" class="form-control" name="date_at" id="deposit-date-at" value="{{ now()->toDateTimeString() }}">
+          </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
               <i class="fas fa-save"></i>

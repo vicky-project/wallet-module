@@ -19,6 +19,10 @@ class TransactionController extends Controller
 
 	public function deposit(Request $request, Account $account, Wallet $wallet)
 	{
+		$meta = [
+			"description" => $request->description ?? null,
+			"date" => $request->date_at ?? null,
+		];
 		$wallet->deposit((int) $request->amount);
 
 		return redirect()
