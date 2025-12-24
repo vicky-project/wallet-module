@@ -41,7 +41,7 @@ class WalletController extends BaseController
 					"deposit" => $transaction->filter(
 						fn($item) => $item->type === "deposit"
 					),
-					"withdraw" => $transactions->filter(
+					"withdraw" => $transaction->filter(
 						fn($item) => $item->type === "withdraw"
 					),
 				];
