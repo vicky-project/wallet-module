@@ -34,7 +34,19 @@ class WalletController extends BaseController
 			->get()
 			->groupBy(function ($transaction) {
 				return Carbon::parse($transaction->created_at)->format("F Y");
+			})
+			->map(function ($transaction) {
+				return [
+					"total" => $transaction->count(),
+					"deposit" => $transaction->filter(
+						fn($item) => $item->type === "deposit"
+					),
+					"withdraw" => $transactions->filter(
+						fn($item) => $item->type === "withdraw"
+					),
+				];
 			});
+		dd($transactions);
 
 		return view(
 			"wallet::wallets.show",
