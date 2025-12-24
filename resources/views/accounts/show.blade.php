@@ -28,6 +28,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
+          @money($wallet->balance, $wallet->meta['currency'], true)
           {{ Number::currency($wallet->balance, in: $wallet->meta['currency']) }}
         </h3>
         <p class="card-text">
