@@ -16,10 +16,10 @@ Route::middleware(["auth"])
 		Route::prefix("accounts/{account}")
 			->name("wallet.")
 			->group(function () {
-				Route::post("/wallets/{wallet}/refresh", [
+				Route::post("wallets/{wallet}/refresh", [
 					WalletController::class,
 					"refreshBalance",
-				])->name("wallets.refresh-balance");
+				])->name("wallets.refresh");
 				Route::resource("wallets", WalletController::class)->except(["index"]);
 			});
 
