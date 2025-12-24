@@ -13,15 +13,17 @@ Route::middleware(["auth"])
 		Route::resource("accounts", AccountController::class)->names("wallet");
 
 		// Wallet Routes
-		Route::prefix("accounts/{account}")->group(function () {
-			Route::resource("wallets", WalletController::class);
-			//Route::post("/", [WalletController::class, "createWallet"])->name(
-			//	"wallet.wallets.store"
-			//);
-			//Route::get("/{wallet}", [WalletController::class, "show"])->name(
-			//	"wallet.wallets.show"
-			//);
-		});
+		Route::prefix("accounts/{account}")
+			->name("wallet.")
+			->group(function () {
+				Route::resource("wallets", WalletController::class);
+				//Route::post("/", [WalletController::class, "createWallet"])->name(
+				//	"wallet.wallets.store"
+				//);
+				//Route::get("/{wallet}", [WalletController::class, "show"])->name(
+				//	"wallet.wallets.show"
+				//);
+			});
 
 		// Transaction Routes
 		Route::prefix("accounts/{account}/wallets/{wallet}/transactions")->group(
