@@ -76,20 +76,7 @@ class AccountController extends Controller
 
 	public function edit(Account $account)
 	{
-		$currencies = collect(config("money.currencies"))
-			->keys()
-			->mapWithKeys(
-				fn($currency) => [
-					$currency =>
-						config("money.currencies")[$currency]["name"] .
-						" (" .
-						config("money.currencies")[$currency]["symbol"] .
-						")",
-				]
-			)
-			->toArray();
-
-		return view("wallet::accounts.edit", compact("account", "currencies"));
+		return view("wallet::accounts.edit", compact("account"));
 	}
 
 	public function update(Request $request, Account $account)
