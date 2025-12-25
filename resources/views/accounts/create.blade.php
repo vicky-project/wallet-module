@@ -46,7 +46,7 @@
       </div>
       <div class="col-md-4">
         <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" role="switch" name="is_active" id="account-is-active" @checked(old('is_active') ?? true)>
+          <input type="checkbox" class="form-check-input" role="switch" name="is_active" id="account-is-active" checked>
           <label for="account-is-active" class="form-check-label">Active</label>
         </div>
       </div>
