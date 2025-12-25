@@ -23,7 +23,7 @@ class WalletRequest extends FormRequest
 	public function rules()
 	{
 		$rules = [
-			"accound_id" => "required|exists:accounts,id",
+			"account_id" => "required|exists:accounts,id",
 			"name" => "required|string|max:255",
 			"type" => ["required", Rule::enum(WalletType::class)],
 			"initial_balance" => "required|numeric|min:0",
