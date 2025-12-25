@@ -8,14 +8,14 @@
 <div class="card">
   <div class="card-header text-end">
     <div class="float-start me-auto">
-      <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button">
+      <a href="{{ route('apps.accounts.index') }}" class="btn btn-secondary" role="button">
         <i class="fas fa-arrow-left"></i>
       </a>
     </div>
     <h5 class="card-title">Create Account</h5>
   </div>
   <div class="card-body">
-    <form method="POST" action="{{ route('apps.wallet.store') }}" class="row g-3 needs-validation" novalidate>
+    <form method="POST" action="{{ route('apps.accounts.store') }}" class="row g-3 needs-validation" novalidate>
       @csrf
       <input type="hidden" name="user_id" value="{{ \Auth::id() }}">
       <div class="col-md-4">
