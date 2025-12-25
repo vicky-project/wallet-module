@@ -46,7 +46,7 @@
       </div>
       <div class="col-md-4">
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="account-is_default" name="is_default" checked>
+          <input class="form-check-input" type="checkbox" role="switch" id="account-is_default" name="is_default" value="1" checked>
           <label class="form-check-label" for="account-is_default">Default</label>
         </div>
       </div>
