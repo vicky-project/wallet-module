@@ -4,96 +4,120 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Modules\Wallet\Models\Account;
-use Modules\Wallet\Constants\Permissions;
+use Modules\Wallet\Repositories\AccountRepository;
+use Modules\Wallet\Http\Requests\AccountRequest;
 
 class AccountController extends Controller
 {
-	public function __construct()
+	protected $accountRepository;
+
+	public function __construct(AccountRepository $accountRepository)
 	{
-		$this->middleware("permission:" . Permissions::VIEW_ACCOUNTS)->only([
-			"index",
-			"show",
-		]);
+		$this->accountRepository = $accountRepository;
 	}
 
 	public function index()
 	{
-		$accounts = Account::where("user_id", Auth::id())->get();
+		$accounts = $this->accountRepository->getUserAccounts();
+		dd($accounts);
+
 		return view("wallet::accounts.index", compact("accounts"));
 	}
 
-	public function create()
+	public function store(AccountRequest $request)
 	{
-		return view("wallet::accounts.create");
-	}
+		try {
+			$account = $this->accountRepository->createAccount($request->validated());
 
-	public function store(Request $request)
-	{
-		$request->validate([
-			"name" => "required|string|max:255",
-			"type" => "required|string",
-			"description" => "nullable|string",
-		]);
-
-		$account = Account::create([
-			"user_id" => Auth::id(),
-			"name" => $request->name,
-			"type" => $request->type,
-			"description" => $request->description,
-			"is_active" => (bool) $request->is_active,
-		]);
-
-		return redirect()
-			->route("apps.wallet.index")
-			->with("success", "Account created successfully.");
+			return response()->json(
+				[
+					"success" => true,
+					"message" => "Account created successfully",
+					"data" => $account,
+				],
+				201
+			);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
 	}
 
 	public function show(Account $account)
 	{
-		$wallets = $account->wallets()->get();
+		$this->authorize("view", $account);
 
-		$currencies = collect(config("money.currencies"))
-			->keys()
-			->mapWithKeys(
-				fn($currency) => [
-					$currency =>
-						config("money.currencies")[$currency]["name"] .
-						" (" .
-						config("money.currencies")[$currency]["symbol"] .
-						")",
-				]
-			)
-			->toArray();
+		$summary = $this->accountRepository->getAccountSummary($account);
 
-		return view(
-			"wallet::accounts.show",
-			compact("account", "wallets", "currencies")
-		);
+		return response()->json([
+			"success" => true,
+			"data" => $summary,
+		]);
 	}
 
-	public function edit(Account $account)
+	public function update(AccountRequest $request, Account $account)
 	{
-		return view("wallet::accounts.edit", compact("account"));
+		$this->authorize("update", $account);
+
+		try {
+			$account = $this->accountRepository->updateAccount(
+				$account,
+				$request->validated()
+			);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Account updated successfully",
+				"data" => $account,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
 	}
 
-	public function update(Request $request, Account $account)
+	public function destroy(Account $account)
 	{
-		$request->validate([
-			"name" => "required|string|max:255",
-			"type" => "required|string",
-			"description" => "nullable|string",
-		]);
+		$this->authorize("delete", $account);
 
-		$account->update([
-			"name" => $request->name,
-			"type" => $request->type,
-			"description" => $request->description,
-		]);
+		try {
+			$this->accountRepository->deleteAccount($account);
 
-		return redirect()
-			->route("apps.wallet.index")
-			->with("success", "Edit account for: {$account->name} successfuly.");
+			return response()->json([
+				"success" => true,
+				"message" => "Account deleted successfully",
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function summary(Account $account)
+	{
+		$this->authorize("view", $account);
+
+		$summary = $this->accountRepository->getAccountSummary($account);
+
+		return response()->json([
+			"success" => true,
+			"data" => $summary,
+		]);
 	}
 }

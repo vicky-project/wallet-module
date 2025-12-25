@@ -34,10 +34,16 @@ class WalletMenuProvider extends BaseMenuProvider
 				"children" => [
 					$this->item([
 						"title" => "Accounts",
-						"icon" => "fas fa-wallet",
+						"icon" => "fas fa-user-circle",
 						"route" => "apps.wallet.index",
 						"order" => 1,
 						"permission" => Permissions::VIEW_ACCOUNTS,
+					]),
+					$this->item([
+						"title" => "Wallets",
+						"icon" => "fas fa-wallet",
+						"route" => "",
+						"order" => 2,
 					]),
 				],
 			]),

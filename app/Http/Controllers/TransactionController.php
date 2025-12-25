@@ -4,52 +4,219 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
-use Bavix\Wallet\Models\Wallet;
-use Bavix\Wallet\Models\Transaction;
-use Carbon\Carbon;
-use Modules\Wallet\Models\Account;
+use Modules\Wallet\Models\Transaction;
+use Modules\Wallet\Models\Wallet;
+use Modules\Wallet\Services\TransactionService;
+use Modules\Wallet\Repositories\TransactionRepository;
+use Modules\Wallet\Http\Requests\TransactionRequest;
+use Modules\Wallet\Http\Requests\TransferRequest;
 
 class TransactionController extends Controller
 {
-	public function create(Request $request, Account $account, Wallet $wallet)
-	{
-		return view("wallet::wallets.create", compact("account", "wallet"));
+	protected $transactionService;
+	protected $transactionRepository;
+
+	public function __construct(
+		TransactionService $transactionService,
+		TransactionRepository $transactionRepository
+	) {
+		$this->transactionService = $transactionService;
+		$this->transactionRepository = $transactionRepository;
 	}
 
-	public function deposit(Request $request, Account $account, Wallet $wallet)
+	public function index(Request $request)
 	{
-		$meta = [
-			"description" => $request->description ?? null,
-			"date" => $request->date_at ?? null,
-		];
+		$transactions = $this->transactionRepository->getUserTransactions(
+			$request->all()
+		);
 
-		$wallet->deposit((int) $request->amount, $meta);
-		$wallet->refreshBalance();
-
-		return redirect()
-			->route("apps.wallet.wallets.show", [$account, $wallet])
-			->with(
-				"success",
-				"Successful add deposit with amount: {$request->amount}"
-			);
+		return response()->json([
+			"success" => true,
+			"data" => $transactions,
+		]);
 	}
 
-	public function withdraw(Request $request, Account $account, Wallet $wallet)
+	public function store(TransactionRequest $request)
 	{
-		$meta = [
-			"description" => $request->description ?? null,
-			"date" => $request->date_at ?? null,
-		];
-
-		$wallet->withdraw((int) $request->amount, $meta);
-		$wallet->refreshBalance();
-
-		return redirect()
-			->route("apps.wallet.wallets.show", [$account, $wallet])
-			->with(
-				"success",
-				"Successful add withdraw with amount: {$request->amount}"
+		try {
+			$transaction = $this->transactionService->recordTransaction(
+				$request->validated()
 			);
+
+			return response()->json(
+				[
+					"success" => true,
+					"message" => "Transaction recorded successfully",
+					"data" => $transaction->load(["wallet", "toWallet"]),
+				],
+				201
+			);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function show(Transaction $transaction)
+	{
+		$this->authorize("view", $transaction);
+
+		$transaction->load(["wallet", "toWallet", "toAccount", "user"]);
+
+		return response()->json([
+			"success" => true,
+			"data" => $transaction,
+		]);
+	}
+
+	public function update(TransactionRequest $request, Transaction $transaction)
+	{
+		$this->authorize("update", $transaction);
+
+		try {
+			$transaction = $this->transactionRepository->updateTransaction(
+				$transaction,
+				$request->validated()
+			);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Transaction updated successfully",
+				"data" => $transaction,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function transfer(TransferRequest $request)
+	{
+		try {
+			$fromWallet = Wallet::findOrFail($request->from_wallet_id);
+			$toWallet = Wallet::findOrFail($request->to_wallet_id);
+
+			$this->authorize("transfer", [$fromWallet, $toWallet]);
+
+			$transactions = $this->transactionService->transfer(
+				$fromWallet,
+				$toWallet,
+				$request->validated()
+			);
+
+			return response()->json(
+				[
+					"success" => true,
+					"message" => "Transfer completed successfully",
+					"data" => $transactions,
+				],
+				201
+			);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function updateStatus(Request $request, Transaction $transaction)
+	{
+		$this->authorize("update", $transaction);
+
+		$request->validate([
+			"status" => "required|in:pending,completed,failed,cancelled",
+			"notes" => "nullable|string",
+		]);
+
+		try {
+			$transaction = $this->transactionService->updateTransactionStatus(
+				$transaction,
+				$request->status,
+				["notes" => $request->notes]
+			);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Transaction status updated successfully",
+				"data" => $transaction,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function reconcile(Request $request, Transaction $transaction)
+	{
+		$this->authorize("update", $transaction);
+
+		$request->validate([
+			"is_reconciled" => "required|boolean",
+		]);
+
+		try {
+			$transaction->update([
+				"is_reconciled" => $request->is_reconciled,
+				"reconciled_at" => $request->is_reconciled ? now() : null,
+				"reconciled_by" => $request->is_reconciled ? auth()->id() : null,
+			]);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Transaction reconciled successfully",
+				"data" => $transaction,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function summary(Request $request)
+	{
+		$summary = $this->transactionRepository->getTransactionSummary(
+			auth()->id(),
+			$request->start_date,
+			$request->end_date
+		);
+
+		return response()->json([
+			"success" => true,
+			"data" => $summary,
+		]);
+	}
+
+	public function recent()
+	{
+		$transactions = $this->transactionRepository->getRecentTransactions(10);
+
+		return response()->json([
+			"success" => true,
+			"data" => $transactions,
+		]);
 	}
 }

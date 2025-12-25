@@ -4,39 +4,18 @@ use Illuminate\Support\Facades\Route;
 use Modules\Wallet\Http\Controllers\AccountController;
 use Modules\Wallet\Http\Controllers\WalletController;
 use Modules\Wallet\Http\Controllers\TransactionController;
+use Modules\Wallet\Http\Controllers\CategoryController;
 
 Route::middleware(["auth"])
 	->prefix("apps")
 	->name("apps.")
 	->group(function () {
 		// Account Routes
-		Route::resource("accounts", AccountController::class)->names("wallet");
+		Route::resource("accounts", AccountController::class);
 
-		// Wallet Routes
-		Route::prefix("accounts/{account}")
-			->name("wallet.")
-			->group(function () {
-				Route::get("wallets/{wallet}/refresh", [
-					WalletController::class,
-					"refreshBalance",
-				])->name("wallets.refresh");
-				Route::resource("wallets", WalletController::class)->except(["index"]);
-			});
+		Route::resource("wallets", WalletController::class);
 
-		// Transaction Routes
-		Route::prefix("accounts/{account}/wallets/{wallet}/transactions")->group(
-			function () {
-				Route::get("/create", [TransactionController::class, "create"])->name(
-					"wallet.transactions.create"
-				);
-				Route::post("/deposit", [
-					TransactionController::class,
-					"deposit",
-				])->name("wallet.transactions.deposit");
-				Route::post("withdraw", [
-					TransactionController::class,
-					"withdraw",
-				])->name("wallet.transactions.withdraw");
-			}
-		);
+		Route::resource("transactions", TransactionController::class);
+
+		Route::resource("categories", CategoryController::class);
 	});
