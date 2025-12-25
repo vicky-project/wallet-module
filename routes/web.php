@@ -12,10 +12,17 @@ Route::middleware(["auth"])
 	->group(function () {
 		// Account Routes
 		Route::resource("accounts", AccountController::class);
+		Route::get("accounts/{account}/summary", [
+			AccountController::class,
+			"summary",
+		])->name("accounts.summary");
 
+		// Wallet Routes
 		Route::resource("wallets", WalletController::class);
 
+		// Transaction Routes
 		Route::resource("transactions", TransactionController::class);
 
+		// Category Routes
 		Route::resource("categories", CategoryController::class);
 	});

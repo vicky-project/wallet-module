@@ -3,148 +3,257 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modules\Core\Http\Controllers\BaseController;
-use Illuminate\Support\Facades\Auth;
-use Bavix\Wallet\Models\Wallet;
-use Bavix\Wallet\Models\Transaction;
-use Carbon\Carbon;
+use Illuminate\Routing\Controller;
+use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Models\Account;
-use Modules\Wallet\Constants\Permissions;
+use Modules\Wallet\Services\TransactionService;
+use Modules\Wallet\Repositories\WalletRepository;
+use Modules\Wallet\Http\Requests\WalletRequest;
 
-class WalletController extends BaseController
+class WalletController extends Controller
 {
-	public function __construct()
-	{
-		if ($this->isPermissionMiddlewareExists()) {
-			$this->middleware("permission:" . Permissions::VIEW_WALLETS)->only([
-				"show",
-			]);
-		}
-		$this->middleware("permission:" . Permissions::CREATE_WALLETS)->only([
-			"createWallet",
-			"store",
-		]);
-	}
+	protected $walletRepository;
+	protected $transactionService;
 
-	public function show(Account $account, Wallet $wallet)
-	{
-		// Get transactions grouped by period (month)
-		$transactions = $wallet
-			->transactions()
-			->orderBy("created_at", "desc")
-			->get()
-			->groupBy(function ($transaction) {
-				return Carbon::parse($transaction->created_at)->format("F Y");
-			})
-			->map(function ($transaction) {
-				return [
-					"total" => $transaction->count(),
-					"deposit" => $transaction
-						->filter(fn($item) => $item->type === "deposit")
-						->count(),
-					"withdraw" => $transaction
-						->filter(fn($item) => $item->type === "withdraw")
-						->count(),
-				];
-			});
-
-		return view(
-			"wallet::wallets.show",
-			compact("account", "wallet", "transactions")
-		);
-	}
-
-	public function store(Request $request, Account $account)
-	{
-		$request->validate([
-			"name" => "required|string|max:255",
-		]);
-
-		$meta = [
-			"currency" => $request->currency ?? "",
-			"initial_balance" => $request->initial_balance ?? 0,
-			"created_by" => auth()->id(),
-		];
-
-		$wallet = $account->createWallet([
-			"name" => $request->name,
-			"description" => $request->description ?? null,
-			"balance" => $request->initial_balance ?? 0,
-			"meta" => $meta,
-		]);
-
-		return redirect()
-			->route("apps.wallet.show", $account)
-			->with("success", "Wallet created successfully.");
-	}
-
-	public function edit(Request $request, Account $account, Wallet $wallet)
-	{
-		$currencies = collect(config("money.currencies"))
-			->keys()
-			->mapWithKeys(
-				fn($currency) => [
-					$currency =>
-						config("money.currencies")[$currency]["name"] .
-						" (" .
-						config("money.currencies")[$currency]["symbol"] .
-						")",
-				]
-			)
-			->toArray();
-		return view(
-			"wallet::wallets.edit",
-			compact("account", "wallet", "currencies")
-		);
-	}
-
-	public function refreshBalance(
-		Request $request,
-		Account $account,
-		Wallet $wallet
+	public function __construct(
+		WalletRepository $walletRepository,
+		TransactionService $transactionService
 	) {
-		$wallet->refreshBalance();
-
-		return back()->with("success", "Balance updated.");
+		$this->walletRepository = $walletRepository;
+		$this->transactionService = $transactionService;
 	}
 
-	public function transfer(Request $request, Account $account, Wallet $wallet)
+	/**
+	 * Display a listing of wallets for the authenticated user
+	 */
+	public function index(Request $request)
 	{
-		$request->validate([
-			"to_wallet_id" => "required|exists:wallets,id",
-			"amount" => "required|numeric|min:0.01",
-			"description" => "nullable|string",
-		]);
+		try {
+			$wallets = $this->walletRepository->getUserWallets($request->all());
 
-		$toWallet = Wallet::find($request->to_wallet_id);
-
-		$transfer = $wallet->transfer($toWallet, $request->amount, [
-			"description" => $request->description,
-		]);
-
-		if ($transfer) {
-			return back()->with("success", "Transfer successful.");
+			return response()->json([
+				"success" => true,
+				"data" => $wallets,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
 		}
-
-		return back()->withErrors("Transfer failed.");
 	}
 
-	public function showImportForm(Account $account, Wallet $wallet)
+	/**
+	 * Store a newly created wallet for a specific account
+	 */
+	public function store(WalletRequest $request, Account $account)
 	{
-		$this->authorize("view", $account);
+		$this->authorize("update", $account);
 
-		return view("wallet::wallets.import", compact("account", "wallet"));
+		try {
+			$wallet = $this->walletRepository->createWallet(
+				$account,
+				$request->validated()
+			);
+
+			return response()->json(
+				[
+					"success" => true,
+					"message" => "Wallet created successfully",
+					"data" => $wallet->load("account"),
+				],
+				201
+			);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
 	}
 
-	public function import(Request $request, Account $account, Wallet $wallet)
+	/**
+	 * Display the specified wallet
+	 */
+	public function show(Wallet $wallet)
 	{
+		$this->authorize("view", $wallet);
+
+		try {
+			$wallet->load([
+				"account",
+				"transactions" => function ($query) {
+					$query->latest()->limit(10);
+				},
+			]);
+
+			return response()->json([
+				"success" => true,
+				"data" => $wallet,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	/**
+	 * Update the specified wallet
+	 */
+	public function update(WalletRequest $request, Wallet $wallet)
+	{
+		$this->authorize("update", $wallet);
+
+		try {
+			$wallet = $this->walletRepository->updateWallet(
+				$wallet,
+				$request->validated()
+			);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Wallet updated successfully",
+				"data" => $wallet,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	/**
+	 * Remove the specified wallet
+	 */
+	public function destroy(Wallet $wallet)
+	{
+		$this->authorize("delete", $wallet);
+
+		try {
+			$this->walletRepository->deleteWallet($wallet);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Wallet deleted successfully",
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	/**
+	 * Get transactions for a specific wallet
+	 */
+	public function transactions(Request $request, Wallet $wallet)
+	{
+		$this->authorize("view", $wallet);
+
+		try {
+			$transactions = $wallet
+				->transactions()
+				->with(["toWallet", "toAccount"])
+				->orderBy("transaction_date", "desc")
+				->orderBy("created_at", "desc")
+				->paginate($request->per_page ?? 15);
+
+			return response()->json([
+				"success" => true,
+				"data" => $transactions,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	/**
+	 * Get current balance of a wallet
+	 */
+	public function balance(Wallet $wallet)
+	{
+		$this->authorize("view", $wallet);
+
+		try {
+			return response()->json([
+				"success" => true,
+				"data" => [
+					"balance" => $wallet->balance,
+					"formatted_balance" => $wallet->formatted_balance,
+					"currency" => $wallet->currency,
+					"initial_balance" => $wallet->initial_balance,
+					"formatted_initial_balance" => $wallet->formatted_initial_balance,
+				],
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	/**
+	 * Get wallet statement for a period
+	 */
+	public function statement(Request $request, Wallet $wallet)
+	{
+		$this->authorize("view", $wallet);
+
 		$request->validate([
-			"file" => "required|file|mimes:csv,xlsx,xls",
+			"start_date" => "required|date",
+			"end_date" => "required|date|after_or_equal:start_date",
 		]);
 
-		// TODO: Implement your import class logic here
-		// Example: (new TransactionImport($wallet))->process($request->file('file'));
+		try {
+			$statement = app(
+				\Modules\Wallet\Services\ReportService::class
+			)->getWalletStatement(
+				$wallet->id,
+				$request->start_date,
+				$request->end_date
+			);
 
-		return back()->with("success", "File uploaded successfully. Processing...");
+			return response()->json([
+				"success" => true,
+				"data" => $statement,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
 	}
 }
