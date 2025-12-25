@@ -68,13 +68,13 @@
       <div class="card-body">
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
-          @money($wallet->balance, $wallet->meta['currency'], true)
+          @money($wallet->balance, $wallet->currency, true)
         </h3>
         <p class="card-text">
           <small class="text-muted">{{ $wallet->description }}</small>
         </p>
         <div class="d-flex justify-content-between">
-          <span class="badge text-bg-secondary p-2">{{ $wallet->meta['currency'] ?? '' }}</span>
+          <span class="badge text-bg-secondary p-2">{{ $wallet->currency }}</span>
           <span class="badge text-bg-info p-2">{{ $wallet->transactions()->count ?? 0 }} Transactions</span>
           <div class="btn-group">
             <a href="{{ route('apps.wallets.edit', $wallet) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
