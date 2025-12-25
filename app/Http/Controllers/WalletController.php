@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Models\Account;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\WalletRepository;
@@ -35,8 +36,12 @@ class WalletController extends Controller
 		try {
 			$wallets = $this->walletRepository->getUserWallets($request->all());
 			$accounts = $this->accountRepository->getUserAccounts();
+			$currencies = Helper::listCurrencies();
 
-			return view("wallet::wallets.index", compact("wallets", "accounts"));
+			return view(
+				"wallet::wallets.index",
+				compact("wallets", "accounts", "currencies")
+			);
 		} catch (\Exception $e) {
 			return response()->json(
 				[
