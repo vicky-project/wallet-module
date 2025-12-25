@@ -80,9 +80,6 @@
             <a href="{{ route('apps.wallets.edit', $wallet) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
               <i class="fas fa-fw fa-pen"></i>
             </a>
-            <a href="{{ route('apps.wallets.refresh', $wallet) }}" type="button" class="btn btn-sm btn-outline-warning" title="Refresh Balance">
-              <i class="fas fa-fw fa-sync-alt"></i>
-            </a>
             <a href="{{ route('apps.wallets.show', $wallet) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
               <i class="fas fa-fw fa-eye"></i>
             </a>
