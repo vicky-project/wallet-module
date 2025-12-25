@@ -113,14 +113,6 @@
         @csrf
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">Account</label>
-            <select name="account_id" class="form-select" id="wallet-account_id">
-              @foreach($accounts as $account)
-              <option value="{{ $account->id }}" @selected($account->is_default)>{{ $account->name }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="mb-3">
             <label for="wallet-name" class="form-label">Wallet Name <span class="text-danger">*</span></label>
             <input type="text" class="form-control" name="name" id="wallet-name" placeholder="Enter wallet name..." required>
           </div>
