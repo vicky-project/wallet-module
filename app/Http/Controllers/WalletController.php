@@ -57,9 +57,10 @@ class WalletController extends Controller
 	/**
 	 * Store a newly created wallet for a specific account
 	 */
-	public function store(WalletRequest $request, Account $account)
+	public function store(WalletRequest $request)
 	{
 		try {
+			dd($this->accountRepository->getUserAccounts());
 			$wallet = $this->walletRepository->createWallet(
 				$account,
 				$request->validated()
