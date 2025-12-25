@@ -27,7 +27,7 @@ class AccountRequest extends FormRequest
 			"account_number" =>
 				"nullable|string|max:50|unique:accounts,account_number," .
 				$this->route("account"),
-			"type" => ["required", Rule::enums(AccountType::class)],
+			"type" => ["required", Rule::enum(AccountType::class)],
 			"description" => "nullable|string",
 		];
 

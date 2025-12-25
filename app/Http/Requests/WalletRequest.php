@@ -25,7 +25,7 @@ class WalletRequest extends FormRequest
 		$rules = [
 			"accound_id" => "required|exists:accounts,id",
 			"name" => "required|string|max:255",
-			"type" => ["required", Rule::enums(WalletType::class)],
+			"type" => ["required", Rule::enum(WalletType::class)],
 			"initial_balance" => "required|numeric|min:0",
 			"currency" => "required|string|size:3",
 			"is_active" => "boolean",
