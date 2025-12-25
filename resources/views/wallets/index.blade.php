@@ -106,7 +106,6 @@
       <div class="modal-header">
         <h5 class="modal-title">Create Wallet</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal">
-          <i class="fas fa-times"></i>
         </button>
       </div>
       <form method="POST" action="{{ route('apps.wallets.store') }}">
