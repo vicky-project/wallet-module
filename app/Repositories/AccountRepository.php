@@ -95,7 +95,7 @@ class AccountRepository
 	public function getDefaultUserAccount()
 	{
 		return $this->getUserAccounts()
-			->filter(fn($account) => $account->is_default === true)
+			->filter(fn($account) => $account->is_default)
 			->toArray();
 	}
 }
