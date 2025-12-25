@@ -2,6 +2,8 @@
 
 namespace Modules\Wallet\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Modules\Wallet\Enums\AccountType;
 use Modules\Wallet\Constants\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -9,18 +11,23 @@ class AccountRequest extends FormRequest
 {
 	public function authorize()
 	{
-		return auth()->check() && Permissions::CREATE_ACCOUNTS;
+		return auth()->check() &&
+			(auth()
+				->user()
+				->can(Permissions::CREATE_ACCOUNTS) ||
+				auth()
+					->user()
+					->can(Permissions::EDIT_ACCOUNTS));
 	}
 
 	public function rules()
 	{
 		$rules = [
-			"accound_id" => "required|exists:accounts,id",
 			"name" => "required|string|max:255",
 			"account_number" =>
 				"nullable|string|max:50|unique:accounts,account_number," .
 				$this->route("account"),
-			"type" => "required|in:savings,checking,investment,general,credit",
+			"type" => ["required", Rule::enums(AccountType::class)],
 			"description" => "nullable|string",
 		];
 
