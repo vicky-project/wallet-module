@@ -123,6 +123,11 @@ class WalletController extends BaseController
 		}
 	}
 
+	public function edit(Request $request, Wallet $wallet)
+	{
+		return view("wallet::wallets.edit", compact("wallet"));
+	}
+
 	/**
 	 * Update the specified wallet
 	 */
