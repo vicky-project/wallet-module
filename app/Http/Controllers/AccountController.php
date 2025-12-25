@@ -34,7 +34,9 @@ class AccountController extends Controller
 		try {
 			$account = $this->accountRepository->createAccount($request->validated());
 
-			return back()->with("success", "Account created successfully");
+			return redirect()
+				->route("apps.accounts.index")
+				->with("success", "Account created successfully");
 		} catch (\Exception $e) {
 			return back()->withErrors($e->getMessage());
 		}

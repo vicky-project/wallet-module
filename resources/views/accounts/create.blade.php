@@ -44,12 +44,6 @@
         <label for="account-description" class="form-label">Description</label>
         <textarea name="description" class="form-control" id="account-description" placeholder="Describe your account detail...">{{ old('description') }}</textarea>
       </div>
-      <div class="col-md-4">
-        <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" role="switch" name="is_active" id="account-is-active" checked>
-          <label for="account-is-active" class="form-check-label">Active</label>
-        </div>
-      </div>
       <div class="pt-2 mt-4 border-top border-primary">
         <button type="submit" class="btn btn-success">
           <i class="fas fa-paper-plane"></i>&nbsp; Save

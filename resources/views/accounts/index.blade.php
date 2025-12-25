@@ -13,7 +13,7 @@
 <div class="row">
   @forelse ($accounts as $account)
   <div class="col col-md-6 col-lg-4 mb-4">
-    <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.wallet.show', $account) }}'">
+    <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.wallets.index', $account) }}'">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>
