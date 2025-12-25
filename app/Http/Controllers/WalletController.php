@@ -58,8 +58,6 @@ class WalletController extends Controller
 	 */
 	public function store(WalletRequest $request, Account $account)
 	{
-		$this->authorize("update", $account);
-
 		try {
 			$wallet = $this->walletRepository->createWallet(
 				$account,

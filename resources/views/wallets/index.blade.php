@@ -21,7 +21,7 @@
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#filterContent" aria-expanded="false" aria-controls="filterContent">
-        <i class="fas fa-filter"></i>
+        <i class="fas fa-fw fa-filter me-2"></i>
         Filter
       </button>
     </h2>
@@ -61,7 +61,7 @@
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row mt-2">
   @forelse($wallets as $wallet)
   <div class="col-md-6 col-lg-4 mb-3">
     <div class="card card-wallet" onclick="window.location='{{ route('apps.wallets.show', $wallet) }}'">
