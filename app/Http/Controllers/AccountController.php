@@ -20,7 +20,6 @@ class AccountController extends Controller
 	public function index()
 	{
 		$accounts = $this->accountRepository->getUserAccounts();
-		dd($accounts);
 
 		return view("wallet::accounts.index", compact("accounts"));
 	}

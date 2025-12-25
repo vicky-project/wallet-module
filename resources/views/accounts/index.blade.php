@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1><i class="fas fa-wallet"></i> My Accounts</h1>
-  <a href="{{ route('apps.wallet.create') }}" class="btn bg-primary">
+  <a href="{{ route('apps.accounts.create') }}" class="btn bg-primary">
     <i class="fas fa-fw fa-plus"></i>
   </a>
 </div>
