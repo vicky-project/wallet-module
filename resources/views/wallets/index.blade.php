@@ -140,6 +140,12 @@
             <label for="wallet-description" class="form-label">Description</label>
             <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet.."></textarea>
           </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="wallet-is_default" name="is_default" value="1" checked>
+              <label class="form-check-label" for="wallet-is_default">Default</label>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
