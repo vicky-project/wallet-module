@@ -117,6 +117,15 @@
             <input type="text" class="form-control" name="name" id="wallet-name" placeholder="Enter wallet name..." required>
           </div>
           <div class="mb-3">
+            <label for="wallet-type" class="form-label">Type</label>
+            <select id="wallet-type" name="type" class="form-select">
+              <option value="">All</option>
+              @foreach(WalletType::cases() as $type)
+              <option value="{{ $type->value}}" @selected(old('type') == $type->value)>{{ $type->value}}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="mb-3">
             <label for="wallet-initial-balance" class="form-label">Initial Balance</label>
             <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="0">
           </div>
