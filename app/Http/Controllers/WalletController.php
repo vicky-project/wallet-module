@@ -60,20 +60,15 @@ class WalletController extends Controller
 	public function store(WalletRequest $request)
 	{
 		try {
-			dd($this->accountRepository->getDefaultUserAccount());
+			$account = $this->accountRepository->getDefaultUserAccount();
 			$wallet = $this->walletRepository->createWallet(
 				$account,
 				$request->validated()
 			);
 
-			return response()->json(
-				[
-					"success" => true,
-					"message" => "Wallet created successfully",
-					"data" => $wallet->load("account"),
-				],
-				201
-			);
+			return redirect()
+				->route("apps.wallets.index")
+				->with("success", "Created wallet successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[
