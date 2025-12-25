@@ -23,6 +23,9 @@
           <span class="badge bg-{{ $account->is_active ? 'success' : 'secondary' }}">
             {{ $account->is_active ? "Active" : "Inactive" }}
           </span>
+          @if($account->is_default)
+          <span class="badge badge-success rounded"></span>
+          @endif
         </div>
         <p class="card-text text-muted">{{ $account->description }}</p>
         <div class="d-flex justify-content-between align-items-center">
