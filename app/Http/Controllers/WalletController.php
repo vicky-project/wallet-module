@@ -3,16 +3,17 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Helpers\Helper;
+use Modules\Core\Http\Controllers\BaseController;
+use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\WalletRepository;
 use Modules\Wallet\Http\Requests\WalletRequest;
 
-class WalletController extends Controller
+class WalletController extends BaseController
 {
 	protected $accountRepository;
 	protected $walletRepository;
@@ -26,6 +27,19 @@ class WalletController extends Controller
 		$this->accountRepository = $accountRepository;
 		$this->walletRepository = $walletRepository;
 		$this->transactionService = $transactionService;
+
+		if ($this->isPermissionMiddlewareExists()) {
+			$this->middleware("permission:" . Permissions::VIEW_WALLETS)->only([
+				"index",
+				"show",
+			]);
+			$this->middleware("permission:" . Permissions::CREATE_WALLETS)->only([
+				"store",
+			]);
+			$this->middleware("permission:" . Permissions::EDIT_WALLETS)->only([
+				"update",
+			]);
+		}
 	}
 
 	/**
@@ -86,8 +100,6 @@ class WalletController extends Controller
 	 */
 	public function show(Wallet $wallet)
 	{
-		$this->authorize("view", $wallet);
-
 		try {
 			$wallet->load([
 				"account",
