@@ -119,7 +119,6 @@
           <div class="mb-3">
             <label for="wallet-type" class="form-label">Type</label>
             <select id="wallet-type" name="type" class="form-select">
-              <option value="">All</option>
               @foreach(WalletType::cases() as $type)
               <option value="{{ $type->value}}" @selected(old('type') == $type->value)>{{ $type->value}}</option>
               @endforeach

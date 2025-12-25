@@ -3,7 +3,7 @@
 namespace Modules\Wallet\Repositories;
 
 use Modules\Wallet\Models\Wallet;
-use Modules\Wallet\Entities\Account;
+use Modules\Wallet\Models\Account;
 use Illuminate\Support\Facades\Auth;
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
