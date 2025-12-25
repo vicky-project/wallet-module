@@ -47,6 +47,7 @@ class WalletController extends Controller
 				[
 					"success" => false,
 					"message" => $e->getMessage(),
+					"trace" => $e->getTraceAsString(),
 				],
 				500
 			);
