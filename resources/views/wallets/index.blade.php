@@ -68,7 +68,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
-          @money($wallet->balance, $wallet->currency, true)
+          {{ $wallet->balance }}
         </h3>
         <p class="card-text">
           <small class="text-muted">{{ $wallet->description }}</small>
