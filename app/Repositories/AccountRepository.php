@@ -96,7 +96,6 @@ class AccountRepository
 	{
 		return $this->getUserAccounts()
 			->filter(fn($account) => $account->is_default)
-			->first()
-			->toArray();
+			->first();
 	}
 }
