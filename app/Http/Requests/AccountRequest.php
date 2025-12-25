@@ -29,6 +29,7 @@ class AccountRequest extends FormRequest
 				$this->route("account"),
 			"type" => ["required", Rule::enum(AccountType::class)],
 			"description" => "nullable|string",
+			"is_default" => "required|boolean",
 		];
 
 		return $rules;
@@ -40,6 +41,7 @@ class AccountRequest extends FormRequest
 			"name" => "Account Name",
 			"account_number" => "Account Number",
 			"type" => "Account Type",
+			"is_default" => "Default",
 		];
 	}
 }

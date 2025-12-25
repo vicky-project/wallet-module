@@ -44,6 +44,12 @@
         <label for="account-description" class="form-label">Description</label>
         <textarea name="description" class="form-control" id="account-description" placeholder="Describe your account detail...">{{ old('description') }}</textarea>
       </div>
+      <div class="col-md-4">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="account-is_default" name="is_default" checked>
+          <label class="form-check-label" for="account-is_default">Default</label>
+        </div>
+      </div>
       <div class="pt-2 mt-4 border-top border-primary">
         <button type="submit" class="btn btn-success">
           <i class="fas fa-paper-plane"></i>&nbsp; Save
