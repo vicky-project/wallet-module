@@ -4,17 +4,24 @@ namespace Modules\Wallet\Constants;
 
 class Permissions
 {
-	// Wallet permissions
-	const VIEW_ACCOUNTS = "financial.wallets.view";
-	const CREATE_ACCOUNTS = "financial.wallets.create";
-	const EDIT_ACCOUNTS = "financial.wallets.edit";
-	const DELETE_ACCOUNTS = "financial.wallets.delete";
-	const MANAGE_ACCOUNTS = "financial.wallets.manage";
+	// Account permissions
+	const VIEW_ACCOUNTS = "financial.accounts.view";
+	const CREATE_ACCOUNTS = "financial.accounts.create";
+	const EDIT_ACCOUNTS = "financial.accounts.edit";
+	const DELETE_ACCOUNTS = "financial.accounts.delete";
+	const MANAGE_ACCOUNTS = "financial.accounts.manage";
 
-	const VIEW_WALLETS = "financial.wallets.wallet.view";
-	const CREATE_WALLETS = "financial.wallets.wallet.create";
-	const EDIT_WALLETS = "financial.wallets.wallet.edit";
-	const DELETE_WALLETS = "financial.wallets.wallet.delete";
+	// Wallet permissions
+	const VIEW_WALLETS = "financial.wallets.view";
+	const CREATE_WALLETS = "financial.wallets.create";
+	const EDIT_WALLETS = "financial.wallets.edit";
+	const DELETE_WALLETS = "financial.wallets.delete";
+
+	// Category permissions
+	const VIEW_CATEGORIES = "financial.wallets.view";
+	const CREATE_CATEGORIES = "financial.wallets.create";
+	const EDIT_CATEGORIES = "financial.wallets.edit";
+	const DELETE_CATEGORIES = "financial.wallets.delete";
 
 	public static function all(): array
 	{
@@ -31,6 +38,12 @@ class Permissions
 			self::CREATE_WALLETS => "Create wallets",
 			self::EDIT_WALLETS => "Edit wallets",
 			self::DELETE_WALLETS => "Delete wallets",
+
+			// Category
+			self::VIEW_CATEGORIES => "View category",
+			self::CREATE_CATEGORIES => "Create category",
+			self::EDIT_CATEGORIES => "Edit category",
+			self::DELETE_CATEGORIES => "Delete category",
 		];
 	}
 }
