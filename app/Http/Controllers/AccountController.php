@@ -24,6 +24,11 @@ class AccountController extends Controller
 		return view("wallet::accounts.index", compact("accounts"));
 	}
 
+	public function create()
+	{
+		return view("wallet::accounts.create");
+	}
+
 	public function store(AccountRequest $request)
 	{
 		try {
