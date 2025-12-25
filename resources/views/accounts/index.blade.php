@@ -13,7 +13,7 @@
 <div class="row">
   @forelse ($accounts as $account)
   <div class="col col-md-6 col-lg-4 mb-4">
-    <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.wallets.index', $account) }}'">
+    <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.wallets.index', ['account_id' => $account->id]) }}'">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>
@@ -24,10 +24,18 @@
             {{ $account->is_active ? "Active" : "Inactive" }}
           </span>
         </div>
-        <p class="card-text">{{ $account->description }}</p>
+        <p class="card-text text-muted">{{ $account->description }}</p>
         <div class="d-flex justify-content-between align-items-center">
           <small class="text-muted">{{$account->created_at->format('d M, Y')}}</small>
           <span>{{ $account->wallets_count ?? 0}} Wallets</span>
+          <div class="btn-group">
+            <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-sm btn-outline-secondary" role="button" title="View Account">
+              <i class="fas fa-fw fa-eye"></i>
+            </a>
+            <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Account">
+              <i class="fas fa-fw fa-pen"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -7,18 +7,22 @@ use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Services\TransactionService;
+use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\WalletRepository;
 use Modules\Wallet\Http\Requests\WalletRequest;
 
 class WalletController extends Controller
 {
+	protected $accountRepository;
 	protected $walletRepository;
 	protected $transactionService;
 
 	public function __construct(
+		AccountRepository $accountRepository,
 		WalletRepository $walletRepository,
 		TransactionService $transactionService
 	) {
+		$this->accountRepository = $accountRepository;
 		$this->walletRepository = $walletRepository;
 		$this->transactionService = $transactionService;
 	}
@@ -30,11 +34,9 @@ class WalletController extends Controller
 	{
 		try {
 			$wallets = $this->walletRepository->getUserWallets($request->all());
+			$accounts = $this->accountRepository->getUserAccounts();
 
-			return response()->json([
-				"success" => true,
-				"data" => $wallets,
-			]);
+			return view("wallet::wallets.index", compact("wallets", "accounts"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[
