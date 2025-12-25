@@ -91,4 +91,11 @@ class AccountRepository
 			"recent_transactions" => $recentTransactions,
 		];
 	}
+
+	public function getDefaultUserAccount()
+	{
+		return $this->getUserAccounts()
+			->filter(fn($account) => $account->is_default === true)
+			->toArray();
+	}
 }

@@ -60,7 +60,7 @@ class WalletController extends Controller
 	public function store(WalletRequest $request)
 	{
 		try {
-			dd($this->accountRepository->getUserAccounts());
+			dd($this->accountRepository->getDefaultUserAccount());
 			$wallet = $this->walletRepository->createWallet(
 				$account,
 				$request->validated()

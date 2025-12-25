@@ -20,7 +20,7 @@
             <h5 class="card-title">{{$account->name}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ $account->type }}
               @if($account->is_default)
-                <span class="badge text-bg-success rounded">default</span>
+                <span class="badge badge-sm text-bg-success rounded">default</span>
               @endif
             </h6>
           </div>
