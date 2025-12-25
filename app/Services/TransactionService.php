@@ -2,9 +2,9 @@
 
 namespace Modules\Wallet\Services;
 
-use Modules\Finance\Models\Wallet;
-use Modules\Finance\Models\Transaction;
-use Modules\Finance\Interfaces\TransactionServiceInterface;
+use Modules\Wallet\Models\Wallet;
+use Modules\Wallet\Models\Transaction;
+use Modules\Wallet\Interfaces\TransactionServiceInterface;
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
 use Illuminate\Support\Facades\DB;
