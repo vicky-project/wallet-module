@@ -19,13 +19,13 @@
           <div>
             <h5 class="card-title">{{$account->name}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ $account->type }}</h6>
+            @if($account->is_default)
+              <span class="badge badge-success rounded">default</span>
+            @endif
           </div>
           <span class="badge bg-{{ $account->is_active ? 'success' : 'secondary' }}">
             {{ $account->is_active ? "Active" : "Inactive" }}
           </span>
-          @if($account->is_default)
-          <span class="badge badge-success rounded"></span>
-          @endif
         </div>
         <p class="card-text text-muted">{{ $account->description }}</p>
         <div class="d-flex justify-content-between align-items-center">
