@@ -15,6 +15,7 @@ class AccountRequest extends FormRequest
 	public function rules()
 	{
 		$rules = [
+			"accound_id" => "required|exists:accounts,id",
 			"name" => "required|string|max:255",
 			"account_number" =>
 				"nullable|string|max:50|unique:accounts,account_number," .
