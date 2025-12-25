@@ -20,6 +20,7 @@ class Account extends Model
 		"type",
 		"description",
 		"is_active",
+		"is_default",
 	];
 
 	protected $casts = [

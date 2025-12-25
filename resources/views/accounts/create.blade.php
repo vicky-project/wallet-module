@@ -19,11 +19,15 @@
       @csrf
       <input type="hidden" name="user_id" value="{{ \Auth::id() }}">
       <div class="col-md-4">
-        <label for="account-name" class="form-label">Name</label>
+        <label for="account-name" class="form-label">Name <span class="text-danger">*</span></label>
         <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="account-name" placeholder="Enter account name..." value="{{ old('name') }}" required>
         @error('name')
         <div class="invalid-feedback">{{$message}}</div>
         @enderror
+      </div>
+      <div class="col-md-4">
+        <label for="account_number" class="form-label">Account Number</label>
+        <input type="text" class="form-control" name="account_number" id="account_number" placeholder="Enter number or numeric..." value="{{ old('account_number') }}">
       </div>
       <div class="col-md-4">
         <label for="account-type" class="form-label">Type</label>

@@ -2,13 +2,14 @@
 
 namespace Modules\Wallet\Http\Requests;
 
+use Modules\Wallet\Constants\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AccountRequest extends FormRequest
 {
 	public function authorize()
 	{
-		return true;
+		return auth()->check() && Permissions::CREATE_ACCOUNTS;
 	}
 
 	public function rules()
@@ -16,7 +17,7 @@ class AccountRequest extends FormRequest
 		$rules = [
 			"name" => "required|string|max:255",
 			"account_number" =>
-				"nullable|string|max:50|unique:finance_accounts,account_number," .
+				"nullable|string|max:50|unique:accounts,account_number," .
 				$this->route("account"),
 			"type" => "required|in:savings,checking,investment,general,credit",
 			"description" => "nullable|string",
