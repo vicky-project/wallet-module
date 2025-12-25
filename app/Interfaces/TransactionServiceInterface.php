@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Interfaces;
 
+use Brick\Money\Money;
 use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Models\Transaction;
 
@@ -25,10 +26,10 @@ interface TransactionServiceInterface
 		array $data = []
 	): Transaction;
 
-	public function getWalletBalance(Wallet $wallet, ?string $date = null): float;
+	public function getWalletBalance(Wallet $wallet, ?string $date = null): Money;
 
 	public function getAccountBalance(
 		int $accountId,
 		?string $date = null
-	): float;
+	): Money;
 }
