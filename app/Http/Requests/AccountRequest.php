@@ -21,8 +21,8 @@ class AccountRequest extends FormRequest
 				$this->route("account"),
 			"type" => "required|in:savings,checking,investment,general,credit",
 			"description" => "nullable|string",
-			"is_active" => "boolean",
-			"is_default" => "boolean",
+			"is_active" => "nullable",
+			"is_default" => "nullable",
 		];
 
 		return $rules;
