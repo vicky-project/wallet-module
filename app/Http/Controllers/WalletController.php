@@ -175,15 +175,12 @@ class WalletController extends BaseController
 	 */
 	public function destroy(Wallet $wallet)
 	{
-		$this->authorize("delete", $wallet);
-
 		try {
 			$this->walletRepository->deleteWallet($wallet);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Wallet deleted successfully",
-			]);
+			return redirect()
+				->route("apps.wallets.index")
+				->with("success", "Wallet deleted successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[
@@ -200,8 +197,6 @@ class WalletController extends BaseController
 	 */
 	public function transactions(Request $request, Wallet $wallet)
 	{
-		$this->authorize("view", $wallet);
-
 		try {
 			$transactions = $wallet
 				->transactions()
