@@ -9,6 +9,7 @@ use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\TransactionRepository;
+use Modules\Wallet\Repositories\WalletRepository;
 use Modules\Wallet\Http\Requests\TransactionRequest;
 use Modules\Wallet\Http\Requests\TransferRequest;
 
@@ -16,13 +17,16 @@ class TransactionController extends BaseController
 {
 	protected $transactionService;
 	protected $transactionRepository;
+	protected $walletRepository;
 
 	public function __construct(
 		TransactionService $transactionService,
-		TransactionRepository $transactionRepository
+		TransactionRepository $transactionRepository,
+		WalletRepository $walletRepository
 	) {
 		$this->transactionService = $transactionService;
 		$this->transactionRepository = $transactionRepository;
+		$this->walletRepository = $walletRepository;
 
 		if ($this->isPermissionMiddlewareExists()) {
 			$this->middleware("permission:" . Permissions::VIEW_TRANSACTIONS)->only([
@@ -46,6 +50,13 @@ class TransactionController extends BaseController
 		);
 
 		return view("wallet::transactions.index", compact("transactions"));
+	}
+
+	public function create()
+	{
+		$wallet = $this->walletRepository->getDefaultUserWallet();
+
+		return view("wallet::transactions.create", compact("wallet"));
 	}
 
 	public function store(TransactionRequest $request)

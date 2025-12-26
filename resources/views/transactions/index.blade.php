@@ -4,12 +4,12 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
+  <h5>Transactions</h5>
   <div>
     <a href="{{ route('apps.transactions.create') }}" role="button" class="btn btn-primary">
       <i class="fas fa-plus"></i>
     </a>
   </div>
-  <h5>Transactions</h5>
 </div>
 
 <div class="row">

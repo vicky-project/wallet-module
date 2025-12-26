@@ -6,14 +6,15 @@
 <div class="card">
   <div class="card-header text-end">
     <div class="float-start me-auto">
-      <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-secondary" role="button">
+      <a href="{{ route('apps.transactions.index') }}" class="btn btn-secondary" role="button">
         <i class="fas fa-arrow-left"></i>
       </a>
     </div>
     <h5 class="card-title">Create Transaction</h5>
+    <span class="small ms-auto text-muted">{{ $wallet->name }}</span>
   </div>
   <div class="card-body">
-    <ul class="nav nav-tabs justify-content-'center" id="formWalletTab" role="tablist">
+    <ul class="nav nav-tabs justify-content-'center" id="formTransactionTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button type="button" class="nav-link active" id="deposit-tab" data-bs-toggle="tab" data-bs-target="#deposit" role="tab" aria-controls="deposit" aria-selected="true">Deposit</button>
       </li>
@@ -26,7 +27,7 @@
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="deposit" role="tabpanel" aria-labelledby="deposit-tab" tabindex="0">
-        <form method="POST" action="{{ route('apps.wallet.transactions.deposit', [$account, $wallet]) }}" class="row mt-2">
+        <form method="POST" action="{{ route('apps.transactions.deposit', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
@@ -50,7 +51,7 @@
         </form>
       </div>
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
-        <form method="POST" action="{{ route('apps.wallet.transactions.withdraw', [$account, $wallet]) }}" class="row mt-2">
+        <form method="POST" action="{{ route('apps.transactions.withdraw', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
             <label for="withdraw-amount" class="form-label">Amount</label>

@@ -124,4 +124,11 @@ class WalletRepository
 			"monthly_summary" => $monthlySummary,
 		];
 	}
+
+	public function getDefaultUserWallet()
+	{
+		return $this->getUserWallets()
+			->filter(fn($wallet) => $wallet->is_default)
+			->first();
+	}
 }
