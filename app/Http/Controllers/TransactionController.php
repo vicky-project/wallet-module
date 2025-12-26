@@ -54,7 +54,7 @@ class TransactionController extends BaseController
 			$request->all()
 		);
 		dd(
-			$transactions,
+			$transactions->map(fn($item) => dd($item)),
 			$transactions->map(
 				fn($item) => [
 					"total" => $item->count(),
