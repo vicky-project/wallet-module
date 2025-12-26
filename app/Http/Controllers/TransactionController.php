@@ -45,10 +45,7 @@ class TransactionController extends BaseController
 			$request->all()
 		);
 
-		return response()->json([
-			"success" => true,
-			"data" => $transactions,
-		]);
+		return view("wallet::transactions.index", compact("transactions"));
 	}
 
 	public function store(TransactionRequest $request)
