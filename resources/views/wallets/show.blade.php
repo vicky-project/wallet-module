@@ -3,47 +3,46 @@
 @section('title', $wallet->name)
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
-  <div>
-    <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
-      <i class="fas fa-arrow-left"></i>
-    </a>
-    <a href="{{ route('apps.wallet.transactions.create', [$account, $wallet]) }}" role="button" class="btn btn-primary">
-      <i class="fas fa-plus"></i>
-    </a>
-  </div>
-  <h5>Transactions</h5>
-</div>
-
-<div class="row">
-  @forelse($transactions as $date => $transaction)
-  <div class="col-md-6 col-lg-6">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-title">{{ $date }}</h5>
-      </div>
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item d-flex justify-content-between">
-            <strong>Total</strong>
-            <span class="text-muted">{{ $transaction['total'] }}</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <strong>Deposit</strong>
-            <span class="text-success">{{ $transaction['deposit'] }}</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <strong>Withdraw</strong>
-            <span class="text-danger">{{ $transaction['withdraw'] }}</span>
-          </li>
-        </ul>
-      </div>
+<div class="card">
+  <div class="card-header text-end">
+    <div class="float-start me-auto">
+      <a href="{{ route('apps.wallets.index') }}" class="btn btn-secondary" role="button">
+        <i class="fas fa-arrow-left"></i>
+      </a>
     </div>
+    <h5 class="card-title">{{ $wallet->name }}</h5><span class="small ms-2">{{ $wallet->wallet_code }}</span>
   </div>
-  @empty
-  <div class="alert alert-warning" role="alert">
-    <p class="text-muted text-center">No transactions recorded.</p>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>Account</strong>
+        <span class="text-muted">{{ $wallet->account->name }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>Type</strong>
+        <span class="text-muted">{{ $wallet->balance }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>Initial Balance</strong>
+        <span class="text-muted">{{ $wallet->initial_balance }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>Currency</strong>
+        <span class="text-muted">{{ $wallet->currency }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>Description</strong>
+        <span class="text-muted">{{ $wallet->description }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <strong>Default</strong>
+        @if($wallet->is_default)
+        <span class="badge text-bg-success rounded-pill">YES</span>
+        @else
+        <span class="badge text-bg-danger rounded-pill">NO</span>
+        @endif
+      </li>
+    </ul>
   </div>
-  @endforelse
 </div>
 @endsection

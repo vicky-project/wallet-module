@@ -37,7 +37,7 @@
           <label for="wallet-type" class="form-label">Type</label>
           <select name="type" class="form-select" id="wallet-type">
             @foreach(WalletType::cases() as $type)
-            <option value="{{ $type->value }}" @selected($type == $wallet->type)>{{ $type->name }}</option>
+            <option value="{{ $type->value }}" @selected($type === $wallet->type)>{{ $type->name }}</option>
             @endforeach
           </select>
         </div>

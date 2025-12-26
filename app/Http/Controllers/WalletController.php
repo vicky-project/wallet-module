@@ -108,10 +108,7 @@ class WalletController extends BaseController
 				},
 			]);
 
-			return response()->json([
-				"success" => true,
-				"data" => $wallet,
-			]);
+			return view("wallet::wallets.show", compact("wallet"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[

@@ -21,6 +21,7 @@ class Wallet extends Model
 		"initial_balance",
 		"currency",
 		"is_active",
+		"is_default",
 		"description",
 		"meta",
 	];
@@ -29,6 +30,7 @@ class Wallet extends Model
 		"balance" => MoneyCast::class,
 		"initial_balance" => MoneyCast::class,
 		"is_active" => "boolean",
+		"is_default" => "boolean",
 		"metadata" => "array",
 	];
 
@@ -109,5 +111,10 @@ class Wallet extends Model
 	public function scopeByAccount($query, $accountId)
 	{
 		return $query->where("account_id", $accountId);
+	}
+
+	public function scopeDefault($query)
+	{
+		return $query->where("is_default", true);
 	}
 }

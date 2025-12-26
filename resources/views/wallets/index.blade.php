@@ -71,9 +71,6 @@
           {{ $wallet->balance }}
         </h3>
         <p class="card-text"><span class="small text-muted">{{ $wallet->type }}</span></p>
-        <p class="card-text">
-          <small class="text-muted">{{ $wallet->description }}</small>
-        </p>
         <div class="d-flex justify-content-between">
           <span class="badge text-bg-secondary p-2">{{ $wallet->currency }}</span>
           <span class="badge text-bg-info p-2">{{ $wallet->transactions()->count ?? 0 }} Transactions</span>
