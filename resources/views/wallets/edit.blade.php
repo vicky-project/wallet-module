@@ -60,6 +60,14 @@
           <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet..">{{ old('description', $wallet->description) }}</textarea>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="wallet-default" name="is_default" value="1" @checked($wallet->is_default)>
+            <label class="form-check-label" for="wallet-default">Default</label>
+          </div>
+        </div>
+      </div>
       <div class="pt-2 mt-4 border-top border-primary text-end">
         <button type="submit" class="btn btn-block btn-success">
           <i class="fas fa-paper-plane"></i>
