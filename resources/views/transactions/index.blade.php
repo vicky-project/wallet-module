@@ -4,8 +4,10 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
-  <h5>Transactions</h5>
-  <span>subtitle</span>
+  <div>
+    <h5>Transactions</h5>
+    <span>subtitle</span>
+  </div>
   <div>
     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changeDefaultWalletModal">
       <i class="fas fa-wallet"></i>
