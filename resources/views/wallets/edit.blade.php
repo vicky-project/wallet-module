@@ -53,6 +53,8 @@
             @endforeach
           </select>
         </div>
+      </div>
+      <div class="row mb-3">
         <div class="col-md-12">
           <label for="wallet-description" class="form-label">Description</label>
           <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet..">{{ old('description', $wallet->description) }}</textarea>
