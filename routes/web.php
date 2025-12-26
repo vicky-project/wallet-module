@@ -22,6 +22,7 @@ Route::middleware(["auth"])
 
 		// Transaction Routes
 		Route::resource("transactions", TransactionController::class);
+		Route::post("transactions/{transaction}")->name("transactions.deposit");
 
 		// Category Routes
 		Route::resource("categories", CategoryController::class);
