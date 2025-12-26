@@ -46,6 +46,20 @@ class WalletMenuProvider extends BaseMenuProvider
 						"order" => 2,
 						"permission" => Permissions::VIEW_WALLETS,
 					]),
+					$this->item([
+						"title" => "Transactions",
+						"icon" => "",
+						"route" => "apps.transactions.index",
+						"order" => 3,
+						"permission" => Permissions::VIEW_TRANSACTIONS,
+					]),
+					$this->item([
+						"title" => "Category",
+						"icon" => "",
+						"route" => "apps.categories.index",
+						"order" => 4,
+						"permission" => Permissions::VIEW_CATEGORIES,
+					]),
 				],
 			]),
 		];
