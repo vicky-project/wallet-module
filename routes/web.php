@@ -18,6 +18,10 @@ Route::middleware(["auth"])
 		])->name("accounts.summary");
 
 		// Wallet Routes
+		Route::post("wallets/default", [
+			WalletController::class,
+			"setDefault",
+		])->name("wallets.default");
 		Route::resource("wallets", WalletController::class);
 		Route::post("wallets/{wallet}/deposit", [
 			WalletController::class,

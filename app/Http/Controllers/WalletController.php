@@ -287,6 +287,20 @@ class WalletController extends BaseController
 		}
 	}
 
+	public function setDefault(Request $request)
+	{
+		$request->validate(["wallet_id" => "required|exists:wallets,id"]);
+
+		$wallet = Wallet::findOrFail((int) $request->wallet_id);
+		if ($wallet->exists()) {
+			$wallet->update(["is_default" => true]);
+
+			return back()->with("success", "Wallet default successfully");
+		}
+
+		return back()->withErrors("Wallet not found.");
+	}
+
 	public function deposit(DepositRequest $request, Wallet $wallet)
 	{
 		try {

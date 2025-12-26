@@ -59,8 +59,12 @@ class TransactionController extends BaseController
 					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
 				]
 			);
+		$wallets = $this->walletRepository->getUserWallets();
 
-		return view("wallet::transactions.index", compact("transactions"));
+		return view(
+			"wallet::transactions.index",
+			compact("transactions", "wallets")
+		);
 	}
 
 	public function create()
