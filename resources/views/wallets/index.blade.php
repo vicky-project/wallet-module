@@ -70,6 +70,7 @@
         <h3 class="text-success">
           {{ $wallet->balance }}
         </h3>
+        <p class="card-text"><span class="small text-muted">{{ $wallet->type }}</span></p>
         <p class="card-text">
           <small class="text-muted">{{ $wallet->description }}</small>
         </p>
