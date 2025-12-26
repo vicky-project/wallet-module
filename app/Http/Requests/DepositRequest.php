@@ -21,7 +21,7 @@ class DepositRequest extends FormRequest
 		return [
 			"amount" => "required|numeric|min:0.01",
 			"description" => "nullable|string|max:500",
-			"date_at" => "sometimes|datetime",
+			"date_at" => "sometimes|date",
 		];
 	}
 
