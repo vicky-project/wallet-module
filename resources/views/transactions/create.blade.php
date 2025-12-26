@@ -33,8 +33,8 @@
           @csrf
           <div class="mb-3">
             <label for="deposit-category" class="form-label">Category</label>
-            <select name="category" class="form-control" id="deposit-category">
-              @forelse($categories as $category)
+            <select name="category" class="form-select" id="deposit-category">
+              @forelse($depositCategories as $category)
               <option value="{{ $category->name}}">
                 @if($category->icon)
                 <i class="{{ $category->icon }}"></i>
@@ -72,6 +72,23 @@
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
         <form method="POST" action="{{ route('apps.wallets.withdraw', $wallet) }}" class="row mt-2">
           @csrf
+          <div class="mb-3">
+            <label for="withdraw-category" class="form-label">Category</label>
+            <select name="category" class="form-select" id="withdraw-category">
+              @forelse($withdrawCategories as $category)
+              <option value="{{ $category->name}}">
+                @if($category->icon)
+                <i class="{{ $category->icon }}"></i>
+                @endif
+                <span class="{{ Helper::getColorCategory($category) }}">
+                  {{ $category->name }}
+                </span>
+              </option>
+              @empty
+              <option value="">No Category available.</option>
+              @endforelse
+            </select>
+          </div>
           <div class="mb-3">
             <label for="withdraw-amount" class="form-label">Amount</label>
             <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="0" placeholder="How many...">

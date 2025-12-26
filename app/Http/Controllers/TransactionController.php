@@ -7,6 +7,7 @@ use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Constants\Permissions;
+use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\CategoryRepository;
 use Modules\Wallet\Repositories\TransactionRepository;
@@ -59,9 +60,17 @@ class TransactionController extends BaseController
 	public function create()
 	{
 		$wallet = $this->walletRepository->getDefaultUserWallet();
-		$categories = $this->categoryRepository->getUserCategories();
+		$depositCategories = $this->categoryRepository->getUserCategories(
+			CategoryType::INCOME
+		);
+		$withdrawCategories = $this->categoryRepository->getUserCategories(
+			CategoryType::EXPENSE
+		);
 
-		return view("wallet::transactions.create", compact("wallet", "categories"));
+		return view(
+			"wallet::transactions.create",
+			compact("wallet", "depositCategories", "withdrawCategories")
+		);
 	}
 
 	public function store(TransactionRequest $request)
