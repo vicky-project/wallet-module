@@ -20,7 +20,7 @@
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Type</strong>
-        <span class="text-muted">{{ $wallet->balance }}</span>
+        <span class="text-muted">{{ $wallet->type->name }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Initial Balance</strong>
@@ -32,7 +32,7 @@
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Description</strong>
-        <span class="text-muted">{{ $wallet->description }}</span>
+        <span class="text-muted text-end">{{ $wallet->description }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Default</strong>
