@@ -48,14 +48,14 @@ class WalletMenuProvider extends BaseMenuProvider
 					]),
 					$this->item([
 						"title" => "Transactions",
-						"icon" => "",
+						"icon" => "fas fa-arrow-right-arrow-left",
 						"route" => "apps.transactions.index",
 						"order" => 3,
 						"permission" => Permissions::VIEW_TRANSACTIONS,
 					]),
 					$this->item([
 						"title" => "Category",
-						"icon" => "",
+						"icon" => "fas fa-tags",
 						"route" => "apps.categories.index",
 						"order" => 4,
 						"permission" => Permissions::VIEW_CATEGORIES,
