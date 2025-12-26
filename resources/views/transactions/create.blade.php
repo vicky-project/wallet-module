@@ -27,7 +27,7 @@
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="deposit" role="tabpanel" aria-labelledby="deposit-tab" tabindex="0">
-        <form method="POST" action="{{ route('apps.transactions.deposit', $wallet) }}" class="row mt-2">
+        <form method="POST" action="{{ route('apps.wallets.deposit', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
@@ -51,7 +51,7 @@
         </form>
       </div>
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
-        <form method="POST" action="{{ route('apps.transactions.withdraw', $wallet) }}" class="row mt-2">
+        <form method="POST" action="{{ route('apps.wallets.withdraw', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
             <label for="withdraw-amount" class="form-label">Amount</label>

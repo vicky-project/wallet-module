@@ -19,10 +19,11 @@ Route::middleware(["auth"])
 
 		// Wallet Routes
 		Route::resource("wallets", WalletController::class);
+		Route::post("wallets/{wallet}/deposit")->name("wallets.deposit");
+		Route::post("wallets/{wallet}/withdraw")->name("wallets.withdraw");
 
 		// Transaction Routes
 		Route::resource("transactions", TransactionController::class);
-		Route::post("transactions/{transaction}")->name("transactions.deposit");
 
 		// Category Routes
 		Route::resource("categories", CategoryController::class);
