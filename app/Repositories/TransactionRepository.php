@@ -14,7 +14,7 @@ class TransactionRepository
 		$this->transaction = $transaction;
 	}
 
-	public function getUserTransactions(array $filters = [], $perPage = 15)
+	public function getUserTransactions(array $filters = [])
 	{
 		$query = $this->transaction
 			->where("user_id", Auth::id())
@@ -68,7 +68,9 @@ class TransactionRepository
 			});
 		}
 
-		return $query->paginate($perPage);
+		return $query
+			->get()
+			->groupBy(fn($transaction) => $transaction->created_at->format("Y F"));
 	}
 
 	public function createTransaction(array $data)
