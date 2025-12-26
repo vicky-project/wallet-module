@@ -289,7 +289,16 @@ class WalletController extends BaseController
 
 	public function deposit(DepositRequest $request, Wallet $wallet)
 	{
-		dd($request->validated());
+		try {
+			$this->transactionService->deposit($wallet, $request->validated());
+
+			return back()->with("success", "Deposit wallet successfully.");
+		} catch (\Exception $e) {
+			return response()->json([
+				"error" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
+			]);
+		}
 	}
 
 	public function withdraw(Request $request, Wallet $wallet)
