@@ -53,7 +53,19 @@ class TransactionController extends BaseController
 		$transactions = $this->transactionRepository->getUserTransactions(
 			$request->all()
 		);
-		dd($transactions);
+		dd(
+			$transactions->map(
+				fn($item) => [
+					"total" => $item->count(),
+					"deposit" => $item->filter(
+						fn($i) => $i->type === CategoryType::INCOME
+					),
+					"withdraw" => $item->filter(
+						fn($i) => $i->type === CategoryType::EXPENSE
+					),
+				]
+			)
+		);
 
 		return view("wallet::transactions.index", compact("transactions"));
 	}
