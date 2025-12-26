@@ -2,6 +2,7 @@
 	"name": "vicky-project/wallet-module",
 	"type": "laravel-module",
 	"description": "",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Vicky Rahman",
