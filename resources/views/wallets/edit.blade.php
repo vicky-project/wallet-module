@@ -43,7 +43,7 @@
         </div>
         <div class="col-md-4 mb-3">
           <label for="wallet-initial-balance" class="form-label">Initial Balance</label>
-          <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="{{ old('initial_balance', $wallet->initial_balance->toInt()) }}">
+          <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="{{ old('initial_balance', $wallet->initial_balance->getMinorAmount()->toInt()) }}">
         </div>
         <div class="col-md-4 mb-3">
           <label for="account-currency" class="form-label">Currency</label>
