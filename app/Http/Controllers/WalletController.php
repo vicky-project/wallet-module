@@ -125,7 +125,7 @@ class WalletController extends BaseController
 
 	public function edit(Request $request, Wallet $wallet)
 	{
-		$account = $this->accountRepository->getUserAccounts();
+		$accounts = $this->accountRepository->getUserAccounts();
 		$currencies = collect(config("money.currencies"))
 			->keys()
 			->mapWithKeys(
