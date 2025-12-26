@@ -10,7 +10,7 @@
         <i class="fas fa-arrow-left"></i>
       </a>
     </div>
-    <h5 class="card-title">{{ $wallet->name }}</h5><span class="small ms-2">{{ $wallet->wallet_code }}</span>
+    <h5 class="card-title">{{ $wallet->name }}</h5><span class="small text-muted ms-2">{{ $wallet->wallet_code }}</span>
   </div>
   <div class="card-body">
     <ul class="list-group list-group-flush">
@@ -20,7 +20,7 @@
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Type</strong>
-        <span class="text-muted">{{ $wallet->type->name }}</span>
+        <span class="text-muted">{{ $wallet->type }}</span>
       </li>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Initial Balance</strong>
