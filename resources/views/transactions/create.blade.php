@@ -29,7 +29,7 @@
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="deposit" role="tabpanel" aria-labelledby="deposit-tab" tabindex="0">
-        <p class="card-text mb-2 text-center text-bold">Deposit</p>
+        <h5 class="card-text my-2 text-center text-bold">Deposit</h5>
         <form method="POST" action="{{ route('apps.wallets.deposit', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
@@ -71,7 +71,7 @@
         </form>
       </div>
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
-        <p class="card-text mb-2 text-center text-bold">Withdraw</p>
+        <h5 class="card-text my-2 text-center text-bold">Withdraw</h5>
         <form method="POST" action="{{ route('apps.wallets.withdraw', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
