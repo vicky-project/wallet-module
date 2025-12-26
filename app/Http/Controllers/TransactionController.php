@@ -50,18 +50,15 @@ class TransactionController extends BaseController
 
 	public function index(Request $request)
 	{
-		$transactions = $this->transactionRepository->getUserTransactions(
-			$request->all()
-		);
-		dd(
-			$transactions->map(
+		$transactions = $this->transactionRepository
+			->getUserTransactions($request->all())
+			->map(
 				fn($item) => [
 					"total" => $item->count(),
 					"deposit" => $item->where("type", CategoryType::INCOME)->count(),
 					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
 				]
-			)
-		);
+			);
 
 		return view("wallet::transactions.index", compact("transactions"));
 	}
