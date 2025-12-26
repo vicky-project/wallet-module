@@ -45,8 +45,6 @@ class TransactionController extends BaseController
 			$request->all()
 		);
 
-		dd($transactions);
-
 		return response()->json([
 			"success" => true,
 			"data" => $transactions,

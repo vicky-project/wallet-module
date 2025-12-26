@@ -5,10 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
   <div>
-    <a href="{{ route('apps.wallet.show', $account) }}" class="btn btn-secondary" role="button">
-      <i class="fas fa-arrow-left"></i>
-    </a>
-    <a href="{{ route('apps.wallet.transactions.create', [$account, $wallet]) }}" role="button" class="btn btn-primary">
+    <a href="{{ route('apps.transactions.create') }}" role="button" class="btn btn-primary">
       <i class="fas fa-plus"></i>
     </a>
   </div>
