@@ -34,7 +34,7 @@
           <div class="mb-3">
             <label for="deposit-category" class="form-label">Category</label>
             <select name="category" class="form-control" id="deposit-category">
-              @foreach($categories as $category)
+              @forelse($categories as $category)
               <option value="{{ $category->name}}">
                 @if($category->icon)
                 <i class="{{ $category->icon }}"></i>
@@ -43,7 +43,9 @@
                   {{ $category->name}}
                 </span>
                 </option>
-              @endforeach
+              @empty
+              <option value="">No category available.</option>
+              @endforelse
             </select>
           </div>
           <div class="mb-3">
