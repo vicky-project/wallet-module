@@ -19,8 +19,14 @@ Route::middleware(["auth"])
 
 		// Wallet Routes
 		Route::resource("wallets", WalletController::class);
-		Route::post("wallets/{wallet}/deposit")->name("wallets.deposit");
-		Route::post("wallets/{wallet}/withdraw")->name("wallets.withdraw");
+		Route::post("wallets/{wallet}/deposit", [
+			WalletController::class,
+			"deposit",
+		])->name("wallets.deposit");
+		Route::post("wallets/{wallet}/withdraw", [
+			WalletController::class,
+			"withdraw",
+		])->name("wallets.withdraw");
 
 		// Transaction Routes
 		Route::resource("transactions", TransactionController::class);

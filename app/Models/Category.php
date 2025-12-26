@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Models;
 
+use Moduls\Wallet\Enums\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,6 +20,7 @@ class Category extends Model
 	];
 
 	protected $casts = [
+		"type" => CategoryType::class,
 		"is_active" => "boolean",
 	];
 
@@ -34,17 +36,17 @@ class Category extends Model
 
 	public function scopeIncome($query)
 	{
-		return $query->where("type", "income");
+		return $query->where("type", CategoryType::INCOME);
 	}
 
 	public function scopeExpense($query)
 	{
-		return $query->where("type", "expense");
+		return $query->where("type", CategoryType::EXPENSE);
 	}
 
 	public function scopeTransfer($query)
 	{
-		return $query->where("type", "transfer");
+		return $query->where("type", CategoryType::TRANSFER);
 	}
 
 	public function scopeActive($query)

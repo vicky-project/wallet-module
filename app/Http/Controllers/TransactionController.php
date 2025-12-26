@@ -8,6 +8,7 @@ use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Wallet;
 use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
+use Modules\Wallet\Repositories\CategoryRepository;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\WalletRepository;
 use Modules\Wallet\Http\Requests\TransactionRequest;
@@ -15,16 +16,19 @@ use Modules\Wallet\Http\Requests\TransferRequest;
 
 class TransactionController extends BaseController
 {
-	protected $transactionService;
-	protected $transactionRepository;
 	protected $walletRepository;
+	protected $transactionService;
+	protected $categoryRepository;
+	protected $transactionRepository;
 
 	public function __construct(
 		TransactionService $transactionService,
 		TransactionRepository $transactionRepository,
-		WalletRepository $walletRepository
+		WalletRepository $walletRepository,
+		CategoryRepository $categoryRepository
 	) {
 		$this->transactionService = $transactionService;
+		$this->categoryRepository = $categoryRepository;
 		$this->transactionRepository = $transactionRepository;
 		$this->walletRepository = $walletRepository;
 
@@ -55,8 +59,9 @@ class TransactionController extends BaseController
 	public function create()
 	{
 		$wallet = $this->walletRepository->getDefaultUserWallet();
+		$categories = $this->categoryRepository->getUserCategories();
 
-		return view("wallet::transactions.create", compact("wallet"));
+		return view("wallet::transactions.create", compact("wallet", "categories"));
 	}
 
 	public function store(TransactionRequest $request)

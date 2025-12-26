@@ -16,6 +16,8 @@ class Permissions
 	const CREATE_WALLETS = "financial.wallets.create";
 	const EDIT_WALLETS = "financial.wallets.edit";
 	const DELETE_WALLETS = "financial.wallets.delete";
+	const DEPOSIT_WALLETS = "financial.wallets.deposit";
+	const WITHDRAW_WALLETS = "financial.wallets.withdraw";
 
 	// Transaction permissions
 	const VIEW_TRANSACTIONS = "financial.transactions.view";

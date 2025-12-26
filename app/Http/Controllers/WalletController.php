@@ -11,6 +11,7 @@ use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\WalletRepository;
+use Modules\Wallet\Http\Requests\DepositRequest;
 use Modules\Wallet\Http\Requests\WalletRequest;
 
 class WalletController extends BaseController
@@ -281,5 +282,13 @@ class WalletController extends BaseController
 				500
 			);
 		}
+	}
+
+	public function deposit(DepositRequest $request, Wallet $wallet)
+	{
+	}
+
+	public function withdraw(Request $request, Wallet $wallet)
+	{
 	}
 }

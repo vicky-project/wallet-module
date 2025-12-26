@@ -2,6 +2,8 @@
 
 @section('title', 'Create Transaction')
 
+@use('Modules\Wallet\Helpers\Helper')
+
 @section('content')
 <div class="card">
   <div class="card-header text-end">
@@ -29,6 +31,21 @@
       <div class="tab-pane active" id="deposit" role="tabpanel" aria-labelledby="deposit-tab" tabindex="0">
         <form method="POST" action="{{ route('apps.wallets.deposit', $wallet) }}" class="row mt-2">
           @csrf
+          <div class="mb-3">
+            <label for="deposit-category" class="form-label">Category</label>
+            <select name="category" class="form-control" id="deposit-category">
+              @foreach($categories as $category)
+              <option value="{{ $category->name}}">
+                @if($category->icon)
+                <i class="{{ $category->icon }}"></i>
+                @endif
+                <span class="{{ Helper::getColorCategory($category) }}">
+                  {{ $category->name}}
+                </span>
+                </option>
+              @endforeach
+            </select>
+          </div>
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
             <input type="number" class="form-control" name="amount" min="0" value="0" id="deposit-amount" placeholder="How many

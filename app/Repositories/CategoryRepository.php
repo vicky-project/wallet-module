@@ -5,6 +5,7 @@ namespace Modules\Wallet\Repositories;
 use Modules\Wallet\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Wallet\Enums\CategoryType;
 
 class CategoryRepository
 {
@@ -16,7 +17,7 @@ class CategoryRepository
 	}
 
 	public function getUserCategories(
-		?string $type = null,
+		?CategoryType $type = null,
 		bool $includeInactive = false
 	) {
 		$query = $this->category->byUser(Auth::id());
