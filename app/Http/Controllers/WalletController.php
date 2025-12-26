@@ -37,6 +37,7 @@ class WalletController extends BaseController
 				"store",
 			]);
 			$this->middleware("permission:" . Permissions::EDIT_WALLETS)->only([
+				"edit",
 				"update",
 			]);
 		}

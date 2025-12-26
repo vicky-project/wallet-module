@@ -3,15 +3,16 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Wallet;
+use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Http\Requests\TransactionRequest;
 use Modules\Wallet\Http\Requests\TransferRequest;
 
-class TransactionController extends Controller
+class TransactionController extends BaseController
 {
 	protected $transactionService;
 	protected $transactionRepository;
@@ -22,6 +23,20 @@ class TransactionController extends Controller
 	) {
 		$this->transactionService = $transactionService;
 		$this->transactionRepository = $transactionRepository;
+
+		if ($this->isPermissionMiddlewareExists()) {
+			$this->middleware("permission:" . Permissions::VIEW_TRANSACTIONS)->only([
+				"index",
+				"show",
+			]);
+			$this->middleware("permission:" . Permissions::CREATE_TRANSACTIONS)->only(
+				["create", "store"]
+			);
+			$this->middleware("permission:" . Permissions::EDIT_PERMISSIONS)->only([
+				"edit",
+				"store",
+			]);
+		}
 	}
 
 	public function index(Request $request)
