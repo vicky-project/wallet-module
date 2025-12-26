@@ -43,7 +43,7 @@
           <label for="wallet-initial-balance" class="form-label">Initial Balance</label>
           <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="{{ old('initial_balance', $wallet->initial_balance ?? 0) }}">
         </div>
-        <div class="mb-3">
+        <div class="col-md-4">
           <label for="account-currency" class="form-label">Currency</label>
           <select class="form-select" name="currency" id="account-currency">
             @foreach($currencies as $currency => $name)
@@ -51,7 +51,7 @@
             @endforeach
           </select>
         </div>
-        <div class="mb-3">
+        <div class="col-md-12">
           <label for="wallet-description" class="form-label">Description</label>
           <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet..">{{ old('description', $wallet->description) }}</textarea>
         </div>
