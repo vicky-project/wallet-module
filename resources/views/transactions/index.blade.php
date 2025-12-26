@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
   <div>
-    <h5>Transactions</h5>
+    <h5><i class="fas fa-arrow-right-arrow-left"></i> Transactions</h5>
     <span class="small text-muted">{{ $wallets->where('is_default', true)->first()->name }}</span>
   </div>
   <div>

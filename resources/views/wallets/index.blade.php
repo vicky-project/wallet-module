@@ -65,15 +65,25 @@
     </div>
   </div>
 </div>
+
 <div class="row mt-2">
   @forelse($wallets as $wallet)
   <div class="col-md-6 col-lg-4 mb-3">
     <div class="card card-wallet" onclick="window.location='{{ route('apps.transactions.index', ['wallet_id' => $wallet->id,  'account_id' => $wallet->account->id]) }}'">
       <div class="card-body">
-        <h5 class="card-title">{{ $wallet->name }}</h5>
-        <h3 class="text-success">
-          {{ $wallet->balance }}
-        </h3>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="card-title">{{ $wallet->name }}</h6>
+            <h3 class="text-success">
+              {{ $wallet->balance }}
+              @if($wallet->is_default)
+              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-info border border-light rounded-circle">
+                <span class="visually-hidden">Default</span>
+              </span>
+              @endif
+            </h3>
+          </div>
+        </div>
         <p class="card-text"><span class="small text-muted">{{ $wallet->type }}</span></p>
         <div class="d-flex justify-content-between">
           <span class="badge text-bg-secondary p-2">{{ $wallet->currency }}</span>
