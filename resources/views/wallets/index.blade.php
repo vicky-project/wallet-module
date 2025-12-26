@@ -8,9 +8,13 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <h5>Wallets</h5>
+    <h5><i class="fas fa-wallet"></i> Wallets</h5>
+    <span class="small text-muted">{{ $accounts->where('is_default', true)->first()->name }}</span>
   </div>
   <div class="text-end">
+    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changeAccountDefaultModal">
+      <i class="fas fa-user-circle"></i>
+    </button>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
       <i class="fas fa-plus"></i>
     </button>
@@ -144,6 +148,34 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="changeAccountDefaultModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Default Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ route('apps.accounts.default') }}">
+        @csrf
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="wallet-account" class="form-label">Set Account</label>
+            <select name="account_id" class="form-select" id="wallet-account">
+              @foreach($accounts as $account)
+              <option value="{{ $account->id }}" @selected($account->is_default)>{{ $account->name }}</option>
+              @endforeach
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>

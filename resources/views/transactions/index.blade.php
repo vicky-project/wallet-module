@@ -64,7 +64,7 @@
             <label for="wallet-id" class="form-label">Set Default</label>
             <select name="wallet_id" class="form-select" id="wallet-id">
               @foreach($wallets as $wallet)
-              <option value="{{ $wallet->id }}">{{ $wallet->name }}</option>
+              <option value="{{ $wallet->id }}" @selected($wallet->is_default)>{{ $wallet->name }}</option>
               @endforeach
             </select>
           </div>

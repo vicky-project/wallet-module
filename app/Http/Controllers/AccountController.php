@@ -113,4 +113,18 @@ class AccountController extends Controller
 			"data" => $summary,
 		]);
 	}
+
+	public function setDefault(Request $request)
+	{
+		$request->validate(["account_id" => "required|exists:accounts,id"]);
+
+		$account = Account::findOrFail((int) $request->account_id);
+		if ($account->exists()) {
+			$account->update(["is_default" => true]);
+
+			return back()->with("success", "Account default set successfully");
+		}
+
+		return back()->withErrors("Account not found.");
+	}
 }

@@ -11,6 +11,10 @@ Route::middleware(["auth"])
 	->name("apps.")
 	->group(function () {
 		// Account Routes
+		Route::post("accounts/default", [
+			AccountController::class,
+			"setDefault",
+		])->name("accounts.default");
 		Route::resource("accounts", AccountController::class);
 		Route::get("accounts/{account}/summary", [
 			AccountController::class,

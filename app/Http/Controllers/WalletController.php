@@ -295,7 +295,7 @@ class WalletController extends BaseController
 		if ($wallet->exists()) {
 			$wallet->update(["is_default" => true]);
 
-			return back()->with("success", "Wallet default successfully");
+			return back()->with("success", "Wallet default set successfully");
 		}
 
 		return back()->withErrors("Wallet not found.");
