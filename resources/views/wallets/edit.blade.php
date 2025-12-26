@@ -19,7 +19,7 @@
       @csrf
       @method('PUT')
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
           <label for="wallet-account_id" class="form-label">Account</label>
           <select name="account_id" class="form-select" id="wallet-account_id">
             @foreach($accounts as $account)
@@ -27,7 +27,7 @@
             @endforeach
           </select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
           <label for="wallet-name" class="form-label">Wallet Name <span class="text-danger">*</span></label>
           <input type="text" class="form-control" name="name" id="wallet-name" value="{{ old('name', $wallet->name) }}" placeholder="Enter wallet name..." required>
         </div>
@@ -56,7 +56,7 @@
           <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet..">{{ old('description', $wallet->description) }}</textarea>
         </div>
       </div>
-      <div class="pt-2 mt-4 border-top border-primary">
+      <div class="pt-2 mt-4 border-top border-primary text-end">
         <button type="submit" class="btn btn-block btn-success">
           <i class="fas fa-paper-plane"></i>
           Save
