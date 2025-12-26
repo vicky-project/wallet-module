@@ -46,6 +46,8 @@ class Permissions
 			self::CREATE_WALLETS => "Create wallets",
 			self::EDIT_WALLETS => "Edit wallets",
 			self::DELETE_WALLETS => "Delete wallets",
+			self::DEPOSIT_WALLETS => "Deposit wallets",
+			self::WITHDRAW_WALLETS => "Withdraw wallets",
 
 			// Transactions
 			self::VIEW_TRANSACTIONS => "View transactions",
