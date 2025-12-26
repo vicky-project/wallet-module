@@ -150,19 +150,15 @@ class WalletController extends BaseController
 	 */
 	public function update(WalletRequest $request, Wallet $wallet)
 	{
-		$this->authorize("update", $wallet);
-
 		try {
 			$wallet = $this->walletRepository->updateWallet(
 				$wallet,
 				$request->validated()
 			);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Wallet updated successfully",
-				"data" => $wallet,
-			]);
+			return redirect()
+				->route("apps.wallets.index")
+				->with("success", "Wallet updated successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[
