@@ -30,6 +30,8 @@ class TransactionController extends Controller
 			$request->all()
 		);
 
+		dd($transactions);
+
 		return response()->json([
 			"success" => true,
 			"data" => $transactions,

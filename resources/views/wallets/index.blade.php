@@ -64,7 +64,7 @@
 <div class="row mt-2">
   @forelse($wallets as $wallet)
   <div class="col-md-6 col-lg-4 mb-3">
-    <div class="card card-wallet" onclick="window.location='{{ route('apps.wallets.show', $wallet) }}'">
+    <div class="card card-wallet" onclick="window.location='{{ route('apps.transactions.index', ['wallet_id' => $wallet->id,  'account_id' => $wallet->account->id]) }}'">
       <div class="card-body">
         <h5 class="card-title">{{ $wallet->name }}</h5>
         <h3 class="text-success">
