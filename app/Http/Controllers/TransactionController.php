@@ -32,7 +32,7 @@ class TransactionController extends BaseController
 			$this->middleware("permission:" . Permissions::CREATE_TRANSACTIONS)->only(
 				["create", "store"]
 			);
-			$this->middleware("permission:" . Permissions::EDIT_PERMISSIONS)->only([
+			$this->middleware("permission:" . Permissions::EDIT_TRANSACTIONS)->only([
 				"edit",
 				"store",
 			]);
