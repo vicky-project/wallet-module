@@ -54,16 +54,11 @@ class TransactionController extends BaseController
 			$request->all()
 		);
 		dd(
-			$transactions->map(fn($item) => dd($item->filter(fn($i) => dd($i)))),
 			$transactions->map(
 				fn($item) => [
 					"total" => $item->count(),
-					"deposit" => $item
-						->filter(fn($i) => $i->type == CategoryType::INCOME)
-						->count(),
-					"withdraw" => $item
-						->filter(fn($i) => $i->type == CategoryType::EXPENSE)
-						->count(),
+					"deposit" => $item->where("type", CategoryType::INCOME)->count(),
+					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
 				]
 			)
 		);
