@@ -85,7 +85,7 @@
                 </span>
               </option>
               @empty
-              <option value="">No Category available.</option>
+              <option value="">No category available.</option>
               @endforelse
             </select>
           </div>
@@ -101,7 +101,7 @@
             <label for="withdraw-date-at" class="form-label">Date</label>
             <input type="datetime-local" class="form-control" name="date_at" id="withdraw-date-at" placeholder="d-m-Y H:i:s">
           </div>
-          <div class="pt-2 mt-2 border-top border-primary">
+          <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
               <i class="fas fa-save"></i>
               Save

@@ -41,6 +41,9 @@ class WalletController extends BaseController
 				"edit",
 				"update",
 			]);
+			$this->middleware("permission:" . Permissions::DEPOSIT_WALLETS)->only([
+				"deposit",
+			]);
 		}
 	}
 
@@ -286,6 +289,7 @@ class WalletController extends BaseController
 
 	public function deposit(DepositRequest $request, Wallet $wallet)
 	{
+		dd($request->validated());
 	}
 
 	public function withdraw(Request $request, Wallet $wallet)
