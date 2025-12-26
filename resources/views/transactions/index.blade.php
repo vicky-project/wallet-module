@@ -1,6 +1,6 @@
 @extends('core::layouts.app')
 
-@section('title', $wallet->name)
+@section('title', 'Transactions')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
