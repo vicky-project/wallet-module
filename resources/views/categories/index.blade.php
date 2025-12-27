@@ -7,7 +7,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1><i class="fas fa-user-circle"></i> My Category</h1>
-  <a href="{{ route('apps.categories.create') }}" class="btn bg-primary">
+  <a href="{{ route('apps.categories.create') }}" class="btn btn-primary">
     <i class="fas fa-fw fa-plus"></i>
   </a>
 </div>
@@ -53,11 +53,7 @@
     <div class="float-start me-auto">
       <h5 class="card-title">Categories</h5>
     </div>
-    <div class="btn-group">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
-        <i class="fas fa-plus"></i>
-      </button>
-    </div>
+    <span class="small ms-auto">Total {{ $categories->count() }} items.</span>
   </div>
   <div class="card-body">
     <div class="table-responsive">
@@ -91,6 +87,36 @@
         <h5 class="modal-title"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+      <form method="POST" action="{{ route('apps.categories.store') }}">
+        @csrf
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="category-name" class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" id="category-name" placeholder="Input category name" required>
+          </div>
+          <div class="mb-3">
+            <label for="category-type" class="form-label">Type</label>
+            <select name="type" class="form-select" id="category-type">
+              @foreach(CategoryType::cases() as $type)
+              <option value="{{ $type->value }}">{{ $type->name }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Icon</label>
+          </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="category-is_active" name="is_active" value="1" checked>
+              <label class="form-check-label" for="category-is_active">Active</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
