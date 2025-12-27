@@ -27,6 +27,7 @@ class CategoryController extends Controller
 				$request->type,
 				$request->include_inactive ?? false
 			);
+			dd($categories);
 
 			return view("wallet::categories.index", compact("categories"));
 		} catch (\Exception $e) {
@@ -48,7 +49,6 @@ class CategoryController extends Controller
 	{
 		try {
 			$categories = $this->categoryRepository->getUserCategories($type);
-			dd($categories);
 
 			return response()->json([
 				"success" => true,
