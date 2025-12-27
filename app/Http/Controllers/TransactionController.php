@@ -70,7 +70,11 @@ class TransactionController extends BaseController
 	public function create()
 	{
 		$wallet = $this->walletRepository->getDefaultUserWallet();
-		dd($wallet);
+		if (!$wallet) {
+			return redirect()
+				->route("apps.wallets.index")
+				->withErrors("You have to create new wallet first.");
+		}
 		$depositCategories = $this->categoryRepository->getUserCategories(
 			CategoryType::INCOME
 		);
