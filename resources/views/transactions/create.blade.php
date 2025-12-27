@@ -48,6 +48,7 @@
               <option value="">No category available.</option>
               @endforelse
             </select>
+            <small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">Create category</a></small>
           </div>
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
