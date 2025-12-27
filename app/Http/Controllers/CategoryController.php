@@ -48,6 +48,7 @@ class CategoryController extends Controller
 	{
 		try {
 			$categories = $this->categoryRepository->getUserCategories($type);
+			dd($categories);
 
 			return response()->json([
 				"success" => true,
