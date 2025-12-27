@@ -37,6 +37,8 @@ class WalletRepository
 
 	public function createWallet(array $data)
 	{
+		$data["user_id"] = Auth::id();
+		
 		// If this wallet is set as default, unset default for other wallets in the same account
 		if (isset($data["is_default"]) && $data["is_default"]) {
 			$this->wallet
@@ -48,7 +50,6 @@ class WalletRepository
 		if (isset($data["initial_balance"])) {
 			$data["balance"] = $data["initial_balance"];
 		}
-		$data["user_id"] = Auth::id();
 
 		return $this->wallet->create($data);
 	}
