@@ -24,7 +24,6 @@ class Transaction extends Model
 		"transaction_date",
 		"payment_method",
 		"reference_number",
-		"status",
 		"description",
 		"notes",
 		"attachments",
@@ -67,11 +66,6 @@ class Transaction extends Model
 		return $this->belongsTo(Wallet::class, "to_wallet_id");
 	}
 
-	public function toAccount()
-	{
-		return $this->belongsTo(Account::class, "to_account_id");
-	}
-
 	public function user()
 	{
 		return $this->belongsTo(config("auth.providers.users.model"));
@@ -105,23 +99,6 @@ class Transaction extends Model
 		return $this->type === "transfer";
 	}
 
-	public function isCompleted()
-	{
-		return $this->status === "completed";
-	}
-
-	public function markAsCompleted()
-	{
-		$this->update(["status" => "completed"]);
-		return $this;
-	}
-
-	public function markAsFailed()
-	{
-		$this->update(["status" => "failed"]);
-		return $this;
-	}
-
 	public function scopeDeposits($query)
 	{
 		return $query->where("type", "deposit");
@@ -135,11 +112,6 @@ class Transaction extends Model
 	public function scopeTransfers($query)
 	{
 		return $query->where("type", "transfer");
-	}
-
-	public function scopeCompleted($query)
-	{
-		return $query->where("status", "completed");
 	}
 
 	public function scopeBetweenDates($query, $startDate, $endDate)

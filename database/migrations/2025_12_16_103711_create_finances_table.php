@@ -7,31 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
 	public function up()
 	{
-		Schema::create("accounts", function (Blueprint $table) {
-			$table->id();
-			$table
-				->foreignId("user_id")
-				->constrained()
-				->onDelete("cascade");
-			$table->string("name");
-			$table
-				->string("account_number")
-				->unique()
-				->nullable();
-			$table->string("type")->default("general"); // savings, checking, investment, etc
-			$table->text("description")->nullable();
-			$table->boolean("is_active")->default(true);
-			$table->boolean("is_default")->default(false);
-			$table->timestamps();
-			$table->softDeletes();
-
-			$table->index(["user_id", "is_active"]);
-		});
-
 		Schema::create("wallets", function (Blueprint $table) {
 			$table->id();
 			$table
-				->foreignId("account_id")
+				->foreignId("user_id")
 				->constrained()
 				->onDelete("cascade");
 			$table->string("name");
@@ -40,14 +19,13 @@ return new class extends Migration {
 			$table->bigInteger("balance")->default(0);
 			$table->bigInteger("initial_balance")->default(0);
 			$table->string("currency");
-			$table->boolean("is_active")->default(true);
 			$table->boolean("is_default")->default(false);
 			$table->text("description")->nullable();
-			$table->json("meta")->nullable();
+			$table->json("metadata")->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(["account_id", "is_active"]);
+			$table->index(["user_id", "is_default"]);
 			$table->index("wallet_code");
 		});
 
@@ -74,16 +52,11 @@ return new class extends Migration {
 				->foreignId("to_wallet_id")
 				->nullable()
 				->constrained("wallets");
-			$table
-				->foreignId("to_account_id")
-				->nullable()
-				->constrained("accounts");
 
 			// Transaction info
 			$table->date("transaction_date");
 			$table->string("payment_method")->nullable();
 			$table->string("reference_number")->nullable();
-			$table->string("status")->default("pending"); // pending, completed, failed, cancelled
 
 			// Notes
 			$table->text("description")->nullable();
@@ -103,9 +76,9 @@ return new class extends Migration {
 			$table->softDeletes();
 
 			$table->index(["wallet_id", "transaction_date"]);
-			$table->index(["user_id", "type", "status"]);
+			$table->index(["user_id", "type"]);
 			$table->index(["transaction_code"]);
-			$table->index(["type", "status", "transaction_date"]);
+			$table->index(["type", "transaction_date"]);
 		});
 
 		Schema::create("categories", function (Blueprint $table) {
@@ -132,6 +105,5 @@ return new class extends Migration {
 		Schema::dropIfExists("categories");
 		Schema::dropIfExists("transactions");
 		Schema::dropIfExists("wallets");
-		Schema::dropIfExists("accounts");
 	}
 };

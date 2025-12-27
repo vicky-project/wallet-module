@@ -27,7 +27,6 @@ class WalletRequest extends FormRequest
 			"type" => ["required", Rule::enum(WalletType::class)],
 			"initial_balance" => "required|numeric|min:0",
 			"currency" => "required|string|size:3",
-			"is_active" => "boolean",
 			"is_default" => "boolean",
 			"description" => "nullable|string|max:500",
 		];

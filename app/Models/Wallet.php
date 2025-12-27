@@ -20,16 +20,14 @@ class Wallet extends Model
 		"balance",
 		"initial_balance",
 		"currency",
-		"is_active",
 		"is_default",
 		"description",
-		"meta",
+		"metadata",
 	];
 
 	protected $casts = [
 		"balance" => MoneyCast::class,
 		"initial_balance" => MoneyCast::class,
-		"is_active" => "boolean",
 		"is_default" => "boolean",
 		"metadata" => "array",
 	];
@@ -101,16 +99,6 @@ class Wallet extends Model
 	public function getFormattedInitialBalanceAttribute()
 	{
 		return $this->initial_balance->formatTo("id_ID");
-	}
-
-	public function scopeActive($query)
-	{
-		return $query->where("is_active", true);
-	}
-
-	public function scopeByAccount($query, $accountId)
-	{
-		return $query->where("account_id", $accountId);
 	}
 
 	public function scopeDefault($query)

@@ -21,7 +21,7 @@ class TransferRequest extends FormRequest
 			"from_wallet_id" => "required|exists:wallets,id",
 			"to_wallet_id" => "required|exists:wallets,id|different:from_wallet_id",
 			"amount" => "required|numeric|min:0.01",
-			"transaction_date" => "required|date",
+			"transaction_date" => "nullable|date",
 			"payment_method" => "nullable|string|max:50",
 			"reference_number" => "nullable|string|max:100",
 			"description" => "nullable|string|max:500",
@@ -38,5 +38,13 @@ class TransferRequest extends FormRequest
 					->add("amount", "Insufficient balance in source wallet.");
 			}
 		});
+	}
+
+	public function attributes()
+	{
+		return [
+			"from_wallet_id" => "Wallet Source",
+			"to_wallet_id" => "Wallet Target",
+		];
 	}
 }

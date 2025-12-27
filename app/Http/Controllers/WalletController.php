@@ -4,28 +4,23 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Wallet\Models\Wallet;
-use Modules\Wallet\Models\Account;
 use Modules\Wallet\Helpers\Helper;
 use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
-use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\WalletRepository;
 use Modules\Wallet\Http\Requests\DepositRequest;
 use Modules\Wallet\Http\Requests\WalletRequest;
 
 class WalletController extends BaseController
 {
-	protected $accountRepository;
 	protected $walletRepository;
 	protected $transactionService;
 
 	public function __construct(
-		AccountRepository $accountRepository,
 		WalletRepository $walletRepository,
 		TransactionService $transactionService
 	) {
-		$this->accountRepository = $accountRepository;
 		$this->walletRepository = $walletRepository;
 		$this->transactionService = $transactionService;
 
@@ -54,13 +49,9 @@ class WalletController extends BaseController
 	{
 		try {
 			$wallets = $this->walletRepository->getUserWallets($request->all());
-			$accounts = $this->accountRepository->getUserAccounts();
 			$currencies = Helper::listCurrencies();
 
-			return view(
-				"wallet::wallets.index",
-				compact("wallets", "accounts", "currencies")
-			);
+			return view("wallet::wallets.index", compact("wallets", "currencies"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[

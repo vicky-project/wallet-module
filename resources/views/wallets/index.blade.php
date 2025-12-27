@@ -9,12 +9,8 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
     <h5><i class="fas fa-wallet"></i> Wallets</h5>
-    <span class="small text-muted">{{ $accounts->where('is_default', true)->first()->name }}</span>
   </div>
   <div class="text-end">
-    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changeAccountDefaultModal">
-      <i class="fas fa-user-circle"></i>
-    </button>
     <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#walletTransferModal">
       <i class="fas fa-arrow-right-arrow-left"></i>
     </button>
@@ -37,20 +33,19 @@
         <form method="GET" action="{{ route('apps.wallets.index') }}">
           <div class="row">
             <div class="col-md-3">
-              <label for="filter-account_id" class="form-label">Account</label>
-              <select name="account_id" class="form-select" id="filter-account_id">
-                <option value="">All</option>
-                @foreach($accounts as $account)
-                <option value="{{ $account->id }}" @selected(request('account_id') == $account->id)>{{ $account->name }} ({{ $account->wallets->count() }})</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-md-3">
               <label for="filter-type" class="form-label">Type</label>
               <select name="type" class="form-select" id="filter-type">
                 <option value="">All</option>
                 @foreach(WalletType::cases() as $type)
                 <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->value }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="filter-currency" class="form-label">Currency</label>
+              <select class="form-select" name="currency" id="filter-currency">
+                @foreach($currencies as $currency => $name)
+                <option value="{{ $currency }}" @selected(old('currency', 'IDR') === $currency)>{{ $name }}</option>
                 @endforeach
               </select>
             </div>
@@ -72,7 +67,7 @@
 <div class="row mt-2">
   @forelse($wallets as $wallet)
   <div class="col-md-6 col-lg-4 mb-3">
-    <div class="card card-wallet" onclick="window.location='{{ route('apps.transactions.index', ['wallet_id' => $wallet->id,  'account_id' => $wallet->account->id]) }}'">
+    <div class="card card-wallet" onclick="window.location='{{ route('apps.transactions.index', ['wallet_id' => $wallet->id]) }}'">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
@@ -161,34 +156,6 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary">Create</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="changeAccountDefaultModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Default Account</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form method="POST" action="{{ route('apps.accounts.default') }}">
-        @csrf
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="wallet-account" class="form-label">Set Account</label>
-            <select name="account_id" class="form-select" id="wallet-account">
-              @foreach($accounts as $account)
-              <option value="{{ $account->id }}" @selected($account->is_default)>{{ $account->name }}</option>
-              @endforeach
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>

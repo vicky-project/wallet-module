@@ -18,7 +18,7 @@ class TransactionRepository
 	{
 		$query = $this->transaction
 			->where("user_id", Auth::id())
-			->with(["wallet", "toWallet", "toAccount"])
+			->with(["wallet", "toWallet"])
 			->orderBy("transaction_date", "desc")
 			->orderBy("created_at", "desc");
 
@@ -34,18 +34,6 @@ class TransactionRepository
 					$filters["wallet_id"]
 				);
 			});
-		}
-
-		if (isset($filters["account_id"])) {
-			$query->where(function ($q) use ($filters) {
-				$q->whereHas("wallet", function ($subQuery) use ($filters) {
-					$subQuery->where("account_id", $filters["account_id"]);
-				})->orWhere("to_account_id", $filters["account_id"]);
-			});
-		}
-
-		if (isset($filters["status"])) {
-			$query->where("status", $filters["status"]);
 		}
 
 		if (isset($filters["start_date"]) && isset($filters["end_date"])) {

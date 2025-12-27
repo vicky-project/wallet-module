@@ -19,19 +19,7 @@ class WalletRepository
 
 	public function getUserWallets(array $filters = [])
 	{
-		$query = $this->wallet
-			->whereHas("account", function ($q) {
-				$q->where("user_id", Auth::id());
-			})
-			->with("account");
-
-		if (isset($filters["account_id"])) {
-			$query->where("account_id", $filters["account_id"]);
-		}
-
-		if (isset($filters["is_active"])) {
-			$query->where("is_active", (bool) $filters["is_active"]);
-		}
+		$query = $this->wallet->where("user_id", Auth::id());
 
 		if (isset($filters["type"])) {
 			$query->where("type", $filters["type"]);
@@ -47,14 +35,12 @@ class WalletRepository
 			->get();
 	}
 
-	public function createWallet(Account $account, array $data)
+	public function createWallet(array $data)
 	{
-		$data["account_id"] = $account->id;
-
 		// If this wallet is set as default, unset default for other wallets in the same account
 		if (isset($data["is_default"]) && $data["is_default"]) {
 			$this->wallet
-				->where("account_id", $account->id)
+				->where("user_id", Auth::id())
 				->update(["is_default" => false]);
 		}
 
@@ -71,7 +57,7 @@ class WalletRepository
 		// Handle default wallet change
 		if (isset($data["is_default"]) && $data["is_default"]) {
 			$this->wallet
-				->where("account_id", $wallet->account_id)
+				->where("user_id", Auth::id())
 				->where("id", "!=", $wallet->id)
 				->update(["is_default" => false]);
 		}

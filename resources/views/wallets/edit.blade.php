@@ -20,20 +20,10 @@
       @method('PUT')
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="wallet-account_id" class="form-label">Account</label>
-          <select name="account_id" class="form-select" id="wallet-account_id">
-            @foreach($accounts as $account)
-            <option value="{{ $account->id }}" @selected($account->id == $wallet->account_id)>{{ $account->name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="col-md-6 mb-3">
           <label for="wallet-name" class="form-label">Wallet Name <span class="text-danger">*</span></label>
           <input type="text" class="form-control" name="name" id="wallet-name" value="{{ old('name', $wallet->name) }}" placeholder="Enter wallet name..." required>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4 mb-3">
+        <div class="col-md-6 mb-3">
           <label for="wallet-type" class="form-label">Type</label>
           <select name="type" class="form-select" id="wallet-type">
             @foreach(WalletType::cases() as $type)
@@ -41,6 +31,8 @@
             @endforeach
           </select>
         </div>
+      </div>
+      <div class="row">
         <div class="col-md-4 mb-3">
           <label for="wallet-initial-balance" class="form-label">Initial Balance</label>
           <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="{{ old('initial_balance', $wallet->initial_balance->getMinorAmount()->toInt()) }}">
@@ -52,6 +44,12 @@
             <option value="{{$currency}}" @selected($currency === ($wallet->currency ?? 'IDR'))>{{$name}}</option>
             @endforeach
           </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="is_default" name="is_default" value="1" checked>
+            <label class="form-check-label" for="is_default">Set as default wallet</label>
+          </div>
         </div>
       </div>
       <div class="row">

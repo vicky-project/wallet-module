@@ -15,10 +15,6 @@
   <div class="card-body">
     <ul class="list-group list-group-flush">
       <li class="list-group-item d-flex justify-content-between align-items-center">
-        <strong>Account</strong>
-        <span class="text-muted">{{ $wallet->account->name }}</span>
-      </li>
-      <li class="list-group-item d-flex justify-content-between align-items-center">
         <strong>Type</strong>
         <span class="text-muted">{{ $wallet->type }}</span>
       </li>
