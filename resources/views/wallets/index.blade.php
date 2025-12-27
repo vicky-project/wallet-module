@@ -53,7 +53,7 @@
           <div class="row mt-4 pt-2 border-top border-primary">
             <div class="col-md-12">
               <div class="d-flex justify-content-end">
-                <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
+                <button type="reset" class="btn btn-outline-secondary me-2" onclick="resetFilter();">Reset</button>
                 <button type="submit" class="btn btn-outline-success">Apply</button>
               </div>
             </div>
@@ -224,3 +224,13 @@
   </div>
 </div>
 @endsection
+
+
+@push('scripts')
+<script>
+  function resetFilter() {
+    document.getElementById('filter-type').value = "";
+    document.getElementById('filter-currency').value ="";
+  }
+</script>
+@endpush
