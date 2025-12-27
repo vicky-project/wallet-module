@@ -2,7 +2,7 @@
 
 @section('title', 'Categories')
 
-@use('Modules\Wallet\Enums\WalletType')
+@use('Modules\Wallet\Enums\CategoryType')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -24,20 +24,12 @@
       <div class="accordion-body">
         <form method="GET" action="{{ route('apps.categories.index') }}">
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-12">
               <label for="filter-type" class="form-label">Type</label>
               <select name="type" class="form-select" id="filter-type">
                 <option value="">All</option>
-                @foreach(WalletType::cases() as $type)
-                <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->value }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label for="filter-currency" class="form-label">Currency</label>
-              <select class="form-select" name="currency" id="filter-currency">
-                @foreach($currencies as $currency => $name)
-                <option value="{{ $currency }}" @selected(request('currency') == $currency)>{{ $name }}</option>
+                @foreach(CategoryType::cases() as $type)
+                <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->name }}</option>
                 @endforeach
               </select>
             </div>
@@ -45,7 +37,7 @@
           <div class="row mt-4 pt-2 border-top border-primary">
             <div class="col-md-12">
               <div class="d-flex justify-content-end">
-                <button type="reset" class="btn btn-outline-secondary me-2" onclick="resetFilter();">Reset</button>
+                <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
                 <button type="submit" class="btn btn-outline-success">Apply</button>
               </div>
             </div>
