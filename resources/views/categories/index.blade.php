@@ -129,7 +129,11 @@
   const iconPicker = new IconPicker('.iconpicker', {
     // Options
     theme: 'bootstrap-5',
-    iconSource: ['FontAwesome Regular 6']
+    iconSource: [
+      'FontAwesome Brands 6',
+      'FontAwesome Solid 6',
+      'FontAwesome Regular 6'
+    ]
   });
 </script>
 @endpush
