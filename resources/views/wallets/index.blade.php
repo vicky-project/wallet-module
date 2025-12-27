@@ -196,7 +196,7 @@
 </div>
 
 <div class="modal fade" id="walletTransferModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Wallet Transfer</h5>
