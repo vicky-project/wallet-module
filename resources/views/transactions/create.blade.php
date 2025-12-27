@@ -33,7 +33,7 @@
         <form method="POST" action="{{ route('apps.wallets.deposit', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
-            <label for="deposit-category" class="form-label">Category</label>
+            <label for="deposit-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
             <select name="category" class="form-select" id="deposit-category">
               @forelse($depositCategories as $category)
               <option value="{{ $category->name}}">
@@ -48,7 +48,6 @@
               <option value="">No category available.</option>
               @endforelse
             </select>
-            <small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">Create category</a></small>
           </div>
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
