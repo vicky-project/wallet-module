@@ -48,48 +48,50 @@
   </div>
 </div>
 
-<div class="row">
-  @forelse ($categories as $category)
-  <div class="col col-md-6 col-lg-4 mb-4">
-    <div class="card wallet-card h-100" onclick="window.location='{{ route('apps.wallets.index', ['account_id' => $account->id]) }}'">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <h5 class="card-title">{{$account->name}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{ $account->type }}
-              @if($account->is_default)
-              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
-                <span class="visually-hidden">Default</span>
-              </span>
-              @endif
-            </h6>
-          </div>
-          <span class="badge bg-{{ $account->is_active ? 'success' : 'secondary' }}">
-            {{ $account->is_active ? "Active" : "Inactive" }}
-          </span>
-        </div>
-        <p class="card-text text-muted">{{ $account->description }}</p>
-        <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted">{{$account->created_at->format('d M, Y')}}</small>
-          <span>{{ $account->wallets_count ?? 0}} Wallets</span>
-          <div class="btn-group">
-            <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-sm btn-outline-secondary" role="button" title="View Account">
-              <i class="fas fa-fw fa-eye"></i>
-            </a>
-            <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Account">
-              <i class="fas fa-fw fa-pen"></i>
-            </a>
-          </div>
-        </div>
+<div class="card my-2">
+  <div class="card-header text-end">
+    <div class="float-start me-auto">
+      <h5 class="card-title">Categories</h5>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Active</th>
+        </thead>
+        <tbody>
+          @forelse()
+          <tr>
+            <td></td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="3" class="text-center"><em>No category found.</em></td>
+          </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="createCategoryModal" tabindex="-1">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
     </div>
   </div>
-  @empty
-  <div class="col col-12">
-    <div class="alert alert-warning" role="alert">
-      <p>You haven't created any category yet. Click the button above to create your first category.</p>
-    </div>
-  </div>
-  @endforelse
 </div>
 @endsection
