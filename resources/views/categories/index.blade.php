@@ -84,7 +84,7 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"></h5>
+        <h5 class="modal-title">Create Category</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <form method="POST" action="{{ route('apps.categories.store') }}">
@@ -104,6 +104,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Icon</label>
+            <input type="text" class="form-control iconpicker" name="icon" placeholder="Pilih icon...">
           </div>
           <div class="mb-3">
             <div class="form-check form-switch">
@@ -121,3 +122,18 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://unpkg.com/codethereal-iconpicker@1.2.1/dist/iconpicker.js"></script>
+<script>
+  (async () => {
+    const response = await fetch('https://unpkg.com/codethereal-iconpicker@1.2.1/dist/iconsets/fontawesome4.json')
+    const result = await response.json()
+
+    new Iconpicker(document.querySelector(".iconpicker"), {
+      icons: result,
+      valueFormat: val => `fas ${val}`
+    })
+  })()
+</script>
+@endpush
