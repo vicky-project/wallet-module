@@ -28,6 +28,8 @@ class CategoryController extends Controller
 				$request->include_inactive ?? false
 			);
 
+			return view("wallet::categories.index");
+
 			return response()->json([
 				"success" => true,
 				"data" => $categories,

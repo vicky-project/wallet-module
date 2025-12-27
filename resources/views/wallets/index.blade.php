@@ -230,7 +230,7 @@
 <script>
   function resetFilter() {
     document.getElementById('filter-type').value = "";
-    document.getElementById('filter-currency').value ="";
   }
+    document.getElementById('filter-currency').value = "IDR";
 </script>
 @endpush
