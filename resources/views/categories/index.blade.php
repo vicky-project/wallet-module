@@ -124,16 +124,17 @@
 @endsection
 
 @push('scripts')
-<script src="https://unpkg.com/codethereal-iconpicker@1.2.1/dist/iconpicker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-icon-picker@1.3.1/dist/icon-picker.min.js"></script>
 <script>
-  (async () => {
-    const response = await fetch('https://unpkg.com/codethereal-iconpicker@1.2.1/dist/iconsets/fontawesome4.json')
-    const result = await response.json()
-
-    new Iconpicker(document.querySelector(".iconpicker"), {
-      icons: result,
-      valueFormat: val => `fas ${val}`
-    })
-  })()
+  const iconPicker = new IconPicker('.iconpicker', {
+    // Options
+    theme: 'bootstrap-5',
+    iconSource: 'https://raw.githubusercontent.com/iconify/icon-sets/refs/heads/master/json/fa6-regular.json'
+  });
 </script>
+@endpush
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-icon-picker@1.3.1/dist/themes/default.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-icon-picker@1.3.1/dist/themes/bootstrap-5.min.css">
 @endpush
