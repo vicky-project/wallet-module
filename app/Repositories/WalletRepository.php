@@ -48,8 +48,8 @@ class WalletRepository
 		if (isset($data["initial_balance"])) {
 			$data["balance"] = $data["initial_balance"];
 		}
-		dd($data);
 		$data["user_id"] = Auth::id();
+		dd($data);
 
 		return $this->wallet->create($data);
 	}
