@@ -74,14 +74,7 @@ class CategoryController extends Controller
 				$request->validated()
 			);
 
-			return response()->json(
-				[
-					"success" => true,
-					"message" => "Category created successfully",
-					"data" => $category->load("parent", "children"),
-				],
-				201
-			);
+			return back()->with("success", "Category created successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[
