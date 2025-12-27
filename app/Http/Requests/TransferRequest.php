@@ -9,7 +9,10 @@ class TransferRequest extends FormRequest
 {
 	public function authorize()
 	{
-		return auth()->check() && auth()->user->can(Permissions::TRANSFER_WALLETS);
+		return auth()->check() &&
+			auth()
+				->user()
+				->can(Permissions::TRANSFER_WALLETS);
 	}
 
 	public function rules()
