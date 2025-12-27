@@ -2,7 +2,9 @@
 
 namespace Modules\Wallet\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Wallet\Enums\CategoryType;
 
 class CategoryRequest extends FormRequest
 {
@@ -15,7 +17,7 @@ class CategoryRequest extends FormRequest
 	{
 		return [
 			"name" => "required|string|max:100",
-			"type" => "required|in:income,expense,transfer",
+			"type" => ["required", Rule::enum(CategoryType::class)],
 			"icon" => "nullable|string|max:50",
 			"order" => "nullable|integer|min:0",
 			"is_active" => "boolean",
