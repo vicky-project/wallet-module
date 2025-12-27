@@ -91,20 +91,8 @@ class CategoryController extends Controller
 	 */
 	public function show(Category $category)
 	{
-		$this->authorize("view", $category);
-
 		try {
-			$category->load([
-				"parent",
-				"children" => function ($query) {
-					$query->orderBy("order")->active();
-				},
-			]);
-
-			return response()->json([
-				"success" => true,
-				"data" => $category,
-			]);
+			return view("wallet::categories.show", compact("category"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[
@@ -116,24 +104,25 @@ class CategoryController extends Controller
 		}
 	}
 
+	public function edit(Request $request, Category $category)
+	{
+		return view("wallet::categories.edit", compact("category"));
+	}
+
 	/**
 	 * Update the specified category
 	 */
 	public function update(CategoryRequest $request, Category $category)
 	{
-		$this->authorize("update", $category);
-
 		try {
 			$category = $this->categoryRepository->updateCategory(
 				$category,
 				$request->validated()
 			);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Category updated successfully",
-				"data" => $category,
-			]);
+			return redirect()
+				->route("apps.categories.index")
+				->with("success", "Category updated successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[
@@ -150,15 +139,10 @@ class CategoryController extends Controller
 	 */
 	public function destroy(Category $category)
 	{
-		$this->authorize("delete", $category);
-
 		try {
 			$this->categoryRepository->deleteCategory($category);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Category deleted successfully",
-			]);
+			return back()->with("success", "Category deleted successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[

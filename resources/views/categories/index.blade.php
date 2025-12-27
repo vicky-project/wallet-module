@@ -3,6 +3,7 @@
 @section('title', 'Categories')
 
 @use('Modules\Wallet\Enums\CategoryType')
+@use('Modules\Wallet\Helpers\Helper')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -69,11 +70,11 @@
           <tr>
             <td>
               @if($category->icon)
-              <i class="{{ $category->icon }}"></i>
+              <i class="{{ $category->icon }} fa-fw"></i>
               @endif
               <strong>{{ $category->name }}</strong>
             </td>
-            <td>{{ $category->type }}</td>
+            <td class="{{ Helper::getColorCategory($category->type)}}">{{ $category->type }}</td>
             <td>
               @if($category->is_active)
               <span class="badge text-bg-success">YES</span>
@@ -83,16 +84,16 @@
             </td>
             <td>
               <div class="btn-group">
-                <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-outline-secondary" role="button" title="View Category">
+                <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-sm btn-outline-secondary" role="button" title="View Category">
                   <i class="fas fa-fw fa-eye"></i>
                 </a>
-                <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-outline-success" role="button">
+                <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-sm btn-outline-success" role="button">
                   <i class="fas fa-fw fa-pen"></i>
                 </a>
                 <form method="POST" action="{{ route('apps.categories.destroy', $category) }}">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-outline-danger">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">
                     <i class="fas fa-fw fa-trash"></i>
                   </button>
                 </form>
@@ -170,6 +171,5 @@
 @endpush
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-icon-picker@1.3.1/dist/themes/default.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-icon-picker@1.3.1/dist/themes/bootstrap-5.min.css">
 @endpush
