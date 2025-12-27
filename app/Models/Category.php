@@ -2,7 +2,7 @@
 
 namespace Modules\Wallet\Models;
 
-use Moduls\Wallet\Enums\CategoryType;
+use Modules\Wallet\Enums\CategoryType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
