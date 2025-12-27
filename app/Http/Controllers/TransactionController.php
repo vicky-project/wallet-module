@@ -70,6 +70,7 @@ class TransactionController extends BaseController
 	public function create()
 	{
 		$wallet = $this->walletRepository->getDefaultUserWallet();
+		dd($wallet);
 		$depositCategories = $this->categoryRepository->getUserCategories(
 			CategoryType::INCOME
 		);
