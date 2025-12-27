@@ -62,11 +62,42 @@
           <th>Name</th>
           <th>Type</th>
           <th>Active</th>
+          <th>Action</th>
         </thead>
         <tbody>
           @forelse($categories as $category)
           <tr>
-            <td></td>
+            <td>
+              @if($category->icon)
+              <i class="{{ $category->icon }}"></i>
+              @endif
+              <strong>{{ $category->name }}</strong>
+            </td>
+            <td>{{ $category->type }}</td>
+            <td>
+              @if($category->is_active)
+              <span class="badge text-bg-success">YES</span>
+              @else
+              <span class="badge text-bg-danger">NO</span>
+              @endif
+            </td>
+            <td>
+              <div class="btn-group">
+                <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-outline-secondary" role="button" title="View Category">
+                  <i class="fas fa-fw fa-eye"></i>
+                </a>
+                <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-outline-success" role="button">
+                  <i class="fas fa-fw fa-pen"></i>
+                </a>
+                <form method="POST" action="{{ route('apps.categories.destroy', $category) }}">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-outline-danger">
+                    <i class="fas fa-fw fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
           </tr>
           @empty
           <tr>

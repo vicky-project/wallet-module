@@ -27,7 +27,6 @@ class CategoryController extends Controller
 				$request->type,
 				$request->include_inactive ?? false
 			);
-			dd($categories);
 
 			return view("wallet::categories.index", compact("categories"));
 		} catch (\Exception $e) {
