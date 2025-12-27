@@ -21,7 +21,7 @@ class Helper
 			->toArray();
 	}
 
-	public function getColorCategory(CategoryType $category)
+	public static function getColorCategory(CategoryType $category)
 	{
 		return match ($category) {
 			CategoryType::INCOME => "text-success",
