@@ -45,7 +45,7 @@
               <label for="filter-currency" class="form-label">Currency</label>
               <select class="form-select" name="currency" id="filter-currency">
                 @foreach($currencies as $currency => $name)
-                <option value="{{ $currency }}" @selected(old('currency', 'IDR') === $currency)>{{ $name }}</option>
+                <option value="{{ $currency }}" @selected(request('currency') == $currency)>{{ $name }}</option>
                 @endforeach
               </select>
             </div>
