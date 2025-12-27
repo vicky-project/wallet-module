@@ -70,11 +70,7 @@ class WalletController extends BaseController
 	public function store(WalletRequest $request)
 	{
 		try {
-			$account = $this->accountRepository->getDefaultUserAccount();
-			$wallet = $this->walletRepository->createWallet(
-				$account,
-				$request->validated()
-			);
+			$wallet = $this->walletRepository->createWallet($request->validated());
 
 			return redirect()
 				->route("apps.wallets.index")
@@ -98,7 +94,6 @@ class WalletController extends BaseController
 	{
 		try {
 			$wallet->load([
-				"account",
 				"transactions" => function ($query) {
 					$query->latest()->limit(10);
 				},
@@ -118,7 +113,6 @@ class WalletController extends BaseController
 
 	public function edit(Request $request, Wallet $wallet)
 	{
-		$accounts = $this->accountRepository->getUserAccounts();
 		$currencies = collect(config("money.currencies"))
 			->keys()
 			->mapWithKeys(
@@ -132,10 +126,7 @@ class WalletController extends BaseController
 			)
 			->toArray();
 
-		return view(
-			"wallet::wallets.edit",
-			compact("wallet", "accounts", "currencies")
-		);
+		return view("wallet::wallets.edit", compact("wallet", "currencies"));
 	}
 
 	/**
