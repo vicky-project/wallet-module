@@ -13,7 +13,7 @@ class Wallet extends Model
 	use SoftDeletes;
 
 	protected $fillable = [
-		"account_id",
+		"user_id",
 		"name",
 		"wallet_code",
 		"type",
