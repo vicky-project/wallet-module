@@ -153,22 +153,13 @@ class TransactionController extends BaseController
 			$fromWallet = Wallet::findOrFail($request->from_wallet_id);
 			$toWallet = Wallet::findOrFail($request->to_wallet_id);
 
-			$this->authorize("transfer", [$fromWallet, $toWallet]);
-
 			$transactions = $this->transactionService->transfer(
 				$fromWallet,
 				$toWallet,
 				$request->validated()
 			);
 
-			return response()->json(
-				[
-					"success" => true,
-					"message" => "Transfer completed successfully",
-					"data" => $transactions,
-				],
-				201
-			);
+			return back()->with("success", "Transfer completed successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[

@@ -202,7 +202,7 @@
         <h5 class="modal-title">Wallet Transfer</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <form method="POST">
+      <form method="POST" action="{{ route('apps.transactions.transfer') }}">
         @csrf
         <div class="modal-body">
           <div class="row g-3">

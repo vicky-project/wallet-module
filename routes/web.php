@@ -37,6 +37,10 @@ Route::middleware(["auth"])
 		])->name("wallets.withdraw");
 
 		// Transaction Routes
+		Route::post("transactions/transfer", [
+			TransactionController::class,
+			"transfer",
+		])->name("transactions.transfer");
 		Route::resource("transactions", TransactionController::class);
 
 		// Category Routes
