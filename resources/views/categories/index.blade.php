@@ -68,7 +68,7 @@
           <th>Active</th>
         </thead>
         <tbody>
-          @forelse()
+          @forelse($categories as $category)
           <tr>
             <td></td>
           </tr>

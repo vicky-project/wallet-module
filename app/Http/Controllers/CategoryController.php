@@ -28,17 +28,13 @@ class CategoryController extends Controller
 				$request->include_inactive ?? false
 			);
 
-			return view("wallet::categories.index");
-
-			return response()->json([
-				"success" => true,
-				"data" => $categories,
-			]);
+			return view("wallet::categories.index", compact("categories"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[
 					"success" => false,
 					"message" => $e->getMessage(),
+					"trace" => $e->getTraceAsString(),
 				],
 				500
 			);
