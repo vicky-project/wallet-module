@@ -6,7 +6,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
   <div>
     <h5><i class="fas fa-arrow-right-arrow-left"></i> Transactions</h5>
+    @if($wallets->exists)
     <span class="small text-muted">{{ $wallets->where('is_default', true)->first()->name }}</span>
+    @endif
   </div>
   <div>
     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changeDefaultWalletModal">
