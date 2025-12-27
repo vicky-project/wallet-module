@@ -129,7 +129,7 @@
   const iconPicker = new IconPicker('.iconpicker', {
     // Options
     theme: 'bootstrap-5',
-    iconSource: 'https://raw.githubusercontent.com/iconify/icon-sets/refs/heads/master/json/fa6-regular.json'
+    iconSource: ['FontAwesome Regular 6']
   });
 </script>
 @endpush
