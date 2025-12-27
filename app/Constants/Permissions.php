@@ -20,10 +20,10 @@ class Permissions
 	const DELETE_TRANSACTIONS = "financial.transactions.delete";
 
 	// Category permissions
-	const VIEW_CATEGORIES = "financial.wallets.view";
-	const CREATE_CATEGORIES = "financial.wallets.create";
-	const EDIT_CATEGORIES = "financial.wallets.edit";
-	const DELETE_CATEGORIES = "financial.wallets.delete";
+	const VIEW_CATEGORIES = "financial.categories.view";
+	const CREATE_CATEGORIES = "financial.categories.create";
+	const EDIT_CATEGORIES = "financial.categories.edit";
+	const DELETE_CATEGORIES = "financial.categories.delete";
 
 	public static function all(): array
 	{
