@@ -18,6 +18,7 @@ class Permissions
 	const DELETE_WALLETS = "financial.wallets.delete";
 	const DEPOSIT_WALLETS = "financial.wallets.deposit";
 	const WITHDRAW_WALLETS = "financial.wallets.withdraw";
+	const TRANSFER_WALLETS = "financial.wallets.transfer";
 
 	// Transaction permissions
 	const VIEW_TRANSACTIONS = "financial.transactions.view";
@@ -48,6 +49,7 @@ class Permissions
 			self::DELETE_WALLETS => "Delete wallets",
 			self::DEPOSIT_WALLETS => "Deposit wallets",
 			self::WITHDRAW_WALLETS => "Withdraw wallets",
+			self::TRANSFER_WALLETS => "Transfer wallets",
 
 			// Transactions
 			self::VIEW_TRANSACTIONS => "View transactions",

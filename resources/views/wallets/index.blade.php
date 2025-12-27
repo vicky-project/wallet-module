@@ -15,6 +15,9 @@
     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changeAccountDefaultModal">
       <i class="fas fa-user-circle"></i>
     </button>
+    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#walletTransferModal">
+      <i class="fas fa-arrow-right-arrow-left"></i>
+    </button>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
       <i class="fas fa-plus"></i>
     </button>
@@ -77,7 +80,7 @@
             <h3 class="text-success">
               {{ $wallet->balance }}
               @if($wallet->is_default)
-              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-info border border-light rounded-circle">
+              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
                 <span class="visually-hidden">Default</span>
               </span>
               @endif
@@ -186,6 +189,68 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="walletTransferModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Wallet Transfer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST">
+        @csrf
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-4 mb-2">
+              <label for="from_wallet_id" class="form-label">Wallet Source</label>
+              <select name="from_wallet_id" class="form-select" id="from_wallet_id">
+                @foreach($wallets as $wallet)
+                <option value="{{ $wallet->id}}">{{ $wallet->name}}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-4 mb-2">
+              <label for="to_wallet_id" class="form-label">Wallet Target</label>
+              <select id="to_wallet_id" class="form-select" name="to_wallet_id">
+                @foreach($wallets as $wallet)
+                <option value="{{$wallet->id}}">{{$wallet->name}}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-4 mb-2">
+              <label for="tf-amount" class="form-label">Amount</label>
+              <input type="number" class="form-control" name="amount" id="tf-amount" min="0" value="0">
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col-md-4 mb-2">
+              <label for="transaction_date" class="form-label">Date</label>
+              <input type="datetime-local" class="form-control" name="transaction_date" id="transaction_date">
+            </div>
+            <div class="col-md-4 mb-2">
+              <label for="payment_method" class="form-label">Payment Method</label>
+              <input type="text" class="form-control" name="payment_method" id="payment_method">
+            </div>
+            <div class="col-md-4 mb-2">
+              <label for="reference_number" class="form-label">Reference Number</label>
+              <input type="text" class="form-control" name="reference_number" id="reference_number" placeholder="Enter reference number... (optional)">
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col-md-12">
+              <label for="tf-description" class="form-label">Description</label>
+              <textarea name="description" class="form-control" id="tf-description" placeholder="Description transfer..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+          <button type="submit" class="btn btn-success">Transfer</button>
         </div>
       </form>
     </div>

@@ -2,21 +2,21 @@
 
 namespace Modules\Wallet\Http\Requests;
 
+use Modules\Wallet\Constants\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TransferRequest extends FormRequest
 {
 	public function authorize()
 	{
-		return true;
+		return auth()->check() && auth()->user->can(Permissions::TRANSFER_WALLETS);
 	}
 
 	public function rules()
 	{
 		return [
-			"from_wallet_id" => "required|exists:finance_wallets,id",
-			"to_wallet_id" =>
-				"required|exists:finance_wallets,id|different:from_wallet_id",
+			"from_wallet_id" => "required|exists:wallets,id",
+			"to_wallet_id" => "required|exists:wallets,id|different:from_wallet_id",
 			"amount" => "required|numeric|min:0.01",
 			"transaction_date" => "required|date",
 			"payment_method" => "nullable|string|max:50",

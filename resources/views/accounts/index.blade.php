@@ -20,7 +20,7 @@
             <h5 class="card-title">{{$account->name}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ $account->type }}
               @if($account->is_default)
-              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-info border border-light rounded-circle">
+              <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
                 <span class="visually-hidden">Default</span>
               </span>
               @endif
