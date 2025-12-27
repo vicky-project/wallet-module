@@ -60,7 +60,7 @@
     <div class="table-responsive">
       <table class="table table-bordered table-hover">
         <thead>
-          <th>Name</th>
+          <th width="100">Name</th>
           <th>Type</th>
           <th>Active</th>
           <th>Action</th>
