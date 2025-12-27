@@ -2,6 +2,8 @@
 
 @section('title', 'Categories')
 
+@use('Modules\Wallet\Enums\WalletType')
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1><i class="fas fa-user-circle"></i> My Category</h1>
