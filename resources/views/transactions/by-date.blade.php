@@ -30,16 +30,33 @@
           <th>Date</th>
           <th>Name</th>
           <th>Amount</th>
+          <th>Action</th>
         </thead>
         <tbody>
           @foreach($byDate as $item)
           <tr>
-            <td>{{ $item->transaction_date->format('d-m-Y H:i:s') }}</td>
+            <td>
+              <strong>
+                {{ $item->transaction_date->format('d-m-Y') }}
+              </strong>
+              <small class="small ms-2">{{ $item->transaction_date->format('H:i:s') }}</small>
+            </td>
+            <td>{{ $item->description }}</td>
             <td>
               @if($item->isDeposit())
+              <span class="badge text-bg-success">{{ $item->amount }}</span>
               @elseif($item->isWithdraw())
+              <span class="badge text-bg-danger">{{ $item->amount }}</span>
               @else
+              <span class="badge text-bg-secondary">{{ $item->amount }}</span>
               @endif
+            </td>
+            <td>
+              <div class="btn-group">
+                <a href="{{ route('apps.transactions.show', $item) }}" class="btn btn-sm btn-secondary" role="button"><i class="fas fa-eye"></i></a>
+                <a href="{{ route('apps.transactions.edit', $item) }}" class="btn btn-sm btn-success" role="button"><i class="fas fa-pen"></i></a>
+                <a href="{{ route('apps.transactions.destroy', $item) }}" class="btn btn-sm btn-danger" role="button"><i class="fas fa-trash"></i></a>
+              </div>
             </td>
           </tr>
           @endforeach
