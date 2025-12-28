@@ -22,7 +22,7 @@
 
 <div class="row">
   @forelse($transactions as $date => $transaction)
-  <div class="col-md-6 col-lg-6">
+  <div class="col-md-6 col-lg-6 mb-2">
     <div class="card">
       <div class="card-header">
         <h5 class="card-title" onclick="window.location='{{ route('apps.transactions.dates', ['date' => $date]) }}'">{{ $date }}</h5>
