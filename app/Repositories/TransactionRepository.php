@@ -141,4 +141,10 @@ class TransactionRepository
 
 		return $query->orderBy("transaction_date")->get();
 	}
+
+	public function byDate(string $date)
+	{
+		$transaction = $this->getUserTransactions();
+		dd($date, $transaction);
+	}
 }

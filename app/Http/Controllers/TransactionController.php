@@ -54,7 +54,6 @@ class TransactionController extends BaseController
 			->getUserTransactions($request->all())
 			->map(
 				fn($item) => [
-					"transaction" => $item,
 					"total" => $item->count(),
 					"deposit" => $item->where("type", CategoryType::INCOME)->count(),
 					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
@@ -265,6 +264,6 @@ class TransactionController extends BaseController
 
 	public function byDate(Request $request)
 	{
-		dd($request->all());
+		$byDate = $this->transactionRepository->byDate($request->date);
 	}
 }
