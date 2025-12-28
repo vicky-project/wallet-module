@@ -52,7 +52,6 @@ class TransactionController extends BaseController
 	{
 		$transactions = $this->transactionRepository
 			->getUserTransactions($request->all())
-			->dd()
 			->map(
 				fn($item) => [
 					"total" => $item->count(),
