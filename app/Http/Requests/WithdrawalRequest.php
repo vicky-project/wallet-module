@@ -19,7 +19,7 @@ class WithdrawalRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			"withdraw-category" => "required|exits:categories,name",
+			"withdraw-category" => "required|exists:categories,name",
 			"withdraw-amount" => "required|numeric|min:0.01",
 			"withdraw-description" => "nullable|string|max:500",
 			"withdraw-date_at" => "sometimes|date",

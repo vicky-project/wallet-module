@@ -19,7 +19,7 @@ class DepositRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			"deposit-category" => "required|exits:categories,name",
+			"deposit-category" => "required|exists:categories,name",
 			"deposit-amount" => "required|numeric|min:0.01",
 			"deposit-description" => "nullable|string|max:500",
 			"deposit-date_at" => "sometimes|date",
