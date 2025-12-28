@@ -54,6 +54,7 @@ class TransactionController extends BaseController
 			->getUserTransactions($request->all())
 			->map(
 				fn($item) => [
+					"transaction" => $item,
 					"total" => $item->count(),
 					"deposit" => $item->where("type", CategoryType::INCOME)->count(),
 					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
