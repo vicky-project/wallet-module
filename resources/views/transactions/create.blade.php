@@ -36,7 +36,7 @@
             <label for="deposit-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
             <select name="category" class="form-select" id="deposit-category">
               @forelse($depositCategories as $category)
-              <option value="{{ $category->name}}">
+              <option value="{{ $category->value}}" @selected(old('category') == $category->value)>
                 @if($category->icon)
                 <i class="{{ $category->icon }}"></i>
                 @endif
@@ -51,16 +51,16 @@
           </div>
           <div class="mb-3">
             <label for="deposit-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" min="0" value="0" id="deposit-amount" placeholder="How many
+            <input type="number" class="form-control" name="amount" min="0" value="{{ old('amount', 0)}}" id="deposit-amount" placeholder="How many
             ..">
           </div>
           <div class="mb-3">
             <label for="deposit-description" class="form-label">Description</label>
-            <input type="text" class="form-control" name="description" id="deposit-description" placeholder="What is name...">
+            <input type="text" class="form-control" name="description" id="deposit-description" placeholder="What is name..." value="{{ old('description') }}">
           </div>
           <div class="mb-3">
             <label for="deposit-date-at" class="form-label">Date</label>
-            <input type="datetime-local" class="form-control" name="date_at" id="deposit-date-at" placeholder="d-m-Y H:i:s">
+            <input type="datetime-local" class="form-control" name="date_at" id="deposit-date-at" placeholder="d-m-Y H:i:s" value="{{ old('date_at') }}">
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
@@ -78,7 +78,7 @@
             <label for="withdraw-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
             <select name="category" class="form-select" id="withdraw-category">
               @forelse($withdrawCategories as $category)
-              <option value="{{ $category->name}}">
+              <option value="{{ $category->value}}" @selected(old('category') == $category->value)>
                 @if($category->icon)
                 <i class="{{ $category->icon }}"></i>
                 @endif
@@ -93,15 +93,15 @@
           </div>
           <div class="mb-3">
             <label for="withdraw-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="0" placeholder="How many...">
+            <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="{{ old('amount', 0) }}" placeholder="How many...">
           </div>
           <div class="mb-3">
             <label for="withdraw-description" class="form-label">Description</label>
-            <input type="text" class="form-control" name="description" id="withdraw-description" placeholder="What is name...">
+            <input type="text" class="form-control" name="description" id="withdraw-description" placeholder="What is name..." value="{{ old('description') }}">
           </div>
           <div class="mb-3">
             <label for="withdraw-date-at" class="form-label">Date</label>
-            <input type="datetime-local" class="form-control" name="date_at" id="withdraw-date-at" placeholder="d-m-Y H:i:s">
+            <input type="datetime-local" class="form-control" name="date_at" id="withdraw-date-at" placeholder="d-m-Y H:i:s" value="{{ old('date_at') }}">
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
