@@ -58,7 +58,9 @@ class TransactionRepository
 
 		return $query
 			->get()
-			->groupBy(fn($transaction) => $transaction->created_at->format("Y F"));
+			->groupBy(
+				fn($transaction) => $transaction->transaction_date->format("Y F")
+			);
 	}
 
 	public function createTransaction(array $data)
