@@ -63,7 +63,7 @@
           <div class="row">
             <div class="col-md-12 mb-3">
               <label for="deposit-description" class="form-label">Description</label>
-              <input type="text" class="form-control" name="deposit-description" id="deposit-description" placeholder="What is name..." value="{{ old('deposit-description') }}">
+              <textarea class="form-control" id="deposit-description" name="deposit-description" placeholder="What is name...">{{ old('deposit-description') }}</textarea>
             </div>
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
@@ -108,7 +108,7 @@
           <div class="row">
             <div class="col-md-4 mb-3">
               <label for="withdraw-description" class="form-label">Description</label>
-              <input type="text" class="form-control" name="withdraw-description" id="withdraw-description" placeholder="What is name..." value="{{ old('withdraw-description') }}">
+              <textarea class="form-control" name="withdraw-description" id="withdraw-description" placeholder="What is name...">{{ old('withdraw-description') }}</textarea>
             </div>
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
