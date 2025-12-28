@@ -41,7 +41,7 @@
                   @if($category->icon)
                   <i class="{{ $category->icon }}"></i>
                   @endif
-                  <span class="{{ Helper::getColorCategory($category->name) }}">
+                  <span class="{{ Helper::getColorCategory($category->type) }}">
                   {{ $category->name}}
                   </span>
                 </option>
@@ -87,7 +87,7 @@
                   @if($category->icon)
                   <i class="{{ $category->icon }}"></i>
                   @endif
-                  <span class="{{ Helper::getColorCategory($category->name) }}">
+                  <span class="{{ Helper::getColorCategory($category->type) }}">
                     {{ $category->name }}
                   </span>
                 </option>
