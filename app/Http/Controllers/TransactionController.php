@@ -114,10 +114,9 @@ class TransactionController extends BaseController
 		}
 	}
 
-	public function show(Transaction $transaction)
+	public function show(Request $request, Transaction $transaction)
 	{
-		$this->authorize("view", $transaction);
-
+		dd($request->all(), $transaction);
 		$transaction->load(["wallet", "toWallet", "toAccount", "user"]);
 
 		return response()->json([

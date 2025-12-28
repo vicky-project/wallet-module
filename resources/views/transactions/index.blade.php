@@ -25,7 +25,7 @@
   <div class="col-md-6 col-lg-6">
     <div class="card">
       <div class="card-header">
-        <h5 class="card-title">{{ $date }}</h5>
+        <h5 class="card-title" onclick="{{ route('apps.transactions.show', ['transaction' => $transaction, 'date' => $date]) }}">{{ $date }}</h5>
       </div>
       <div class="card-body">
         <ul class="list-group list-group-flush">
