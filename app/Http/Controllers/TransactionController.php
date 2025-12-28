@@ -262,4 +262,9 @@ class TransactionController extends BaseController
 			"data" => $transactions,
 		]);
 	}
+
+	public function byDate(Request $request)
+	{
+		dd($request->all());
+	}
 }

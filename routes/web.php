@@ -25,6 +25,10 @@ Route::middleware(["auth"])
 		Route::resource("wallets", WalletController::class);
 
 		// Transaction Routes
+		Route::get("transactions/by-date", [
+			TransactionController::class,
+			"byDate",
+		])->name("transactions.dates");
 		Route::post("transactions/transfer", [
 			TransactionController::class,
 			"transfer",
