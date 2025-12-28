@@ -52,6 +52,7 @@ class TransactionController extends BaseController
 	{
 		$transactions = $this->transactionRepository
 			->getUserTransactions($request->all())
+			->dd()
 			->map(
 				fn($item) => [
 					"total" => $item->count(),
@@ -59,7 +60,7 @@ class TransactionController extends BaseController
 					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
 				]
 			);
-		dd($transactions);
+
 		$wallets = $this->walletRepository->getUserWallets();
 
 		return view(
