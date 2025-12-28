@@ -75,7 +75,7 @@
         <form method="POST" action="{{ route('apps.wallets.withdraw', $wallet) }}" class="row mt-2">
           @csrf
           <div class="mb-3">
-            <label for="withdraw-category" class="form-label">Category</label>
+            <label for="withdraw-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
             <select name="category" class="form-select" id="withdraw-category">
               @forelse($withdrawCategories as $category)
               <option value="{{ $category->name}}">
