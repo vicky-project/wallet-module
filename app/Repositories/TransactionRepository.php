@@ -145,9 +145,10 @@ class TransactionRepository
 	public function byDate(string $date)
 	{
 		$transaction = $this->getUserTransactions();
-		if ($transaction->has($date)) {
-			dd($transaction->get($date));
+		if (!$transaction->has($date)) {
+			return collect();
 		}
-		dd($transaction);
+
+		return $transaction->get($date);
 	}
 }

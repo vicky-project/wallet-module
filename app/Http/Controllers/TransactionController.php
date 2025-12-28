@@ -264,6 +264,9 @@ class TransactionController extends BaseController
 
 	public function byDate(Request $request)
 	{
-		$byDate = $this->transactionRepository->byDate($request->date);
+		$date = $request->date;
+		$byDate = $this->transactionRepository->byDate($date);
+
+		return view("wallet::transactions.by-date", compact("byDate", "date"));
 	}
 }
