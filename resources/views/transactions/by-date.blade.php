@@ -9,7 +9,11 @@
       <i class="fas fa-arrow-left"></i>
     </a>
   </div>
-  <div></div>
+  <div>
+    <a href="{{ route('apps.transactions.create') }}" class="btn btn-success" role="button">
+      <i class="fas fa-plus"></i>
+    </a>
+  </div>
 </div>
 
 <div class="card">
@@ -18,9 +22,7 @@
       <h5 class="card-title">{{ $date }}</h5>
     </div>
     <div class="btn-group">
-      <a href="{{ route('apps.transactions.create') }}" class="btn btn-success" role="button">
-        <i class="fas fa-plus"></i>
-      </a>
+      <a class="btn btn-outline-danger" role="button"><i class="fas fa-trash-alt"></i></a>
     </div>
   </div>
   <div class="card-body">
@@ -39,7 +41,7 @@
               <strong>
                 {{ $item->transaction_date->format('d-m-Y') }}
               </strong>
-              <small class="small ms-2">{{ $item->transaction_date->format('H:i:s') }}</small>
+              <small class="small text-muted">{{ $item->transaction_date->format('H:i:s') }}</small>
             </td>
             <td>{{ $item->description }}</td>
             <td>
