@@ -24,7 +24,28 @@
     </div>
   </div>
   <div class="card-body">
-    <h1>List Transactions</h1>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Amount</th>
+        </thead>
+        <tbody>
+          @foreach($byDate as $item)
+          <tr>
+            <td>{{ $item->transaction_date->format('d-m-Y H:i:s') }}</td>
+            <td>
+              @if($item->isDeposit())
+              @elseif($item->isWithdraw())
+              @else
+              @endif
+            </td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 @endsection
