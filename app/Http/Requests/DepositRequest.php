@@ -19,18 +19,19 @@ class DepositRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			"amount" => "required|numeric|min:0.01",
-			"description" => "nullable|string|max:500",
-			"date_at" => "sometimes|date",
+			"deposit-category" => "required|exits:categories,name",
+			"deposit-amount" => "required|numeric|min:0.01",
+			"deposit-description" => "nullable|string|max:500",
+			"deposit-date_at" => "sometimes|date",
 		];
 	}
 
 	public function attributes()
 	{
 		return [
-			"amount" => "Amount",
-			"description" => "Description",
-			"date_at" => "Date",
+			"deposit-amount" => "Amount",
+			"deposit-description" => "Description",
+			"deposit-date_at" => "Date",
 		];
 	}
 }

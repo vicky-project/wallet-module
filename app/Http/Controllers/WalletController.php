@@ -10,6 +10,7 @@ use Modules\Wallet\Constants\Permissions;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\WalletRepository;
 use Modules\Wallet\Http\Requests\DepositRequest;
+use Modules\Wallet\Http\Requests\WithdrawalRequest;
 use Modules\Wallet\Http\Requests\WalletRequest;
 
 class WalletController extends BaseController
@@ -285,8 +286,14 @@ class WalletController extends BaseController
 
 	public function deposit(DepositRequest $request, Wallet $wallet)
 	{
+		$data = $request->validated();
 		try {
-			$this->transactionService->deposit($wallet, $request->validated());
+			$this->transactionService->deposit($wallet, [
+				"amount" => $data["deposit-amount"],
+				"transaction_date" => $data["deposit-date_at"],
+				"category" => $data["deposit-category"],
+				"description" => $data["deposit-description"],
+			]);
 
 			return back()->with("success", "Deposit wallet successfully.");
 		} catch (\Exception $e) {
@@ -297,7 +304,27 @@ class WalletController extends BaseController
 		}
 	}
 
-	public function withdraw(Request $request, Wallet $wallet)
+	public function withdraw(WithdrawalRequest $request, Wallet $wallet)
 	{
+		$data = $request->validated();
+
+		try {
+			$this->transactionService->withdraw($wallet, [
+				"amount" => $data["withdraw-amount"],
+				"transaction_date" => $data["withdraw-date_at"],
+				"category" => $data["withdraw-category"],
+				"description" => $data["withdraw-description"],
+			]);
+
+			return back()->with("success", "Withdraw wallet successfully");
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"error" => $e->getMessage(),
+				],
+				500
+			);
+		}
 	}
 }

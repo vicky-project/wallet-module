@@ -32,35 +32,39 @@
         <h5 class="card-text my-2 text-center text-bold">Deposit</h5>
         <form method="POST" action="{{ route('apps.wallets.deposit', $wallet) }}" class="row mt-2">
           @csrf
-          <div class="mb-3">
-            <label for="deposit-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
-            <select name="category" class="form-select" id="deposit-category">
-              @forelse($depositCategories as $category)
-              <option value="{{ $category->value}}" @selected(old('category') == $category->value)>
-                @if($category->icon)
-                <i class="{{ $category->icon }}"></i>
-                @endif
-                <span class="{{ Helper::getColorCategory($category->type) }}">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="deposit-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
+              <select name="deposit-category" class="form-select" id="deposit-category">
+                @forelse($depositCategories as $category)
+                <option value="{{ $category->name}}" @selected(old('deposit-category') == $category->name)>
+                  @if($category->icon)
+                  <i class="{{ $category->icon }}"></i>
+                  @endif
+                  <span class="{{ Helper::getColorCategory($category->type) }}">
                   {{ $category->name}}
-                </span>
+                  </span>
                 </option>
-              @empty
-              <option value="">No category available.</option>
-              @endforelse
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="deposit-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" min="0" value="{{ old('amount', 0)}}" id="deposit-amount" placeholder="How many
+                @empty
+                <option value="">No category available.</option>
+                @endforelse
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="deposit-amount" class="form-label">Amount</label>
+              <input type="number" class="form-control" name="deposit-amount" min="0" value="{{ old('deposit-amount', 0)}}" id="deposit-amount" placeholder="How many
             ..">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="deposit-date-at" class="form-label">Date</label>
+              <input type="datetime-local" class="form-control" name="deposit-date_at" id="deposit-date-at" placeholder="d-m-Y H:i:s" value="{{ old('deposit-date_at') }}">
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="deposit-description" class="form-label">Description</label>
-            <input type="text" class="form-control" name="description" id="deposit-description" placeholder="What is name..." value="{{ old('description') }}">
-          </div>
-          <div class="mb-3">
-            <label for="deposit-date-at" class="form-label">Date</label>
-            <input type="datetime-local" class="form-control" name="date_at" id="deposit-date-at" placeholder="d-m-Y H:i:s" value="{{ old('date_at') }}">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="deposit-description" class="form-label">Description</label>
+              <input type="text" class="form-control" name="deposit-description" id="deposit-description" placeholder="What is name..." value="{{ old('deposit-description') }}">
+            </div>
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
@@ -74,34 +78,38 @@
         <h5 class="card-text my-2 text-center text-bold">Withdraw</h5>
         <form method="POST" action="{{ route('apps.wallets.withdraw', $wallet) }}" class="row mt-2">
           @csrf
-          <div class="mb-3">
-            <label for="withdraw-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
-            <select name="category" class="form-select" id="withdraw-category">
-              @forelse($withdrawCategories as $category)
-              <option value="{{ $category->value}}" @selected(old('category') == $category->value)>
-                @if($category->icon)
-                <i class="{{ $category->icon }}"></i>
-                @endif
-                <span class="{{ Helper::getColorCategory($category) }}">
-                  {{ $category->name }}
-                </span>
-              </option>
-              @empty
-              <option value="">No category available.</option>
-              @endforelse
-            </select>
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="withdraw-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
+              <select name="withdraw-category" class="form-select" id="withdraw-category">
+                @forelse($withdrawCategories as $category)
+                <option value="{{ $category->name}}" @selected(old('withdraw-category') == $category->name)>
+                  @if($category->icon)
+                  <i class="{{ $category->icon }}"></i>
+                  @endif
+                  <span class="{{ Helper::getColorCategory($category) }}">
+                    {{ $category->name }}
+                  </span>
+                </option>
+                @empty
+                <option value="">No category available.</option>
+                @endforelse
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="withdraw-amount" class="form-label">Amount</label>
+              <input type="number" class="form-control" name="withdraw-amount" id="withdraw-amount" min="0" value="{{ old('withdraw-amount', 0) }}" placeholder="How many...">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="withdraw-date-at" class="form-label">Date</label>
+              <input type="datetime-local" class="form-control" name="withdraw-date_at" id="withdraw-date-at" placeholder="d-m-Y H:i:s" value="{{ old('withdraw-date_at') }}">
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="withdraw-amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" name="amount" id="withdraw-amount" min="0" value="{{ old('amount', 0) }}" placeholder="How many...">
-          </div>
-          <div class="mb-3">
-            <label for="withdraw-description" class="form-label">Description</label>
-            <input type="text" class="form-control" name="description" id="withdraw-description" placeholder="What is name..." value="{{ old('description') }}">
-          </div>
-          <div class="mb-3">
-            <label for="withdraw-date-at" class="form-label">Date</label>
-            <input type="datetime-local" class="form-control" name="date_at" id="withdraw-date-at" placeholder="d-m-Y H:i:s" value="{{ old('date_at') }}">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="withdraw-description" class="form-label">Description</label>
+              <input type="text" class="form-control" name="withdraw-description" id="withdraw-description" placeholder="What is name..." value="{{ old('withdraw-description') }}">
+            </div>
           </div>
           <div class="pt-2 mt-4 border-top border-primary">
             <button type="submit" class="btn btn-block btn-success">
