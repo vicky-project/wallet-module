@@ -14,7 +14,6 @@ Route::middleware(["auth"])
 			WalletController::class,
 			"setDefault",
 		])->name("wallets.default");
-		Route::resource("wallets", WalletController::class);
 		Route::post("wallets/{wallet}/deposit", [
 			WalletController::class,
 			"deposit",
@@ -23,6 +22,7 @@ Route::middleware(["auth"])
 			WalletController::class,
 			"withdraw",
 		])->name("wallets.withdraw");
+		Route::resource("wallets", WalletController::class);
 
 		// Transaction Routes
 		Route::post("transactions/transfer", [
