@@ -118,12 +118,8 @@ class TransactionController extends BaseController
 	public function show(Request $request, Transaction $transaction)
 	{
 		$transaction->load(["wallet", "toWallet", "user"]);
-		dd($request->all(), $transaction);
-
-		return response()->json([
-			"success" => true,
-			"data" => $transaction,
-		]);
+		//dd($request->all(), $transaction);
+		return view("wallet::transactions.show", compact("transactions"));
 	}
 
 	public function update(TransactionRequest $request, Transaction $transaction)
