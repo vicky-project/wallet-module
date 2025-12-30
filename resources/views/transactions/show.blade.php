@@ -11,7 +11,7 @@
       <i class="fas fa-arrow-left"></i>
     </a>
   </div>
-  <div class="d-flex">
+  <div class="d-flex gap-3">
     <a href="{{ route('apps.transactions.create') }}" class="btn btn-primary" role="button" title="Create Transaction">
       <i class="fas fa-plus"></i>
     </a>
@@ -30,7 +30,7 @@
 
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title">{{ $transaction->wallet->name }}</h5><span class="small text-muted ms-2">{{ $transaction->wallet->wallet_code }}</h>
+    <h5 class="card-title">{{ $transaction->wallet->name }}</h5><span class="small text-muted">{{ $transaction->wallet->wallet_code }}</h>
   </div>
   <div class="card-body">
     <p class="card-text small text-muted">{{ $transaction->transaction_code }}</p>
