@@ -21,12 +21,16 @@ class Helper
 			->toArray();
 	}
 
-	public static function getColorCategory(CategoryType $category)
+	public static function getColorCategory(CategoryType|string $category)
 	{
+		$income = CategoryType::INCOME;
+		$expense = CategoryType::EXPENSE;
+		$transfer = CategoryType::TRANSFER;
+
 		return match ($category) {
-			CategoryType::INCOME => "text-success",
-			CategoryType::EXPENSE => "text-danger",
-			CategoryType::TRANSFER => "text-info",
+			CategoryType::INCOME, $income => "text-success",
+			CategoryType::EXPENSE, $expense => "text-danger",
+			CategoryType::TRANSFER, $transfer => "text-info",
 		};
 	}
 }

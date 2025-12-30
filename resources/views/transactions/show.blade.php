@@ -2,6 +2,8 @@
 
 @section('title', 'Detail')
 
+@use('Modules\Wallet\Helpers\Helper')
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
   <div>
@@ -18,7 +20,7 @@
 
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title">{{ $transaction->wallet->name }}</h5><span class="small ms-2">{{ $transaction->wallet_code }}</span>
+    <h5 class="card-title">{{ $transaction->wallet->name }}<span class="small ms-2">{{ $transaction->wallet_code }}</span></h5>
   </div>
   <div class="card-body">
     <p class="card-text small text-muted">{{ $transaction->transaction_code }}</p>
@@ -28,7 +30,7 @@
     <div class="text-end">
       <small class="text-muted ms-auto">{{ $transaction->description}}</small>
     </div>
-    <p class="card-text mt-2">{{ $transaction->category }} (<span class="small text-muted">{{ $transaction->type }}</span>)</p>
+    <p class="card-text mt-2">{{ $transaction->category }} (<span class="small text-muted {{ Helper::getColorCategory($transaction->category)}}">{{ $transaction->type }}</span>)</p>
   </div>
 </div>
 @endsection
