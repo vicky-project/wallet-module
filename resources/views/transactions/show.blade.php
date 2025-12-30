@@ -30,7 +30,7 @@
 
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title">{{ $transaction->wallet->name }}<span class="small ms-2">{{ $transaction->wallet->wallet_code }}</span></h5>
+    <h5 class="card-title">{{ $transaction->wallet->name }}<span class="small text-muted ms-2">{{ $transaction->wallet->wallet_code }}</span></h5>
   </div>
   <div class="card-body">
     <p class="card-text small text-muted">{{ $transaction->transaction_code }}</p>
