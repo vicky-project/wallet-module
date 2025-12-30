@@ -29,6 +29,10 @@ Route::middleware(["auth"])
 			TransactionController::class,
 			"byDate",
 		])->name("transactions.dates");
+		Route::get("transactions/trash", [
+			TransactionController::class,
+			"trashed",
+		])->name("transactions.trash");
 		Route::post("transactions/transfer", [
 			TransactionController::class,
 			"transfer",

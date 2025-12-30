@@ -270,4 +270,9 @@ class TransactionController extends BaseController
 
 		return view("wallet::transactions.by-date", compact("byDate", "date"));
 	}
+
+	public function trashed(Request $request)
+	{
+		return view("wallet::transactions.trashed");
+	}
 }

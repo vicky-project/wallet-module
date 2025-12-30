@@ -22,7 +22,7 @@
       <h5 class="card-title">{{ $date }}</h5>
     </div>
     <div class="btn-group">
-      <a class="btn btn-outline-danger" role="button"><i class="fas fa-trash-alt"></i></a>
+      <a href="{{ route('apps.transactions.trash') }}" class="btn btn-outline-danger" role="button"><i class="fas fa-trash-alt"></i></a>
     </div>
   </div>
   <div class="card-body">
@@ -40,7 +40,7 @@
             <td>
               <strong>
                 {{ $item->transaction_date->format('d-m-Y') }}
-              </strong>
+              </strong><br />
               <small class="small text-muted">{{ $item->transaction_date->format('H:i:s') }}</small>
             </td>
             <td>{{ $item->description }}</td>
