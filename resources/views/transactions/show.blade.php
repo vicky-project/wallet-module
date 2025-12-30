@@ -12,15 +12,25 @@
     </a>
   </div>
   <div>
-    <a href="{{ route('apps.transactions.create') }}" class="btn btn-success" role="button" title="Create Transaction">
+    <a href="{{ route('apps.transactions.create') }}" class="btn btn-primary" role="button" title="Create Transaction">
       <i class="fas fa-plus"></i>
     </a>
+    <a href="{{ route('apps.transactions.edit', $transaction) }}" class="btn btn-success" role="button" title="Edit Transaction">
+      <i class="fas fa-pen"></i>
+    </a>
+    <form method="POST" action="">
+      @csrf
+      @method('DELETE')
+      <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure to delete this transaction ?')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </form>
   </div>
 </div>
 
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title">{{ $transaction->wallet->name }}<span class="small ms-2">{{ $transaction->wallet_code }}</span></h5>
+    <h5 class="card-title">{{ $transaction->wallet->name }}<span class="small ms-2">{{ $transaction->wallet->wallet_code }}</span></h5>
   </div>
   <div class="card-body">
     <p class="card-text small text-muted">{{ $transaction->transaction_code }}</p>
