@@ -119,7 +119,7 @@ class TransactionController extends BaseController
 	{
 		$transaction->load(["wallet", "toWallet", "user"]);
 		//dd($request->all(), $transaction);
-		return view("wallet::transactions.show", compact("transactions"));
+		return view("wallet::transactions.show", compact("transaction"));
 	}
 
 	public function update(TransactionRequest $request, Transaction $transaction)
