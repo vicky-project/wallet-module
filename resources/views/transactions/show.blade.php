@@ -11,7 +11,7 @@
       <i class="fas fa-arrow-left"></i>
     </a>
   </div>
-  <div>
+  <div class="d-flex">
     <a href="{{ route('apps.transactions.create') }}" class="btn btn-primary" role="button" title="Create Transaction">
       <i class="fas fa-plus"></i>
     </a>
