@@ -117,8 +117,8 @@ class TransactionController extends BaseController
 
 	public function show(Request $request, Transaction $transaction)
 	{
-		dd($request->all(), $transaction);
 		$transaction->load(["wallet", "toWallet", "toAccount", "user"]);
+		dd($request->all(), $transaction);
 
 		return response()->json([
 			"success" => true,
