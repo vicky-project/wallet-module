@@ -23,9 +23,9 @@ class Helper
 
 	public static function getColorCategory(CategoryType|string $category)
 	{
-		$income = CategoryType::INCOME;
-		$expense = CategoryType::EXPENSE;
-		$transfer = CategoryType::TRANSFER;
+		$income = CategoryType::INCOME->value;
+		$expense = CategoryType::EXPENSE->value;
+		$transfer = CategoryType::TRANSFER->value;
 
 		return match ($category) {
 			CategoryType::INCOME, $income => "text-success",
