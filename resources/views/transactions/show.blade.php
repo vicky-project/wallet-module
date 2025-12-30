@@ -25,7 +25,7 @@
   <div class="card-body">
     <p class="card-text small text-muted">{{ $transaction->transaction_code }}</p>
     <div class="text-end">
-      <h3 class="text-bold ms-auto">{{ $transaction->amount }}</h3>
+      <h3 class="text-bold ms-auto {{ Helper::getColorCategory($transaction->type )}}">{{ $transaction->amount }}</h3>
     </div>
     <div class="text-end">
       <small class="text-muted ms-auto">{{ $transaction->description}}</small>
