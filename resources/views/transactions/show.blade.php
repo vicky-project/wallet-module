@@ -30,7 +30,7 @@
     <div class="text-end">
       <small class="text-muted ms-auto">{{ $transaction->description}}</small>
     </div>
-    <p class="card-text mt-2">{{ $transaction->category }} (<span class="small text-muted {{ Helper::getColorCategory($transaction->category)}}">{{ $transaction->type }}</span>)</p>
+    <p class="card-text mt-2">{{ $transaction->category }} (<span class="small text-muted {{ Helper::getColorCategory($transaction->type)}}">{{ $transaction->type }}</span>)</p>
   </div>
 </div>
 @endsection
