@@ -13,8 +13,8 @@
           </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Pemasukan Bulan Ini</h6>
-            <h3 class="card-title mb-0 text-income">Rp 8.250.000</h3>
-            <small class="text-muted">+12% dari bulan lalu</small>
+            <h3 class="card-title mb-0 text-income">{{ $stats["monthly_income"]["formatted"] }}</h3>
+            <small class="text-muted">{{ $stats["monthly_income"]["change_formatted"] }} dari bulan lalu</small>
           </div>
         </div>
       </div>
@@ -30,8 +30,8 @@
           </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Pengeluaran Bulan Ini</h6>
-            <h3 class="card-title mb-0 text-expense">Rp 5.120.000</h3>
-            <small class="text-muted">-5% dari bulan lalu</small>
+            <h3 class="card-title mb-0 text-expense">{{ $stats["monthly_expense"]["formatted"] }}</h3>
+            <small class="text-muted">{{ $stats["monthly_expense"]["change_formatted"] }} dari bulan lalu</small>
           </div>
         </div>
       </div>
@@ -47,8 +47,8 @@
           </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
-            <h3 class="card-title mb-0">Rp 3.130.000</h3>
-            <small class="text-muted">+25% dari bulan lalu</small>
+            <h3 class="card-title mb-0">{{ $stats["net_balance"]["formatted"] }}</h3>
+            <small class="text-muted">{{$stats["net_balance"]["change_formatted"] }} dari bulan lalu</small>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Tabungan Tercapai</h6>
             <h3 class="card-title mb-0">78%</h3>
-            <small class="text-muted">Rp 3.9jt dari target 5jt</small>
+            <small class="text-muted">Rp 0 dari target 0</small>
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@
     <div class="card h-100">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">Ringkasan Anggaran</h5>
-        <a href="{{ route('apps.budget.index') }}" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
+        <a href="#" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
       </div>
       <div class="card-body" id="budgetSummary">
         <div class="mb-3">
