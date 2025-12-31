@@ -29,6 +29,7 @@
             background-color: var(--light-bg);
             color: #333;
             transition: background-color var(--transition-speed);
+            overflow-x: hidden;
         }
         
         /* Sidebar Styling */
@@ -41,12 +42,12 @@
             background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
             padding-top: 20px;
-            transition: all var(--transition-speed);
-            z-index: 1000;
+            transition: transform var(--transition-speed);
+            z-index: 1050;
             box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
         }
         
-        .sidebar.collapsed {
+        .sidebar-hidden {
             transform: translateX(-100%);
         }
         
@@ -93,14 +94,33 @@
             font-size: 1.2rem;
         }
         
+        /* Sidebar Overlay untuk mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+        
         /* Main Content Area */
         .main-content {
             margin-left: var(--sidebar-width);
-            transition: margin-left var(--transition-speed);
+            transition: margin-left var(--transition-speed), margin-right var(--transition-speed);
             min-height: 100vh;
         }
         
-        .main-content.expanded {
+        .main-content-full {
             margin-left: 0;
         }
         
@@ -115,7 +135,7 @@
             justify-content: space-between;
             position: sticky;
             top: 0;
-            z-index: 999;
+            z-index: 1030;
         }
         
         .header-actions {
@@ -264,9 +284,10 @@
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
+                z-index: 1050;
             }
             
-            .sidebar.mobile-open {
+            .sidebar-mobile-open {
                 transform: translateX(0);
             }
             
@@ -311,14 +332,32 @@
         .w-100 {
             width: 100%;
         }
+        
+        /* Tombol Toggle Sidebar */
+        .sidebar-toggle {
+            transition: all 0.3s;
+        }
+        
+        .sidebar-toggle.active i {
+            transform: rotate(90deg);
+        }
+        
+        .sidebar-toggle i {
+            transition: transform 0.3s;
+        }
     </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <h3><i class="bi bi-wallet2"></i> FinTrack</h3>
-            <small class="text-light opacity-75">Manajemen Keuangan Pribadi</small>
+        <div class="sidebar-brand d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="mb-1"><i class="bi bi-wallet2"></i> FinTrack</h3>
+                <small class="text-light opacity-75">Manajemen Keuangan Pribadi</small>
+            </div>
+            <button class="btn btn-sm btn-outline-light d-lg-none sidebar-close" id="sidebarClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
         
         <ul class="sidebar-nav">
@@ -384,12 +423,15 @@
         </div>
     </div>
     
+    <!-- Overlay untuk menutup sidebar di mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
         <!-- Header -->
         <div class="header">
             <div class="d-flex align-items-center">
-                <button class="btn btn-outline-secondary sidebar-toggle d-none me-3" id="sidebarToggle">
+                <button class="btn btn-outline-secondary sidebar-toggle d-lg-none me-3" id="sidebarToggle">
                     <i class="bi bi-list"></i>
                 </button>
                 <h4 class="mb-0">Dashboard Keuangan</h4>
@@ -700,16 +742,96 @@
     <script>
         // Inisialisasi tema
         document.addEventListener('DOMContentLoaded', function() {
-            // Toggle Sidebar untuk mobile
+            // Elemen DOM
             const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
             const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
             const mainContent = document.getElementById('mainContent');
             
+            // Fungsi untuk membuka sidebar
+            function openSidebar() {
+                sidebar.classList.remove('sidebar-hidden');
+                sidebar.classList.add('sidebar-mobile-open');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Mencegah scroll background
+            }
+            
+            // Fungsi untuk menutup sidebar
+            function closeSidebar() {
+                sidebar.classList.remove('sidebar-mobile-open');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = ''; // Mengembalikan scroll
+                
+                // Untuk desktop, tetap tampilkan sidebar
+                if (window.innerWidth >= 992) {
+                    sidebar.classList.remove('sidebar-hidden');
+                } else {
+                    // Untuk mobile, sembunyikan sidebar
+                    setTimeout(() => {
+                        if (!sidebar.classList.contains('sidebar-mobile-open')) {
+                            sidebar.classList.add('sidebar-hidden');
+                        }
+                    }, 300);
+                }
+            }
+            
+            // Toggle Sidebar untuk mobile
             if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('mobile-open');
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (sidebar.classList.contains('sidebar-mobile-open')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
                 });
             }
+            
+            // Tombol close di dalam sidebar
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeSidebar();
+                });
+            }
+            
+            // Tutup sidebar ketika klik overlay
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function() {
+                    closeSidebar();
+                });
+            }
+            
+            // Tutup sidebar ketika klik di luar sidebar (untuk desktop)
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth >= 992) {
+                    // Untuk desktop, tidak perlu tutup ketika klik di luar
+                    return;
+                }
+                
+                // Untuk mobile, tutup sidebar jika klik di luar
+                if (sidebar.classList.contains('sidebar-mobile-open') && 
+                    !sidebar.contains(e.target) && 
+                    e.target !== sidebarToggle) {
+                    closeSidebar();
+                }
+            });
+            
+            // Responsif: saat resize window
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 992) {
+                    // Desktop: tampilkan sidebar, hilangkan overlay
+                    sidebar.classList.remove('sidebar-hidden', 'sidebar-mobile-open');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else {
+                    // Mobile: sembunyikan sidebar jika tidak aktif
+                    if (!sidebar.classList.contains('sidebar-mobile-open')) {
+                        sidebar.classList.add('sidebar-hidden');
+                    }
+                }
+            });
             
             // Toggle tema gelap/terang
             const themeToggle = document.getElementById('themeToggle');
@@ -818,6 +940,13 @@
                     // Dalam implementasi nyata, ini akan mengarahkan ke route Laravel yang sesuai
                 });
             });
+            
+            // Inisialisasi sidebar berdasarkan ukuran layar
+            if (window.innerWidth >= 992) {
+                sidebar.classList.remove('sidebar-hidden');
+            } else {
+                sidebar.classList.add('sidebar-hidden');
+            }
         });
     </script>
 </body>
