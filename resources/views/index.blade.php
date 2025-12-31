@@ -117,52 +117,65 @@
         <a href="#" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
       </div>
       <div class="card-body" id="budgetSummary">
+        @if($budgetSummary["budgets"]->isEmpty())
+        <div class="text-center py-4">
+          <i class="bi bi-pie-chart display-4 text-muted"></i>
+          <p class="text-muted mt-3">Belum ada anggaran.</p>
+          <a href="#" class="btn btn-primary btn-sm mt-2" role="button">Buat Anggaran</a>
+        </div>
+        @else
         <div class="mb-3">
-          <div class="d-flex justify-content-between mb-1">
-            <span>Makanan & Minuman</span>
-            <span>Rp 850.000 / Rp 1.000.000</span>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-medium">Total Anggaran</span>
+            <span class="text-muted">{{ $budgetSummary["total_budget"] }}</span>
           </div>
-          <div class="progress" style="height: 10px;">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 85%"></div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fw-medium">Total Terpakai</span>
+            <span class="{{ $budgetSummary['total_usage_percentage'] >= 100 ? 'text-danger' : 'text-success' }}">{{ $budgetSummary["total_spent"] }}</span>
+          </div>
+          <div class="progress mb-4" style="height: 10px;">
+            <div class="progress-bar {{ $budgetSummary['total_usage_percentage'] >= 100 ? 'bg-danger' : ($budgetSummary['total_usage_percentage'] >= 80 ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $budgetSummary['total_usage_percentage'] }}%"></div>
           </div>
         </div>
+        
+        @foreach($budgetSummary["budgets"] as $budget)
+        @php
+        $progressClass = "bg-success";
+        if($budget->percentage >= 100) {
+        $progressClass = "bg-danger";
+        } elseif($budget->percentage >= 80) {
+        $progressClass = "bg-warning":
+        }
+        @endphp
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>{{ $budget->category->name }}</span>
+              <span>{{ $budget->spent }} / {{ $budget->amount }}</span>
+            </div>
+            <div class="progress {{ $progressClass }}" style="height: 10px;">
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ $budget->percentage }}%" title="{{ $budget->percentage }}% terpakai"></div>
+            </div>
+          </div>
+          @if($budget->isExceeded)
+            <small class="text-danger mt-1 d-block">
+              <i class="bi bi-exclamation-triangle"></i>
+              Anggaran terlampaui.
+            </small>
+          @endif
+        @endforeach
+        @php
+        $isExceededBudgets = $budget->filter(fn($exceeded) => $exceeded->isExceeded);
+        @endphp
+        @if($isExceededBudgets->count() > 0)
+          <div class="alert alert-warning mt-4">
+            <small>
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Perhatian:</strong> {{ $isExceededBudgets->count() }} anggaran telah melebihi batas. Pertimbangkan untuk mengurangi pengeluaran di kategori ini.
+            </small>
+          </div>
+        @endif
+        @endif
                             
-        <div class="mb-3">
-          <div class="d-flex justify-content-between mb-1">
-            <span>Transportasi</span>
-            <span>Rp 320.000 / Rp 500.000</span>
-          </div>
-          <div class="progress" style="height: 10px;">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 64%"></div>
-          </div>
-        </div>
-                            
-        <div class="mb-3">
-          <div class="d-flex justify-content-between mb-1">
-            <span>Hiburan</span>
-            <span>Rp 450.000 / Rp 400.000</span>
-          </div>
-          <div class="progress" style="height: 10px;">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: 113%"></div>
-          </div>
-        </div>
-                            
-        <div class="mb-3">
-          <div class="d-flex justify-content-between mb-1">
-            <span>Belanja</span>
-            <span>Rp 1.250.000 / Rp 1.500.000</span>
-          </div>
-          <div class="progress" style="height: 10px;">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 83%"></div>
-          </div>
-        </div>
-                            
-        <div class="alert alert-warning mt-4">
-          <small>
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Perhatian:</strong> Anggaran untuk Hiburan telah melebihi batas. Pertimbangkan untuk mengurangi pengeluaran di kategori ini.
-          </small>
-        </div>
                             
         <div class="alert alert-info mt-3">
           <small>
