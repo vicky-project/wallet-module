@@ -249,7 +249,6 @@ class AccountRepository extends BaseRepository
 	{
 		return $this->model
 			->where("user_id", $user->id)
-			->where("is_active", true)
 			->orderBy("name")
 			->get()
 			->mapWithKeys(function ($account) {
