@@ -81,7 +81,7 @@
         <a href="{{ route('apps.transactions.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
       </div>
       <div class="card-body p-0" id="recentTransaction">
-        @if(empty($recentTransactions))
+        @if($recentTransactions->isEmpty())
         <h5 class="card-title">No transaction recorded.</h5>
         @else
         <div class="transaction-item">
