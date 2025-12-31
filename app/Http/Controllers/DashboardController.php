@@ -173,22 +173,11 @@ class DashboardController extends BaseController
 				"goals_count" => $savingGoals->count(),
 				"completed_goals" => $savingGoals->where("is_completed", true)->count(),
 			],
-			"budget_status" => [
-				"total_budget" => $this->budgetRepository->getTotalBudget(
-					$user,
-					$month,
-					$year
-				),
-				"total_spent" => $this->budgetRepository->getTotalSpent(
-					$user,
-					$month,
-					$year
-				),
-				"usage_percentage" => $this->calculateBudgetUsage(
-					$this->budgetRepository->getTotalBudget($user, $month, $year),
-					$this->budgetRepository->getTotalSpent($user, $month, $year)
-				),
-			],
+			"budget_status" => $this->budgetRepository->getBudgetSummary(
+				$user,
+				$month,
+				$year
+			),
 		];
 	}
 
