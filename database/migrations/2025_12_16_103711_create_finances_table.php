@@ -136,8 +136,8 @@ return new class extends Migration {
 		Schema::dropIfExists("transfers");
 		Schema::dropIfExists("saving_goals");
 		Schema::dropIfExists("budgets");
-		Schema::dropIfExists("categories");
 		Schema::dropIfExists("transactions");
+		Schema::dropIfExists("categories");
 		Schema::dropIfExists("accounts");
 	}
 };

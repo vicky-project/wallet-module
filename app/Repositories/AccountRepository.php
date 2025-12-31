@@ -92,10 +92,7 @@ class AccountRepository extends BaseRepository
 	 */
 	public function getTotalBalance(User $user): Money
 	{
-		$total = $this->model
-			->where("user_id", $user->id)
-			->where("is_active", true)
-			->sum("current_balance");
+		$total = $this->model->where("user_id", $user->id)->sum("current_balance");
 
 		return $this->fromDatabaseAmount($total);
 	}
