@@ -81,6 +81,9 @@
         <a href="{{ route('apps.transactions.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
       </div>
       <div class="card-body p-0" id="recentTransaction">
+        @if(empty($recentTransactions))
+        <h5 class="card-title">No transaction recorded.</h5>
+        @else
         <div class="transaction-item">
           <div class="transaction-icon bg-income">
             <i class="bi bi-arrow-up-circle text-income"></i>
@@ -145,6 +148,7 @@
             -Rp 320.000
           </div>
         </div>
+        @endif
       </div>
     </div>
   </div>
