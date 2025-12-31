@@ -24,6 +24,23 @@ return new class extends Migration {
 			$table->softDeletes();
 		});
 
+		Schema::create("categories", function (Blueprint $table) {
+			$table->id();
+			$table
+				->foreignId("user_id")
+				->constrained()
+				->onDelete("cascade");
+			$table->string("name"); // Makanan, Transportasi, Gaji, dll
+			$table->string("type"); // pemasukan/pengeluaran
+			$table->string("icon")->default("bi-wallet");
+			$table->decimal("budget_limit", 15, 2)->nullable(); // batas anggaran
+			$table->boolean("is_active")->default(true);
+			$table->timestamps();
+			$table->softDeletes();
+
+			$table->index(["user_id", "type"]);
+		});
+
 		Schema::create("transactions", function (Blueprint $table) {
 			$table->id();
 			$table
@@ -49,23 +66,6 @@ return new class extends Migration {
 
 			$table->index(["user_id", "transaction_date", "type"]);
 			$table->index(["transaction_date", "type"]);
-		});
-
-		Schema::create("categories", function (Blueprint $table) {
-			$table->id();
-			$table
-				->foreignId("user_id")
-				->constrained()
-				->onDelete("cascade");
-			$table->string("name"); // Makanan, Transportasi, Gaji, dll
-			$table->string("type"); // pemasukan/pengeluaran
-			$table->string("icon")->default("bi-wallet");
-			$table->decimal("budget_limit", 15, 2)->nullable(); // batas anggaran
-			$table->boolean("is_active")->default(true);
-			$table->timestamps();
-			$table->softDeletes();
-
-			$table->index(["user_id", "type"]);
 		});
 
 		Schema::create("budgets", function (Blueprint $table) {
