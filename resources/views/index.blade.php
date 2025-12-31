@@ -82,7 +82,7 @@
       </div>
       <div class="card-body p-0" id="recentTransaction">
         @if($recentTransactions->isEmpty())
-        <h5 class="card-title">No transaction recorded.</h5>
+        <p class="card-text">No transaction recorded.</p>
         @else
         <div class="transaction-item">
           <div class="transaction-icon bg-income">
