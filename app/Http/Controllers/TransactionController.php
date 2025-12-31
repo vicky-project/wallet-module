@@ -92,18 +92,12 @@ class TransactionController extends BaseController
 	public function store(TransactionRequest $request)
 	{
 		try {
-			$transaction = $this->transactionService->recordTransaction(
-				$request->validated()
+			$transaction = $this->transactionRepository->createTransaction(
+				$request->validated(),
+				auth()->user()
 			);
 
-			return response()->json(
-				[
-					"success" => true,
-					"message" => "Transaction recorded successfully",
-					"data" => $transaction->load(["wallet", "toWallet"]),
-				],
-				201
-			);
+			return back()->with("success", "Transaction recorded successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[

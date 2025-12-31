@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="page-title">Dashboard Keuangan</h1>
 <!-- Quick Stats -->
-<div class="row mb-4">
+<div class="row mb-4" id="quickStats">
   <div class="col-md-3 mb-4">
     <div class="card">
       <div class="card-body">
@@ -78,9 +78,9 @@
     <div class="card h-100">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">Transaksi Terbaru</h5>
-        <a href="#" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+        <a href="{{ route('apps.transactions.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-0" id="recentTransaction">
         <div class="transaction-item">
           <div class="transaction-icon bg-income">
             <i class="bi bi-arrow-up-circle text-income"></i>
@@ -153,9 +153,9 @@
     <div class="card h-100">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">Ringkasan Anggaran</h5>
-        <a href="#" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
+        <a href="{{ route('apps.budget.index') }}" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
       </div>
-      <div class="card-body">
+      <div class="card-body" id="budgetSummary">
         <div class="mb-3">
           <div class="d-flex justify-content-between mb-1">
             <span>Makanan & Minuman</span>

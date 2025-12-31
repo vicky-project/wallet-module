@@ -2,148 +2,91 @@
 
 namespace Modules\Wallet\Repositories;
 
+use App\Models\User;
 use Modules\Wallet\Models\Category;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Modules\Wallet\Enums\CategoryType;
+use Illuminate\Support\Collection;
 
-class CategoryRepository
+class CategoryRepository extends BaseRepository
 {
-	protected $category;
-
-	public function __construct(Category $category)
+	public function __construct(Category $model)
 	{
-		$this->category = $category;
+		parent::__construct($model);
 	}
 
-	public function getUserCategories(
-		?CategoryType $type = null,
-		bool $includeInactive = false
-	) {
-		$query = $this->category->byUser(Auth::id());
-
-		if ($type) {
-			$query->where("type", $type);
+	/**
+	 * Create new category with budget limit
+	 */
+	public function createCategory(array $data, User $user): Category
+	{
+		// Convert budget limit to Money
+		if (isset($data["budget_limit"])) {
+			$data["budget_limit"] = $this->toDatabaseAmount(
+				$this->toMoney($data["budget_limit"])
+			);
 		}
 
-		if (!$includeInactive) {
-			$query->active();
+		$data["user_id"] = $user->id;
+
+		return $this->create($data);
+	}
+
+	/**
+	 * Update category with budget limit
+	 */
+	public function updateCategory(int $id, array $data): Category
+	{
+		if (isset($data["budget_limit"])) {
+			$data["budget_limit"] = $this->toDatabaseAmount(
+				$this->toMoney($data["budget_limit"])
+			);
 		}
 
-		return $query
-			->orderBy("type")
-			->orderBy("order")
+		$this->update($id, $data);
+		return $this->find($id);
+	}
+
+	/**
+	 * Get categories by type
+	 */
+	public function getByType(string $type, User $user): Collection
+	{
+		return $this->model
+			->where("user_id", $user->id)
+			->where("type", $type)
+			->where("is_active", true)
+			->orderBy("name")
 			->get();
 	}
 
-	public function createCategory(array $data)
-	{
-		$data["user_id"] = Auth::id();
+	/**
+	 * Get categories with monthly totals
+	 */
+	public function getWithMonthlyTotals(
+		User $user,
+		int $month = null,
+		int $year = null
+	): Collection {
+		$month = $month ?? date("m");
+		$year = $year ?? date("Y");
 
-		// Set order if not provided
-		if (!isset($data["order"])) {
-			$maxOrder = $this->category
-				->where("user_id", Auth::id())
-				->where("type", $data["type"])
-				->max("order");
-			$data["order"] = ($maxOrder ?? 0) + 1;
-		}
-
-		return $this->category->create($data);
-	}
-
-	public function updateCategory(Category $category, array $data)
-	{
-		$category->update($data);
-		return $category;
-	}
-
-	public function deleteCategory(Category $category)
-	{
-		// Check if category is used in transactions
-		if ($category->transactions()->count() > 0) {
-			throw new \Exception(
-				"Cannot delete category that is used in transactions"
-			);
-		}
-
-		return $category->delete();
-	}
-
-	public function reorderCategories(array $categories)
-	{
-		DB::transaction(function () use ($categories) {
-			foreach ($categories as $item) {
-				$this->category
-					->where("id", $item["id"])
-					->update(["order" => $item["order"]]);
-			}
-		});
-	}
-
-	public function getCategoryUsage(Category $category)
-	{
-		return [
-			"category" => $category,
-			"transaction_count" => $category->transactions()->count(),
-			"total_amount" => $category
-				->transactions()
-				->where("status", "completed")
-				->sum("net_amount"),
-			"monthly_usage" => $category
-				->transactions()
-				->where("status", "completed")
-				->whereMonth("transaction_date", now()->month)
-				->selectRaw(
-					'
-                    COUNT(*) as count,
-                    SUM(net_amount) as total_amount,
-                    AVG(net_amount) as average_amount
-                '
-				)
-				->first(),
-		];
-	}
-
-	public function getAllCategoriesUsage(
-		?string $startDate = null,
-		?string $endDate = null
-	) {
-		$query = Category::byUser(Auth::id())
-			->withCount([
-				"transactions as transaction_count" => function ($query) use (
-					$startDate,
-					$endDate
-				) {
-					$query->where("status", "completed");
-					if ($startDate && $endDate) {
-						$query->whereBetween("transaction_date", [$startDate, $endDate]);
-					}
+		return $this->model
+			->where("user_id", $user->id)
+			->where("type", "expense")
+			->with([
+				"transactions" => function ($query) use ($month, $year) {
+					$query
+						->whereMonth("transaction_date", $month)
+						->whereYear("transaction_date", $year)
+						->where("type", "expense");
 				},
 			])
-			->withSum(
-				[
-					"transactions as total_amount" => function ($query) use (
-						$startDate,
-						$endDate
-					) {
-						$query->where("status", "completed");
-						if ($startDate && $endDate) {
-							$query->whereBetween("transaction_date", [$startDate, $endDate]);
-						}
-					},
-				],
-				"net_amount"
-			);
-
-		return $query->get()->map(function ($category) {
-			return [
-				"id" => $category->id,
-				"name" => $category->name,
-				"type" => $category->type,
-				"transaction_count" => $category->transaction_count,
-				"total_amount" => $category->total_amount,
-			];
-		});
+			->get()
+			->map(function ($category) {
+				$category->monthly_total = $category->transactions->sum("amount");
+				$category->budget_usage = $category->budget_limit
+					? ($category->monthly_total / $category->budget_limit) * 100
+					: 0;
+				return $category;
+			});
 	}
 }

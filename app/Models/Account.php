@@ -5,31 +5,30 @@ namespace Modules\Wallet\Models;
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
 use Modules\Wallet\Casts\MoneyCast;
+use Modules\Wallet\Enums\AccountType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Wallet extends Model
+class Account extends Model
 {
 	use SoftDeletes;
 
 	protected $fillable = [
 		"user_id",
 		"name",
-		"wallet_code",
 		"type",
-		"balance",
+		"account_number",
+		"bank_name",
+		"current_balance",
 		"initial_balance",
-		"currency",
 		"is_default",
-		"description",
-		"metadata",
 	];
 
 	protected $casts = [
-		"balance" => MoneyCast::class,
+		"type" => AccountType::class,
+		"current_balance" => MoneyCast::class,
 		"initial_balance" => MoneyCast::class,
 		"is_default" => "boolean",
-		"metadata" => "array",
 	];
 
 	protected static function boot()
@@ -37,20 +36,15 @@ class Wallet extends Model
 		parent::boot();
 
 		static::creating(function ($wallet) {
-			if (empty($wallet->wallet_code)) {
-				$wallet->wallet_code = "WLT" . strtoupper(uniqid());
+			if (!empty($wallet->initial_balance)) {
+				$wallet->current_balance = $this->initial_balance;
 			}
 		});
 	}
 
-	public function account()
-	{
-		return $this->belongsTo(Account::class, "account_id");
-	}
-
 	public function transactions()
 	{
-		return $this->hasMany(Transaction::class, "wallet_id");
+		return $this->hasMany(Transaction::class);
 	}
 
 	public function incomingTransfers()

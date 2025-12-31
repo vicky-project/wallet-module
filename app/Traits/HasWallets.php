@@ -2,42 +2,66 @@
 
 namespace Modules\Wallet\Traits;
 
-use Modules\Wallet\Models\Wallet;
+use Modules\Wallet\Models\Account;
+use Modules\Wallet\Models\Category;
+use Modules\Wallet\Models\Transaction;
+use Modules\Wallet\Models\Budget;
+use Modules\Wallet\Models\SavingGoal;
+use Modules\Wallet\Enums\TransactionType;
 
 trait HasWallets
 {
-	public function wallets()
+	public function categories()
 	{
-		return $this->hasMany(Wallet::class, "user_id");
+		return $this->hasMany(Category::class);
 	}
 
-	public function defaultWallet()
+	public function budgets()
 	{
-		return $this->wallets()
-			->where("is_default", true)
-			->first();
+		return $this->hasMany(Budget::class);
+	}
+
+	public function savingGoals()
+	{
+		return $this->hasMany(SavingGoal::class);
+	}
+
+	public function accounts()
+	{
+		return $this->hasMany(Account::class);
 	}
 
 	public function transactions()
 	{
-		return $this->hasMany(\Modules\Wallet\Models\Transaction::class, "user_id");
-	}
-
-	public function createWallet(array $data)
-	{
-		if (!isset($data["is_default"])) {
-			$data["is_default"] = $this->wallets()->count() === 0;
-		}
-
-		if ($data["is_default"]) {
-			$this->wallets()->update(["is_default" => false]);
-		}
-
-		return $this->wallets()->create($data);
+		return $this->hasMany(Transaction::class);
 	}
 
 	public function getTotalBalanceAttribute()
 	{
-		return $this->wallets()->sum("balance");
+		return $this->accounts()->sum("current_balance");
+	}
+
+	public function getMonthlyIncome($month = null, $year = null)
+	{
+		$month = $month ?? date("m");
+		$year = $year ?? date("Y");
+
+		return $this->transactions()
+			->where("type", TransactionType::INCOME)
+			->whereMonth("transaction_date", $month)
+			->whereYear("transaction_date", $year)
+			->sum("amount");
+	}
+
+	public function getMonthlyExpense($month = null, $year = null)
+	{
+		$month = $month ?? date("m");
+		$year = $year ?? date("Y");
+
+		return $this->transactions()
+			->where("type", TransactionType::EXPENSE)
+			->whereMonth("transaction_date", $month)
+			->whereYear("transaction_date", $year)
+			->sum("amount");
 	}
 }

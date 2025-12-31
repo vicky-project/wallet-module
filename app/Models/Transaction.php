@@ -2,127 +2,71 @@
 
 namespace Modules\Wallet\Models;
 
-use Brick\Money\Money;
-use Modules\Wallet\Casts\MoneyCast;
+use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Cast\MoneyCast;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
-	use SoftDeletes;
-
 	protected $fillable = [
-		"transaction_code",
-		"wallet_id",
 		"user_id",
-		"type",
-		"category",
+		"category_id",
+		"title",
+		"description",
 		"amount",
-		"currency",
-		"to_wallet_id",
-		"to_account_id",
+		"type",
 		"transaction_date",
 		"payment_method",
 		"reference_number",
-		"description",
-		"notes",
-		"attachments",
-		"is_reconciled",
-		"reconciled_at",
-		"reconciled_by",
-		"meta",
+		"is_recurring",
+		"recurring_period",
+		"recurring_end_date",
+		"is_verified",
 	];
 
 	protected $casts = [
-		"amount" => MoneyCast::class,
 		"transaction_date" => "date",
-		"reconciled_at" => "datetime",
-		"attachments" => "array",
-		"meta" => "array",
-		"is_reconciled" => "boolean",
+		"amount" => MoneyCast::class,
+		"is_recurring" => "boolean",
+		"is_verified" => "boolean",
+		"recurring_end_date" => "date",
+		"type" => TransactionType::class,
 	];
 
-	protected static function boot()
-	{
-		parent::boot();
-
-		static::creating(function ($transaction) {
-			if (empty($transaction->transaction_code)) {
-				$transaction->transaction_code = \Str::uuid();
-			}
-			if (empty($transaction->transaction_date)) {
-				$transaction->transaction_date = now();
-			}
-		});
-	}
-
-	public function wallet()
-	{
-		return $this->belongsTo(Wallet::class, "wallet_id");
-	}
-
-	public function toWallet()
-	{
-		return $this->belongsTo(Wallet::class, "to_wallet_id");
-	}
-
+	// Relationships
 	public function user()
 	{
 		return $this->belongsTo(config("auth.providers.users.model"));
 	}
 
-	public function reconciledBy()
+	public function category()
 	{
-		return $this->belongsTo(
-			config("auth.providers.users.model"),
-			"reconciled_by"
-		);
+		return $this->belongsTo(Category::class);
 	}
 
-	public function getFormattedAmountAttribute()
+	// Scopes
+	public function scopeIncome($query)
 	{
-		return number_format($this->amount, 2);
+		return $query->where("type", TransactionType::INCOME);
 	}
 
-	public function isDeposit()
+	public function scopeExpense($query)
 	{
-		return $this->type === "deposit";
+		return $query->where("type", TransactionType::EXPENSE);
 	}
 
-	public function isWithdraw()
-	{
-		return $this->type === "withdraw";
-	}
-
-	public function isTransfer()
-	{
-		return $this->type === "transfer";
-	}
-
-	public function scopeDeposits($query)
-	{
-		return $query->where("type", "deposit");
-	}
-
-	public function scopeWithdrawals($query)
-	{
-		return $query->where("type", "withdraw");
-	}
-
-	public function scopeTransfers($query)
-	{
-		return $query->where("type", "transfer");
-	}
-
-	public function scopeBetweenDates($query, $startDate, $endDate)
-	{
-		return $query->whereBetween("transaction_date", [$startDate, $endDate]);
-	}
-
-	public function scopeByWallet($query, $walletId)
+	public function scopeThisMonth($query)
 	{
 		return $query
-			->where("wallet_id", $walletId)
-			->orWhere("to_wallet_id", $walletId);
+			->whereMonth("transaction_date", date("m"))
+			->whereYear("transaction_date", date("Y"));
+	}
+
+	public function scopeRecent($query, $limit = 10)
+	{
+		return $query
+			->orderBy("transaction_date", "desc")
+			->orderBy("created_at", "desc")
+			->limit($limit);
 	}
 }
