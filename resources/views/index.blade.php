@@ -144,7 +144,7 @@
         if($budget->percentage >= 100) {
         $progressClass = "bg-danger";
         } elseif($budget->percentage >= 80) {
-        $progressClass = "bg-warning":
+        $progressClass = "bg-warning";
         }
         @endphp
           <div class="mb-3">
