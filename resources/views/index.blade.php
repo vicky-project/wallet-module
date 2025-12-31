@@ -48,7 +48,7 @@
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
             <h3 class="card-title mb-0">{{ $stats["net_balance"]["formatted"] }}</h3>
-            <small class="{{ $stats.net_balance.is_positive ? 'text-success' : 'text-danger'}}">{{$stats["net_balance"]["change_formatted"] }} dari bulan lalu</small>
+            <small class="{{ $stats['net_balance']['is_positive'] ? 'text-success' : 'text-danger'}}">{{$stats["net_balance"]["change_formatted"] }} dari bulan lalu</small>
           </div>
         </div>
       </div>
