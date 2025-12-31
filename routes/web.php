@@ -5,6 +5,10 @@ use Modules\Wallet\Http\Controllers\WalletController;
 use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 
+Route::get("test", function () {
+	return view("wallet::index");
+});
+
 Route::middleware(["auth"])
 	->prefix("apps")
 	->name("apps.")
