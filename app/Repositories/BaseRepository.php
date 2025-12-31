@@ -112,4 +112,9 @@ abstract class BaseRepository
 	{
 		return $this->model->paginate($perPage);
 	}
+
+	public function getModel()
+	{
+		return $this->model;
+	}
 }

@@ -162,7 +162,8 @@ class DashboardController extends BaseController
 			"total_balance" => [
 				"amount" => $totalBalance,
 				"formatted" => $totalBalance->formatTo("id_ID"),
-				"accounts_count" => $this->accountRepository->model
+				"accounts_count" => $this->accountRepository
+					->getModel()
 					->where("user_id", $user->id)
 					->count(),
 			],
