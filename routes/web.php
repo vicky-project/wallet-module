@@ -6,7 +6,7 @@ use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
 
-Route::get("test", [DashboardController::class, "index"]);
+Route::middleware(["auth"])->get("test", [DashboardController::class, "index"]);
 
 Route::middleware(["auth"])
 	->prefix("apps")
