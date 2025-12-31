@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Models\Transaction;
+use Modules\Wallet\Enums\TransactionType;
 
 class TransactionRepository extends BaseRepository
 {
@@ -154,8 +155,12 @@ class TransactionRepository extends BaseRepository
 			->whereYear("transaction_date", $year)
 			->get();
 
-		$income = $transactions->where("type", "income")->sum("amount");
-		$expense = $transactions->where("type", "expense")->sum("amount");
+		$income = $transactions
+			->where("type", TransactionType::INCOME)
+			->sum("amount");
+		$expense = $transactions
+			->where("type", TransactionType::EXPENSE)
+			->sum("amount");
 
 		return [
 			"income" => $this->fromDatabaseAmount($income),
