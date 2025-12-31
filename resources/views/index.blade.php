@@ -48,7 +48,7 @@
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
             <h3 class="card-title mb-0">{{ $stats["net_balance"]["formatted"] }}</h3>
-            <small class="text-muted">{{$stats["net_balance"]["change_formatted"] }} dari bulan lalu</small>
+            <small class="{{ $stats.net_balance.is_positive ? 'text-success' : 'text-danger'}}">{{$stats["net_balance"]["change_formatted"] }} dari bulan lalu</small>
           </div>
         </div>
       </div>
@@ -64,8 +64,8 @@
           </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Tabungan Tercapai</h6>
-            <h3 class="card-title mb-0">78%</h3>
-            <small class="text-muted">Rp 0 dari target 0</small>
+            <h3 class="card-title mb-0">{{ $stats["savings_progress"]["formatted"] }}</h3>
+            <small class="text-muted">{{ $stats["savings_progress"]["completed_goals"] }} dari target {{ $stats["savings_progress"]["goals_count"] }}</small>
           </div>
         </div>
       </div>
@@ -82,74 +82,29 @@
       </div>
       <div class="card-body p-0" id="recentTransaction">
         @if($recentTransactions->isEmpty())
-        <div class="transaction-item">
-          <p class="card-text">No transaction recorded.</p>
+        <div class="text-center py-5">
+          <i class="bi bi-receipt display-4 text-muted"></i>
+          <p class="text-muted mt-3">Belum ada transaksi</p>
+          <a href="{{ route('apps.transactions.create') }}" class="btn btn-primary mt-2" role="button">Buat transaksi.</a>
         </div>
         @else
-        <div class="transaction-item">
-          <div class="transaction-icon bg-income">
-            <i class="bi bi-arrow-up-circle text-income"></i>
-          </div>
-          <div class="flex-grow-1">
-            <h6 class="mb-0">Gaji Bulanan</h6>
-            <small class="text-muted">12 April 2023 • Gaji</small>
-          </div>
-          <div class="text-income">
-            +Rp 5.000.000
-          </div>
-        </div>
-                            
-        <div class="transaction-item">
-          <div class="transaction-icon bg-expense">
-            <i class="bi bi-cart-check text-expense"></i>
-          </div>
-          <div class="flex-grow-1">
-            <h6 class="mb-0">Belanja Bulanan</h6>
-            <small class="text-muted">10 April 2023 • Belanja</small>
-          </div>
-          <div class="text-expense">
-            -Rp 1.250.000
-          </div>
-        </div>
-                            
-        <div class="transaction-item">
-          <div class="transaction-icon bg-expense">
-            <i class="bi bi-lightning-charge text-expense"></i>
-          </div>
-          <div class="flex-grow-1">
-            <h6 class="mb-0">Bayar Listrik</h6>
-            <small class="text-muted">8 April 2023 • Utilitas</small>
-          </div>
-          <div class="text-expense">
-            -Rp 450.000
-          </div>
-        </div>
-                            
-        <div class="transaction-item">
-          <div class="transaction-icon bg-income">
-            <i class="bi bi-cash-coin text-income"></i>
-          </div>
-          <div class="flex-grow-1">
-            <h6 class="mb-0">Freelance Project</h6>
-            <small class="text-muted">5 April 2023 • Freelance</small>
-          </div>
-          <div class="text-income">
-            +Rp 2.500.000
-          </div>
-        </div>
-                            
-        <div class="transaction-item">
-          <div class="transaction-icon bg-expense">
-            <i class="bi bi-train-front text-expense"></i>
-          </div>
-          <div class="flex-grow-1">
-            <h6 class="mb-0">Transportasi</h6>
-            <small class="text-muted">3 April 2023 • Transportasi</small>
-          </div>
-          <div class="text-expense">
-            -Rp 320.000
-          </div>
-        </div>
+          @foreach ($recentTransactions as $transaction)
+          @php
+          $isIncome = $transaction["is_income"];
+          @endphp
+            <div class="transaction-item">
+              <div class="transaction-icon {{ $isIncome ? 'bg-income' : 'bg-expense' }}">
+                <i class="bi {{ $isIncome ? 'bi-arrow-up-circle' : 'bi-arrow-down-circle' }} {{ $isIncome ? 'text-income' : 'text-expense' }}"></i>
+              </div>
+              <div class="flex-grow-1">
+                <h6 class="mb-0">{{ $transaction["title"] }}</h6>
+                <small class="text-muted">{{ $transaction["date"] }} • {{ $transaction["category"] }}</small>
+              </div>
+              <div class="{{ $isIncome ? 'text-income' : 'text-expense'}} fw-bold">
+                {{ $isIncome ? '+' : '-'}}{{ $transaction["amount"] }}
+              </div>
+            </div>
+          @endforeach
         @endif
       </div>
     </div>
