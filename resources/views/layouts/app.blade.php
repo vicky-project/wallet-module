@@ -138,10 +138,15 @@
             z-index: 1030;
         }
         
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
         
         /* Card Styling */
@@ -169,36 +174,67 @@
             margin-bottom: 15px;
         }
         
-        /* Theme Toggle */
-        .theme-toggle {
-            width: 60px;
-            height: 30px;
-            background-color: #e9ecef;
-            border-radius: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-        }
-        
-        .theme-toggle::after {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 26px;
-            background-color: white;
+        /* Theme Toggle Button */
+        .theme-btn {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform var(--transition-speed);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dee2e6;
+            background-color: transparent;
+            color: #6c757d;
+            transition: all 0.3s ease;
         }
         
-        .theme-toggle.active {
-            background-color: var(--primary-color);
+        .theme-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+            color: #495057;
         }
         
-        .theme-toggle.active::after {
-            transform: translateX(30px);
+        body[data-bs-theme="dark"] .theme-btn {
+            border-color: #495057;
+            color: #adb5bd;
+        }
+        
+        body[data-bs-theme="dark"] .theme-btn:hover {
+            background-color: #343a40;
+            border-color: #6c757d;
+            color: #f8f9fa;
+        }
+        
+        /* Profile Button */
+        .profile-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dee2e6;
+            background-color: transparent;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+        
+        .profile-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+            color: #495057;
+        }
+        
+        body[data-bs-theme="dark"] .profile-btn {
+            border-color: #495057;
+            color: #adb5bd;
+        }
+        
+        body[data-bs-theme="dark"] .profile-btn:hover {
+            background-color: #343a40;
+            border-color: #6c757d;
+            color: #f8f9fa;
         }
         
         /* Dark Theme */
@@ -210,12 +246,14 @@
         body[data-bs-theme="dark"] .header {
             background-color: #1e1e1e;
             color: #f8f9fa;
+            border-bottom: 1px solid #2d3748;
         }
         
         body[data-bs-theme="dark"] .card {
             background-color: #1e1e1e;
             color: #f8f9fa;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid #2d3748;
         }
         
         body[data-bs-theme="dark"] .sidebar {
@@ -347,6 +385,7 @@
         body[data-bs-theme="dark"] .fab-item {
             background-color: #2d3748;
             color: #f8f9fa;
+            border: 1px solid #4a5568;
         }
         
         .fab-item:hover {
@@ -483,6 +522,13 @@
         /* Tombol Toggle Sidebar */
         .sidebar-toggle {
             transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
         }
         
         .sidebar-toggle.active i {
@@ -492,6 +538,18 @@
         .sidebar-toggle i {
             transition: transform 0.3s;
         }
+        
+        /* Page Title in Content Area */
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: inherit;
+        }
+        
+        body[data-bs-theme="dark"] .page-title {
+            color: #f8f9fa;
+        }
     </style>
 </head>
 <body>
@@ -499,9 +557,12 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="mb-1"><i class="bi bi-wallet2"></i> {{ config('app.name') }}</h3>
-                <small class="text-light opacity-75">{{ config('app.name') }}</small>
+                <h3 class="mb-1"><i class="bi bi-wallet2"></i> FinTrack</h3>
+                <small class="text-light opacity-75">Manajemen Keuangan Pribadi</small>
             </div>
+            <button class="btn btn-sm btn-outline-light d-lg-none sidebar-close" id="sidebarClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
         
         <ul class="sidebar-nav">
@@ -599,22 +660,23 @@
     <div class="main-content" id="mainContent">
         <!-- Header -->
         <div class="header">
-            <div class="d-flex align-items-center">
-                <button class="btn btn-outline-secondary sidebar-toggle d-lg-none me-3" id="sidebarToggle">
+            <div class="header-left">
+                <button class="btn btn-outline-secondary sidebar-toggle d-lg-none me-2" id="sidebarToggle">
                     <i class="bi bi-list"></i>
                 </button>
-                <h4 class="mb-0">Dashboard Keuangan</h4>
+                <!-- Judul Dashboard dihapus sesuai permintaan -->
             </div>
             
             <div class="header-actions">
-                <div class="d-flex align-items-center">
-                    <span class="me-2 d-none d-md-inline">Mode Gelap</span>
-                    <div class="theme-toggle" id="themeToggle"></div>
-                </div>
+                <!-- Tombol Tema Light/Dark dengan ikon -->
+                <button class="btn theme-btn" id="themeToggle" title="Ubah Tema">
+                    <i class="bi bi-sun" id="themeIcon"></i>
+                </button>
                 
+                <!-- Tombol Profile Dropdown dengan ikon saja -->
                 <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> John Doe
+                    <button class="btn profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" title="Profil Pengguna">
+                        <i class="bi bi-person-circle"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profil</a></li>
@@ -628,7 +690,242 @@
         
         <!-- Main Dashboard Content -->
         <div class="container-fluid p-4">
-        @yield('content')
+            <!-- Page Title dipindahkan ke sini -->
+            <h1 class="page-title">Dashboard Keuangan</h1>
+            
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon bg-income">
+                                    <i class="bi bi-arrow-up-circle text-income"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="card-subtitle mb-1">Pemasukan Bulan Ini</h6>
+                                    <h3 class="card-title mb-0 text-income">Rp 8.250.000</h3>
+                                    <small class="text-muted">+12% dari bulan lalu</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon bg-expense">
+                                    <i class="bi bi-arrow-down-circle text-expense"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="card-subtitle mb-1">Pengeluaran Bulan Ini</h6>
+                                    <h3 class="card-title mb-0 text-expense">Rp 5.120.000</h3>
+                                    <small class="text-muted">-5% dari bulan lalu</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon" style="background-color: rgba(59, 130, 246, 0.1);">
+                                    <i class="bi bi-graph-up" style="color: #3b82f6;"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
+                                    <h3 class="card-title mb-0">Rp 3.130.000</h3>
+                                    <small class="text-muted">+25% dari bulan lalu</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon" style="background-color: rgba(245, 158, 11, 0.1);">
+                                    <i class="bi bi-piggy-bank" style="color: #f59e0b;"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="card-subtitle mb-1">Tabungan Tercapai</h6>
+                                    <h3 class="card-title mb-0">78%</h3>
+                                    <small class="text-muted">Rp 3.9jt dari target 5jt</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts and Transactions -->
+            <div class="row mb-4">
+                <!-- Chart Section -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Ringkasan Keuangan (6 Bulan Terakhir)</h5>
+                            <select class="form-select form-select-sm w-auto">
+                                <option>6 Bulan Terakhir</option>
+                                <option>Tahun Ini</option>
+                                <option>Tahun Lalu</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="financeChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Transactions -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Transaksi Terbaru</h5>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="transaction-item">
+                                <div class="transaction-icon bg-income">
+                                    <i class="bi bi-arrow-up-circle text-income"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Gaji Bulanan</h6>
+                                    <small class="text-muted">12 April 2023 • Gaji</small>
+                                </div>
+                                <div class="text-income">
+                                    +Rp 5.000.000
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-icon bg-expense">
+                                    <i class="bi bi-cart-check text-expense"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Belanja Bulanan</h6>
+                                    <small class="text-muted">10 April 2023 • Belanja</small>
+                                </div>
+                                <div class="text-expense">
+                                    -Rp 1.250.000
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-icon bg-expense">
+                                    <i class="bi bi-lightning-charge text-expense"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Bayar Listrik</h6>
+                                    <small class="text-muted">8 April 2023 • Utilitas</small>
+                                </div>
+                                <div class="text-expense">
+                                    -Rp 450.000
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-icon bg-income">
+                                    <i class="bi bi-cash-coin text-income"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Freelance Project</h6>
+                                    <small class="text-muted">5 April 2023 • Freelance</small>
+                                </div>
+                                <div class="text-income">
+                                    +Rp 2.500.000
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-icon bg-expense">
+                                    <i class="bi bi-train-front text-expense"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Transportasi</h6>
+                                    <small class="text-muted">3 April 2023 • Transportasi</small>
+                                </div>
+                                <div class="text-expense">
+                                    -Rp 320.000
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Budget Overview -->
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Ringkasan Anggaran</h5>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Makanan & Minuman</span>
+                                    <span>Rp 850.000 / Rp 1.000.000</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Transportasi</span>
+                                    <span>Rp 320.000 / Rp 500.000</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 64%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Hiburan</span>
+                                    <span>Rp 450.000 / Rp 400.000</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 113%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Belanja</span>
+                                    <span>Rp 1.250.000 / Rp 1.500.000</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 83%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning mt-4">
+                                <small>
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Perhatian:</strong> Anggaran untuk Hiburan telah melebihi batas. Pertimbangkan untuk mengurangi pengeluaran di kategori ini.
+                                </small>
+                            </div>
+                            
+                            <div class="alert alert-info mt-3">
+                                <small>
+                                    <i class="bi bi-lightbulb me-2"></i>
+                                    <strong>Tips:</strong> Gunakan tombol <i class="bi bi-plus-lg"></i> di pojok kanan bawah untuk menambahkan transaksi dengan cepat!
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -640,6 +937,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Elemen DOM
             const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const mainContent = document.getElementById('mainContent');
@@ -652,6 +950,10 @@
             const fabExpense = document.getElementById('fabExpense');
             const fabRecurring = document.getElementById('fabRecurring');
             const fabReport = document.getElementById('fabReport');
+            
+            // Elemen Tema
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
             
             // Fungsi untuk membuka sidebar
             function openSidebar() {
@@ -687,6 +989,14 @@
                     } else {
                         openSidebar();
                     }
+                });
+            }
+            
+            // Tombol close di dalam sidebar
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeSidebar();
                 });
             }
             
@@ -775,6 +1085,42 @@
                 });
             });
             
+            // Fungsi untuk mengubah ikon tema
+            function updateThemeIcon(isDark) {
+                if (isDark) {
+                    themeIcon.classList.remove('bi-moon');
+                    themeIcon.classList.add('bi-sun');
+                    themeToggle.setAttribute('title', 'Ubah ke Mode Terang');
+                } else {
+                    themeIcon.classList.remove('bi-sun');
+                    themeIcon.classList.add('bi-moon');
+                    themeToggle.setAttribute('title', 'Ubah ke Mode Gelap');
+                }
+            }
+            
+            // Toggle tema gelap/terang
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            
+            // Set tema awal
+            if (currentTheme === 'dark') {
+                document.body.setAttribute('data-bs-theme', 'dark');
+                updateThemeIcon(true);
+            } else {
+                updateThemeIcon(false);
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                if (document.body.getAttribute('data-bs-theme') === 'light') {
+                    document.body.setAttribute('data-bs-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateThemeIcon(true);
+                } else {
+                    document.body.setAttribute('data-bs-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    updateThemeIcon(false);
+                }
+            });
+            
             // Responsif: saat resize window
             window.addEventListener('resize', function() {
                 if (window.innerWidth >= 992) {
@@ -792,28 +1138,6 @@
                 // Tutup FAB menu pada resize (untuk konsistensi UX)
                 if (fabMenu.classList.contains('active')) {
                     toggleFabMenu();
-                }
-            });
-            
-            // Toggle tema gelap/terang
-            const themeToggle = document.getElementById('themeToggle');
-            const currentTheme = localStorage.getItem('theme') || 'light';
-            
-            // Set tema awal
-            if (currentTheme === 'dark') {
-                document.body.setAttribute('data-bs-theme', 'dark');
-                themeToggle.classList.add('active');
-            }
-            
-            themeToggle.addEventListener('click', function() {
-                if (document.body.getAttribute('data-bs-theme') === 'light') {
-                    document.body.setAttribute('data-bs-theme', 'dark');
-                    themeToggle.classList.add('active');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    document.body.setAttribute('data-bs-theme', 'light');
-                    themeToggle.classList.remove('active');
-                    localStorage.setItem('theme', 'light');
                 }
             });
             
