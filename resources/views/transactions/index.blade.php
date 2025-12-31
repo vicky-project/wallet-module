@@ -1,4 +1,4 @@
-@extends('core::layouts.app')
+@extends('wallet::layouts.app')
 
 @section('title', 'Transactions')
 

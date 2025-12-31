@@ -561,12 +561,9 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="mb-1"><i class="bi bi-wallet2"></i> FinTrack</h3>
+                <h3 class="mb-1"><i class="bi bi-wallet2"></i> {{ config('app.name', 'VickyServer') }}</h3>
                 <small class="text-light opacity-75">Manajemen Keuangan Pribadi</small>
             </div>
-            <button class="btn btn-sm btn-outline-light d-lg-none sidebar-close" id="sidebarClose">
-                <i class="bi bi-x-lg"></i>
-            </button>
         </div>
         
         <ul class="sidebar-nav">
@@ -638,11 +635,11 @@
     <!-- Floating Action Button (FAB) -->
     <div class="fab-container" id="fabContainer">
         <div class="fab-menu" id="fabMenu">
-            <a href="#" class="fab-item" id="fabIncome">
+            <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="fab-item" id="fabIncome">
                 <i class="bi bi-plus-circle fab-income"></i>
                 <span class="fab-label">Tambah Pemasukan</span>
             </a>
-            <a href="#" class="fab-item" id="fabExpense">
+            <a href="{{ route('apps.transactions.create', ['type' => 'expense']) }}" class="fab-item" id="fabExpense">
                 <i class="bi bi-dash-circle fab-expense"></i>
                 <span class="fab-label">Tambah Pengeluaran</span>
             </a>
@@ -706,7 +703,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Elemen DOM
             const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebarClose = document.getElementById('sidebarClose');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const mainContent = document.getElementById('mainContent');
@@ -758,14 +754,6 @@
                     } else {
                         openSidebar();
                     }
-                });
-            }
-            
-            // Tombol close di dalam sidebar
-            if (sidebarClose) {
-                sidebarClose.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    closeSidebar();
                 });
             }
             

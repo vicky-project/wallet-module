@@ -3,8 +3,10 @@
 namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
-use Modules\Wallet\Models\Category;
 use Illuminate\Support\Collection;
+use Modules\Wallet\Models\Category;
+use Modules\Wallet\Enums\CategoryType;
+use Modules\Wallet\Enums\TransactionType;
 
 class CategoryRepository extends BaseRepository
 {
@@ -71,13 +73,13 @@ class CategoryRepository extends BaseRepository
 
 		return $this->model
 			->where("user_id", $user->id)
-			->where("type", "expense")
+			->where("type", CategoryType::EXPENSE)
 			->with([
 				"transactions" => function ($query) use ($month, $year) {
 					$query
 						->whereMonth("transaction_date", $month)
 						->whereYear("transaction_date", $year)
-						->where("type", "expense");
+						->where("type", TransactionType::EXPENSE);
 				},
 			])
 			->get()
@@ -88,5 +90,28 @@ class CategoryRepository extends BaseRepository
 					: 0;
 				return $category;
 			});
+	}
+
+	/**
+	 * Get categories for dropdown
+	 */
+	public function getForDropdown(User $user): array
+	{
+		return $this->model
+			->where("user_id", $user->id)
+			->where("is_active", true)
+			->orderBy("type")
+			->orderBy("name")
+			->get()
+			->mapWithKeys(function ($category) {
+				$typeLabel =
+					$category->type === CategoryType::INCOME
+						? "Pemasukan"
+						: "Pengeluaran";
+				return [
+					$category->id => "[{$typeLabel}] {$category->name}",
+				];
+			})
+			->toArray();
 	}
 }

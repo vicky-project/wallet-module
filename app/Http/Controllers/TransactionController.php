@@ -2,267 +2,457 @@
 
 namespace Modules\Wallet\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Modules\Core\Http\Controllers\BaseController;
-use Modules\Wallet\Models\Transaction;
-use Modules\Wallet\Models\Wallet;
-use Modules\Wallet\Constants\Permissions;
-use Modules\Wallet\Enums\CategoryType;
-use Modules\Wallet\Services\TransactionService;
-use Modules\Wallet\Repositories\CategoryRepository;
-use Modules\Wallet\Repositories\TransactionRepository;
-use Modules\Wallet\Repositories\WalletRepository;
+use Modules\Wallet\Repositories\{
+	TransactionRepository,
+	CategoryRepository,
+	AccountRepository,
+	BudgetRepository
+};
 use Modules\Wallet\Http\Requests\TransactionRequest;
-use Modules\Wallet\Http\Requests\TransferRequest;
+use Modules\Core\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Brick\Money\Money;
 
 class TransactionController extends BaseController
 {
-	protected $walletRepository;
-	protected $transactionService;
-	protected $categoryRepository;
 	protected $transactionRepository;
+	protected $categoryRepository;
+	protected $accountRepository;
+	protected $budgetRepository;
 
 	public function __construct(
-		TransactionService $transactionService,
 		TransactionRepository $transactionRepository,
-		WalletRepository $walletRepository,
-		CategoryRepository $categoryRepository
+		CategoryRepository $categoryRepository,
+		AccountRepository $accountRepository,
+		BudgetRepository $budgetRepository
 	) {
-		$this->transactionService = $transactionService;
-		$this->categoryRepository = $categoryRepository;
 		$this->transactionRepository = $transactionRepository;
-		$this->walletRepository = $walletRepository;
-
-		if ($this->isPermissionMiddlewareExists()) {
-			$this->middleware("permission:" . Permissions::VIEW_TRANSACTIONS)->only([
-				"index",
-				"show",
-			]);
-			$this->middleware("permission:" . Permissions::CREATE_TRANSACTIONS)->only(
-				["create", "store"]
-			);
-			$this->middleware("permission:" . Permissions::EDIT_TRANSACTIONS)->only([
-				"edit",
-				"store",
-			]);
-		}
+		$this->categoryRepository = $categoryRepository;
+		$this->accountRepository = $accountRepository;
+		$this->budgetRepository = $budgetRepository;
 	}
 
+	/**
+	 * Display a listing of transactions with filters
+	 */
 	public function index(Request $request)
 	{
-		$transactions = $this->transactionRepository
-			->getUserTransactions($request->all())
-			->map(
-				fn($item) => [
-					"total" => $item->count(),
-					"deposit" => $item->where("type", CategoryType::INCOME)->count(),
-					"withdraw" => $item->where("type", CategoryType::EXPENSE)->count(),
-				]
-			);
+		$user = Auth::user();
+		$filters = $request->only([
+			"type",
+			"category_id",
+			"account_id",
+			"month",
+			"year",
+			"search",
+		]);
 
-		$wallets = $this->walletRepository->getUserWallets();
+		// Set default month/year if not provided
+		if (!isset($filters["month"])) {
+			$filters["month"] = date("m");
+		}
+		if (!isset($filters["year"])) {
+			$filters["year"] = date("Y");
+		}
+
+		// Get transactions with filters
+		$transactions = $this->transactionRepository->getWithFilters(
+			$user,
+			$filters
+		);
+
+		// Get summary for the filtered period
+		$summary = $this->transactionRepository->getSummary(
+			$user,
+			$filters["month"],
+			$filters["year"]
+		);
+
+		// Get categories and accounts for filter dropdowns
+		$categories = $this->categoryRepository->getForDropdown($user);
+		$accounts = $this->accountRepository->getForDropdown($user);
+
+		// Get months and years for filter
+		$months = $this->getMonths();
+		$years = $this->getYears();
+
+		dd(
+			$transactions,
+			$summary,
+			$filters,
+			$categories,
+			$accounts,
+			$months,
+			$years
+		);
 
 		return view(
 			"wallet::transactions.index",
-			compact("transactions", "wallets")
+			compact(
+				"transactions",
+				"summary",
+				"filters",
+				"categories",
+				"accounts",
+				"months",
+				"years"
+			)
 		);
 	}
 
-	public function create()
+	/**
+	 * Show the form for creating a new transaction
+	 */
+	public function create(Request $request)
 	{
-		$wallet = $this->walletRepository->getDefaultUserWallet();
-		if (!$wallet) {
-			return redirect()
-				->route("apps.wallets.index")
-				->withErrors("You have to create new wallet first.");
-		}
-		$depositCategories = $this->categoryRepository->getUserCategories(
-			CategoryType::INCOME
-		);
-		$withdrawCategories = $this->categoryRepository->getUserCategories(
-			CategoryType::EXPENSE
-		);
+		$user = Auth::user();
+
+		// Get preset values from query parameters (for quick add from FAB)
+		$preset = [
+			"type" => $request->get("type", "expense"),
+			"category_id" => $request->get("category_id"),
+			"account_id" => $request->get("account_id"),
+			"amount" => $request->get("amount"),
+			"title" => $request->get("title"),
+		];
+
+		$incomeCategories = $this->categoryRepository->getByType("income", $user);
+		$expenseCategories = $this->categoryRepository->getByType("expense", $user);
+		$accounts = $this->accountRepository->getActiveAccounts($user);
 
 		return view(
-			"wallet::transactions.create",
-			compact("wallet", "depositCategories", "withdrawCategories")
+			"transactions.create",
+			compact("incomeCategories", "expenseCategories", "accounts", "preset")
 		);
 	}
 
+	/**
+	 * Store a newly created transaction
+	 */
 	public function store(TransactionRequest $request)
 	{
 		try {
+			$user = Auth::user();
+			$data = $request->validated();
+
+			// Check if category belongs to user
+			$category = $this->categoryRepository->find($data["category_id"]);
+			if ($category->user_id !== $user->id) {
+				return redirect()
+					->back()
+					->withInput()
+					->withErrors(["category_id" => "Kategori tidak valid"]);
+			}
+
+			// Check if account belongs to user
+			$account = $this->accountRepository->find($data["account_id"]);
+			if ($account->user_id !== $user->id) {
+				return redirect()
+					->back()
+					->withInput()
+					->withErrors(["account_id" => "Akun tidak valid"]);
+			}
+
+			// For expense, check account balance
+			if ($data["type"] === "expense") {
+				$amount = Money::of($data["amount"], "IDR");
+				if (
+					!$this->accountRepository->hasSufficientBalance($account->id, $amount)
+				) {
+					return redirect()
+						->back()
+						->withInput()
+						->withErrors(["amount" => "Saldo akun tidak mencukupi"]);
+				}
+			}
+
 			$transaction = $this->transactionRepository->createTransaction(
-				$request->validated(),
-				auth()->user()
+				$data,
+				$user
 			);
 
-			return back()->with("success", "Transaction recorded successfully");
+			// Update budget if expense
+			if ($data["type"] === "expense") {
+				$this->updateBudget($user, $category->id, $data["amount"]);
+			}
+
+			return redirect()
+				->route("transactions.index")
+				->with("success", "Transaksi berhasil ditambahkan");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
+			return redirect()
+				->back()
+				->withInput()
+				->with("error", "Gagal menambahkan transaksi: " . $e->getMessage());
 		}
 	}
 
-	public function show(Request $request, Transaction $transaction)
+	/**
+	 * Display the specified transaction
+	 */
+	public function show($id)
 	{
-		$transaction->load(["wallet", "toWallet", "user"]);
-		//dd($request->all(), $transaction);
-		return view("wallet::transactions.show", compact("transaction"));
-	}
+		$user = Auth::user();
+		$transaction = $this->transactionRepository->find($id);
 
-	public function update(TransactionRequest $request, Transaction $transaction)
-	{
-		$this->authorize("update", $transaction);
-
-		try {
-			$transaction = $this->transactionRepository->updateTransaction(
-				$transaction,
-				$request->validated()
-			);
-
-			return response()->json([
-				"success" => true,
-				"message" => "Transaction updated successfully",
-				"data" => $transaction,
-			]);
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
+		if (!$transaction || $transaction->user_id !== $user->id) {
+			abort(404, "Transaksi tidak ditemukan");
 		}
+
+		return view("transactions.show", compact("transaction"));
 	}
 
-	public function transfer(TransferRequest $request)
+	/**
+	 * Show the form for editing the specified transaction
+	 */
+	public function edit($id)
 	{
-		try {
-			$fromWallet = Wallet::findOrFail($request->from_wallet_id);
-			$toWallet = Wallet::findOrFail($request->to_wallet_id);
+		$user = Auth::user();
+		$transaction = $this->transactionRepository->find($id);
 
-			$transactions = $this->transactionService->transfer(
-				$fromWallet,
-				$toWallet,
-				$request->validated()
-			);
-
-			return back()->with("success", "Transfer completed successfully");
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
+		if (!$transaction || $transaction->user_id !== $user->id) {
+			abort(404, "Transaksi tidak ditemukan");
 		}
-	}
 
-	public function updateStatus(Request $request, Transaction $transaction)
-	{
-		$this->authorize("update", $transaction);
+		$incomeCategories = $this->categoryRepository->getByType("income", $user);
+		$expenseCategories = $this->categoryRepository->getByType("expense", $user);
+		$accounts = $this->accountRepository->getActiveAccounts($user);
 
-		$request->validate([
-			"status" => "required|in:pending,completed,failed,cancelled",
-			"notes" => "nullable|string",
-		]);
-
-		try {
-			$transaction = $this->transactionService->updateTransactionStatus(
-				$transaction,
-				$request->status,
-				["notes" => $request->notes]
-			);
-
-			return response()->json([
-				"success" => true,
-				"message" => "Transaction status updated successfully",
-				"data" => $transaction,
-			]);
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
-		}
-	}
-
-	public function reconcile(Request $request, Transaction $transaction)
-	{
-		$this->authorize("update", $transaction);
-
-		$request->validate([
-			"is_reconciled" => "required|boolean",
-		]);
-
-		try {
-			$transaction->update([
-				"is_reconciled" => $request->is_reconciled,
-				"reconciled_at" => $request->is_reconciled ? now() : null,
-				"reconciled_by" => $request->is_reconciled ? auth()->id() : null,
-			]);
-
-			return response()->json([
-				"success" => true,
-				"message" => "Transaction reconciled successfully",
-				"data" => $transaction,
-			]);
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
-		}
-	}
-
-	public function summary(Request $request)
-	{
-		$summary = $this->transactionRepository->getTransactionSummary(
-			auth()->id(),
-			$request->start_date,
-			$request->end_date
+		return view(
+			"transactions.edit",
+			compact(
+				"transaction",
+				"incomeCategories",
+				"expenseCategories",
+				"accounts"
+			)
 		);
-
-		return response()->json([
-			"success" => true,
-			"data" => $summary,
-		]);
 	}
 
-	public function recent()
+	/**
+	 * Update the specified transaction
+	 */
+	public function update(TransactionRequest $request, $id)
 	{
-		$transactions = $this->transactionRepository->getRecentTransactions(10);
+		try {
+			$user = Auth::user();
+			$transaction = $this->transactionRepository->find($id);
 
-		return response()->json([
-			"success" => true,
-			"data" => $transactions,
-		]);
+			if (!$transaction || $transaction->user_id !== $user->id) {
+				abort(404, "Transaksi tidak ditemukan");
+			}
+
+			$data = $request->validated();
+
+			// Validate category and account if changed
+			if (
+				isset($data["category_id"]) &&
+				$data["category_id"] != $transaction->category_id
+			) {
+				$category = $this->categoryRepository->find($data["category_id"]);
+				if ($category->user_id !== $user->id) {
+					return redirect()
+						->back()
+						->withInput()
+						->withErrors(["category_id" => "Kategori tidak valid"]);
+				}
+			}
+
+			if (
+				isset($data["account_id"]) &&
+				$data["account_id"] != $transaction->account_id
+			) {
+				$account = $this->accountRepository->find($data["account_id"]);
+				if ($account->user_id !== $user->id) {
+					return redirect()
+						->back()
+						->withInput()
+						->withErrors(["account_id" => "Akun tidak valid"]);
+				}
+			}
+
+			// For expense, check account balance if amount or account changed
+			if (
+				$data["type"] === "expense" &&
+				($data["amount"] != $transaction->amount ||
+					$data["account_id"] != $transaction->account_id)
+			) {
+				$account = $this->accountRepository->find($data["account_id"]);
+				$amount = Money::of($data["amount"], "IDR");
+
+				// Calculate the net change needed
+				$oldAmount = Money::ofMinor($transaction->amount, "IDR");
+				$newAmount = $amount;
+				$difference = $newAmount->minus($oldAmount);
+
+				// If increasing expense or changing to a different account, check balance
+				if (
+					$difference->isPositive() ||
+					$data["account_id"] != $transaction->account_id
+				) {
+					if (
+						!$this->accountRepository->hasSufficientBalance(
+							$account->id,
+							$difference->abs()
+						)
+					) {
+						return redirect()
+							->back()
+							->withInput()
+							->withErrors([
+								"amount" => "Saldo akun tidak mencukupi untuk perubahan ini",
+							]);
+					}
+				}
+			}
+
+			$updatedTransaction = $this->transactionRepository->updateTransaction(
+				$id,
+				$data
+			);
+
+			// Update budgets if expense
+			if ($data["type"] === "expense") {
+				// Update old category budget if category changed
+				if ($transaction->category_id != $updatedTransaction->category_id) {
+					$this->updateBudget(
+						$user,
+						$transaction->category_id,
+						-$transaction->amount
+					);
+				}
+
+				// Update new category budget
+				$this->updateBudget(
+					$user,
+					$updatedTransaction->category_id,
+					$data["amount"]
+				);
+			}
+
+			return redirect()
+				->route("transactions.index")
+				->with("success", "Transaksi berhasil diperbarui");
+		} catch (\Exception $e) {
+			return redirect()
+				->back()
+				->withInput()
+				->with("error", "Gagal memperbarui transaksi: " . $e->getMessage());
+		}
 	}
 
-	public function byDate(Request $request)
+	/**
+	 * Remove the specified transaction
+	 */
+	public function destroy($id)
 	{
-		$date = $request->date;
-		$byDate = $this->transactionRepository->byDate($date);
+		try {
+			$user = Auth::user();
+			$transaction = $this->transactionRepository->find($id);
 
-		return view("wallet::transactions.by-date", compact("byDate", "date"));
+			if (!$transaction || $transaction->user_id !== $user->id) {
+				abort(404, "Transaksi tidak ditemukan");
+			}
+
+			$this->transactionRepository->deleteTransaction($id);
+
+			// Update budget if expense
+			if ($transaction->type === "expense") {
+				$this->updateBudget(
+					$user,
+					$transaction->category_id,
+					-$transaction->amount
+				);
+			}
+
+			return redirect()
+				->route("transactions.index")
+				->with("success", "Transaksi berhasil dihapus");
+		} catch (\Exception $e) {
+			return redirect()
+				->back()
+				->with("error", "Gagal menghapus transaksi: " . $e->getMessage());
+		}
 	}
 
-	public function trashed(Request $request)
+	/**
+	 * Get transactions by type (income/expense)
+	 */
+	public function byType($type)
 	{
-		return view("wallet::transactions.trashed");
+		$user = Auth::user();
+
+		if (!in_array($type, ["income", "expense"])) {
+			abort(404);
+		}
+
+		$transactions = $this->transactionRepository->getByType($user, $type);
+		$categories = $this->categoryRepository->getByType($type, $user);
+		$accounts = $this->accountRepository->getActiveAccounts($user);
+
+		$summary = $this->transactionRepository->getSummary($user);
+
+		return view(
+			"transactions.by-type",
+			compact("transactions", "type", "categories", "accounts", "summary")
+		);
+	}
+
+	/**
+	 * Update budget for category
+	 */
+	private function updateBudget($user, $categoryId, $amount)
+	{
+		$budget = $this->budgetRepository->model
+			->where("user_id", $user->id)
+			->where("category_id", $categoryId)
+			->where("month", date("m"))
+			->where("year", date("Y"))
+			->first();
+
+		if ($budget) {
+			$this->budgetRepository->updateSpentAmount($budget->id);
+		}
+	}
+
+	/**
+	 * Get months for filter
+	 */
+	private function getMonths(): array
+	{
+		return [
+			"01" => "Januari",
+			"02" => "Februari",
+			"03" => "Maret",
+			"04" => "April",
+			"05" => "Mei",
+			"06" => "Juni",
+			"07" => "Juli",
+			"08" => "Agustus",
+			"09" => "September",
+			"10" => "Oktober",
+			"11" => "November",
+			"12" => "Desember",
+		];
+	}
+
+	/**
+	 * Get years for filter (last 5 years and next year)
+	 */
+	private function getYears(): array
+	{
+		$currentYear = date("Y");
+		$years = [];
+
+		for ($i = 5; $i >= 1; $i--) {
+			$year = $currentYear - $i;
+			$years[$year] = $year;
+		}
+
+		$years[$currentYear] = $currentYear;
+		$years[$currentYear + 1] = $currentYear + 1;
+
+		return $years;
 	}
 }

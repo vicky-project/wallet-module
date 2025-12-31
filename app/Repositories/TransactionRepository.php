@@ -19,6 +19,77 @@ class TransactionRepository extends BaseRepository
 	}
 
 	/**
+	 * Get transactions with filters
+	 */
+	public function getWithFilters(User $user, array $filters = [])
+	{
+		$query = $this->model
+			->with(["category", "account"])
+			->where("user_id", $user->id);
+
+		// Apply filters
+		if (!empty($filters["type"])) {
+			$query->where("type", $filters["type"]);
+		}
+
+		if (!empty($filters["category_id"])) {
+			$query->where("category_id", $filters["category_id"]);
+		}
+
+		if (!empty($filters["account_id"])) {
+			$query->where("account_id", $filters["account_id"]);
+		}
+
+		if (!empty($filters["month"]) && !empty($filters["year"])) {
+			$query
+				->whereMonth("transaction_date", $filters["month"])
+				->whereYear("transaction_date", $filters["year"]);
+		}
+
+		if (!empty($filters["search"])) {
+			$search = $filters["search"];
+			$query->where(function ($q) use ($search) {
+				$q->where("title", "like", "%{$search}%")->orWhere(
+					"description",
+					"like",
+					"%{$search}%"
+				);
+			});
+		}
+
+		return $query
+			->orderBy("transaction_date", "desc")
+			->orderBy("created_at", "desc")
+			->paginate(20)
+			->through(function ($transaction) {
+				$transaction->formatted_amount = $this->formatMoney(
+					$this->fromDatabaseAmount($transaction->amount)
+				);
+				return $transaction;
+			});
+	}
+
+	/**
+	 * Get transactions by type
+	 */
+	public function getByType(User $user, string $type)
+	{
+		return $this->model
+			->with(["category", "account"])
+			->where("user_id", $user->id)
+			->where("type", $type)
+			->orderBy("transaction_date", "desc")
+			->orderBy("created_at", "desc")
+			->paginate(20)
+			->through(function ($transaction) {
+				$transaction->formatted_amount = $this->formatMoney(
+					$this->fromDatabaseAmount($transaction->amount)
+				);
+				return $transaction;
+			});
+	}
+
+	/**
 	 * Create transaction with Money amounts
 	 */
 	public function createTransaction(array $data, User $user): Transaction

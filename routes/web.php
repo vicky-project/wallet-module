@@ -6,12 +6,14 @@ use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
 
-Route::middleware(["auth"])->get("test", [DashboardController::class, "index"]);
-
 Route::middleware(["auth"])
 	->prefix("apps")
 	->name("apps.")
 	->group(function () {
+		Route::get("preview", [DashboardController::class, "index"])->name(
+			"financial"
+		);
+
 		// Wallet Routes
 		Route::post("wallets/default", [
 			WalletController::class,

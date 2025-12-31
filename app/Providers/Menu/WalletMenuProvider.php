@@ -35,7 +35,7 @@ class WalletMenuProvider extends BaseMenuProvider
 					$this->item([
 						"title" => "Wallets",
 						"icon" => "fas fa-wallet",
-						"route" => "apps.wallets.index",
+						"route" => "apps.financial",
 						"order" => 2,
 						"permission" => Permissions::VIEW_WALLETS,
 					]),
