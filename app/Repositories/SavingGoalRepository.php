@@ -5,6 +5,7 @@ namespace Modules\Wallet\Repositories;
 use App\Models\User;
 use Brick\Money\Money;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Modules\Wallet\Models\SavingGoal;
 
 class SavingGoalRepository extends BaseRepository
