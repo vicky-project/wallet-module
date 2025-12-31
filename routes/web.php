@@ -4,10 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Modules\Wallet\Http\Controllers\WalletController;
 use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
+use Modules\Wallet\Http\Controllers\DashboardController;
 
-Route::get("test", function () {
-	return view("wallet::index");
-});
+Route::get("test", [DashboardController::class, "index"]);
 
 Route::middleware(["auth"])
 	->prefix("apps")
