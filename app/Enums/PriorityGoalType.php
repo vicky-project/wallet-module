@@ -1,7 +1,7 @@
 <?php
 namespace Modules\Wallet\Enums;
 
-enum PriorityGlobalType: string
+enum PriorityGoalType: string
 {
 	case LOW = "low";
 	case MEDIUM = "medium";

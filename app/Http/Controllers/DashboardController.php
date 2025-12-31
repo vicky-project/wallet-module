@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Http\Controllers;
 
+use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Repositories\{
 	TransactionRepository,
 	CategoryRepository,
@@ -13,7 +14,7 @@ use Brick\Money\Money;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class DashboardController extends BaseController
 {
 	protected $transactionRepository;
 	protected $categoryRepository;
