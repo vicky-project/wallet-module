@@ -74,7 +74,11 @@
           <select name="type" id="type" class="form-select">
             <option value="">Semua Tipe</option>
             @foreach(TransactionType::cases() as $type)
-            <option value="{{ $type->value }}" @selected($type->value === $filters['type'])>{{ $type->name}}</option>
+            <option value="{{ $type->value }}"
+            @isset($filters["type"])
+              @selected($type->value === $filters['type'])
+            @endisset
+            >{{ $type->name}}</option>
             @endforeach
           </select>
         </div>
@@ -83,7 +87,11 @@
           <select name="category_id" id="category_id" class="form-select">
             <option value="">Semua</option>
             @foreach($categories as $id => $name)
-            <option value="{{ $id }}" @selected($filters['category_id'] == $id)>{{ $name }}</option>
+            <option value="{{ $id }}"
+            @isset($filters["category_id"])
+              @selected($filters['category_id'] == $id)
+            @endisset
+            >{{ $name }}</option>
             @endforeach
           </select>
         </div>
@@ -92,7 +100,11 @@
           <select name="account_id" id="account_id" class="form-select">
             <option value="">Semua</option>
             @foreach($accounts as $id => $name)
-            <option value="{{ $id }}" @selected($filters['account_id'] == $id)>{{ $name }}</option>
+            <option value="{{ $id }}"
+            @isset($filters["account_id"])
+              @selected($filters['account_id'] == $id)
+            @endisset
+            >{{ $name }}</option>
             @endforeach
           </select>
         </div>
@@ -101,12 +113,20 @@
           <div class="input-group">
             <select name="month" id="month" class="form-select">
               @foreach($months as $key => $month)
-              <option value="{{ $key }}" @selected($filters['month'] == $key)>{{ $month }}</option>
+              <option value="{{ $key }}"
+              @isset($filters['month'])
+                @selected($filters['month'] == $key)
+              @endisset
+              >{{ $month }}</option>
               @endforeach
             </select>
             <select name="year" id="year" class="form-select">
               @foreach($years as $year)
-              <option value="{{ $year }}" @selected($filters['year'] == $year)>{{ $year }}</option>
+              <option value="{{ $year }}"
+              @isset($filters["year"])
+                @selected($filters['year'] == $year)
+              @endisset
+              >{{ $year }}</option>
               @endforeach
             </select>
           </div>
