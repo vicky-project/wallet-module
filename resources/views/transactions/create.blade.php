@@ -178,7 +178,7 @@
         <div class="mb-3">
           <div class="form-check form-switch">
             <input type="checkbox" class="form-check-input" role="switch" id="is_recurring" name="is_recurring" value="1" @checked(old('is_recurring'))>
-            <label class="form-check-label">Jadikan Transaksi Rutin</label>
+            <label for="is_recurring" class="form-check-label">Jadikan Transaksi Rutin</label>
           </div>
           <div id="recurringOptions" style="display: none;margin-top: 1rem;">
             <div class="mb-3">
@@ -239,90 +239,7 @@
 
 @push('scripts')
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const amountInput = document.getElementById('amount');
-    
-    amountInput.addEventListener('input', function (e) {
-      let value = e.target.value.replace('/[^0-9]/g', '');
-      if(value) {
-        value = parseInt(value).toLocaleString('id-ID');
-      }
-      
-      e.target.value = value;
-    });
-    
-    // Toggle Category section based on type
-    const typeIncome = document.getElementById('type_{{ CategoryType::INCOME }}');
-    const typeExpense = document.getElementById('type_{{ CategoryType::EXPENSE }}');
-    const incomeCategories = document.getElementById('incomeCategories');
-    const expenseCategories = document.getElementById('expenseCategories');
-    
-    function toggleCategories() {
-      if(typeIncome.checked) {
-        incomeCategories.style.display = 'block';
-        expenseCategories.style.display = 'none';
-        
-        document.querySelectorAll('#expenseCategories input[type="radio"]').forEach(radio => {
-          radio.checked = false;
-        });
-      } else {
-        incomeCategories.style.display = 'none';
-        expenseCategories.style.display = 'block';
-        document.querySelectorAll('#incomeCategories input[type="radio"]').forEach(radio => {
-          radio.checked = false;
-        });
-      }
-    }
-    
-    typeIncome.addEventListener('change', toggleCategories);
-    typeExpense.addEventListener('change', toggleCategories);
-    
-    // Initialize
-    toggleCategories();
-    
-    // Toggle recurring options
-    const isRecurring = document.getElementById('is_recurring');
-    const recurringOptions = document.getElementById('recurringOptions');
-    
-    isRecurring.addEventListener('change', function () {
-      if(this.checked) {
-        recurringOptions.style.display = 'block';
-      } else {
-        recurringOptions.style.display = 'none';
-      }
-    });
-    
-    // Show Account Balance
-    const accountSelect = document.getElementById('account_id');
-    const accountBalance = document.getElementById('accountBalance');
-    
-    accountSelect.addEventListener('change', function () {
-      const selectedOption = this.options[this.selectedIndex];
-      const balance = selectedOption.getAttribute('data-balance');
-      
-      if(balance) {
-        accountBalance.innerHTML = `
-        <div class="alert alert-info p-2">
-          <small>
-            <i class="bi bi-wallet me-1"></i>
-            Saldo saat ini: <strong>${balance}</strong>
-          </small>
-        </div>
-        `;
-      } else {
-        accountBalance.innerHTML = "";
-      }
-    });
-    
-    if(accountSelect.value) {
-      accountSelect.dispatchEvent(new Event('change'));
-    }
-    
-    // Set default date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('transaction_date').value = today;
-    
-    // Preview Transaction
+      // Preview Transaction
     function previewTransaction() {
       const form = document.getElementById('transactionForm');
       const formData = new FormData(form);
@@ -412,6 +329,89 @@
       const modal = new bootstrap.Modal(document.getElementById('previewModal'));
       modal.show();
     }
+    
+  document.addEventListener("DOMContentLoaded", function () {
+    const amountInput = document.getElementById('amount');
+    
+    amountInput.addEventListener('input', function (e) {
+      let value = e.target.value.replace('/[^0-9]/g', '');
+      if(value) {
+        value = parseInt(value).toLocaleString('id-ID');
+      }
+      
+      e.target.value = value;
+    });
+    
+    // Toggle Category section based on type
+    const typeIncome = document.getElementById('type_{{ CategoryType::INCOME }}');
+    const typeExpense = document.getElementById('type_{{ CategoryType::EXPENSE }}');
+    const incomeCategories = document.getElementById('incomeCategories');
+    const expenseCategories = document.getElementById('expenseCategories');
+    
+    function toggleCategories() {
+      if(typeIncome.checked) {
+        incomeCategories.style.display = 'block';
+        expenseCategories.style.display = 'none';
+        
+        document.querySelectorAll('#expenseCategories input[type="radio"]').forEach(radio => {
+          radio.checked = false;
+        });
+      } else {
+        incomeCategories.style.display = 'none';
+        expenseCategories.style.display = 'block';
+        document.querySelectorAll('#incomeCategories input[type="radio"]').forEach(radio => {
+          radio.checked = false;
+        });
+      }
+    }
+    
+    typeIncome.addEventListener('change', toggleCategories);
+    typeExpense.addEventListener('change', toggleCategories);
+    
+    // Initialize
+    toggleCategories();
+    
+    // Toggle recurring options
+    const isRecurring = document.getElementById('is_recurring');
+    const recurringOptions = document.getElementById('recurringOptions');
+    
+    isRecurring.addEventListener('change', function () {
+      if(this.checked) {
+        recurringOptions.style.display = 'block';
+      } else {
+        recurringOptions.style.display = 'none';
+      }
+    });
+    
+    // Show Account Balance
+    const accountSelect = document.getElementById('account_id');
+    const accountBalance = document.getElementById('accountBalance');
+    
+    accountSelect.addEventListener('change', function () {
+      const selectedOption = this.options[this.selectedIndex];
+      const balance = selectedOption.getAttribute('data-balance');
+      
+      if(balance) {
+        accountBalance.innerHTML = `
+        <div class="alert alert-info p-2">
+          <small>
+            <i class="bi bi-wallet me-1"></i>
+            Saldo saat ini: <strong>${balance}</strong>
+          </small>
+        </div>
+        `;
+      } else {
+        accountBalance.innerHTML = "";
+      }
+    });
+    
+    if(accountSelect.value) {
+      accountSelect.dispatchEvent(new Event('change'));
+    }
+    
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('transaction_date').value = today;
     
     function getPaymentMethodLabel(method) {
       const labels = {
