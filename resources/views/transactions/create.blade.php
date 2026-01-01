@@ -204,8 +204,30 @@
     transition: all 0.2s;
   }
   
+  .category-option:hover {
+    background-color: #f8f9fa;
+    border-color: #4361ee;
+  }
   
+  .category-option input[type="radio"] {
+    display: none;
+  }
   
+  .category-option input[type="radio"]:checked + div {
+    background-color: rgba(67, 97, 238, 0.1);
+    border-color: #4361ee;
+  }
+  
+  .category-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+  }
   
   body[data-bs-theme="dark"] .form-section {
     background-color: #1e1e1e;
@@ -213,6 +235,10 @@
   
   body[data-bs-theme="dark"] .type-toggle {
     border-color: #495057;
+  }
+  
+  body[data-bs-theme="dark"] .category-option:hover {
+    background-color: #2d3748;
   }
 </style>
 @endpush
