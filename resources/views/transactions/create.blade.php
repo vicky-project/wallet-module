@@ -183,5 +183,36 @@
     background-color: #4361ee;
     color: white;
   }
+  
+  .type-toggle label[for="{{ CategoryType::INCOME->value }}"] {
+    border-right: 1px solid #dee2e6;
+  }
+  
+  .category-options {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .category-option {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  
+  
+  
+  body[data-bs-theme="dark"] .form-section {
+    background-color: #1e1e1e;
+  }
+  
+  body[data-bs-theme="dark"] .type-toggle {
+    border-color: #495057;
+  }
 </style>
 @endpush
