@@ -65,7 +65,7 @@
 </div>
 
 <!-- Filter Section -->
-<div class="accordion filter-card mb-4" id="accordionFilter">
+<div class="accordion accordion-flush filter-card mb-4" id="accordionFilter">
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
