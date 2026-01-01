@@ -47,7 +47,7 @@
           <label for="amount" class="form-label">Amount</label>
           <div class="input-group amount-input-group">
             <span class="input-group-text">Rp</span>
-            <input type="text" class="form-control amount-input" id="amount" name="amount" value="{{ old('amount', $preset['amount']) }}" placeholder="0" required>
+            <input type="text" class="form-control amount-input @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $preset['amount']) }}" placeholder="0" required>
           </div>
           @error('amount')
           <div class="text-danger small mt-1">{{ $message }}</div>
@@ -58,14 +58,14 @@
         <div class="row">
           <div class="col-md-8 mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $preset['title']) }}" placeholder="Ex: Gaji Bulanan, Belanja Bulanan" required>
+            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $preset['title']) }}" placeholder="Ex: Gaji Bulanan, Belanja Bulanan" required>
             @error('title')
             <div class="text-danger small mt-1">{{ $message }}</div>
             @enderror
           </div>
           <div class="col-md-4 mb-3">
             <label for="transaction_date" class="form-label">Date</label>
-            <input type="date" class="form-control" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}" required>
+            <input type="date" class="form-control @error('transaction_date') is-invalid @enderror" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}" required>
             @error('transaction_date')
             <div class="text-danger small mt-1">{{ $message }}</div>
             @enderror
@@ -75,7 +75,7 @@
         <!-- Description -->
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" name="description" rows="3" placeholder="Tambahkan catatan untuk transaksi ini...">{{ old('description') }}</textarea>
+          <textarea class="form-control @error('description') @enderror" id="description" name="description" rows="3" placeholder="Tambahkan catatan untuk transaksi ini...">{{ old('description') }}</textarea>
           @error('description')
           <div class="text-danger small mt-1">{{ $message }}</div>
           @enderror
@@ -139,12 +139,13 @@
         <h5>Akun</h5>
         <div class="mb-3">
           <label for="account_id" class="form-label">Pilih Akun</label>
-          <select name="account_id" id="account_id" class="form-select" required>
+          <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
             @forelse($accounts as $account)
             <option value="{{ $account->id }}" @selected(old('account_id', $preset['account_id']) == $account->id) data-balance="{{ $account->formatted_current_balance }}">
               {{ $account->name }} ({{ $account->formatted_current_balance }})
             </option>
             @empty
+            <option value="">No Account</option>
             @endforelse
           </select>
           @error('account_id')
@@ -161,7 +162,7 @@
       <div class="form-section">
         <h5>Metode Pembayaran</h5>
         <div class="mb-3">
-          <select class="form-select" id="payment_method" name="payment_method">
+          <select class="form-select @error('payment_method') is-invalid @enderror" id="payment_method" name="payment_method">
             @foreach(PaymentMethod::cases() as $payment)
             <option value="{{ $payment->value}}" @selected(old('payment_method') == $payment->value)>{{ $payment->name }}</option>
             @endforeach
@@ -239,113 +240,113 @@
 
 @push('scripts')
 <script>
-      // Submit form from preview
-    function submitForm() {
+  // Submit form from preview
+  function submitForm() {
     document.getElementById('transactionForm').submit();
-    }
+  }
     
   function getPaymentMethodLabel(method) {
-      const labels = {
-        'cash': 'Tunai',
-        'bank': 'Bank',
-        'credit_card': 'Kartu Kredit',
-        'ewallet': 'E-Wallet',
-        'other': 'Lainnya'
-      };
+    const labels = {
+      'cash': 'Tunai',
+      'bank': 'Bank',
+      'credit_card': 'Kartu Kredit',
+      'ewallet': 'E-Wallet',
+      'other': 'Lainnya'
+    };
       
-      return labels[method] || method;
-    }
+    return labels[method] || method;
+  }
     
-      // Preview Transaction
-    function previewTransaction() {
-      const form = document.getElementById('transactionForm');
-      const formData = new FormData(form);
+  // Preview Transaction
+  function previewTransaction() {
+    const form = document.getElementById('transactionForm');
+    const formData = new FormData(form);
       
-      // Get Value
-      const type = document.querySelector('input[name="type"]:checked')?.value || '';
-      const amount = document.getElementById('amount').value;
-      const title = document.getElementById('title').value;
-      const date = document.getElementById('transaction_date').value;
-      const categoryId = document.querySelector('input[name="category_id"]:checked')?.value;
-      const accountId = document.getElementById('account_id').value;
-      const paymentMethod = document.getElementById('payment_method').value;
-      const description = document.getElementById('description').value;
+    // Get Value
+    const type = document.querySelector('input[name="type"]:checked')?.value || '';
+    const amount = document.getElementById('amount').value;
+    const title = document.getElementById('title').value;
+    const date = document.getElementById('transaction_date').value;
+    const categoryId = document.querySelector('input[name="category_id"]:checked')?.value;
+    const accountId = document.getElementById('account_id').value;
+    const paymentMethod = document.getElementById('payment_method').value;
+    const description = document.getElementById('description').value;
       
-      // Find Category Name
-      let categoryName = '';
-      if(categoryId){
-        const categoryOption = d.querySelector(`input[name="category_id"][value="${categoryId}"]`);
+    // Find Category Name
+    let categoryName = '';
+    if(categoryId){
+      const categoryOption = d.querySelector(`input[name="category_id"][value="${categoryId}"]`);
         
-        if(categoryOption) {
-          const categoryDiv = categoryOption.nextElementSibling;
-          categoryName = categoryDiv.querySelector('.fw-medium')?.textContent || '';
-        }
+      if(categoryOption) {
+        const categoryDiv = categoryOption.nextElementSibling;
+        categoryName = categoryDiv.querySelector('.fw-medium')?.textContent || '';
       }
+    }
       
-      // Find Account Name
-      let accountName = '';
-      if(accountId) {
-        const accountOption = document.getElementById('account_id').options[accountId];
-        accountName = accountOption ? accountOption.textContent.split('(')[0].trim() : '';
-      }
+    // Find Account Name
+    let accountName = '';
+    if(accountId) {
+      const accountOption = document.getElementById('account_id').options[accountId];
+      accountName = accountOption ? accountOption.textContent.split('(')[0].trim() : '';
+    }
       
-      // Format date
-      const dateObj = new Date(date);
-      const formattedDate = dateObj.toLocaleDateString('id-ID', {
+    // Format date
+    const dateObj = new Date(date);
+    const formattedDate = dateObj.toLocaleDateString('id-ID', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      });
+    });
       
-      // Build preview HTML
-      const previewHTML = `
-      <div class="text-center mb-4">
-        <div class="transaction-icon ${type === 'income' ? 'bg-income' : 'bg-expense'}" style="width: 60px;height: 60px;margin: 0 auto 1rem;">
-          <i class="bi ${type === 'income' ? 'bi-arrow-up-circle text-income' : 'bi-arrow-down-circle text-expense'}" style="font-size: 1.5rem;"></i>
-        </div>
-        <h4 class="${type === 'income' ? 'text-income' : 'text-expense'}">${type === 'income' ? 'Income' : 'Expense'}</h4>
+    // Build preview HTML
+    const previewHTML = `
+    <div class="text-center mb-4">
+      <div class="transaction-icon ${type === 'income' ? 'bg-income' : 'bg-expense'}" style="width: 60px;height: 60px;margin: 0 auto 1rem;">
+        <i class="bi ${type === 'income' ? 'bi-arrow-up-circle text-income' : 'bi-arrow-down-circle text-expense'}" style="font-size: 1.5rem;"></i>
       </div>
-      <div class="row">
-        <div class="col-6">
-          <small class="text-muted d-block">Jumlah</small>
-          <h5 class="fw-bold ${type === 'income' ? 'text-income' : 'text-expense'}">${type === 'income' ? '+' : '-'}Rp ${amount || 0}</h5>
-        </div>
-        <div class="col-6 text-end">
-          <small class="text-muted d-block">Tanggal</small>
-          <div class="fw-medium">${formattedDate}</div>
-        </div>
+      <h4 class="${type === 'income' ? 'text-income' : 'text-expense'}">${type === 'income' ? 'Income' : 'Expense'}</h4>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <small class="text-muted d-block">Jumlah</small>
+        <h5 class="fw-bold ${type === 'income' ? 'text-income' : 'text-expense'}">${type === 'income' ? '+' : '-'}Rp ${amount || 0}</h5>
       </div>
-      <hr>
-      <div class="mb-3">
-        <small class="text-muted d-block">Title</small>
-        <div class="fw-medium">${title || '-'}</div>
+      <div class="col-6 text-end">
+        <small class="text-muted d-block">Tanggal</small>
+        <div class="fw-medium">${formattedDate}</div>
       </div>
-      ${description ? `<div class="mb-3">
-        <small class="d-block text-muted">Deskripsi</small>
-        <div>${description}</div>
-      </div>` : ''}
-      <div class="row">
-        <div class="col-6">
-          <small class="text-muted d-block">Kategori</small>
-          <div class="fw-medium">${categoryName || '-'}</div>
-        </div>
-        <div class="col-6">
-          <small class="text-muted d-block">Akun</small>
-          <div class="fw-medium">${accountName}</div>
-        </div>
+    </div>
+    <hr>
+    <div class="mb-3">
+      <small class="text-muted d-block">Title</small>
+      <div class="fw-medium">${title || '-'}</div>
+    </div>
+    ${description ? `<div class="mb-3">
+      <small class="d-block text-muted">Deskripsi</small>
+      <div>${description}</div>
+    </div>` : ''}
+    <div class="row">
+      <div class="col-6">
+        <small class="text-muted d-block">Kategori</small>
+        <div class="fw-medium">${categoryName || '-'}</div>
       </div>
-      <div class="mt-3">
-        <small class="text-muted d-block">Metode Pembayaran</small>
-        <div class="fw-medium">${getPaymentMethodLabel(paymentMethod) || '-'}</div>
+      <div class="col-6">
+        <small class="text-muted d-block">Akun</small>
+        <div class="fw-medium">${accountName}</div>
       </div>
-      `;
+    </div>
+    <div class="mt-3">
+      <small class="text-muted d-block">Metode Pembayaran</small>
+      <div class="fw-medium">${getPaymentMethodLabel(paymentMethod) || '-'}</div>
+    </div>
+    `;
       
-      document.getElementById('previewContent').innerHTML = previewHTML;
+    document.getElementById('previewContent').innerHTML = previewHTML;
       
-      const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+    const modal = new bootstrap.Modal(document.getElementById('previewModal'));
       modal.show();
-    }
+  }
     
   document.addEventListener("DOMContentLoaded", function () {
     const amountInput = document.getElementById('amount');

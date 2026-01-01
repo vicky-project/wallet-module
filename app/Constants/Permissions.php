@@ -5,13 +5,10 @@ namespace Modules\Wallet\Constants;
 class Permissions
 {
 	// Wallet permissions
-	const VIEW_WALLETS = "financial.wallets.view";
-	const CREATE_WALLETS = "financial.wallets.create";
-	const EDIT_WALLETS = "financial.wallets.edit";
-	const DELETE_WALLETS = "financial.wallets.delete";
-	const DEPOSIT_WALLETS = "financial.wallets.deposit";
-	const WITHDRAW_WALLETS = "financial.wallets.withdraw";
-	const TRANSFER_WALLETS = "financial.wallets.transfer";
+	const VIEW_ACCOUNTS = "financial.accounts.view";
+	const CREATE_ACCOUNTS = "financial.accounts.create";
+	const EDIT_ACCOUNTS = "financial.accounts.edit";
+	const DELETE_ACCOUNTS = "financial.accounts.delete";
 
 	// Transaction permissions
 	const VIEW_TRANSACTIONS = "financial.transactions.view";
@@ -29,13 +26,10 @@ class Permissions
 	{
 		return [
 			// Wallet
-			self::VIEW_WALLETS => "View wallets",
-			self::CREATE_WALLETS => "Create wallets",
-			self::EDIT_WALLETS => "Edit wallets",
-			self::DELETE_WALLETS => "Delete wallets",
-			self::DEPOSIT_WALLETS => "Deposit wallets",
-			self::WITHDRAW_WALLETS => "Withdraw wallets",
-			self::TRANSFER_WALLETS => "Transfer wallets",
+			self::VIEW_ACCOUNTS => "View accounts",
+			self::CREATE_ACCOUNTS => "Create accounts",
+			self::EDIT_ACCOUNTS => "Edit accounts",
+			self::DELETE_ACCOUNTS => "Delete accounts",
 
 			// Transactions
 			self::VIEW_TRANSACTIONS => "View transactions",

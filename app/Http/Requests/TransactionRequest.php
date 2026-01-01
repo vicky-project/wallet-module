@@ -2,31 +2,44 @@
 
 namespace Modules\Wallet\Http\Requests;
 
+use Modules\Wallet\Enums\TransationType;
+use Modules\Wallet\Constants\Permissions;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TransactionRequest extends FormRequest
 {
 	public function authorize()
 	{
-		return true;
+		return auth()->check() &&
+			($this->isMethod("PUT")
+				? auth()
+					->user()
+					->can(Permissions::EDIT_TRANSACTIONS)
+				: auth()
+					->user()
+					->can(Permissions::CREATE_TRANSACTIONS));
 	}
 
 	public function rules()
 	{
 		$rules = [
-			"wallet_id" => "required|exists:finance_wallets,id",
-			"type" => "required|in:deposit,withdraw",
+			"account_id" => "required|exists:accounts,id",
+			"type" => ["required", Rule::enum(TransationType::class)],
+			"title" => "required|string|max:500",
 			"amount" => "required|numeric|min:0.01",
-			"category" => "required|string|max:100",
+			"category_id" => "required|exist:categories,id",
 			"transaction_date" => "required|date",
 			"payment_method" => "nullable|string|max:50",
 			"reference_number" => "nullable|string|max:100",
-			"description" => "required|string|max:500",
-			"notes" => "nullable|string",
+			"description" => "nullable|string|max:5000",
+			"is_recurring" => "nullable",
+			"recurring_period" => "required_if:is_recurring|string",
+			"recurring_end_date" => "nullable|date",
 		];
 
 		if ($this->isMethod("PUT") || $this->isMethod("PATCH")) {
-			unset($rules["type"], $rules["wallet_id"], $rules["amount"]);
+			unset($rules["type"], $rules["account_id"], $rules["amount"]);
 		}
 
 		return $rules;
@@ -35,12 +48,12 @@ class TransactionRequest extends FormRequest
 	public function withValidator($validator)
 	{
 		$validator->after(function ($validator) {
-			if ($this->type === "withdraw") {
-				$wallet = \Modules\Wallet\Models\Wallet::find($this->wallet_id);
-				if ($wallet && $wallet->balance < $this->amount) {
+			if ($this->type === TransationType::EXPENSE) {
+				$account = \Modules\Wallet\Models\Account::find($this->account_id);
+				if ($account && $account->current_balance < $this->amount) {
 					$validator
 						->errors()
-						->add("amount", "Insufficient balance in wallet.");
+						->add("amount", "Insufficient balance in account.");
 				}
 			}
 		});
