@@ -65,96 +65,109 @@
 </div>
 
 <!-- Filter Section -->
+<div class="accordion filter-card mb-4" id="accordionFilter">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <i class="bi bi-funnel me-2"></i>Filter
+      </button>
+    </h2>
+    <div id="collapseFilter" class="accordion-collapse collapse show" data-bs-parent="#accordionFilter">
+      <div class="accordion-body">
+        <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="tyoe" class="form-label">Type</label>
+              <select name="type" id="type" class="form-select">
+                <option value="">Semua Tipe</option>
+                @foreach(TransactionType::cases() as $type)
+                <option value="{{ $type->value }}"
+                @isset($filters["type"])
+                  @selected($type->value === $filters['type'])
+                @endisset
+                >{{ $type->name}}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="category_id" class="form-label">Kategori</label>
+              <select name="category_id" id="category_id" class="form-select">
+                <option value="">Semua</option>
+                @foreach($categories as $id => $name)
+                <option value="{{ $id }}"
+                @isset($filters["category_id"])
+                  @selected($filters['category_id'] == $id)
+                @endisset
+                >{{ $name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="account_id" class="form-label">Akun</label>
+              <select name="account_id" id="account_id" class="form-select">
+                <option value="">Semua</option>
+                @foreach($accounts as $id => $name)
+                <option value="{{ $id }}"
+                @isset($filters["account_id"])
+                  @selected($filters['account_id'] == $id)
+                @endisset
+                >{{ $name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="month" class="form-label">Bulan</label>
+              <div class="input-group">
+                <select name="month" id="month" class="form-select">
+                  @foreach($months as $key => $month)
+                  <option value="{{ $key }}"
+                  @isset($filters['month'])
+                    @selected($filters['month'] == $key)
+                  @endisset
+                  >{{ $month }}</option>
+                  @endforeach
+                </select>
+                <select name="year" id="year" class="form-select">
+                  @foreach($years as $year)
+                  <option value="{{ $year }}"
+                  @isset($filters["year"])
+                    @selected($filters['year'] == $year)
+                  @endisset
+                  >{{ $year }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="search" class="form-label">Pencarian</label>
+              <div class="input-group">
+                <input type="text" name="search" id="search" class="form-control" placeholder="Cari judul atau deskripsi..." value="{{ $filters['search'] ?? '' }}">
+                <button type="button" class="btn btn-outline-secondary" onclick="cleaerSearch();">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <div class="btn-group w-100">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-funnel me-2"></i>Filter
+                </button>
+                <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary" role="button">
+                  <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                </a>
+                <button type="button" class="btn btn-outline-primary" onclick="exportTransactions();">
+                  <i class="bi bi-download me-2"></i>Export
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="card filter-card mb-4">
   <div class="card-body">
-    <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label for="tyoe" class="form-label">Type</label>
-          <select name="type" id="type" class="form-select">
-            <option value="">Semua Tipe</option>
-            @foreach(TransactionType::cases() as $type)
-            <option value="{{ $type->value }}"
-            @isset($filters["type"])
-              @selected($type->value === $filters['type'])
-            @endisset
-            >{{ $type->name}}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label for="category_id" class="form-label">Kategori</label>
-          <select name="category_id" id="category_id" class="form-select">
-            <option value="">Semua</option>
-            @foreach($categories as $id => $name)
-            <option value="{{ $id }}"
-            @isset($filters["category_id"])
-              @selected($filters['category_id'] == $id)
-            @endisset
-            >{{ $name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label for="account_id" class="form-label">Akun</label>
-          <select name="account_id" id="account_id" class="form-select">
-            <option value="">Semua</option>
-            @foreach($accounts as $id => $name)
-            <option value="{{ $id }}"
-            @isset($filters["account_id"])
-              @selected($filters['account_id'] == $id)
-            @endisset
-            >{{ $name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label for="month" class="form-label">Bulan</label>
-          <div class="input-group">
-            <select name="month" id="month" class="form-select">
-              @foreach($months as $key => $month)
-              <option value="{{ $key }}"
-              @isset($filters['month'])
-                @selected($filters['month'] == $key)
-              @endisset
-              >{{ $month }}</option>
-              @endforeach
-            </select>
-            <select name="year" id="year" class="form-select">
-              @foreach($years as $year)
-              <option value="{{ $year }}"
-              @isset($filters["year"])
-                @selected($filters['year'] == $year)
-              @endisset
-              >{{ $year }}</option>
-              @endforeach
-            </select>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="search" class="form-label">Pencarian</label>
-          <div class="input-group">
-            <input type="text" name="search" id="search" class="form-control" placeholder="Cari judul atau deskripsi..." value="{{ $filters['search'] ?? '' }}">
-            <button type="button" class="btn btn-outline-secondary" onclick="cleaerSearch();">
-              <i class="bi bi-x"></i>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-6 d-flex align-items-end">
-          <div class="btn-group w-100">
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-funnel me-2"></i>Filter
-            </button>
-            <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary" role="button">
-              <i class="bi bi-arrow-clockwise me-2"></i>Reset
-            </a>
-            <button type="button" class="btn btn-outline-primary" onclick="exportTransactions();">
-              <i class="bi bi-download me-2"></i>Export
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
   </div>
 </div>
 
