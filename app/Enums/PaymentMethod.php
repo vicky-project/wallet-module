@@ -7,4 +7,5 @@ enum PaymentMethod: string
 	case BANK = "bank";
 	case EWALLET = "ewallet";
 	case CREDIT_CARD = "credit_card";
+	case OTHER = "other";
 }
