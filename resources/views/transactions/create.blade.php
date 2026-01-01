@@ -239,6 +239,11 @@
 
 @push('scripts')
 <script>
+      // Submit form from preview
+    function submitForm() {
+    document.getElementById('transactionForm').submit();
+    }
+    
   function getPaymentMethodLabel(method) {
       const labels = {
         'cash': 'Tunai',
@@ -424,11 +429,6 @@
     // Set default date to today
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('transaction_date').value = today;
-    
-    // Submit form from preview
-    function submitForm() {
-    document.getElementById('transactionForm').submit();
-    }
   });
 </script>
 @endpush
