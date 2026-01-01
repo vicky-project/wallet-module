@@ -202,7 +202,7 @@
   function confirmDelete(id){
     event.stopPropagation();
     const form = document.getElementById('deleteForm');
-    form.action = '{{ route("apps.transactions.destroy") }}/'+ id;
+    form.action = '{{ secure_url(config("app.url")) }}/apps/transactions/'+ id;
     
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     modal.show();
