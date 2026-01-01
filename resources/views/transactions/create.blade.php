@@ -264,7 +264,7 @@
       const categoryId = document.querySelector('input[name="category_id"]:checked')?.value;
       const accountId = document.getElementById('account_id').value;
       const paymentMethod = document.getElementById('payment_method').value;
-      const description = document.getElementById('description');
+      const description = document.getElementById('description').value;
       
       // Find Category Name
       let categoryName = '';
