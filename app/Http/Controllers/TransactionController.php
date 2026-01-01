@@ -112,7 +112,7 @@ class TransactionController extends BaseController
 		$accounts = $this->accountRepository->getActiveAccounts($user);
 
 		return view(
-			"transactions.create",
+			"wallet::transactions.create",
 			compact("incomeCategories", "expenseCategories", "accounts", "preset")
 		);
 	}
