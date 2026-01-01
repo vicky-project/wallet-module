@@ -14,21 +14,6 @@ Route::middleware(["auth"])
 			"financial"
 		);
 
-		// Wallet Routes
-		Route::post("wallets/default", [
-			WalletController::class,
-			"setDefault",
-		])->name("wallets.default");
-		Route::post("wallets/{wallet}/deposit", [
-			WalletController::class,
-			"deposit",
-		])->name("wallets.deposit");
-		Route::post("wallets/{wallet}/withdraw", [
-			WalletController::class,
-			"withdraw",
-		])->name("wallets.withdraw");
-		Route::resource("wallets", WalletController::class);
-
 		// Transaction Routes
 		Route::get("transactions/by-date", [
 			TransactionController::class,
