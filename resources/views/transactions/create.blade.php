@@ -9,7 +9,7 @@
   <div class="card-header text-end">
     <div class="float-start me-auto">
       <a href="{{ route('apps.transactions.index') }}" class="btn btn-secondary" role="button">
-        <i class="fas fa-arrow-left"></i>
+        <i class="bi bi-arrow-left"></i>
       </a>
     </div>
     <h5 class="card-title">Create Transaction</h5>
