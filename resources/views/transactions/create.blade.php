@@ -153,5 +153,35 @@
     background-color: #f8f9fa;
     border-right: none;
   }
+  
+  .amount-input-group input {
+    border-left: none;
+    padding-left: 0;
+  }
+  
+  .type-toggle {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+  }
+  
+  .type-toggle label {
+    flex: 1;
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    margin: 0;
+    transition: all 0.3s;
+  }
+  
+  .type-toggle input[type="radio"]{
+    display: none;
+  }
+  
+  .type-toggle input[type="radio"]:checked + label {
+    background-color: #4361ee;
+    color: white;
+  }
 </style>
 @endpush
