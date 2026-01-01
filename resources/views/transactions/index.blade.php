@@ -8,7 +8,6 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="page-title">Daftar Transaksi</h1>
   <div>
-    <a class="btn btn-primary"></a>
   </div>
 </div>
 
@@ -208,4 +207,65 @@
     modal.show();
   }
 </script>
+@endpush
+
+@push('styles')
+<style>
+  .filter-card {
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    background-color: #f8f9fa;
+  }
+  
+  .transaction-type-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .payment-method-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .transaction-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+  }
+  
+  body[data-bs-theme="dark"] .transaction-row:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+  
+  .action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .summary-card {
+    border-left: 4px solid;
+  }
+  
+  .summary-income {
+    border-left-color: #10b981;
+  }
+  
+  .summary-expense {
+    border-left-color: #ef4444;
+  }
+  
+  .summary-net {
+    border-left-color: #3b82f6;
+  }
+  
+  .empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+  }
+  
+  .empty-state-icon {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+  }
+</style>
 @endpush
