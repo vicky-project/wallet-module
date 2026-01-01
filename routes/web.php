@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Wallet\Http\Controllers\WalletController;
 use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
