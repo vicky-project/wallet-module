@@ -5,7 +5,8 @@
 @use('Modules\Wallet\Helpers\Helper')
 
 @section('content')
-<div class="card">
+<h1 class="page-title">Buat Transaksi Baru</h1>
+<div class="card mt-4">
   <div class="card-header text-end">
     <div class="float-start me-auto">
       <a href="{{ route('apps.transactions.index') }}" class="btn btn-secondary" role="button">
@@ -13,7 +14,6 @@
       </a>
     </div>
     <h5 class="card-title">Create Transaction</h5>
-    <span class="small ms-auto text-muted">{{ $wallet->name }}</span>
   </div>
   <div class="card-body">
     <ul class="nav nav-tabs justify-content-'center" id="formTransactionTab" role="tablist">
@@ -30,13 +30,13 @@
     <div class="tab-content">
       <div class="tab-pane active" id="deposit" role="tabpanel" aria-labelledby="deposit-tab" tabindex="0">
         <h5 class="card-text my-2 text-center text-bold">Deposit</h5>
-        <form method="POST" action="{{ route('apps.wallets.deposit', $wallet) }}" class="row mt-2">
+        <form method="POST" action="{{ route('apps.transactions.create') }}" class="row mt-2">
           @csrf
           <div class="row">
             <div class="col-md-4 mb-3">
               <label for="deposit-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
               <select name="deposit-category" class="form-select" id="deposit-category">
-                @forelse($depositCategories as $category)
+                @forelse($incomeCategories as $category)
                 <option value="{{ $category->name}}" @selected(old('deposit-category') == $category->name)>
                   @if($category->icon)
                   <i class="{{ $category->icon }}"></i>
@@ -76,13 +76,13 @@
       </div>
       <div class="tab-pane" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab" tabindex="0">
         <h5 class="card-text my-2 text-center text-bold">Withdraw</h5>
-        <form method="POST" action="{{ route('apps.wallets.withdraw', $wallet) }}" class="row mt-2">
+        <form method="POST" action="{{ route('apps.transactions.create') }}" class="row mt-2">
           @csrf
           <div class="row">
             <div class="col-md-4 mb-3">
               <label for="withdraw-category" class="form-label">Category (<small class="small text-muted"><a href="{{ route('apps.categories.index') }}" class="btn-link">create category</a></small>)</label>
               <select name="withdraw-category" class="form-select" id="withdraw-category">
-                @forelse($withdrawCategories as $category)
+                @forelse($expenseCategories as $category)
                 <option value="{{ $category->name}}" @selected(old('withdraw-category') == $category->name)>
                   @if($category->icon)
                   <i class="{{ $category->icon }}"></i>
