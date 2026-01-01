@@ -72,7 +72,7 @@
         <i class="bi bi-funnel me-2"></i>Filter
       </button>
     </h2>
-    <div id="collapseFilter" class="accordion-collapse collapse show" data-bs-parent="#accordionFilter">
+    <div id="collapseFilter" class="accordion-collapse collapse" data-bs-parent="#accordionFilter">
       <div class="accordion-body">
         <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
           <div class="row g-3">
