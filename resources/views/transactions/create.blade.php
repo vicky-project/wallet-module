@@ -1,12 +1,11 @@
-@extends('core::layouts.app')
+@extends('wallet::layouts.app')
 
 @section('title', 'Create Transaction')
 
 @use('Modules\Wallet\Helpers\Helper')
 
 @section('content')
-<h1 class="page-title">Buat Transaksi Baru</h1>
-<div class="card mt-4">
+<div class="card">
   <div class="card-header text-end">
     <div class="float-start me-auto">
       <a href="{{ route('apps.transactions.index') }}" class="btn btn-secondary" role="button">
