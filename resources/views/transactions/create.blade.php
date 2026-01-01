@@ -129,6 +129,51 @@
 </form>
 @endsection
 
+@push('scripts')
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const amountInput = document.getElementById('amount');
+    
+    amountInput.addEventListener('input', function (e) {
+      let value = e.target.value.replace('/[^0-9]/g', '');
+      if(value) {
+        value = parseInt(value).toLocaleString('id-ID');
+      }
+      
+      e.target.value = value;
+    });
+    
+    // Toggle Category section based on type
+    const typeIncome = document.getElementById('type_{{ CategoryType::INCOME }}');
+    const typeExpense = document.getElementById('type_{{ CategoryType::EXPENSE }}');
+    const incomeCategories = document.getElementById('incomeCategories');
+    const expenseCategories = document.getElementById('expenseCategories');
+    
+    function toggleCategories() {
+      if(typeIncome.checked) {
+        incomeCategories.style.display = 'block';
+        expenseCategories.style.display = 'none';
+        
+        document.querySelectorAll('#expenseCategories input[type="radio"]').forEach(radio => {
+          radio.checked = false;
+        });
+      } else {
+        incomeCategories.style.display = 'none';
+        expenseCategories.style.display = 'block';
+        document.querySelectorAll('#incomeCategories input[type="radio"]').forEach(radio => {
+          radio.checked = false;
+        });
+      }
+    }
+    
+    typeIncome.addEventListener('change', toggleCategories);
+    typeExpense.addEventListener('change', toggleCategories);
+    
+    toggleCategories();
+  });
+</script>
+@endpush
+
 @push('styles')
 <style>
   .form-section {
