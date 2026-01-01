@@ -4,6 +4,8 @@
 
 @use('Modules\Wallet\Enums\TransactionType')
 
+@include('wallet::partials.fab')
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="page-title">Daftar Transaksi</h1>
