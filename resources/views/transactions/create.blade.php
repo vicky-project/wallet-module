@@ -216,7 +216,7 @@
   </div>
 </form>
 
-<div class="modal fade" id="previewModal" tabindex="-1">
+<div class="modal fade" id="previewModal" tabindex="1">
   <div class="modal-dialog modal-dialog-centered modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
