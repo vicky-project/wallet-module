@@ -11,6 +11,7 @@
   </div>
 </div>
 
+<!-- Summary Cards -->
 <div class="row mb-4">
   <div class="col-md-4 mb-3">
     <div class="card summary-card summary-income">
@@ -63,8 +64,78 @@
    </div>
 </div>
 
+<!-- Filter Section -->
 <div class="card filter-card mb-4">
-  <div class="card-body"></div>
+  <div class="card-body">
+    <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="tyoe" class="form-label">Type</label>
+          <select name="type" id="type" class="form-select">
+            <option value="">Semua Tipe</option>
+            @foreach(TransactionType::cases() as $type)
+            <option value="{{ $type->value }}" @selected($type->value === $filters['type'])>{{ $type->name}}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="category_id" class="form-label">Kategori</label>
+          <select name="category_id" id="category_id" class="form-select">
+            <option value="">Semua</option>
+            @foreach($categories as $id => $name)
+            <option value="{{ $id }}" @selected($filters['category_id'] == $id)>{{ $name }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="account_id" class="form-label">Akun</label>
+          <select name="account_id" id="account_id" class="form-select">
+            <option value="">Semua</option>
+            @foreach($accounts as $id => $name)
+            <option value="{{ $id }}" @selected($filters['account_id'] == $id)>{{ $name }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="month" class="form-label">Bulan</label>
+          <div class="input-group">
+            <select name="month" id="month" class="form-select">
+              @foreach($months as $key => $month)
+              <option value="{{ $key }}" @selected($filters['month'] == $key)>{{ $month }}</option>
+              @endforeach
+            </select>
+            <select name="year" id="year" class="form-select">
+              @foreach($years as $year)
+              <option value="{{ $year }}" @selected($filters['year'] == $year)>{{ $year }}</option>
+              @endforeach
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="search" class="form-label">Pencarian</label>
+          <div class="input-group">
+            <input type="text" name="search" id="search" class="form-control" placeholder="Cari judul atau deskripsi..." value="{{ $filters['search'] ?? '' }}">
+            <button type="button" class="btn btn-outline-secondary" onclick="cleaerSearch();">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="btn-group w-100">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-funnel me-2"></i>Filter
+            </button>
+            <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary" role="button">
+              <i class="bi bi-arrow-clockwise me-2"></i>Reset
+            </a>
+            <button type="button" class="btn btn-outline-primary" onclick="exportTransactions();">
+              <i class="bi bi-download me-2"></i>Export
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div class="card">
@@ -205,6 +276,10 @@
     
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     modal.show();
+  }
+  
+  function exportTransactions() {
+    alert('Export fitur not implemented yet.');
   }
 </script>
 @endpush
