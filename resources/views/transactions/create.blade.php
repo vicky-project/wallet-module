@@ -239,6 +239,18 @@
 
 @push('scripts')
 <script>
+  function getPaymentMethodLabel(method) {
+      const labels = {
+        'cash': 'Tunai',
+        'bank': 'Bank',
+        'credit_card': 'Kartu Kredit',
+        'ewallet': 'E-Wallet',
+        'other': 'Lainnya'
+      };
+      
+      return labels[method] || method;
+    }
+    
       // Preview Transaction
     function previewTransaction() {
       const form = document.getElementById('transactionForm');
@@ -412,18 +424,6 @@
     // Set default date to today
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('transaction_date').value = today;
-    
-    function getPaymentMethodLabel(method) {
-      const labels = {
-        'cash': 'Tunai',
-        'bank': 'Bank',
-        'credit_card': 'Kartu Kredit',
-        'ewallet': 'E-Wallet',
-        'other': 'Lainnya'
-      };
-      
-      return labels[method] || method;
-    }
     
     // Submit form from preview
     function submitForm() {
