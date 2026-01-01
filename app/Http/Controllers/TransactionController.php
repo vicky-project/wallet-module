@@ -77,16 +77,6 @@ class TransactionController extends BaseController
 		$months = $this->getMonths();
 		$years = $this->getYears();
 
-		dd(
-			$transactions,
-			$summary,
-			$filters,
-			$categories,
-			$accounts,
-			$months,
-			$years
-		);
-
 		return view(
 			"wallet::transactions.index",
 			compact(
