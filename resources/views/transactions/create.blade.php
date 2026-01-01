@@ -128,3 +128,30 @@
   </div>
 </form>
 @endsection
+
+@push('styles')
+<style>
+  .form-section {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-section h5 {
+    color: #495057;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  .amount-input-group {
+    position: relative;
+  }
+  
+  .amount-input-group .input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+  }
+</style>
+@endpush
