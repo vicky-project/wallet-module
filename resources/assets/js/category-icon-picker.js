@@ -491,12 +491,18 @@ class CategoryIconPicker {
 		this.currentCategory = categoryId;
 
 		// Update active state
-		document.querySelectorAll("#iconCategoryFilters button")?.forEach(btn => {
-			btn.classList.toggle(
-				"active",
-				btn.getAttribute("data-category") === categoryId
-			);
-		});
+		const buttonFilters = document.querySelectorAll(
+			"#iconCategoryFilters button"
+		);
+
+		if (buttonFilters) {
+			buttonFilters.forEach(btn => {
+				btn.classList.toggle(
+					"active",
+					btn.getAttribute("data-category") === categoryId
+				);
+			});
+		}
 
 		// Filter icons
 		this.filterIcons();
