@@ -64,7 +64,7 @@
             </button>
             
             <!-- Simple Grid -->
-            <div class="dropdown-menu p-2" style="width: 280px;height: 200px;overflow-y: scroll;">
+            <div class="dropdown-menu p-2" style="width: 260px;height: 300px;overflow-y: scroll;">
                 <div class="d-flex flex-wrap">
                     @foreach(Helper::categoriesIconList() as $icon)
                     <button type="button" 
