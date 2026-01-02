@@ -39,6 +39,8 @@ abstract class BaseRepository
 			return Money::zero($amount);
 		}
 
+		dd($amount);
+
 		throw new \InvalidArgumentException("Invalid amount format");
 	}
 
