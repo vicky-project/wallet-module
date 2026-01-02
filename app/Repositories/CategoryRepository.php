@@ -44,7 +44,7 @@ class CategoryRepository extends BaseRepository
 		// Convert budget limit to Money
 		if (isset($data["budget_limit"])) {
 			$data["budget_limit"] = $this->toDatabaseAmount(
-				$this->toMoney($data["budget_limit"] ?? 0)
+				$this->toMoney($data["budget_limit"] ?: 0)
 			);
 		}
 
@@ -69,7 +69,7 @@ class CategoryRepository extends BaseRepository
 	{
 		if (isset($data["budget_limit"])) {
 			$data["budget_limit"] = $this->toDatabaseAmount(
-				$this->toMoney($data["budget_limit"] ?? 0)
+				$this->toMoney($data["budget_limit"] ?: 0)
 			);
 		}
 

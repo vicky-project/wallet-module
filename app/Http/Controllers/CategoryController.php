@@ -74,7 +74,7 @@ class CategoryController extends Controller
 	 */
 	public function store(CategoryRequest $request)
 	{
-	  dd($request->validated());
+		//dd($request->validated());
 		try {
 			$category = $this->categoryRepository->createCategory(
 				$request->validated(),
