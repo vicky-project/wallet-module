@@ -8,6 +8,7 @@
 @endphp
 
 @use('Modules\Wallet\Enums\CategoryType')
+@use('Modules\Wallet\Helpers\Helper')
 
 <form action="{{ $action }}" method="POST" id="categoryForm">
   @csrf
@@ -65,16 +66,7 @@
             <!-- Simple Grid -->
             <div class="dropdown-menu p-2" style="width: 280px;">
                 <div class="d-flex flex-wrap">
-                    @php
-                        $allIcons = [
-                            'bi-cash-stack', 'bi-wallet', 'bi-graph-up', 'bi-arrow-up-circle',
-                            'bi-cart', 'bi-bag', 'bi-arrow-down-circle', 'bi-house',
-                            'bi-car-front', 'bi-egg-fried', 'bi-heart-pulse', 'bi-book',
-                            'bi-film', 'bi-phone', 'bi-wifi', 'bi-lightning-charge',
-                            'bi-tag', 'bi-calendar', 'bi-gear', 'bi-question-circle'
-                        ];
-                    @endphp
-                    @foreach($allIcons as $icon)
+                    @foreach(Helper::categoriesIconList() as $icon)
                     <button type="button" 
                             class="btn btn-sm btn-outline-secondary m-1 icon-simple-option" 
                             data-icon="{{ $icon }}"
