@@ -7,22 +7,15 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('apps.financial') }}">Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('apps.categories.index') }}">Kategori</a></li>
-        <li class="breadcrumb-item active">Tambah Baru</li>
-      </ol>
-    </nav>
-    <h1 class="page-title mb-2">
-      <i class="bi bi-plus-circle me-2"></i>Tambah Kategori Baru
-    </h1>
-    <p class="text-muted mb-0">Tambahkan kategori baru untuk mengelola keuangan Anda</p>
-  </div>
-  <div>
     <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left me-2"></i>Kembali
     </a>
+  </div>
+  <div>
+    <h1 class="page-title mb-2">
+      <i class="bi bi-plus-circle me-2"></i>Tambah Kategori Baru
+    </h1>
+    <p class="small text-muted mb-0">Tambahkan kategori baru untuk mengelola keuangan Anda</p>
   </div>
 </div>
 
