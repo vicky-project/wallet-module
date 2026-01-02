@@ -35,11 +35,10 @@ abstract class BaseRepository
 			return Money::of($cleanAmount, $currency);
 		}
 
+		dd($amount);
 		if (is_null($amount)) {
 			return Money::zero($amount);
 		}
-
-		dd($amount);
 
 		throw new \InvalidArgumentException("Invalid amount format");
 	}
