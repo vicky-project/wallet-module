@@ -28,6 +28,7 @@ abstract class BaseRepository
 		if (is_numeric($amount)) {
 			return Money::of($amount, $currency);
 		}
+		dd($amount);
 
 		if (is_string($amount)) {
 			// Remove currency symbols and thousand separators
@@ -35,7 +36,6 @@ abstract class BaseRepository
 			return Money::of($cleanAmount, $currency);
 		}
 
-		dd($amount);
 		if (is_null($amount)) {
 			return Money::zero($amount);
 		}
