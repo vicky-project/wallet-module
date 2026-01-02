@@ -10,7 +10,7 @@
     <h1 class="page-title mb-2">
       <i class="bi bi-pie-chart me-2"></i>Kategori
     </h1>
-    <p class="text-muted mb-0">Kelola kategori pemasukan dan pengeluaran Anda</p>
+    <p class="small text-muted mb-0">Kelola kategori pemasukan dan pengeluaran Anda</p>
   </div>
   <a href="{{ route('apps.categories.create') }}" class="btn btn-primary" role="button">
     <i class="bi bi-plus-circle me-2"></i>Create
@@ -130,38 +130,23 @@
 <div class="card">
   <div class="card-body">
     <!-- Filter Tabs -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button">
-            <i class="bi bi-grid me-1"></i> Semua
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button">
-            <i class="bi bi-arrow-up-circle me-1 text-success"></i> Pemasukan
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense" type="button">
-            <i class="bi bi-arrow-down-circle me-1 text-danger"></i> Pengeluaran
-          </button>
-        </li>
-      </ul>
-
-      <div class="d-flex align-items-center">
-        <div class="form-check form-switch me-3">
-          <input class="form-check-input" type="checkbox" id="showInactive">
-          <label class="form-check-label" for="showInactive">Tampilkan Nonaktif</label>
-        </div>
-        <div class="input-group" style="width: 250px;">
-          <input type="text" class="form-control" placeholder="Cari kategori..." id="searchCategories">
-          <button class="btn btn-outline-secondary" type="button">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
-      </div>
-    </div>
+    <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button">
+          <i class="bi bi-grid me-1"></i> Semua
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button">
+          <i class="bi bi-arrow-up-circle me-1 text-success"></i> Pemasukan
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense" type="button">
+          <i class="bi bi-arrow-down-circle me-1 text-danger"></i> Pengeluaran
+        </button>
+      </li>
+    </ul>
 
     <!-- Tab Content -->
     <div class="tab-content" id="categoryTabsContent">
@@ -471,39 +456,6 @@
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             row.style.display = text.includes(searchTerm) ? '' : 'none';
-        });
-    });
-
-    // Toggle Inactive Categories
-    document.getElementById('showInactive')?.addEventListener('change', function(e) {
-        const showInactive = e.target.checked;
-        const rows = document.querySelectorAll('#categoryTableBody tr');
-        
-        rows.forEach(row => {
-            if (row.dataset.status === 'inactive') {
-                row.style.display = showInactive ? '' : 'none';
-            }
-        });
-    });
-
-    // Tab filter
-    document.querySelectorAll('#categoryTabs button').forEach(tab => {
-        tab.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-bs-target');
-            const type = targetId.replace('#', '');
-            
-            const rows = document.querySelectorAll('#categoryTableBody tr');
-            rows.forEach(row => {
-                if (type === 'all') {
-                    row.style.display = '';
-                } else if (type === 'income' && row.dataset.type === 'income') {
-                    row.style.display = '';
-                } else if (type === 'expense' && row.dataset.type === 'expense') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
         });
     });
 </script>
