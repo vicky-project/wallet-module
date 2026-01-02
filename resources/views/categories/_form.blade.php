@@ -185,17 +185,6 @@
     new CategoryIconPicker();
   });
   
-  // Update selected icon name display
-  document.getElementById('iconPickerButton')?.addEventListener('click', function() {
-    const selectedIcon = document.getElementById('selectedIconPreview').className;
-    document.getElementById('selectedIconName').textContent = selectedIcon;
-  });
 
-  // Update preview when icon changes
-  document.getElementById('icon')?.addEventListener('change', function() {
-    const iconName = this.value;
-    document.getElementById('selectedIconPreview').className = iconName;
-    document.getElementById('selectedIconName').textContent = iconName;
-  });
 </script>
 @endpush
