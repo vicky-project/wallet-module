@@ -11,9 +11,9 @@
       <i class="bi bi-arrow-left me-2"></i>Kembali
     </a>
   </div>
-  <div>
+  <div class="ms-auto">
     <h1 class="page-title mb-2">
-      <i class="bi bi-plus-circle me-2"></i>Tambah Kategori Baru
+      <i class="bi bi-plus-circle me-2"></i>Tambah Kategori
     </h1>
     <p class="small text-muted mb-0">Tambahkan kategori baru untuk mengelola keuangan Anda</p>
   </div>
