@@ -39,7 +39,6 @@ class Helper
 			"bi-arrow-down-right-circle",
 			"bi-arrow-up-circle",
 			"bi-arrow-up-right-circle",
-			"bi-backpack",
 			"bi-bag",
 			"bi-bag-check",
 			"bi-bank",

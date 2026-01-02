@@ -19,7 +19,7 @@ class CategoryRequest extends FormRequest
 			"name" => "required|string|max:100",
 			"type" => ["required", Rule::enum(CategoryType::class)],
 			"icon" => "nullable|string|max:50",
-			"order" => "nullable|integer|min:0",
+			"budget_limit" => "nullable|min:0",
 			"is_active" => "boolean",
 		];
 	}
@@ -29,6 +29,7 @@ class CategoryRequest extends FormRequest
 		return [
 			"name" => "Category Name",
 			"type" => "Category Type",
+			"budget_limit" => "Budget Limit",
 		];
 	}
 }

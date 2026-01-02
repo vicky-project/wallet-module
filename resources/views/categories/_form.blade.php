@@ -37,52 +37,38 @@
 
   <div class="row">
     <div class="col-md-6">
-<div class="mb-4">
-    <label for="icon" class="form-label">Icon Kategori</label>
+      <div class="mb-4">
+        <label for="icon" class="form-label">Icon Kategori</label>
     
-    <div class="d-flex">
-        <!-- Input Text -->
-        <div class="flex-grow-1 me-2">
-            <input type="text" 
-                   class="form-control @error('icon') is-invalid @enderror" 
-                   id="icon" 
-                   name="icon" 
-                   value="{{ old('icon', $category->icon ?? 'bi-tag') }}" 
-                   placeholder="bi-cash-stack" 
-                   readonly>
-        </div>
+        <div class="d-flex">
+          <!-- Input Text -->
+          <div class="flex-grow-1 me-2">
+            <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', $category->icon ?? 'bi-tag') }}" placeholder="bi-cash-stack" readonly>
+          </div>
         
-        <!-- Tombol Dropdown -->
-        <div class="dropdown">
-            <button type="button" 
-                    class="btn btn-outline-secondary dropdown-toggle" 
-                    id="iconPickerButton" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false"
-                    style="min-width: 60px;">
-                <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
+          <!-- Tombol Dropdown -->
+          <div class="dropdown">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" id="iconPickerButton" data-bs-toggle="dropdown" aria-expanded="false" style="min-width: 60px;">
+              <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
             </button>
             
             <!-- Simple Grid -->
             <div class="dropdown-menu p-2" style="width: 260px;height: 300px;overflow-y: scroll;">
-                <div class="d-flex flex-wrap">
-                    @foreach(Helper::categoriesIconList() as $icon)
-                    <button type="button" 
-                            class="btn btn-md btn-outline-secondary m-1 icon-simple-option" 
-                            data-icon="{{ $icon }}"
-                            style="width: 50px; height: 50px;">
-                        <i class="bi {{ $icon }}"></i>
-                    </button>
-                    @endforeach
-                </div>
+              <div class="d-flex flex-wrap">
+                @foreach(Helper::categoriesIconList() as $icon)
+                  <button type="button" class="btn btn-md btn-outline-secondary m-1 icon-simple-option" data-icon="{{ $icon }}" style="width: 50px; height: 50px;">
+                    <i class="bi {{ $icon }}"></i>
+                  </button>
+                @endforeach
+              </div>
             </div>
+          </div>
         </div>
-    </div>
     
-    @error('icon')
-        <div class="invalid-feedback d-block">{{ $message }}</div>
-    @enderror
-</div>
+        @error('icon')
+          <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+      </div>
     </div>
     <div class="col-md-6">
       <div class="mb-3">

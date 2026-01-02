@@ -76,7 +76,8 @@ class CategoryController extends Controller
 	{
 		try {
 			$category = $this->categoryRepository->createCategory(
-				$request->validated()
+				$request->validated(),
+				auth()->user()
 			);
 
 			return back()->with("success", "Category created successfully");
