@@ -50,7 +50,7 @@
             <h6 class="mb-1">Icon Terpilih</h6>
             <p class="text-muted mb-0" id="selectedIconName">{{ $category->icon ?? 'bi-tag' }}</p>
         </div>
-        <button type="button" id="iconPickerButton" class="btn btn-primary" data-bs-toggle="dropdown">
+        <button type="button" id="iconPickerButton" class="btn btn-primary" data-bs-toggle="dropdown" data-bs-target="#iconPickerDropdown">
             <i class="bi bi-palette me-2"></i>Pilih Icon
         </button>
     </div>
