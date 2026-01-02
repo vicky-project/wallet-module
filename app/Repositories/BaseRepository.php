@@ -24,11 +24,11 @@ abstract class BaseRepository
 		if ($amount instanceof Money) {
 			return $amount;
 		}
+		dd($amount);
 
 		if (is_numeric($amount)) {
 			return Money::of($amount, $currency);
 		}
-		dd($amount);
 
 		if (is_string($amount)) {
 			// Remove currency symbols and thousand separators
