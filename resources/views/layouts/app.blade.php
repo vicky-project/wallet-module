@@ -568,23 +568,18 @@
         
         <ul class="sidebar-nav">
             <li>
-                <a href="#" class="active">
+                <a href="{{ route('apps.financial') }}" class="active">
                     <i class="bi bi-house-door"></i> Dashboard
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="bi bi-arrow-up-circle"></i> Pemasukan
+                <a href="{{ route('apps.transactions.index') }}">
+                    <i class="bi bi-currency-dollar"></i> Transactions
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="bi bi-arrow-down-circle"></i> Pengeluaran
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-pie-chart"></i> Kategori
+                <a href="{{ route('apps.categories.index') }}">
+                    <i class="bi bi-pie-chart"></i> Categories
                 </a>
             </li>
             <li>
