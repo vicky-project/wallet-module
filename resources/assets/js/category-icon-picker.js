@@ -491,7 +491,7 @@ class CategoryIconPicker {
 		this.currentCategory = categoryId;
 
 		// Update active state
-		document.querySelectorAll("#iconCategoryFilters button").forEach(btn => {
+		document.querySelectorAll("#iconCategoryFilters button")?.forEach(btn => {
 			btn.classList.toggle(
 				"active",
 				btn.getAttribute("data-category") === categoryId
