@@ -21,10 +21,10 @@ abstract class BaseRepository
 	 */
 	protected function toMoney($amount, string $currency = "IDR"): Money
 	{
+		dd($amount);
 		if ($amount instanceof Money) {
 			return $amount;
 		}
-		dd($amount);
 
 		if (is_numeric($amount)) {
 			return Money::of($amount, $currency);
