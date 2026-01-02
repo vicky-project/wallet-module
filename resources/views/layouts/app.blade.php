@@ -652,7 +652,14 @@
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profil</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Pengaturan</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i> Keluar</a></li>
+                    @if(Route::has('logout'))
+                      <li>
+                        <form method="POST" action="{{ route('logout') }}" id="formLogout">
+                        @csrf
+                        </form>
+                        <button type="button" class="dropdown-item text-danger" onclick="if(confirm('Are you sure to logout this session?')) document.getElementById('formLogout').submit();"><i class="bi bi-box-arrow-right me-2"></i> Keluar</button>
+                      </li>
+                    @endif
                     </ul>
                 </div>
             </div>
