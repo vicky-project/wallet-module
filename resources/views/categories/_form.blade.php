@@ -36,117 +36,166 @@
 
   <div class="row">
     <div class="col-md-6">
-      {{-- Ganti bagian input icon lama dengan ini --}}
-<div class="mb-3">
-    <label for="icon" class="form-label">Icon</label>
-    <div class="input-group">
-        <!-- Tombol untuk membuka picker & preview ikon -->
-        <button type="button" id="iconPickerButton" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-            <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
+<div class="mb-4">
+    <label for="icon" class="form-label">Icon Kategori <span class="text-danger">*</span></label>
+    
+    <!-- Selected Icon Preview -->
+    <div class="d-flex align-items-center mb-3 p-3 border rounded bg-light">
+        <div class="me-3">
+            <div class="icon-preview-large" style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }} text-white fs-3"></i>
+            </div>
+        </div>
+        <div class="flex-grow-1">
+            <h6 class="mb-1">Icon Terpilih</h6>
+            <p class="text-muted mb-0" id="selectedIconName">{{ $category->icon ?? 'bi-tag' }}</p>
+        </div>
+        <button type="button" id="iconPickerButton" class="btn btn-primary" data-bs-toggle="dropdown">
+            <i class="bi bi-palette me-2"></i>Pilih Icon
         </button>
-        <!-- Input tersembunyi untuk menyimpan nilai (contoh: "bi-cash-stack") -->
-        <input type="text" 
+    </div>
+    
+    <!-- Icon Picker Dropdown -->
+    <div class="dropdown-menu p-3 shadow-lg" id="iconPickerDropdown" style="width: 500px; max-width: 90vw;">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0"><i class="bi bi-palette me-2"></i>Pilih Icon</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="dropdown" aria-label="Close"></button>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" id="iconSearch" placeholder="Cari icon...">
+            <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        
+        <!-- Popular Icons -->
+        <div class="mb-3">
+            <small class="text-muted d-block mb-2">Ikon Populer:</small>
+            <div class="row g-2" id="popularIcons">
+                <!-- Popular icons will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Category Filters -->
+        <div class="mb-3">
+            <small class="text-muted d-block mb-2">Kategori:</small>
+            <div class="d-flex flex-wrap gap-1" id="iconCategoryFilters">
+                <!-- Category buttons will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Icons Grid -->
+        <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+            <div class="row g-2" id="iconGrid">
+                <!-- Icons will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Hidden Input -->
+        <input type="hidden" 
                class="form-control @error('icon') is-invalid @enderror" 
                id="icon" 
                name="icon" 
-               value="{{ old('icon', $category->icon ?? '') }}" 
-               readonly 
-               placeholder="Klik untuk memilih icon">
-        <!-- Kontainer untuk icon picker itu sendiri -->
-        <div class="dropdown-menu p-3" id="iconPickerDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
-            <div class="row" id="iconGrid">
-                <!-- Grid ikon akan diisi oleh JavaScript -->
-            </div>
-        </div>
+               value="{{ old('icon', $category->icon ?? 'bi-tag') }}" 
+               required>
     </div>
+    
     @error('icon')
-        <div class="invalid-feedback">{{ $message }}</div>
+        <div class="invalid-feedback d-block">{{ $message }}</div>
     @enderror
+    
+    <small class="text-muted">Pilih icon yang merepresentasikan kategori keuangan Anda</small>
 </div>
-      </div>
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="budget_limit" class="form-label">Batas Anggaran (Opsional)</label>
-          <div class="input-group">
-            <span class="input-group-text">Rp</span>
-            <input type="number" class="form-control @error('budget_limit') is-invalid @enderror" id="budget_limit" name="budget_limit" value="{{ old('budget_limit', $category->budget_limit ?? '') }}" placeholder="0" min="0" step="1000">
-          </div>
-          <small class="text-muted">Hanya untuk kategori pengeluaran. Biarkan kosong jika tidak ada batasan.</small>
-          @error('budget_limit')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
+    </div>
+    <div class="col-md-6">
+      <div class="mb-3">
+        <label for="budget_limit" class="form-label">Batas Anggaran (Opsional)</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="number" class="form-control @error('budget_limit') is-invalid @enderror" id="budget_limit" name="budget_limit" value="{{ old('budget_limit', $category->budget_limit ?? '') }}" placeholder="0" min="0" step="1000">
         </div>
+        <small class="text-muted">Hanya untuk kategori pengeluaran. Biarkan kosong jika tidak ada batasan.</small>
+        @error('budget_limit')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
     </div>
+  </div>
 
-    <div class="mb-3">
-      <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1"
-          {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }}>
-        <label class="form-check-label" for="is_active">
-          Aktifkan kategori
-        </label>
-      </div>
+  <div class="mb-3">
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1"
+        {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }}>
+      <label class="form-check-label" for="is_active">
+        Aktifkan kategori
+      </label>
     </div>
+  </div>
 
-    @if($isEdit)
-    <div class="alert alert-info">
-      <i class="bi bi-info-circle"></i> 
-      Kategori yang sudah digunakan dalam transaksi tidak dapat dihapus, hanya dapat dinonaktifkan.
-    </div>
-    @endif
+  @if($isEdit)
+  <div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> 
+    Kategori yang sudah digunakan dalam transaksi tidak dapat dihapus, hanya dapat dinonaktifkan.
+  </div>
+  @endif
 </form>
 
+@push('styles')
+<style>
+    .dropdown-menu#iconPickerDropdown {
+        z-index: 1060;
+    }
+    
+    #iconGrid .col-2 {
+        padding: 8px;
+    }
+    
+    #iconGrid .col-2:hover {
+        background-color: rgba(67, 97, 238, 0.1);
+        border-radius: 6px;
+    }
+    
+    #iconCategoryFilters .btn.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+    
+    #popularIcons .col {
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+    
+    #popularIcons .col:hover {
+        background-color: rgba(67, 97, 238, 0.1);
+        transform: scale(1.1);
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="{{ asset('js/category-icon-picker.js') }}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const iconGrid = document.getElementById('iconGrid');
-    const selectedIconPreview = document.getElementById('selectedIconPreview');
-    const iconInput = document.getElementById('icon');
-    const dropdown = new bootstrap.Dropdown(document.getElementById('iconPickerButton'));
+    new CategoryIconPicker();
+  });
+  
+  // Update selected icon name display
+  document.getElementById('iconPickerButton')?.addEventListener('click', function() {
+    const selectedIcon = document.getElementById('selectedIconPreview').className;
+    document.getElementById('selectedIconName').textContent = selectedIcon;
+  });
 
-    // Daftar ikon Bootstrap yang relevan untuk aplikasi keuangan
-    // Kamu dapat menambah atau mengurangi dari daftar ini
-    const financeIcons = [
-        'bi-cash-stack', 'bi-wallet', 'bi-wallet2', 'bi-graph-up', 'bi-graph-down',
-        'bi-piggy-bank', 'bi-coin', 'bi-cash-coin', 'bi-bank', 'bi-cart',
-        'bi-cart-check', 'bi-cart-x', 'bi-bag', 'bi-bag-check', 'bi-bag-x',
-        'bi-tag', 'bi-tags', 'bi-receipt', 'bi-receipt-cutoff',
-        'bi-arrow-up-circle', 'bi-arrow-down-circle', 'bi-arrow-left-right',
-        'bi-calendar', 'bi-calendar-check', 'bi-calendar-week',
-        'bi-house', 'bi-house-door', 'bi-house-check',
-        'bi-car-front', 'bi-fuel-pump', 'bi-train-front',
-        'bi-egg-fried', 'bi-cup', 'bi-cup-straw',
-        'bi-heart-pulse', 'bi-capsule', 'bi-hospital',
-        'bi-phone', 'bi-wifi', 'bi-lightning-charge', 'bi-droplet',
-        'bi-film', 'bi-music-note-beamed', 'bi-controller',
-        'bi-book', 'bi-pencil', 'bi-laptop',
-        'bi-gift', 'bi-balloon', 'bi-balloon-heart',
-        'bi-gear', 'bi-tools', 'bi-shield-check'
-    ];
-
-    // Isi grid dengan ikon
-    financeIcons.forEach(iconClass => {
-        const col = document.createElement('div');
-        col.className = 'col-3 text-center mb-3';
-        
-        const iconElement = document.createElement('i');
-        iconElement.className = `bi ${iconClass} fs-3`;
-        iconElement.style.cursor = 'pointer';
-        
-        col.appendChild(iconElement);
-        iconGrid.appendChild(col);
-
-        // Tambahkan event listener untuk memilih ikon
-        iconElement.addEventListener('click', function() {
-            const selectedClass = `bi ${iconClass}`;
-            selectedIconPreview.className = selectedClass;
-            iconInput.value = `bi-${iconClass}`; // Simpan nilai untuk form
-            
-            // Tutup dropdown setelah memilih
-            dropdown.hide();
-        });
-    });
-});
+  // Update preview when icon changes
+  document.getElementById('icon')?.addEventListener('change', function() {
+    const iconName = this.value;
+    document.getElementById('selectedIconPreview').className = iconName;
+    document.getElementById('selectedIconName').textContent = iconName;
+  });
 </script>
 @endpush
