@@ -46,6 +46,7 @@ class CategoryRepository extends BaseRepository
 			$data["budget_limit"] = $this->toDatabaseAmount(
 				$this->toMoney($data["budget_limit"] ?: 0)
 			);
+			dd($data["budget_limit"]);
 		}
 
 		// Set user_id and default icon if not provided
