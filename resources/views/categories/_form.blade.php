@@ -15,7 +15,7 @@
 
   <div class="mb-3">
     <label for="name" class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $category->name ?? '') }}" placeholder="Contoh: Belanja, Gaji, Transportasi" required oninput="updateIconPreview(this.value, document.getElementById('type').value)">
+    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $category->name ?? '') }}" placeholder="Contoh: Belanja, Gaji, Transportasi" required>
     @error('name')
       <div class="invalid-feedback">{{ $message }}</div>
     @enderror
@@ -23,7 +23,7 @@
 
   <div class="mb-3">
     <label for="type" class="form-label">Tipe <span class="text-danger">*</span></label>
-    <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required onchange="updateIconPreview(document.getElementById('name').value, this.value)">
+    <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
       <option value="">Pilih tipe...</option>
       @foreach (CategoryType::cases() as $type)
       <option value="{{ $type->value}}" @selected(old('type', $category->type ?? '') == $type->value)>{{ $type->name }}</option>
@@ -36,38 +36,33 @@
 
   <div class="row">
     <div class="col-md-6">
-      <div class="mb-3">
-        <label for="icon" class="form-label">Icon</label>
-        <div class="input-group">
-          <span class="input-group-text">
-            <i id="iconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
-          </span>
-          <select class="form-select @error('icon') is-invalid @enderror" id="icon" name="icon">
-            <option value="">Pilih icon atau biarkan otomatis</option>
-              <optgroup label="Pemasukan">
-                <option value="bi-cash-stack" {{ old('icon', $category->icon ?? '') == 'bi-cash-stack' ? 'selected' : '' }}>Cash Stack</option>
-                <option value="bi-graph-up" {{ old('icon', $category->icon ?? '') == 'bi-graph-up' ? 'selected' : '' }}>Graph Up</option>
-                <option value="bi-laptop" {{ old('icon', $category->icon ?? '') == 'bi-laptop' ? 'selected' : '' }}>Laptop</option>
-                <option value="bi-gift" {{ old('icon', $category->icon ?? '') == 'bi-gift' ? 'selected' : '' }}>Gift</option>
-                <option value="bi-wallet" {{ old('icon', $category->icon ?? '') == 'bi-wallet' ? 'selected' : '' }}>Wallet</option>
-              </optgroup>
-              <optgroup label="Pengeluaran">
-                <option value="bi-egg-fried" {{ old('icon', $category->icon ?? '') == 'bi-egg-fried' ? 'selected' : '' }}>Makanan</option>
-                <option value="bi-car-front" {{ old('icon', $category->icon ?? '') == 'bi-car-front' ? 'selected' : '' }}>Transportasi</option>
-                <option value="bi-film" {{ old('icon', $category->icon ?? '') == 'bi-film' ? 'selected' : '' }}>Hiburan</option>
-                <option value="bi-cart" {{ old('icon', $category->icon ?? '') == 'bi-cart' ? 'selected' : '' }}>Belanja</option>
-                <option value="bi-heart-pulse" {{ old('icon', $category->icon ?? '') == 'bi-heart-pulse' ? 'selected' : '' }}>Kesehatan</option>
-                <option value="bi-book" {{ old('icon', $category->icon ?? '') == 'bi-book' ? 'selected' : '' }}>Pendidikan</option>
-                <option value="bi-lightning-charge" {{ old('icon', $category->icon ?? '') == 'bi-lightning-charge' ? 'selected' : '' }}>Utilitas</option>
-                <option value="bi-wallet2" {{ old('icon', $category->icon ?? '') == 'bi-wallet2' ? 'selected' : '' }}>Wallet 2</option>
-              </optgroup>
-            </select>
-          </div>
-          <small class="text-muted">Biarkan kosong untuk menggunakan icon otomatis berdasarkan nama kategori</small>
-          @error('icon')
-            <div class="invalid-feedback">{{ $message }}</div>
-          @enderror
+      {{-- Ganti bagian input icon lama dengan ini --}}
+<div class="mb-3">
+    <label for="icon" class="form-label">Icon</label>
+    <div class="input-group">
+        <!-- Tombol untuk membuka picker & preview ikon -->
+        <button type="button" id="iconPickerButton" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+            <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
+        </button>
+        <!-- Input tersembunyi untuk menyimpan nilai (contoh: "bi-cash-stack") -->
+        <input type="text" 
+               class="form-control @error('icon') is-invalid @enderror" 
+               id="icon" 
+               name="icon" 
+               value="{{ old('icon', $category->icon ?? '') }}" 
+               readonly 
+               placeholder="Klik untuk memilih icon">
+        <!-- Kontainer untuk icon picker itu sendiri -->
+        <div class="dropdown-menu p-3" id="iconPickerDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+            <div class="row" id="iconGrid">
+                <!-- Grid ikon akan diisi oleh JavaScript -->
+            </div>
         </div>
+    </div>
+    @error('icon')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
       </div>
       <div class="col-md-6">
         <div class="mb-3">
@@ -102,72 +97,56 @@
     @endif
 </form>
 
+@push('scripts')
 <script>
-function updateIconPreview(name, type) {
-    const iconPreview = document.getElementById('iconPreview');
-    const iconSelect = document.getElementById('icon');
-    
-    if (!name || !type) return;
-    
-    const lowerName = name.toLowerCase();
-    
-    const defaultIcons = {
-        income: {
-            'gaji': 'bi-cash-stack',
-            'investasi': 'bi-graph-up',
-            'freelance': 'bi-laptop',
-            'hibah': 'bi-gift',
-            'bonus': 'bi-gift',
-            'upah': 'bi-cash-stack',
-        },
-        expense: {
-            'makan': 'bi-egg-fried',
-            'makanan': 'bi-egg-fried',
-            'restoran': 'bi-egg-fried',
-            'transport': 'bi-car-front',
-            'transportasi': 'bi-car-front',
-            'bensin': 'bi-fuel-pump',
-            'hiburan': 'bi-film',
-            'nonton': 'bi-film',
-            'belanja': 'bi-cart',
-            'supermarket': 'bi-cart',
-            'kesehatan': 'bi-heart-pulse',
-            'obat': 'bi-heart-pulse',
-            'dokter': 'bi-heart-pulse',
-            'pendidikan': 'bi-book',
-            'sekolah': 'bi-book',
-            'kuliah': 'bi-book',
-            'listrik': 'bi-lightning-charge',
-            'air': 'bi-droplet',
-            'internet': 'bi-wifi',
-            'telepon': 'bi-phone',
-        }
-    };
-    
-    let matchedIcon = type === 'income' ? 'bi-cash-stack' : 'bi-wallet2';
-    const typeIcons = defaultIcons[type] || {};
-    
-    for (const [key, icon] of Object.entries(typeIcons)) {
-        if (lowerName.includes(key)) {
-            matchedIcon = icon;
-            break;
-        }
-    }
-    
-    iconPreview.className = 'bi ' + matchedIcon;
-    
-    if (!iconSelect.value) {
-        iconSelect.value = matchedIcon;
-    }
-}
+  document.addEventListener('DOMContentLoaded', function() {
+    const iconGrid = document.getElementById('iconGrid');
+    const selectedIconPreview = document.getElementById('selectedIconPreview');
+    const iconInput = document.getElementById('icon');
+    const dropdown = new bootstrap.Dropdown(document.getElementById('iconPickerButton'));
 
-// Initialize icon preview on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const name = document.getElementById('name')?.value;
-    const type = document.getElementById('type')?.value;
-    
-    if (name && type) {
-        updateIconPreview(name, type);
-    }
+    // Daftar ikon Bootstrap yang relevan untuk aplikasi keuangan
+    // Kamu dapat menambah atau mengurangi dari daftar ini
+    const financeIcons = [
+        'bi-cash-stack', 'bi-wallet', 'bi-wallet2', 'bi-graph-up', 'bi-graph-down',
+        'bi-piggy-bank', 'bi-coin', 'bi-cash-coin', 'bi-bank', 'bi-cart',
+        'bi-cart-check', 'bi-cart-x', 'bi-bag', 'bi-bag-check', 'bi-bag-x',
+        'bi-tag', 'bi-tags', 'bi-receipt', 'bi-receipt-cutoff',
+        'bi-arrow-up-circle', 'bi-arrow-down-circle', 'bi-arrow-left-right',
+        'bi-calendar', 'bi-calendar-check', 'bi-calendar-week',
+        'bi-house', 'bi-house-door', 'bi-house-check',
+        'bi-car-front', 'bi-fuel-pump', 'bi-train-front',
+        'bi-egg-fried', 'bi-cup', 'bi-cup-straw',
+        'bi-heart-pulse', 'bi-capsule', 'bi-hospital',
+        'bi-phone', 'bi-wifi', 'bi-lightning-charge', 'bi-droplet',
+        'bi-film', 'bi-music-note-beamed', 'bi-controller',
+        'bi-book', 'bi-pencil', 'bi-laptop',
+        'bi-gift', 'bi-balloon', 'bi-balloon-heart',
+        'bi-gear', 'bi-tools', 'bi-shield-check'
+    ];
+
+    // Isi grid dengan ikon
+    financeIcons.forEach(iconClass => {
+        const col = document.createElement('div');
+        col.className = 'col-3 text-center mb-3';
+        
+        const iconElement = document.createElement('i');
+        iconElement.className = `bi ${iconClass} fs-3`;
+        iconElement.style.cursor = 'pointer';
+        
+        col.appendChild(iconElement);
+        iconGrid.appendChild(col);
+
+        // Tambahkan event listener untuk memilih ikon
+        iconElement.addEventListener('click', function() {
+            const selectedClass = `bi ${iconClass}`;
+            selectedIconPreview.className = selectedClass;
+            iconInput.value = `bi-${iconClass}`; // Simpan nilai untuk form
+            
+            // Tutup dropdown setelah memilih
+            dropdown.hide();
+        });
+    });
 });
 </script>
+@endpush
