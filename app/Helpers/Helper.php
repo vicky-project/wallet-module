@@ -87,7 +87,6 @@ class Helper
 			"bi-file-text",
 			"bi-film",
 			"bi-fire",
-			"bi-fork-knife",
 			"bi-fuel-pump",
 			"bi-fuel-pump-diesel",
 			"bi-gear",

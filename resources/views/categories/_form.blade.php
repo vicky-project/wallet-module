@@ -68,9 +68,9 @@
                 <div class="d-flex flex-wrap">
                     @foreach(Helper::categoriesIconList() as $icon)
                     <button type="button" 
-                            class="btn btn-sm btn-outline-secondary m-1 icon-simple-option" 
+                            class="btn btn-md btn-outline-secondary m-1 icon-simple-option" 
                             data-icon="{{ $icon }}"
-                            style="width: 40px; height: 40px;">
+                            style="width: 50px; height: 50px;">
                         <i class="bi {{ $icon }}"></i>
                     </button>
                     @endforeach
