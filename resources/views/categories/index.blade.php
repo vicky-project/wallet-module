@@ -299,8 +299,7 @@
                         <i class="bi bi-pie-chart display-1 text-muted"></i>
                         <h4 class="mt-3">Belum ada kategori</h4>
                         <p class="text-muted">Mulai dengan membuat kategori pertama Anda</p>
-                        <a href="{{ route('apps
-                        categories.create') }}" class="btn btn-primary" role="button">
+                        <a href="{{ route('apps.categories.create') }}" class="btn btn-primary" role="button">
                             <i class="bi bi-plus-circle me-2"></i>Tambah Kategori
                         </a>
                     </div>
