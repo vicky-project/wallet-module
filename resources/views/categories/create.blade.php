@@ -20,7 +20,7 @@
     <p class="text-muted mb-0">Tambahkan kategori baru untuk mengelola keuangan Anda</p>
   </div>
   <div>
-    <a href="{{ route('wallet.categories.index') }}" class="btn btn-outline-secondary">
+    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left me-2"></i>Kembali
     </a>
   </div>
@@ -55,7 +55,7 @@
           <button type="submit" form="categoryForm" class="btn btn-primary">
             <i class="bi bi-check-circle me-2"></i>Simpan Kategori
           </button>
-          <a href="{{ route('wallet.categories.index') }}" class="btn btn-secondary">
+          <a href="{{ route('apps.categories.index') }}" class="btn btn-secondary">
             <i class="bi bi-x-circle me-2"></i>Batal
           </a>
         </div>
