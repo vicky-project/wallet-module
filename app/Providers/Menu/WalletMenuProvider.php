@@ -33,7 +33,7 @@ class WalletMenuProvider extends BaseMenuProvider
 				"order" => 10,
 				"children" => [
 					$this->item([
-						"title" => "Wallets",
+						"title" => "Accounts",
 						"icon" => "fas fa-wallet",
 						"route" => "apps.financial",
 						"order" => 2,

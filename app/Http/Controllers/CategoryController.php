@@ -183,6 +183,13 @@ class CategoryController extends Controller
 		}
 	}
 
+	public function toggleStatus(Category $category)
+	{
+		$category = $this->categoryRepository->toggleStatus($category);
+
+		return back()->with("success", "Berhasil mengubah status kategori.");
+	}
+
 	/**
 	 * Get category usage statistics
 	 */
@@ -203,6 +210,39 @@ class CategoryController extends Controller
 				"success" => true,
 				"data" => $stats,
 			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	// Tambahkan method ini ke controller yang sudah ada
+	/**
+	 * Get budget warnings for categories
+	 */
+	public function budgetWarnings(Request $request)
+	{
+		try {
+			$threshold = $request->threshold ?? 80;
+			$warnings = $this->categoryRepository->getBudgetWarnings(
+				auth()->user(),
+				$threshold
+			);
+
+			if ($request->expectsJson()) {
+				return response()->json([
+					"success" => true,
+					"data" => $warnings,
+					"count" => $warnings->count(),
+				]);
+			}
+
+			return view("wallet::categories.budget-warnings", compact("warnings"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[

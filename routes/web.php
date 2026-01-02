@@ -29,5 +29,9 @@ Route::middleware(["auth"])
 		Route::resource("transactions", TransactionController::class);
 
 		// Category Routes
+		Route::put("categories/{category}/toggle-status", [
+			CategoryController::class,
+			"toggleStatus",
+		])->name("categories.toggle-status");
 		Route::resource("categories", CategoryController::class);
 	});
