@@ -41,6 +41,11 @@ class CategoryController extends Controller
 		}
 	}
 
+	public function create()
+	{
+		return view("wallet::categories.create");
+	}
+
 	/**
 	 * Get categories by type
 	 */
