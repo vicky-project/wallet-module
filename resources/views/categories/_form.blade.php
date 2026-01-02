@@ -37,78 +37,59 @@
   <div class="row">
     <div class="col-md-6">
 <div class="mb-4">
-    <label for="icon" class="form-label">Icon Kategori <span class="text-danger">*</span></label>
+    <label for="icon" class="form-label">Icon Kategori</label>
     
-    <!-- Selected Icon Preview -->
-    <div class="d-flex align-items-center mb-3 p-3 border rounded bg-light">
-        <div class="me-3">
-            <div class="icon-preview-large" style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }} text-white fs-3"></i>
-            </div>
-        </div>
-        <div class="flex-grow-1">
-            <h6 class="mb-1">Icon Terpilih</h6>
-            <p class="text-muted mb-0" id="selectedIconName">{{ $category->icon ?? 'bi-tag' }}</p>
-        </div>
-        <button type="button" id="iconPickerButton" class="btn btn-primary" data-bs-toggle="dropdown" data-bs-target="#iconPickerDropdown">
-            <i class="bi bi-palette me-2"></i>Pilih Icon
-        </button>
-    </div>
-    
-    <!-- Icon Picker Dropdown -->
-    <div class="dropdown-menu p-3 shadow-lg" id="iconPickerDropdown" style="width: 500px; max-width: 90vw;">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="mb-0"><i class="bi bi-palette me-2"></i>Pilih Icon</h6>
-            <button type="button" class="btn-close" data-bs-dismiss="dropdown" aria-label="Close"></button>
+    <div class="d-flex">
+        <!-- Input Text -->
+        <div class="flex-grow-1 me-2">
+            <input type="text" 
+                   class="form-control @error('icon') is-invalid @enderror" 
+                   id="icon" 
+                   name="icon" 
+                   value="{{ old('icon', $category->icon ?? 'bi-tag') }}" 
+                   placeholder="bi-cash-stack" 
+                   readonly>
         </div>
         
-        <!-- Search Bar -->
-        <div class="input-group mb-3">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control" id="iconSearch" placeholder="Cari icon...">
-            <button class="btn btn-outline-secondary" type="button" id="clearSearch">
-                <i class="bi bi-x"></i>
+        <!-- Tombol Dropdown -->
+        <div class="dropdown">
+            <button type="button" 
+                    class="btn btn-outline-secondary dropdown-toggle" 
+                    id="iconPickerButton" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    style="min-width: 60px;">
+                <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
             </button>
-        </div>
-        
-        <!-- Popular Icons -->
-        <div class="mb-3">
-            <small class="text-muted d-block mb-2">Ikon Populer:</small>
-            <div class="row g-2" id="popularIcons">
-                <!-- Popular icons will be loaded here -->
+            
+            <!-- Simple Grid -->
+            <div class="dropdown-menu p-2" style="width: 280px;">
+                <div class="d-flex flex-wrap">
+                    @php
+                        $allIcons = [
+                            'bi-cash-stack', 'bi-wallet', 'bi-graph-up', 'bi-arrow-up-circle',
+                            'bi-cart', 'bi-bag', 'bi-arrow-down-circle', 'bi-house',
+                            'bi-car-front', 'bi-egg-fried', 'bi-heart-pulse', 'bi-book',
+                            'bi-film', 'bi-phone', 'bi-wifi', 'bi-lightning-charge',
+                            'bi-tag', 'bi-calendar', 'bi-gear', 'bi-question-circle'
+                        ];
+                    @endphp
+                    @foreach($allIcons as $icon)
+                    <button type="button" 
+                            class="btn btn-sm btn-outline-secondary m-1 icon-simple-option" 
+                            data-icon="{{ $icon }}"
+                            style="width: 40px; height: 40px;">
+                        <i class="bi {{ $icon }}"></i>
+                    </button>
+                    @endforeach
+                </div>
             </div>
         </div>
-        
-        <!-- Category Filters -->
-        <div class="mb-3">
-            <small class="text-muted d-block mb-2">Kategori:</small>
-            <div class="d-flex flex-wrap gap-1" id="iconCategoryFilters">
-                <!-- Category buttons will be loaded here -->
-            </div>
-        </div>
-        
-        <!-- Icons Grid -->
-        <div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
-            <div class="row g-2" id="iconGrid">
-                <!-- Icons will be loaded here -->
-            </div>
-        </div>
-        
-        <!-- Hidden Input -->
-        <input type="hidden" 
-               class="form-control @error('icon') is-invalid @enderror" 
-               id="icon" 
-               name="icon" 
-               value="{{ old('icon', $category->icon ?? 'bi-tag') }}" 
-               required>
     </div>
     
     @error('icon')
         <div class="invalid-feedback d-block">{{ $message }}</div>
     @enderror
-    
-    <small class="text-muted">Pilih icon yang merepresentasikan kategori keuangan Anda</small>
 </div>
     </div>
     <div class="col-md-6">
@@ -144,47 +125,21 @@
   @endif
 </form>
 
-@push('styles')
-<style>
-    .dropdown-menu#iconPickerDropdown {
-        z-index: 1060;
-    }
-    
-    #iconGrid .col-2 {
-        padding: 8px;
-    }
-    
-    #iconGrid .col-2:hover {
-        background-color: rgba(67, 97, 238, 0.1);
-        border-radius: 6px;
-    }
-    
-    #iconCategoryFilters .btn.active {
-        background-color: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-    }
-    
-    #popularIcons .col {
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.2s;
-    }
-    
-    #popularIcons .col:hover {
-        background-color: rgba(67, 97, 238, 0.1);
-        transform: scale(1.1);
-    }
-</style>
-@endpush
-
-@push('scripts')
-<script src="{{ asset('js/category-icon-picker.js') }}"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    new CategoryIconPicker();
-  });
-  
-
+document.addEventListener('DOMContentLoaded', function() {
+    const options = document.querySelectorAll('.icon-simple-option');
+    const preview = document.getElementById('selectedIconPreview');
+    const input = document.getElementById('icon');
+    
+    options.forEach(button => {
+        button.addEventListener('click', function() {
+            const iconClass = this.getAttribute('data-icon');
+            preview.className = `bi ${iconClass}`;
+            input.value = iconClass;
+            
+            // Close dropdown
+            bootstrap.Dropdown.getInstance(document.getElementById('iconPickerButton')).hide();
+        });
+    });
+});
 </script>
-@endpush
