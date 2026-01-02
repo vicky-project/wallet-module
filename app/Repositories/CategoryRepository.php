@@ -42,9 +42,9 @@ class CategoryRepository extends BaseRepository
 	public function createCategory(array $data, User $user): Category
 	{
 		// Convert budget limit to Money
-		if (isset($data["budget_limit"]) && !empty($data["budget_limit"])) {
+		if (isset($data["budget_limit"])) {
 			$data["budget_limit"] = $this->toDatabaseAmount(
-				$this->toMoney($data["budget_limit"])
+				$this->toMoney($data["budget_limit"] ?? 0)
 			);
 		}
 
