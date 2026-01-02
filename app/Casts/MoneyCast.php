@@ -42,7 +42,7 @@ class MoneyCast implements CastsAttributes
 			// If it's already a Money object, get its amount in minor units.
 			return $value->getMinorAmount()->toInt();
 		}
-
+		dd($value);
 		// If it's a numeric string or float, create a Money object first.
 		// The currency is determined from existing attributes or a default.
 		$currency =
