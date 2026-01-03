@@ -161,6 +161,11 @@
             <option value="">No Account</option>
             @endforelse
           </select>
+          @if($accounts->count() == 0)
+          <div class="small text-danger mt-1">
+            <a href="{{ route('apps.accounts.create') }}">create account</a>
+          </div>
+          @endif
           @error('account_id')
           <div class="text-danger small mt-1">{{ $message }}</div>
           @enderror
