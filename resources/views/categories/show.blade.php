@@ -2,6 +2,8 @@
 
 @section('title', 'Detail Kategori - ' . $category->name . ' - ' . config('app.name'))
 
+@use('Modules\Wallet\Enums\CategoryType')
+
 @section('content')
 @include('wallet::partials.fab')
 <!-- Page Header -->
@@ -29,14 +31,14 @@
     <div class="card mb-4">
       <div class="card-body">
         <div class="d-flex align-items-center mb-4">
-          <div class="category-icon-large me-3" style="width: 70px; height: 70px; background: {{ $category->type === 'income' ? '#10b981' : '#ef4444' }}; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+          <div class="category-icon-large me-3" style="width: 70px; height: 70px; background: {{ $category->type === CategoryType::INCOME ? '#10b981' : '#ef4444' }}; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
             <i class="bi {{ $category->icon ?? 'bi-tag' }} fs-3"></i>
           </div>
           <div>
             <h4 class="mb-1">{{ $category->name }}</h4>
-            <span class="badge {{ $category->type === 'income' ? 'bg-success' : 'bg-danger' }} fs-6">
+            <span class="badge {{ $category->type === CategoryType::INCOME ? 'bg-success' : 'bg-danger' }} fs-6">
               <i class="bi {{ $category->type === 'income' ? 'bi-arrow-up-circle' : 'bi-arrow-down-circle' }} me-1"></i>
-              {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+              {{ $category->type === CategoryType::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
             </span>
           </div>
         </div>
@@ -66,7 +68,7 @@
           </div>
           @endif
 
-          @if($category->budget_limit && $category->type === 'expense')
+          @if($category->budget_limit && $category->type === CategoryType::EXPENSE)
           <div class="budget-info p-3 rounded mb-3" style="background: {{ $category->has_budget_exceeded ? '#fee2e2' : '#f0f9ff' }}; border-left: 4px solid {{ $category->has_budget_exceeded ? '#ef4444' : '#3b82f6' }};">
             <h6 class="text-muted mb-2">Informasi Anggaran</h6>
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -147,7 +149,7 @@
         </div>
       </div>
       <div class="card-body">
-        @if($category->type === 'expense' && $category->budget_limit)
+        @if($category->type === CategoryType::EXPENSE && $category->budget_limit)
         <div class="mb-4">
           <div class="d-flex justify-content-between mb-2">
             <span>Penggunaan Anggaran</span>
@@ -177,7 +179,7 @@
             <div class="card bg-light">
               <div class="card-body">
                 <h6 class="text-muted mb-2">Total Bulan Ini</h6>
-                <h3 class="mb-0 {{ $category->type === 'income' ? 'text-success' : 'text-danger' }}">
+                <h3 class="mb-0 {{ $category->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
                   Rp {{ number_format($category->getMonthlyTotal(), 0, ',', '.') }}
                 </h3>
               </div>
@@ -228,7 +230,7 @@
                       {{ Str::limit($transaction->description, 30) }}
                     </a>
                   </td>
-                  <td class="{{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
+                  <td class="{{ $transaction->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
                     Rp {{ number_format($transaction->amount, 0, ',', '.') }}
                   </td>
                   <td>
@@ -249,7 +251,7 @@
         <div class="text-center py-4">
           <i class="bi bi-receipt display-4 text-muted mb-3"></i>
           <p class="text-muted">Belum ada transaksi untuk kategori ini</p>
-          <a href="{{ route('wallet.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
+          <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
             <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi Pertama
           </a>
         </div>
