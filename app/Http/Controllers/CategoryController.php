@@ -28,7 +28,9 @@ class CategoryController extends Controller
 				$request->include_inactive ?? false
 			);
 
-			return view("wallet::categories.index", compact("categories"));
+			$stats = $this->categoryRepository->getCategoryStats(auth()->user());
+
+			return view("wallet::categories.index", compact("categories", "stats"));
 		} catch (\Exception $e) {
 			return response()->json(
 				[
