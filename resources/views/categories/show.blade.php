@@ -25,7 +25,7 @@
 </div>
 
 <!-- Category Information -->
-<div class="row">
+<div class="row g-2">
   <!-- Left Column: Category Details -->
   <div class="col-lg-4 col-md-4 mb-3">
     <div class="card mb-4">
