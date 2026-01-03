@@ -148,11 +148,6 @@
           <i class="bi bi-arrow-down-circle me-1 text-danger"></i> Expense
         </button>
       </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="inactive-tab" data-bs-toggle="tab" data-bs-target="#inactive" type="button">
-          <i class="bi bi-toggle-off text-danger">InActive</i>
-        </button>
-      </li>
     </ul>
 
     <!-- Tab Content -->
