@@ -8,7 +8,7 @@
 @include('wallet::partials.fab')
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4 text-end">
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary me-2">
       <i class="bi bi-arrow-left"></i>
     </a>
@@ -175,7 +175,7 @@
 
         <!-- Transaction Summary -->
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <div class="card bg-light">
               <div class="card-body">
                 <h6 class="text-muted mb-2">Total Bulan Ini</h6>
@@ -185,7 +185,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <div class="card bg-light">
               <div class="card-body">
                 <h6 class="text-muted mb-2">Rata-rata Transaksi</h6>
