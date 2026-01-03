@@ -2,6 +2,8 @@
 
 @section('title', 'Edit Kategori - ' . config('app.name', 'VickyServer'))
 
+@use('Modules\Wallet\Enums\CategoryType')
+
 @section('content')
 @include('wallet::partials.fab')
 <!-- Page Header -->
@@ -21,7 +23,7 @@
 
 <!-- Stats and Info -->
 <div class="row mb-4">
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <div class="card">
       <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">Total Transaksi</h6>
@@ -29,7 +31,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <div class="card">
       <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">Penggunaan Bulan Ini</h6>
@@ -37,7 +39,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <div class="card">
       <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">Status</h6>
@@ -60,13 +62,13 @@
       <div class="card-body">
         <div class="card-title">
           <div class="d-flex align-items-center">
-            <div class="transaction-icon me-3" style="background-color: {{ $category->type === 'income' ? '#10b981' : '#ef4444' }}; color: white;">
+            <div class="transaction-icon me-3" style="background-color: {{ $category->type === CategoryType::INCOME ? '#10b981' : '#ef4444' }}; color: white;">
               <i class="bi {{ $category->icon_class }}"></i>
             </div>
             <div>
               <h5 class="mb-0">{{ $category->name }}</h5>
               <p class="text-muted mb-0">
-                {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                {{ $category->type === Cat::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
                 @if($category->budget_limit)
                 • Batas: {{ $category->formatted_budget_limit }}
                 @endif
@@ -112,7 +114,7 @@
     </div>
 
     <!-- Usage Statistics -->
-    @if($category->type === 'expense' && $category->budget_limit)
+    @if($category->type === CategoryType::EXPENSE && $category->budget_limit)
       <div class="card mt-4">
         <div class="card-header">
           <h6 class="mb-0">
