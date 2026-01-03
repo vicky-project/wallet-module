@@ -1,104 +1,303 @@
-@extends('core::layouts.app')
+@extends('wallet::layouts.app')
 
-@section('title', $account->name)
-
-@use('Illuminate\Support\Number')
+@section('title', 'Detail Kategori - ' . $category->name . ' - ' . config('app.name'))
 
 @section('content')
+@include('wallet::partials.fab')
+<!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <a href="{{ route('apps.wallet.index') }}" class="btn btn-secondary" role="button" title="Back">
-      <i class="fas fa-arrow-left"></i>
+    <h1 class="page-title mb-2">
+      <i class="bi bi-pie-chart me-2"></i>Detail Kategori
+    </h1>
+    <p class="text-muted mb-0">Informasi lengkap dan statistik kategori "{{ $category->name }}"</p>
+  </div>
+  <div>
+    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary me-2">
+      <i class="bi bi-arrow-left me-2"></i>Kembali
     </a>
-    <a href="{{ route('apps.wallet.edit', $account) }}" class="btn btn-success" role="button" title="Edit Account">
-      <i class="fas fa-pen"></i>
+    <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-primary">
+      <i class="bi bi-pencil me-2"></i>Edit
     </a>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
-      <i class="fas fa-plus"></i>
-    </button>
   </div>
-  <div class="text-end">
-    <h5>{{ $account->name }}</h5>
-  </div>
-</div>
-<div class="row">
-  @forelse($wallets as $wallet)
-  <div class="col-md-6 col-lg-4 mb-3">
-    <div class="card card-wallet" onclick="window.location='{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}'">
-      <div class="card-body">
-        <h5 class="card-title">{{ $wallet->name }}</h5>
-        <h3 class="text-success">
-          @money($wallet->balance, $wallet->meta['currency'], true)
-        </h3>
-        <p class="card-text">
-          <small class="text-muted">{{ $wallet->description }}</small>
-        </p>
-        <div class="d-flex justify-content-between">
-          <span class="badge text-bg-secondary p-2">{{ $wallet->meta['currency'] ?? '' }}</span>
-          <span class="badge text-bg-info p-2">{{ $wallet->transactions()->count ?? 0 }} Transactions</span>
-          <div class="btn-group">
-            <a href="{{ route('apps.wallet.wallets.edit', [$account, $wallet]) }}" class="btn btn-sm btn-outline-success" role="button" title="Edit Walet">
-              <i class="fas fa-fw fa-pen"></i>
-            </a>
-            <a href="{{ route('apps.wallet.wallets.refresh', [$account, $wallet]) }}" type="button" class="btn btn-sm btn-outline-warning" title="Refresh Balance">
-              <i class="fas fa-fw fa-sync-alt"></i>
-            </a>
-            <a href="{{ route('apps.wallet.wallets.show', [$account, $wallet]) }}" class="btn btn-sm btn-outline-primary" role="button" title="View Transaction">
-              <i class="fas fa-fw fa-eye"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  @empty
-  <div class="col-12 col-lg-12">
-    <div class="alert alert-warning" role="alert">
-      <p class="text-muted">You don't have any wallets yet. Please create one first.</p>
-    </div>
-  </div>
-  @endforelse
 </div>
 
-<div class="modal fade" id="createWalletModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create Wallet</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal">
-          <i class="fas fa-times"></i>
-        </button>
+<!-- Category Information -->
+<div class="row">
+  <!-- Left Column: Category Details -->
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-4">
+          <div class="category-icon-large me-3" style="width: 70px; height: 70px; background: {{ $category->type === 'income' ? '#10b981' : '#ef4444' }}; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+            <i class="bi {{ $category->icon ?? 'bi-tag' }} fs-3"></i>
+          </div>
+          <div>
+            <h4 class="mb-1">{{ $category->name }}</h4>
+            <span class="badge {{ $category->type === 'income' ? 'bg-success' : 'bg-danger' }} fs-6">
+              <i class="bi {{ $category->type === 'income' ? 'bi-arrow-up-circle' : 'bi-arrow-down-circle' }} me-1"></i>
+              {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="category-details">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <h6 class="text-muted mb-1">Status</h6>
+              <div>
+                @if($category->is_active)
+                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Aktif</span>
+                @else
+                <span class="badge bg-secondary"><i class="bi bi-x-circle me-1"></i>Nonaktif</span>
+                @endif
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="text-muted mb-1">Jumlah Transaksi</h6>
+              <h5 class="mb-0">{{ $category->transactions->count() }}</h5>
+            </div>
+          </div>
+
+          @if($category->description)
+          <div class="mb-3">
+            <h6 class="text-muted mb-1">Deskripsi</h6>
+            <p class="mb-0">{{ $category->description }}</p>
+          </div>
+          @endif
+
+          @if($category->budget_limit && $category->type === 'expense')
+          <div class="budget-info p-3 rounded mb-3" style="background: {{ $category->has_budget_exceeded ? '#fee2e2' : '#f0f9ff' }}; border-left: 4px solid {{ $category->has_budget_exceeded ? '#ef4444' : '#3b82f6' }};">
+            <h6 class="text-muted mb-2">Informasi Anggaran</h6>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Batas Anggaran:</span>
+              <strong>{{ $category->formatted_budget_limit }}</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span>Penggunaan:</span>
+              <strong class="{{ $category->has_budget_exceeded ? 'text-danger' : '' }}">
+                {{ number_format($category->budget_usage_percentage, 1) }}%
+              </strong>
+            </div>
+          </div>
+          @endif
+
+          <div class="mt-4">
+            <small class="text-muted">
+              <i class="bi bi-calendar me-1"></i>
+              Dibuat: {{ $category->created_at->format('d M Y, H:i') }}
+              @if($category->created_at != $category->updated_at)
+              <br><i class="bi bi-arrow-repeat me-1"></i>
+              Diperbarui: {{ $category->updated_at->format('d M Y, H:i') }}
+              @endif
+            </small>
+          </div>
+        </div>
       </div>
-      <form method="POST" action="{{ route('apps.wallet.wallets.store', $account) }}">
-        @csrf
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="wallet-name" class="form-label">Wallet Name <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="name" id="wallet-name" placeholder="Enter wallet name..." required>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-header">
+        <h6 class="mb-0">Aksi Cepat</h6>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-outline-primary">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+          </a>
+          <form action="{{ route('apps.categories.toggle-status', $category) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <button type="submit" class="btn btn-outline-warning w-100">
+              @if($category->is_active)
+              <i class="bi bi-toggle-off me-2"></i>Nonaktifkan
+              @else
+              <i class="bi bi-toggle-on me-2"></i>Aktifkan
+              @endif
+            </button>
+          </form>
+          <form action="{{ route('apps.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Hapus kategori ini? Transaksi yang terkait tidak akan dihapus.')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-outline-danger w-100">
+              <i class="bi bi-trash me-2"></i>Hapus Kategori
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Statistics -->
+  <div class="col-lg-8">
+    <!-- Monthly Statistics -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Statistik Bulanan</h6>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            {{ date('F Y') }}
+          </button>
+          <ul class="dropdown-menu">
+            @for($i = 0; $i < 6; $i++)
+              <li><a class="dropdown-item" href="#">{{ date('F Y', strtotime("-$i months")) }}</a></li>
+            @endfor
+          </ul>
+        </div>
+      </div>
+      <div class="card-body">
+        @if($category->type === 'expense' && $category->budget_limit)
+        <div class="mb-4">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Penggunaan Anggaran</span>
+            <span class="{{ $category->has_budget_exceeded ? 'text-danger fw-bold' : '' }}">
+              {{ number_format($category->budget_usage_percentage, 1) }}%
+            </span>
           </div>
-          <div class="mb-3">
-            <label for="wallet-initial-balance" class="form-label">Initial Balance</label>
-            <input type="number" min="0" name="initial_balance" class="form-control" id="wallet-initial-balance" value="0">
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar 
+              @if($category->has_budget_exceeded) bg-danger 
+              @elseif($category->budget_usage_percentage >= 80) bg-warning 
+              @else bg-success @endif" 
+              role="progressbar" style="width: {{ min($category->budget_usage_percentage, 100) }}%">
+              <span class="progress-text">{{ number_format($category->budget_usage_percentage, 1) }}%</span>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="account-currency" class="form-label">Currency</label>
-            <select class="form-select" name="currency" id="account-currency">
-              @foreach($currencies as $currency => $name)
-              <option value="{{$currency}}" @selected($currency ==="IDR")>{{$name}}</option>
+          <div class="d-flex justify-content-between mt-2">
+            <small>Rp 0</small>
+            <small>{{ $category->formatted_budget_limit }}</small>
+          </div>
+        </div>
+        @endif
+
+        <!-- Transaction Summary -->
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h6 class="text-muted mb-2">Total Bulan Ini</h6>
+                <h3 class="mb-0 {{ $category->type === 'income' ? 'text-success' : 'text-danger' }}">
+                  Rp {{ number_format($category->getMonthlyTotal(), 0, ',', '.') }}
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h6 class="text-muted mb-2">Rata-rata Transaksi</h6>
+                @php
+                $count = $category->transactions()->count();
+                $avg = $count > 0 ? $category->getMonthlyTotal() / $count : 0;
+                @endphp
+                <h3 class="mb-0">Rp {{ number_format($avg, 0, ',', '.') }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Transaksi Terbaru</h6>
+        <a href="{{ route('apps.transactions.index', ['category_id' => $category->id]) }}" class="btn btn-sm btn-outline-primary">
+          Lihat Semua
+        </a>
+      </div>
+      <div class="card-body">
+        @if($category->transactions->count() > 0)
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Deskripsi</th>
+                <th>Jumlah</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($category->transactions()->latest()->take(10)->get() as $transaction)
+                <tr>
+                  <td>{{ $transaction->transaction_date->format('d M Y') }}</td>
+                  <td>
+                    <a href="{{ route('apps.transactions.show', $transaction) }}">
+                      {{ Str::limit($transaction->description, 30) }}
+                    </a>
+                  </td>
+                  <td class="{{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
+                    Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+                  </td>
+                  <td>
+                    @if($transaction->status === 'completed')
+                      <span class="badge bg-success">Selesai</span>
+                    @elseif($transaction->status === 'pending')
+                      <span class="badge bg-warning">Pending</span>
+                    @else
+                      <span class="badge bg-secondary">Dibatalkan</span>
+                    @endif
+                  </td>
+                </tr>
               @endforeach
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="wallet-description" class="form-label">Description</label>
-            <textarea name="description" id="wallet-description" class="form-control" placeholder="Description of wallet.."></textarea>
-          </div>
+            </tbody>
+          </table>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Create</button>
+        @else
+        <div class="text-center py-4">
+          <i class="bi bi-receipt display-4 text-muted mb-3"></i>
+          <p class="text-muted">Belum ada transaksi untuk kategori ini</p>
+          <a href="{{ route('wallet.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi Pertama
+          </a>
         </div>
-      </form>
+        @endif
+      </div>
     </div>
   </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+.category-icon-large {
+    transition: transform 0.3s;
+}
+
+.category-icon-large:hover {
+    transform: scale(1.1);
+}
+
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    position: relative;
+    border-radius: 10px;
+}
+
+.progress-text {
+    position: absolute;
+    right: 10px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.category-details .row > div {
+    padding: 0.5rem;
+}
+
+.budget-info {
+    transition: all 0.3s;
+}
+
+.budget-info:hover {
+    transform: translateX(5px);
+}
+</style>
+@endpush

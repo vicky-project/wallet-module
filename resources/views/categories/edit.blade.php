@@ -105,7 +105,7 @@
           <form action="{{ route('apps.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger mb-2">
+            <button type="submit" class="btn btn-outline-danger">
               <i class="bi bi-trash me-2"></i>Hapus Kategori
             </button>
           </form>
