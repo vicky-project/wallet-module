@@ -94,10 +94,10 @@
 
         <div class="mt-4 d-flex justify-content-between align-items-center">
           <div>
-            <button type="submit" form="categoryForm" class="btn btn-primary">
+            <button type="submit" form="categoryForm" class="btn btn-primary mb-2">
               <i class="bi bi-check-circle me-2"></i>Simpan Perubahan
             </button>
-            <a href="{{ route('apps.categories.index') }}" class="btn btn-secondary">
+            <a href="{{ route('apps.categories.index') }}" class="btn btn-secondary mb-2">
               <i class="bi bi-x-circle me-2"></i>Batal
             </a>
           </div>
@@ -105,7 +105,7 @@
           <form action="{{ route('apps.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger">
+            <button type="submit" class="btn btn-outline-danger mb-2">
               <i class="bi bi-trash me-2"></i>Hapus Kategori
             </button>
           </form>
