@@ -568,7 +568,7 @@
         
         <ul class="sidebar-nav">
             <li>
-                <a href="{{ route('apps.financial') }}" class="active">
+                <a href="{{ route('apps.financial') }}" class="{{ request()->routeIs('apps.financial') ? 'active' : ''}}">
                     <i class="bi bi-house-door"></i> Dashboard
                 </a>
             </li>
