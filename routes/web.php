@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Wallet\Http\Controllers\AccountController;
 use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
@@ -12,6 +13,9 @@ Route::middleware(["auth"])
 		Route::get("preview", [DashboardController::class, "index"])->name(
 			"financial"
 		);
+
+		// Account Routes
+		Route::resource("accounts", AccountController::class);
 
 		// Transaction Routes
 		Route::get("transactions/by-date", [
