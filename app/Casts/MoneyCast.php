@@ -38,11 +38,15 @@ class MoneyCast implements CastsAttributes
 		mixed $value,
 		array $attributes
 	): mixed {
+		if ($value === null || $value === "" || $value === 0) {
+			return null;
+		}
+
 		if ($value instanceof Money) {
 			// If it's already a Money object, get its amount in minor units.
 			return $value->getMinorAmount()->toInt();
 		}
-		dd($value);
+
 		// If it's a numeric string or float, create a Money object first.
 		// The currency is determined from existing attributes or a default.
 		$currency =
@@ -50,8 +54,35 @@ class MoneyCast implements CastsAttributes
 			($model->currency ?? config("finance.default_currency", "USD"));
 
 		try {
+			if (is_string($value)) {
+				$value = trim($value);
+				if (empty($value)) {
+					return null;
+				}
+
+				$value = preg_replace("/[0-9.,-]/", "", $value);
+				$value = str_replace(",", ".", $value);
+			}
+
+			if (!is_numeric($value)) {
+				throw new InvalidArgumentException(
+					"Invalid money value provided for {$key}:{$value}"
+				);
+			}
+
+			$floatValue = (float) $value;
+			if ($floatValue < 0) {
+				throw new InvalidArgumentException(
+					"Money value cannot be negative for {$key}:{$value}"
+				);
+			}
+
+			if ($floatValue == 0) {
+				return null;
+			}
+
 			// Money::of() handles string input like '19.99' correctly.
-			$money = Money::of($value, $currency, null, RoundingMode::DOWN);
+			$money = Money::of($floatValue, $currency, null, RoundingMode::DOWN);
 			return $money->getMinorAmount()->toInt();
 		} catch (\Exception $e) {
 			throw new InvalidArgumentException(
