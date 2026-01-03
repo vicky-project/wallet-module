@@ -19,11 +19,18 @@ class MoneyCast implements CastsAttributes
 		mixed $value,
 		array $attributes
 	): mixed {
+		if ($value === null) {
+			return null;
+		}
 		// Determine the currency. This example checks for a `currency` attribute on the same model.
 		// You might need to adjust the logic based on your table structure.
 		$currency =
 			$attributes["currency"] ??
 			($model->currency ?? config("finance.default_currency", "USD"));
+
+		if (!is_numeric($value)) {
+			return null;
+		}
 
 		// Create a Money instance from the minor unit (cents) stored in the database.
 		return Money::ofMinor($value, $currency, null, RoundingMode::DOWN);
