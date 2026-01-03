@@ -35,11 +35,24 @@ class Account extends Model
 	{
 		parent::boot();
 
-		static::creating(function ($wallet) {
-			if (!empty($wallet->initial_balance)) {
-				$wallet->current_balance = $this->initial_balance;
+		static::creating(function ($account) {
+			if (!empty($account->initial_balance)) {
+				$account->current_balance = $this->initial_balance;
 			}
 		});
+
+		static::saving(function ($account) {
+			if ($account->is_default) {
+				self::where("user_id", $account->user_id)
+					->where("id", "!=", $account->id)
+					->update(["is_default" => false]);
+			}
+		});
+	}
+
+	public function user()
+	{
+		return $this->belongsTo(config("auth.providers.users.model"));
 	}
 
 	public function transactions()
@@ -47,52 +60,81 @@ class Account extends Model
 		return $this->hasMany(Transaction::class);
 	}
 
-	public function incomingTransfers()
-	{
-		return $this->hasMany(Transaction::class, "to_wallet_id");
-	}
-
 	public function deposit(Money $amount)
 	{
-		$this->balance = $this->balance->plus($amount, RoundingMode::DOWN);
+		$this->current_balance = $this->current_balance->plus(
+			$amount,
+			RoundingMode::DOWN
+		);
 		$this->save();
 		return $this;
 	}
 
 	public function withdraw(Money $amount)
 	{
-		if ($this->balance->isLessThan($amount)) {
+		if ($this->current_balance->isLessThan($amount)) {
 			throw new \Exception("Insufficient balance");
 		}
 
-		$this->balance = $this->balance->minus($amount, RoundingMode::DOWN);
+		$this->current_balance = $this->current_balance->minus(
+			$amount,
+			RoundingMode::DOWN
+		);
 		$this->save();
 
 		return $this;
 	}
 
-	public function transferTo(Wallet $target, Money $amount)
-	{
-		if ($this->balance->isLessThan($amount)) {
-			throw new \Exception("Insufficient balance");
-		}
-		$this->balance = $this->balance->minus($amount, RoundingMode::DOWN);
-		$this->save();
-
-		$target->balance = $target->balance->plus($amount, RoundingMode::DOWN);
-		$target->save();
-
-		return ["source" => $this, "target" => $target, "amount" => $amount];
-	}
-
 	public function getFormattedBalanceAttribute()
 	{
-		return $this->balance->formatTo("id_ID");
+		if (!$this->current_balance) {
+			return 0;
+		}
+
+		return $this->current_balance->formatTo("id_ID");
 	}
 
 	public function getFormattedInitialBalanceAttribute()
 	{
+		if (!$this->initial_balance) {
+			return 0;
+		}
+
 		return $this->initial_balance->formatTo("id_ID");
+	}
+
+	public function getTypeLabelAttribute()
+	{
+		return $this->type->label() ?? $this->type->value;
+	}
+
+	public function getBalanceChangeAttribute()
+	{
+		if (!$this->current_balance || !$this->initial_balance) {
+			return 0;
+		}
+
+		return $this->current_balance->getAmount()->toFloat() -
+			$this->initial_balance->getAmount()->toFloat();
+	}
+
+	public function getFormattedBalanceChangeAttribute()
+	{
+		$change = $this->balanceChange;
+		$formatted = "Rp" . number_format(abs($change), 0, ",", ".");
+
+		if ($change > 0) {
+			return "+{$formatted}";
+		} elseif ($change < 0) {
+			return "-{$formatted}";
+		}
+
+		return $formatted;
+	}
+
+	public function getIsBalancePositiveAttribute()
+	{
+		return $this->balanceChange > 0;
 	}
 
 	public function scopeDefault($query)

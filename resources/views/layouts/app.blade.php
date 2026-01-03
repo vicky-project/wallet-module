@@ -573,12 +573,17 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('apps.transactions.index') }}">
+                <a href="{{ route('apps.accounts.index') }}" class="{{ request()->routeIs('apps.accounts.*') ? 'active' : '' }}">
+                    <i class="bi bi-wallet"></i> Accounts
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('apps.transactions.index') }}" class="{{ request()->routeIs('apps.transactions.*') ? 'active' : '' }}">
                     <i class="bi bi-currency-dollar"></i> Transactions
                 </a>
             </li>
             <li>
-                <a href="{{ route('apps.categories.index') }}">
+                <a href="{{ route('apps.categories.index') }}" class="{{ request()->routeIs('apps.categories.*') ? 'active' : '' }}">
                     <i class="bi bi-pie-chart"></i> Categories
                 </a>
             </li>
@@ -590,16 +595,6 @@
             <li>
                 <a href="#">
                     <i class="bi bi-graph-up"></i> Laporan
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-bullseye"></i> Tujuan
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-wallet"></i> Akun Bank
                 </a>
             </li>
             <li class="mt-4">
@@ -617,8 +612,8 @@
         <div class="position-absolute bottom-0 w-100 p-3 text-center">
             <div class="card bg-dark text-white">
                 <div class="card-body py-3">
-                    <small>Saldo Tersimpan</small>
-                    <h5 class="mb-0">Rp 12.450.000</h5>
+                    <small></small>
+                    <h5 class="mb-0"></h5>
                 </div>
             </div>
         </div>

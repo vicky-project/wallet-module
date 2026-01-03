@@ -7,12 +7,34 @@ use Brick\Money\Money;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Wallet\Models\Account;
+use Modules\Wallet\Enums\AccountType;
 
 class AccountRepository extends BaseRepository
 {
 	public function __construct(Account $model)
 	{
 		parent::__construct($model);
+	}
+
+	public function getAccounts(User $user): Collection
+	{
+		return $this->model
+			->where("user_id", $user->id)
+			->orderBy("is_default", "desc")
+			->orderBy("type")
+			->orderBy("name")
+			->get()
+			->map(function ($account) {
+				$initial = $this->fromDatabaseAmount($account->initial_balance);
+				$current = $this->fromDatabaseAmount($account->current_balance);
+				$change = $current->minus($initial);
+
+				$account->balance_change_amount = $change;
+				$account->balance_change_formatted = $this->formatMoney($change);
+				$account->is_positif_change = !$change->isNegative();
+
+				return $account;
+			});
 	}
 
 	/**
@@ -28,7 +50,9 @@ class AccountRepository extends BaseRepository
 		);
 
 		$data["current_balance"] = $this->toDatabaseAmount(
-			$this->toMoney($data["current_balance"] ?? $data["initial_balance"])
+			$this->toMoney(
+				$data["current_balance"] ?? ($data["initial_balance"] ?? 0)
+			)
 		);
 
 		return $this->create($data);
@@ -56,37 +80,6 @@ class AccountRepository extends BaseRepository
 	}
 
 	/**
-	 * Get active accounts with formatted balances
-	 */
-	public function getActiveAccounts(User $user): Collection
-	{
-		return $this->model
-			->where("user_id", $user->id)
-			->orderBy("type")
-			->orderBy("name")
-			->get()
-			->map(function ($account) {
-				$account->formatted_current_balance = $this->formatMoney(
-					$this->fromDatabaseAmount($account->current_balance)
-				);
-				$account->formatted_initial_balance = $this->formatMoney(
-					$this->fromDatabaseAmount($account->initial_balance)
-				);
-
-				// Calculate balance change
-				$initial = $this->fromDatabaseAmount($account->initial_balance);
-				$current = $this->fromDatabaseAmount($account->current_balance);
-				$change = $current->minus($initial);
-
-				$account->balance_change = $this->formatMoney($change);
-				$account->balance_change_raw = $change;
-				$account->is_positive_change = !$change->isNegative();
-
-				return $account;
-			});
-	}
-
-	/**
 	 * Get total balance across all accounts
 	 */
 	public function getTotalBalance(User $user): Money
@@ -94,6 +87,85 @@ class AccountRepository extends BaseRepository
 		$total = $this->model->where("user_id", $user->id)->sum("current_balance");
 
 		return $this->fromDatabaseAmount($total);
+	}
+
+	/**
+	 * Get account statistics for dashboard
+	 */
+	public function getAccountStats(User $user): array
+	{
+		$accounts = $this->getAccounts($user);
+		$totalBalance = $this->getTotalBalance($user);
+
+		// Count accounts by type
+		foreach (AccountType::cases() as $type) {
+			$typeCounts[$type->value] = $accounts
+				->where("type.value", $type->value)
+				->count();
+		}
+
+		// Sum balances by type
+		$typeBalances = [];
+		foreach ($accounts as $account) {
+			$type = $account->type->value;
+			if (!isset($typeBalances[$type])) {
+				$typeBalances[$type] = Money::of(0, "IDR");
+			}
+			$typeBalances[$type] = $typeBalances[$type]->plus(
+				$this->fromDatabaseAmount($account->current_balance)
+			);
+		}
+
+		// Format type balances
+		$formattedTypeBalances = [];
+		foreach ($typeBalances as $type => $balance) {
+			$formattedTypeBalances[$type] = $this->formatMoney($balance);
+		}
+
+		return [
+			"total_accounts" => $accounts->count(),
+			"total_balance" => $this->formatMoney($totalBalance),
+			"total_balance_raw" => $totalBalance,
+			"default_account" => $accounts->where("is_default", true)->first(),
+			"accounts_by_type" => $typeCounts,
+			"balances_by_type" => $formattedTypeBalances,
+			"recent_accounts" => $accounts->take(5),
+		];
+	}
+
+	/**
+	 * Get recent transactions for account
+	 */
+	public function getRecentTransactions(
+		int $accountId,
+		int $limit = 10
+	): Collection {
+		$account = $this->find($accountId);
+
+		if (!$account) {
+			return collect();
+		}
+
+		return $account
+			->transactions()
+			->with("category")
+			->latest()
+			->limit($limit)
+			->get()
+			->map(function ($transaction) {
+				return [
+					"id" => $transaction->id,
+					"date" => $transaction->transaction_date,
+					"description" => $transaction->description,
+					"amount" => $this->formatMoney(
+						$this->fromDatabaseAmount($transaction->amount)
+					),
+					"amount_raw" => $transaction->amount,
+					"type" => $transaction->type,
+					"category" => $transaction->category->name ?? "Tanpa Kategori",
+					"category_icon" => $transaction->category->icon ?? "bi-tag",
+				];
+			});
 	}
 
 	/**
