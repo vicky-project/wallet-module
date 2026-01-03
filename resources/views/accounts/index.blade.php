@@ -3,7 +3,7 @@
 @section('title', 'Akun Bank - ' . config('app.name'))
 
 @section('content')
-@include('wallet:partials.fab')
+@include('wallet::partials.fab')
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
