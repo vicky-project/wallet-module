@@ -2,6 +2,8 @@
 
 @section('title', 'Kategori - ' . config('app.name', 'VickyServer'))
 
+@use('Modules\Wallet\Enums\CategoryType')
+
 @section('content')
 @include('wallet::partials.fab')
 <!-- Page Header -->
@@ -176,7 +178,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <div class="transaction-icon" style="background-color: {{ $category->color ?? ($category->type === 'income' ? '#10b981' : '#ef4444') }}; color: white;">
+                        <div class="transaction-icon" style="background-color: {{ $category->color ?? ($category->type === CategoryType::INCOME ? '#10b981' : '#ef4444') }}; color: white;">
                           <i class="bi {{ $category->icon_class }}"></i>
                         </div>
                         <div class="ms-3">
@@ -186,7 +188,7 @@
                       </div>
                     </td>
                     <td>
-                      @if($category->type === 'income')
+                      @if($category->type === CategoryType::INCOME)
                         <span class="badge bg-success">
                           <i class="bi bi-arrow-up-circle me-1"></i>Pemasukan
                         </span>
@@ -204,7 +206,7 @@
                       @endif
                     </td>
                     <td>
-                      @if($category->type === 'expense' && $category->budget_limit)
+                      @if($category->type === CategoryType::EXPENSE && $category->budget_limit)
                         <div class="d-flex align-items-center">
                           <div class="me-2" style="width: 100px;">
                             <div class="progress" style="height: 8px;">
