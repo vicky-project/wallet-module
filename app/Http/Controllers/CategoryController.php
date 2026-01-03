@@ -25,8 +25,9 @@ class CategoryController extends Controller
 		try {
 			$categories = $this->categoryRepository->getUserCategories(
 				$request->type,
-				$request->include_inactive ?? false
+				$request->include_inactive ?? true
 			);
+			dd($categories);
 
 			$stats = $this->categoryRepository->getCategoryStats(auth()->user());
 

@@ -135,17 +135,22 @@
     <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button">
-          <i class="bi bi-grid me-1"></i> Semua
+          <i class="bi bi-grid me-1"></i> All
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button">
-          <i class="bi bi-arrow-up-circle me-1 text-success"></i> Pemasukan
+          <i class="bi bi-arrow-up-circle me-1 text-success"></i> Income
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense" type="button">
-          <i class="bi bi-arrow-down-circle me-1 text-danger"></i> Pengeluaran
+          <i class="bi bi-arrow-down-circle me-1 text-danger"></i> Expense
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="inactive-tab" data-bs-toggle="tab" data-bs-target="#inactive" type="button">
+          <i class="bi bi-toggle-off text-danger">InActive</i>
         </button>
       </li>
     </ul>
@@ -411,6 +416,9 @@
           </div>
         @endif
       </div>
+      
+      <!-- In Active Tab -->
+      <div class="tab-pane fade" id="inactive" role="tabpanel"></div>
     </div>
   </div>
 </div>
