@@ -44,7 +44,7 @@
         
         <!-- Amount Input -->
         <div class="mb-4">
-          <label for="amount" class="form-label">Amount</label>
+          <label for="amount" class="form-label">Amount<span class="text-danger">*</span></label>
           <div class="input-group amount-input-group">
             <span class="input-group-text">Rp</span>
             <input type="number" class="form-control amount-input @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $preset['amount']) }}" placeholder="0" required>
@@ -57,14 +57,14 @@
         <!-- Title and Description -->
         <div class="row">
           <div class="col-md-8 mb-3">
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label">Title<span class="text-danger">*</span></label>
             <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $preset['title']) }}" placeholder="Ex: Gaji Bulanan, Belanja Bulanan" required>
             @error('title')
             <div class="text-danger small mt-1">{{ $message }}</div>
             @enderror
           </div>
           <div class="col-md-4 mb-3">
-            <label for="transaction_date" class="form-label">Date</label>
+            <label for="transaction_date" class="form-label">Date<span class="text-danger">*</span></label>
             <input type="date" class="form-control @error('transaction_date') is-invalid @enderror" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}" required>
             @error('transaction_date')
             <div class="text-danger small mt-1">{{ $message }}</div>
@@ -115,7 +115,20 @@
         <!-- Expense Category shown by default -->
         <div id="expenseCategories" class="category-options" style="{{ old('type', $preset['type']) == CategoryType::EXPENSE->value ? '' : 'display: none;' }}">
           @forelse($expenseCategories as $category)
-          <label class="category-option"></label>
+          <label class="category-option">
+            <input type="radio" name="category_id" value="{{ $category->id}}" @checked(old('category_id', $preset['category_id']) == $category->id)>
+            <div class="d-flex align-items-center w-100">
+              <div class="category-icon">
+                <i class="{{ $category->icon }}"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="fw-medium">{{ $category->name }}</div>
+                @if($category->budget_limit)
+                <small class="text-muted">Anggaran: {{ $category->formatted_budget_limit }}</small>
+                @endif
+              </div>
+            </div>
+          </label>
           @empty
           <div class="text-center py-4">
             <i class="bi bi-tag display-4 text-muted"></i>
@@ -138,7 +151,7 @@
       <div class="form-section">
         <h5>Akun</h5>
         <div class="mb-3">
-          <label for="account_id" class="form-label">Pilih Akun</label>
+          <label for="account_id" class="form-label">Pilih Akun<span class="text-danger">*</span></label>
           <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
             @forelse($accounts as $account)
             <option value="{{ $account->id }}" @selected(old('account_id', $preset['account_id']) == $account->id) data-balance="{{ $account->formatted_current_balance }}">
@@ -354,7 +367,10 @@
     amountInput.addEventListener('input', function (e) {
       let value = e.target.value;
       if(value) {
-        value = parseInt(value).toLocaleString('id-ID');
+        value = parseInt(value).toLocaleString('id-ID', {
+          style: 'currency',
+          curency: 'id-ID'
+        });
       }
       
       e.target.value = value;
