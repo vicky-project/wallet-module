@@ -68,7 +68,7 @@
             <div>
               <h5 class="mb-0">{{ $category->name }}</h5>
               <p class="text-muted mb-0">
-                {{ $category->type === Cat::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
+                {{ $category->type === CategoryType::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
                 @if($category->budget_limit)
                 • Batas: {{ $category->formatted_budget_limit }}
                 @endif
