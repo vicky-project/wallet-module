@@ -134,7 +134,7 @@
   <!-- Right Column: Statistics -->
   <div class="col-lg-8 col-md-8 mb-3">
     <!-- Monthly Statistics -->
-    <div class="card mb-2">
+    <div class="card mb-4">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Statistik Bulanan</h6>
         <div class="dropdown">
@@ -202,7 +202,7 @@
     </div>
 
     <!-- Recent Transactions -->
-    <div class="card mb-2">
+    <div class="card mb-4">
       <div class="card-header d-flex   justify-content-between align-items-center">
         <h6 class="mb-0">Transaksi Terbaru</h6>
         <a href="{{ route('apps.transactions.index', ['category_id' => $category->id]) }}" class="btn btn-sm btn-outline-primary">
