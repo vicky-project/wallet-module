@@ -485,7 +485,7 @@
   }
   
   .type-toggle input[type="radio"]:checked + label {
-    background-color: #dee2e6;
+    background-color: #4361ee;
     color: white;
   }
   
@@ -519,7 +519,7 @@
   }
   
   .category-option input[type="radio"]:checked + div {
-    background-color: rgba(67, 97, 238, 0.1);
+    background-color: #dee2e6;
     border-color: #4361ee;
   }
   
