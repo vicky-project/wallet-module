@@ -47,7 +47,7 @@
           <label for="amount" class="form-label">Amount</label>
           <div class="input-group amount-input-group">
             <span class="input-group-text">Rp</span>
-            <input type="text" class="form-control amount-input @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $preset['amount']) }}" placeholder="0" required>
+            <input type="number" class="form-control amount-input @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $preset['amount']) }}" placeholder="0" required>
           </div>
           @error('amount')
           <div class="text-danger small mt-1">{{ $message }}</div>
