@@ -485,7 +485,7 @@
   }
   
   .type-toggle input[type="radio"]:checked + label {
-    background-color: #4361ee;
+    background-color: #dee2e6;
     color: white;
   }
   
