@@ -27,7 +27,7 @@
 <!-- Category Information -->
 <div class="row">
   <!-- Left Column: Category Details -->
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-md-4 mb-3">
     <div class="card mb-4">
       <div class="card-body">
         <div class="d-flex align-items-center mb-4">
@@ -132,9 +132,9 @@
   </div>
 
   <!-- Right Column: Statistics -->
-  <div class="col-lg-8">
+  <div class="col-lg-8 col-md-8 mb-3">
     <!-- Monthly Statistics -->
-    <div class="card mb-4">
+    <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Statistik Bulanan</h6>
         <div class="dropdown">
