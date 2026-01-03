@@ -7,20 +7,20 @@
 @section('content')
 @include('wallet::partials.fab')
 <!-- Page Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 text-end">
+  <div>
+    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary me-2">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-primary">
+      <i class="bi bi-pencil"></i>
+    </a>
+  </div>
   <div>
     <h1 class="page-title mb-2">
       <i class="bi bi-pie-chart me-2"></i>Detail Kategori
     </h1>
     <p class="text-muted mb-0">Informasi lengkap dan statistik kategori "{{ $category->name }}"</p>
-  </div>
-  <div>
-    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary me-2">
-      <i class="bi bi-arrow-left me-2"></i>Kembali
-    </a>
-    <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-primary">
-      <i class="bi bi-pencil me-2"></i>Edit
-    </a>
   </div>
 </div>
 
@@ -99,7 +99,7 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="card">
+    <div class="card mb-4">
       <div class="card-header">
         <h6 class="mb-0">Aksi Cepat</h6>
       </div>

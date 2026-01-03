@@ -1,27 +1,27 @@
-    <!-- Floating Action Button (FAB) -->
-    <div class="fab-container" id="fabContainer">
-        <div class="fab-menu" id="fabMenu">
-            <a href="#" class="fab-item" id="fabIncome">
-                <i class="bi bi-plus-circle fab-income"></i>
-                <span class="fab-label">Tambah Pemasukan</span>
-            </a>
-            <a href="#" class="fab-item" id="fabExpense">
-                <i class="bi bi-dash-circle fab-expense"></i>
-                <span class="fab-label">Tambah Pengeluaran</span>
-            </a>
-            <a href="#" class="fab-item" id="fabRecurring">
-                <i class="bi bi-repeat fab-recurring"></i>
-                <span class="fab-label">Transaksi Rutin</span>
-            </a>
-            <a href="#" class="fab-item" id="fabReport">
-                <i class="bi bi-file-earmark-text fab-report"></i>
-                <span class="fab-label">Laporan</span>
-            </a>
-        </div>
-        <button class="fab-main" id="fabMain">
-            <i class="bi bi-plus-lg" id="fabIcon"></i>
-        </button>
-    </div>
+<!-- Floating Action Button (FAB) -->
+<div class="fab-container" id="fabContainer">
+  <div class="fab-menu" id="fabMenu">
+    <a href="#" class="fab-item" id="fabIncome">
+      <i class="bi bi-plus-circle fab-income"></i>
+      <span class="fab-label">Tambah Pemasukan</span>
+    </a>
+    <a href="#" class="fab-item" id="fabExpense">
+      <i class="bi bi-dash-circle fab-expense"></i>
+      <span class="fab-label">Tambah Pengeluaran</span>
+    </a>
+    <a href="#" class="fab-item" id="fabRecurring">
+      <i class="bi bi-repeat fab-recurring"></i>
+      <span class="fab-label">Transaksi Rutin</span>
+    </a>
+    <a href="#" class="fab-item" id="fabReport">
+      <i class="bi bi-file-earmark-text fab-report"></i>
+      <span class="fab-label">Laporan</span>
+    </a>
+  </div>
+  <button class="fab-main" id="fabMain">
+    <i class="bi bi-plus-lg" id="fabIcon"></i>
+  </button>
+</div>
     
     
 <script>
