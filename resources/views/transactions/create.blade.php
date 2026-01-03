@@ -352,7 +352,7 @@
     const amountInput = document.getElementById('amount');
     
     amountInput.addEventListener('input', function (e) {
-      let value = e.target.value.replace('/[^0-9]/g', '');
+      let value = e.target.value;
       if(value) {
         value = parseInt(value).toLocaleString('id-ID');
       }
