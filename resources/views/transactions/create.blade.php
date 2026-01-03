@@ -369,7 +369,8 @@
       if(value) {
         value = parseInt(value).toLocaleString('id-ID', {
           style: 'currency',
-          curency: 'id-ID'
+          curency: 'id-ID',
+          useGrouping: 'auto'
         });
       }
       
