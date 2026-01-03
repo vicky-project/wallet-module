@@ -519,7 +519,7 @@
   }
   
   .category-option input[type="radio"]:checked + div {
-    background-color: #dee2e6;
+    background-color: #4361ee;
     border-color: #4361ee;
   }
   
