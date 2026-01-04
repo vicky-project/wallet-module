@@ -54,6 +54,8 @@ class MoneyCast implements CastsAttributes
 			return $value->getMinorAmount()->toInt();
 		}
 
+		dd("bukan instansi money", $value);
+
 		// If it's a numeric string or float, create a Money object first.
 		// The currency is determined from existing attributes or a default.
 		$currency =
