@@ -254,41 +254,9 @@ class AccountRepository extends BaseRepository
 			$dates = collect();
 			$balances = collect();
 
-			$today = now();
-
-			for ($i = $days - 1; $i >= 0; $i--) {
-				$date = $today
-					->copy()
-					->subDays($i)
-					->format("Y-m-d");
-				$dates->push($date);
-
-				// Simulate balance change for demo
-				// In production, this would query transaction history
-				$balance = $this->fromDatabaseAmount(
-					$account->current_balance->getAmount()->toInt()
-				)->plus(
-					Money::ofMinor(
-						rand(1000, 50000),
-						$account->currency ?? config("wallet.default_currency", "USD")
-					),
-					RoundingMode::DOWN
-				);
-
-				$balances->push($balance);
-			}
-
 			return [
 				"dates" => $dates,
-				"balances" => $balances->map(function ($balance) {
-					dd($this->fromDatabaseAmount($balance->getAmount()->toInt()));
-					return $this->formatMoney(
-						$this->fromDatabaseAmount(
-							$balance->getAmount()->toInt(),
-							$account->currency ?? config("wallet.default_currency", "USD")
-						)
-					);
-				}),
+				"balances" => $balances,
 			];
 		} catch (\Exception $e) {
 			throw $e;

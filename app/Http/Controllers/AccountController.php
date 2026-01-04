@@ -110,6 +110,7 @@ class AccountController extends BaseController
 				"message" => $e->getMessage(),
 				"trace" => $e->getTrace(),
 			]);
+			throw $e;
 			return redirect()
 				->back()
 				->withErrors(["error" => $e->getMessage()]);
