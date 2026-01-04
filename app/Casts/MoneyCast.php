@@ -67,7 +67,7 @@ class MoneyCast implements CastsAttributes
 					return null;
 				}
 
-				$value = preg_replace("/[0-9.,-]/", "", $value);
+				$value = preg_replace("/[^0-9.,-]/", "", $value);
 				$value = str_replace(",", ".", $value);
 			}
 
