@@ -264,7 +264,9 @@ class AccountRepository extends BaseRepository
 		return [
 			"dates" => $dates,
 			"balances" => $balances->map(function ($balance) {
-				return $this->formatMoney($this->fromDatabaseAmount($balance));
+				return $this->formatMoney(
+					$this->fromDatabaseAmount($balance->getAmount()->toInt())
+				);
 			}),
 		];
 	}
