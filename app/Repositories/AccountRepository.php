@@ -278,7 +278,10 @@ class AccountRepository extends BaseRepository
 			"dates" => $dates,
 			"balances" => $balances->map(function ($balance) {
 				return $this->formatMoney(
-					$this->fromDatabaseAmount($balance->getAmount()->toInt())
+					$this->fromDatabaseAmount(
+						$balance->getAmount()->toInt(),
+						$account->currency ?? config("wallet.default_currency", "USD")
+					)
 				);
 			}),
 		];
