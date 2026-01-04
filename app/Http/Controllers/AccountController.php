@@ -22,6 +22,7 @@ class AccountController extends BaseController
 		try {
 			$accounts = $this->accountRepository->getAccounts(auth()->user());
 			$stats = $this->accountRepository->getAccountStats(auth()->user());
+			dd($accounts, $stats);
 
 			return view("wallet::accounts.index", compact("accounts", "stats"));
 		} catch (\Exception $e) {
