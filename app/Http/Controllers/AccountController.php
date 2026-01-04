@@ -51,7 +51,6 @@ class AccountController extends BaseController
 	 */
 	public function store(AccountRequest $request)
 	{
-		dd($request->validated());
 		try {
 			$account = $this->accountRepository->createAccount(
 				$request->validated(),

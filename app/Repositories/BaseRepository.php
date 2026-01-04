@@ -29,12 +29,6 @@ abstract class BaseRepository
 			return Money::of($amount, $currency);
 		}
 
-		if (is_string($amount)) {
-			// Remove currency symbols and thousand separators
-			$cleanAmount = preg_replace("/[^0-9\.\-]/", "", $amount);
-			return Money::of($cleanAmount, $currency);
-		}
-
 		if (is_null($amount)) {
 			return Money::zero($amount);
 		}
