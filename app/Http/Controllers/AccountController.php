@@ -24,8 +24,8 @@ class AccountController extends BaseController
 	public function index()
 	{
 		try {
-			$accountsRepo = $this->accountRepository->account(auth()->user());
-			$accounts = $this->accountRepository->getAccountMapping($accountsRepo);
+			$accountsRepo = $this->accountRepository->accounts(auth()->user());
+			$accounts = $this->accountsRepository->getAccountMapping($accountsRepo);
 			$stats = $this->accountRepository->getAccountStats(
 				$accountsRepo,
 				auth()->user()

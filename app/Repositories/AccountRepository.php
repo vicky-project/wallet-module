@@ -27,7 +27,7 @@ class AccountRepository extends BaseRepository
 			->get();
 	}
 
-	public function getAccountMapping(Collection $accountsCollection): Collection
+	public function getAccountsMapping(Collection $accountsCollection): Collection
 	{
 		return $accountsCollection->map(function ($account) {
 			$initial = $this->fromDatabaseAmount(
