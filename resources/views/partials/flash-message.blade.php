@@ -7,7 +7,7 @@
 @if($errors->any())
   <div class="alert alert-danger" role="alert">
     <i class="bi bi-exclamation-triangle"></i>
-    Terdapat kesalahan dalam pengisian form.
+    Terdapat kesalahan.
     <ul>
       @foreach($errors->all() as $error)
         <li>{{ $error }}</li>
