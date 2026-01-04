@@ -189,7 +189,7 @@
 
           <div class="account-balance mb-3">
             <small class="text-muted d-block">Saldo Saat Ini</small>
-            <h3 class="mb-1">{{ $account->formatted_current_balance }}</h3>
+            <h3 class="mb-1">{{ $account->formatted_balance }}</h3>
             @if($account->balance_change != 0)
             <small class="{{ $account->is_balance_positive ? 'text-success' : 'text-danger' }}">
               <i class="bi {{ $account->is_balance_positive ? 'bi-arrow-up' : 'bi-arrow-down' }} me-1"></i>
