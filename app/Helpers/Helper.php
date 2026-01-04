@@ -43,25 +43,25 @@ class Helper
 				"icon" => "bi-bank",
 				"color" => "#3b82f6",
 				"label" => "Bank",
-				"placeholder" => "Contoh: BCA, Mandiri, BNI",
+				"bankPlaceholder" => "Contoh: BCA, Mandiri, BNI",
 			],
 			"ewallet" => [
 				"icon" => "bi-phone",
 				"color" => "#8b5cf6",
 				"label" => "E-Wallet",
-				"placeholder" => "Contoh: Dana, OVO, GoPay",
+				"bankPlaceholder" => "Contoh: Dana, OVO, GoPay",
 			],
 			"credit_card" => [
 				"icon" => "bi-credit-card",
 				"color" => "#ef4444",
 				"label" => "Kartu Kredit",
-				"placeholder" => "Contoh: BCA Credit, Mandiri Credit",
+				"bankPlaceholder" => "Contoh: BCA Credit, Mandiri Credit",
 			],
 			"investment" => [
 				"icon" => "bi-graph-up",
 				"color" => "#f59e0b",
 				"label" => "Investasi",
-				"placeholder" => "Contoh: Reksadana, Saham, Crypto",
+				"bankPlaceholder" => "Contoh: Reksadana, Saham, Crypto",
 			],
 		];
 
