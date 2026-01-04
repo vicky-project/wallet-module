@@ -33,7 +33,7 @@ class MoneyCast implements CastsAttributes
 		}
 
 		// Create a Money instance from the minor unit (cents) stored in the database.
-		return Money::of($value, $currency, null, RoundingMode::DOWN);
+		return Money::ofMinor($value, $currency, null, RoundingMode::DOWN);
 	}
 
 	/**
@@ -51,7 +51,7 @@ class MoneyCast implements CastsAttributes
 
 		if ($value instanceof Money) {
 			// If it's already a Money object, get its amount in minor units.
-			return $value->getAmount()->toInt();
+			return $value->getMinorAmount()->toInt();
 		}
 
 		// If it's a numeric string or float, create a Money object first.
@@ -90,7 +90,7 @@ class MoneyCast implements CastsAttributes
 
 			// Money::of() handles string input like '19.99' correctly.
 			$money = Money::of($floatValue, $currency, null, RoundingMode::DOWN);
-			return $money->getAmount()->toInt();
+			return $money->getMinorAmount()->toInt();
 		} catch (\Exception $e) {
 			throw new InvalidArgumentException(
 				"Invalid money value provided for {$key}: {$value}"
