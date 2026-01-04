@@ -37,7 +37,7 @@ class Helper
 				"icon" => "bi-cash-stack",
 				"color" => "#10b981",
 				"label" => "Uang Tunai",
-				"placeholder" => "Tidak ada (Uang Tunai)",
+				"bankPlaceholder" => "Tidak ada (Uang Tunai)",
 			],
 			"bank" => [
 				"icon" => "bi-bank",
