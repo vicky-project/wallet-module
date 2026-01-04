@@ -105,7 +105,7 @@ class Account extends Model
 
 	public function getTypeLabelAttribute()
 	{
-		return $this->type->label() ?? $this->type->value;
+		return $this->type->name;
 	}
 
 	public function getBalanceChangeAttribute()
