@@ -28,7 +28,7 @@
           @foreach(\Modules\Wallet\Enums\AccountType::cases() as $accountType)
             <option value="{{ $accountType->value }}" 
               {{ old('type', $account->type->value ?? '') == $accountType->value ? 'selected' : '' }}>
-              {{ $accountType->label() ?? $accountType->value }}
+              {{ $accountType->name ?? $accountType->value }}
             </option>
           @endforeach
         </select>
