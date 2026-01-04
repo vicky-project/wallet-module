@@ -17,34 +17,33 @@ class AccountRepository extends BaseRepository
 		parent::__construct($model);
 	}
 
-	private function accounts(User $user)
+	public function accounts(User $user)
 	{
 		return $this->model
 			->where("user_id", $user->id)
 			->orderBy("is_default", "desc")
 			->orderBy("type")
-			->orderBy("name");
+			->orderBy("name")
+			->get();
 	}
 
-	public function getAccounts(User $user): Collection
+	public function getAccountMapping(Collection $accountsCollection): Collection
 	{
-		return $this->accounts($user)
-			->get()
-			->map(function ($account) {
-				$initial = $this->fromDatabaseAmount(
-					$account->initial_balance->getAmount()->toInt()
-				);
-				$current = $this->fromDatabaseAmount(
-					$account->current_balance->getAmount()->toInt()
-				);
-				$change = $current->minus($initial);
+		return $accountsCollection->map(function ($account) {
+			$initial = $this->fromDatabaseAmount(
+				$account->initial_balance->getAmount()->toInt()
+			);
+			$current = $this->fromDatabaseAmount(
+				$account->current_balance->getAmount()->toInt()
+			);
+			$change = $current->minus($initial);
 
-				$account->balance_change_amount = $change;
-				$account->balance_change_formatted = $this->formatMoney($change);
-				$account->is_positif_change = !$change->isNegative();
+			$account->balance_change_amount = $change;
+			$account->balance_change_formatted = $this->formatMoney($change);
+			$account->is_positif_change = !$change->isNegative();
 
-				return $account;
-			});
+			return $account;
+		});
 	}
 
 	/**
@@ -102,21 +101,22 @@ class AccountRepository extends BaseRepository
 	/**
 	 * Get account statistics for dashboard
 	 */
-	public function getAccountStats(User $user): array
-	{
-		$accounts = $this->accounts($user)->get();
+	public function getAccountStats(
+		Collection $accountsCollection,
+		User $user
+	): array {
 		$totalBalance = $this->getTotalBalance($user);
 
 		// Count accounts by type
 		foreach (AccountType::cases() as $type) {
-			$typeCounts[$type->value] = $accounts
+			$typeCounts[$type->value] = $accountsCollection
 				->where("type.value", $type->value)
 				->count();
 		}
 
 		// Sum balances by type
 		$typeBalances = [];
-		foreach ($accounts as $account) {
+		foreach ($accountsCollection as $account) {
 			$type = $account->type->value;
 			if (!isset($typeBalances[$type])) {
 				$typeBalances[$type] = Money::of(
@@ -140,13 +140,15 @@ class AccountRepository extends BaseRepository
 		}
 
 		return [
-			"total_accounts" => $accounts->count(),
+			"total_accounts" => $accountsCollection->count(),
 			"total_balance" => $this->formatMoney($totalBalance),
 			"total_balance_raw" => $totalBalance,
-			"default_account" => $accounts->where("is_default", true)->first(),
+			"default_account" => $accountsCollection
+				->where("is_default", true)
+				->first(),
 			"accounts_by_type" => $typeCounts,
 			"balances_by_type" => $formattedTypeBalances,
-			"recent_accounts" => $accounts->take(5),
+			"recent_accounts" => $accountsCollection->take(5),
 		];
 	}
 
