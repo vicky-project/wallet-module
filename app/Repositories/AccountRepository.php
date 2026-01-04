@@ -268,7 +268,8 @@ class AccountRepository extends BaseRepository
 					$account->currency ?? config("wallet.default_currency", "USD"),
 					null,
 					RoundingMode::DOWN
-				)
+				),
+				RoundingMode::DOWN
 			);
 
 			$balances->push($balance);
