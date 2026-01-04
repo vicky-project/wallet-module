@@ -4,6 +4,7 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Wallet\Models\Account;
+use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Http\Requests\AccountRequest;
@@ -82,11 +83,11 @@ class AccountController extends BaseController
 			// Calculate totals
 			$incomeTotal = $account
 				->transactions()
-				->where("type", "income")
+				->where("type", TransactionType::INCOME)
 				->sum("amount");
 			$expenseTotal = $account
 				->transactions()
-				->where("type", "expense")
+				->where("type", TransactionType::EXPENSE)
 				->sum("amount");
 
 			// Get balance history

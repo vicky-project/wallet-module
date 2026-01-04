@@ -238,54 +238,58 @@ class AccountRepository extends BaseRepository
 	 */
 	public function getBalanceHistory(int $accountId, int $days = 30): array
 	{
-		$account = $this->find($accountId);
-		if (!$account) {
-			return [
-				"dates" => [],
-				"balances" => [],
-			];
-		}
+		try {
+			$account = $this->find($accountId);
+			if (!$account) {
+				return [
+					"dates" => [],
+					"balances" => [],
+				];
+			}
 
-		$dates = collect();
-		$balances = collect();
+			$dates = collect();
+			$balances = collect();
 
-		$today = now();
+			$today = now();
 
-		for ($i = $days - 1; $i >= 0; $i--) {
-			$date = $today
-				->copy()
-				->subDays($i)
-				->format("Y-m-d");
-			$dates->push($date);
+			for ($i = $days - 1; $i >= 0; $i--) {
+				$date = $today
+					->copy()
+					->subDays($i)
+					->format("Y-m-d");
+				$dates->push($date);
 
-			// Simulate balance change for demo
-			// In production, this would query transaction history
-			$balance = $this->fromDatabaseAmount(
-				$account->current_balance->getAmount()->toInt()
-			)->plus(
-				Money::of(
-					rand(-50000, 50000),
-					$account->currency ?? config("wallet.default_currency", "USD"),
-					null,
+				// Simulate balance change for demo
+				// In production, this would query transaction history
+				$balance = $this->fromDatabaseAmount(
+					$account->current_balance->getAmount()->toInt()
+				)->plus(
+					Money::of(
+						rand(-50000, 50000),
+						$account->currency ?? config("wallet.default_currency", "USD"),
+						null,
+						RoundingMode::DOWN
+					),
 					RoundingMode::DOWN
-				),
-				RoundingMode::DOWN
-			);
-
-			$balances->push($balance);
-		}
-
-		return [
-			"dates" => $dates,
-			"balances" => $balances->map(function ($balance) {
-				return $this->formatMoney(
-					$this->fromDatabaseAmount(
-						$balance->getAmount()->toInt(),
-						$account->currency ?? config("wallet.default_currency", "USD")
-					)
 				);
-			}),
-		];
+
+				$balances->push($balance);
+			}
+
+			return [
+				"dates" => $dates,
+				"balances" => $balances->map(function ($balance) {
+					return $this->formatMoney(
+						$this->fromDatabaseAmount(
+							$balance->getAmount()->toInt(),
+							$account->currency ?? config("wallet.default_currency", "USD")
+						)
+					);
+				}),
+			];
+		} catch (\Exception $e) {
+			throw $e;
+		}
 	}
 
 	/**
