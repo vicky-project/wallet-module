@@ -30,7 +30,7 @@ class Helper
 		};
 	}
 
-	public static function accountTypeMap(?string $type = null)
+	public static function accountTypeMap(?string $type = null): array
 	{
 		$typeMap = [
 			"cash" => [

@@ -147,11 +147,11 @@
 const accountTypeMap = @json(Helper::accountTypeMap());
 //const accountTypeMap = {
 //    'cash': { 
-        icon: 'bi-cash-stack', 
-        color: '#10b981', 
-        label: 'Uang Tunai',
-        bankPlaceholder: 'Tidak ada (uang tunai)'
-    },
+//        icon: 'bi-cash-stack', 
+//        color: '#10b981', 
+//        label: 'Uang Tunai',
+//        bankPlaceholder: 'Tidak ada (uang tunai)'
+//    },
 //    'bank': { 
 //        icon: 'bi-bank', 
 //        color: '#3b82f6', 
