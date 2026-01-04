@@ -20,6 +20,7 @@ class AccountRepository extends BaseRepository
 	public function getAccounts(User $user): Collection
 	{
 		return $this->model
+			->with(["transactions"])
 			->where("user_id", $user->id)
 			->orderBy("is_default", "desc")
 			->orderBy("type")
