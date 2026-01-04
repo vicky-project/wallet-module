@@ -51,6 +51,10 @@ return new class extends Migration {
 				->foreignId("category_id")
 				->constrained()
 				->onDelete("cascade");
+			$table
+				->foreignId("account_id")
+				->constrained()
+				->onDelete("cascade");
 			$table->string("title"); // Deskripsi transaksi
 			$table->text("description")->nullable();
 			$table->bigInteger("amount");
