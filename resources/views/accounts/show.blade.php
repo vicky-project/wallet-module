@@ -2,6 +2,8 @@
 
 @section('title', 'Detail Akun - ' . $account->name . ' - ' . config('app.name'))
 
+@use('Modules\Wallet\Helpers\Helper')
+
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4 text-end">
@@ -28,8 +30,9 @@
     <div class="card mb-4">
       <div class="card-body">
         <div class="d-flex align-items-center mb-4">
-          <div class="account-icon-large me-3" style="width: 70px; height: 70px; background: {{ $account->color ?? '#4361ee' }}; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
-            <i class="bi {{ $account->icon_class }} fs-3"></i>
+          @php $accountTypeMap = Helper::accountTypeMap($account->type->value) @endphp
+          <div class="account-icon-large me-3" style="width: 70px; height: 70px; background: {{ $accountTypeMap['color'] ?? '#4361ee' }}; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+            <i class="bi {{ $accountTypeMap['icon'] }} fs-3"></i>
           </div>
           <div>
             <h4 class="mb-1">{{ $account->name }}</h4>

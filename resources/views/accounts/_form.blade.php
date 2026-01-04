@@ -7,6 +7,7 @@
 @endphp
 
 @use('Modules\Wallet\Enums\AccountType')
+@use('Modules\Wallet\Helpers\Helper')
 
 <form action="{{ $action }}" method="POST" id="accountForm">
   @csrf
@@ -143,38 +144,39 @@
 @push('scripts')
 <script>
 // Map untuk icon dan warna berdasarkan tipe akun
-const accountTypeMap = {
-    'cash': { 
+const accountTypeMap = @json(Helper::accountTypeMap());
+//const accountTypeMap = {
+//    'cash': { 
         icon: 'bi-cash-stack', 
         color: '#10b981', 
         label: 'Uang Tunai',
         bankPlaceholder: 'Tidak ada (uang tunai)'
     },
-    'bank': { 
-        icon: 'bi-bank', 
-        color: '#3b82f6', 
-        label: 'Bank',
-        bankPlaceholder: 'Contoh: BCA, Mandiri, BNI'
-    },
-    'ewallet': { 
-        icon: 'bi-phone', 
-        color: '#8b5cf6', 
-        label: 'E-Wallet',
-        bankPlaceholder: 'Contoh: Dana, OVO, GoPay'
-    },
-    'credit_card': { 
-        icon: 'bi-credit-card', 
-        color: '#ef4444', 
-        label: 'Kartu Kredit',
-        bankPlaceholder: 'Contoh: BCA Credit, Mandiri Credit'
-    },
-    'investment': { 
-        icon: 'bi-graph-up', 
-        color: '#f59e0b', 
-        label: 'Investasi',
-        bankPlaceholder: 'Contoh: Reksadana, Saham, Crypto'
-    }
-};
+//    'bank': { 
+//        icon: 'bi-bank', 
+//        color: '#3b82f6', 
+//        label: 'Bank',
+//        bankPlaceholder: 'Contoh: BCA, Mandiri, BNI'
+//    },
+//    'ewallet': { 
+//        icon: 'bi-phone', 
+//        color: '#8b5cf6', 
+//        label: 'E-Wallet',
+//        bankPlaceholder: 'Contoh: Dana, OVO, GoPay'
+//    },
+//    'credit_card': { 
+//        icon: 'bi-credit-card', 
+//        color: '#ef4444', 
+//        label: 'Kartu Kredit',
+//        bankPlaceholder: 'Contoh: BCA Credit, Mandiri Credit'
+//    },
+//    'investment': { 
+//        icon: 'bi-graph-up', 
+//        color: '#f59e0b', 
+//        label: 'Investasi',
+//        bankPlaceholder: 'Contoh: Reksadana, Saham, Crypto'
+//    }
+//};
 
 function updateAccountPreview(type) {
     const preview = accountTypeMap[type] || { 
