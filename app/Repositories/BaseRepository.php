@@ -54,7 +54,7 @@ abstract class BaseRepository
 	 * Convert database amount to Money
 	 */
 	protected function fromDatabaseAmount(
-		int $amount,
+		Money|int $amount,
 		string $currency = "IDR"
 	): Money {
 		return Money::ofMinor($amount, $currency);
