@@ -65,7 +65,7 @@ class DashboardController extends BaseController
 		$savingGoals = $this->savingGoalRepository->getActiveGoals($user);
 
 		// Get accounts summary
-		$accounts = $this->accountRepository->getActiveAccounts($user);
+		$accounts = $this->accountRepository->getAccounts($user);
 
 		// Get categories for quick add forms
 		$incomeCategories = $this->categoryRepository->getByType("income", $user);
