@@ -6,6 +6,8 @@
   $method = $isEdit ? 'PUT' : 'POST';
 @endphp
 
+@use('Modules\Wallet\Enums\AccountType')
+
 <form action="{{ $action }}" method="POST" id="accountForm">
   @csrf
   @if($isEdit) @method('PUT') @endif
@@ -25,9 +27,8 @@
         <label for="type" class="form-label">Jenis Akun <span class="text-danger">*</span></label>
         <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required onchange="updateAccountPreview(this.value)">
           <option value="">Pilih jenis akun...</option>
-          @foreach(\Modules\Wallet\Enums\AccountType::cases() as $accountType)
-            <option value="{{ $accountType }}" 
-              {{ old('type', $account->type->value ?? '') == $accountType->value ? 'selected' : '' }}>
+          @foreach(AccountType::cases() as $accountType)
+            <option value="{{ $accountType->value }}"  @selected(old('type', $account->type->value ?? '') == $accountType->value)>
               {{ $accountType->name ?? $accountType->value }}
             </option>
           @endforeach
