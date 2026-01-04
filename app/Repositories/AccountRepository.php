@@ -173,7 +173,9 @@ class AccountRepository extends BaseRepository
 					"date" => $transaction->transaction_date,
 					"description" => $transaction->description,
 					"amount" => $this->formatMoney(
-						$this->fromDatabaseAmount($transaction->amount)
+						$this->fromDatabaseAmount(
+							$transaction->amount->getAmount()->toInt()
+						)
 					),
 					"amount_raw" => $transaction->amount,
 					"type" => $transaction->type,
@@ -268,9 +270,7 @@ class AccountRepository extends BaseRepository
 				)->plus(
 					Money::of(
 						rand(-50000, 50000),
-						$account->currency ?? config("wallet.default_currency", "USD"),
-						null,
-						RoundingMode::DOWN
+						$account->currency ?? config("wallet.default_currency", "USD")
 					),
 					RoundingMode::DOWN
 				);

@@ -26,7 +26,7 @@ abstract class BaseRepository
 		}
 
 		if (is_numeric($amount)) {
-			return Money::of($amount, $currency, null, RoundingMode::DOWN);
+			return Money::of($amount, $currency);
 		}
 
 		if (is_null($amount)) {
@@ -41,14 +41,14 @@ abstract class BaseRepository
 	 */
 	protected function toDatabaseAmount(Money $money): int
 	{
-		return $money->getMinorAmount()->toInt();
+		return $money->getAmount()->toInt();
 	}
 
 	/**
 	 * Convert database amount to Money
 	 */
 	protected function fromDatabaseAmount(
-		Money|int $amount,
+		int $amount,
 		string $currency = "IDR"
 	): Money {
 		return Money::ofMinor($amount, $currency);
