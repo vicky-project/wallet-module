@@ -5,7 +5,7 @@
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4 text-end">
-  <div class="d-flex justify-content-between align-items-center me-auto">
+  <div class="d-flex justify-content-between align-items-center me-auto g-2">
     <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i>
     </a>
@@ -24,7 +24,7 @@
 <!-- Account Overview -->
 <div class="row">
   <!-- Account Details -->
-  <div class="col-lg-4">
+  <div class="col-lg-4 mb-3">
     <div class="card mb-4">
       <div class="card-body">
         <div class="d-flex align-items-center mb-4">
@@ -67,10 +67,10 @@
           <div class="row mb-3">
             <div class="col-6">
               <h6 class="text-muted mb-1">Status</h6>
-              @if($account->is_active)
-              <span class="badge bg-success">Aktif</span>
+              @if($account->is_default)
+              <span class="badge bg-success">Default</span>
               @else
-              <span class="badge bg-secondary">Nonaktif</span>
+              <span class="badge bg-secondary">Non Default</span>
               @endif
             </div>
             <div class="col-6">
@@ -105,7 +105,7 @@
   </div>
 
   <!-- Transactions -->
-  <div class="col-lg-8">
+  <div class="col-lg-8 mb-3">
     <!-- Balance History -->
     <div class="card mb-4">
       <div class="card-header">
@@ -113,15 +113,15 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-4 mb-3">
             <div class="card bg-light">
               <div class="card-body text-center">
                 <h6 class="text-muted mb-2">Total Transaksi</h6>
-                <h3 class="mb-0">{{ $account->transactions->count() }}</h3>
+                <h3 class="mb-0 text-secondary">{{ $account->transactions->count() }}</h3>
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 mb-3">
             <div class="card bg-light">
               <div class="card-body text-center">
                 <h6 class="text-muted mb-2">Total Pemasukan</h6>
@@ -131,7 +131,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 mb-3">
             <div class="card bg-light">
               <div class="card-body text-center">
                 <h6 class="text-muted mb-2">Total Pengeluaran</h6>
