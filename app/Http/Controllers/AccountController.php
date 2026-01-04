@@ -58,7 +58,7 @@ class AccountController extends BaseController
 			);
 
 			return redirect()
-				->route("wallet.accounts.index")
+				->route("apps.accounts.index")
 				->with("success", "Akun berhasil dibuat");
 		} catch (\Exception $e) {
 			return redirect()
@@ -117,7 +117,6 @@ class AccountController extends BaseController
 	public function edit(Account $account)
 	{
 		try {
-			$this->authorize("update", $account);
 			return view("wallet::accounts.edit", compact("account"));
 		} catch (\Exception $e) {
 			return redirect()
@@ -140,7 +139,7 @@ class AccountController extends BaseController
 			);
 
 			return redirect()
-				->route("wallet.accounts.show", $account)
+				->route("apps.accounts.show", $account)
 				->with("success", "Akun berhasil diperbarui");
 		} catch (\Exception $e) {
 			return redirect()
@@ -170,7 +169,7 @@ class AccountController extends BaseController
 			$account->delete();
 
 			return redirect()
-				->route("wallet.accounts.index")
+				->route("apps.accounts.index")
 				->with("success", "Akun berhasil dihapus");
 		} catch (\Exception $e) {
 			return redirect()

@@ -22,7 +22,7 @@
       <div class="card">
         <div class="card-body">
           @if($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" role="alert">
               <i class="bi bi-exclamation-triangle"></i>
               Terdapat kesalahan dalam pengisian form.
               <ul>
