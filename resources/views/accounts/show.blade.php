@@ -5,12 +5,12 @@
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4 text-end">
-  <div class="d-flex justify-content-between align-items-center">
-    <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary me-2">
-      <i class="bi bi-arrow-left me-2"></i>
+  <div class="d-flex justify-content-between align-items-center me-auto">
+    <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i>
     </a>
     <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-primary">
-      <i class="bi bi-pencil me-2"></i>
+      <i class="bi bi-pencil"></i>
     </a>
   </div>
   <div>
