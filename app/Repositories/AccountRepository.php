@@ -159,7 +159,7 @@ class AccountRepository extends BaseRepository
 		Account $account,
 		int $limit = 10
 	): Collection {
-		if ($account->isEmpty()) {
+		if (!$account) {
 			return collect();
 		}
 
@@ -244,7 +244,7 @@ class AccountRepository extends BaseRepository
 	public function getBalanceHistory(Account $account, int $days = 30): array
 	{
 		try {
-			if ($account->isEmpty()) {
+			if (!$account) {
 				return [
 					"dates" => [],
 					"balances" => [],
