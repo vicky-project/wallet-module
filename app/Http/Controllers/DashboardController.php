@@ -65,7 +65,7 @@ class DashboardController extends BaseController
 		$savingGoals = $this->savingGoalRepository->getActiveGoals($user);
 
 		// Get accounts summary
-		$accounts = $this->accountsRepository->getAccountMapping(
+		$accounts = $this->accountRepository->getAccountsMapping(
 			$this->accountRepository->accounts(auth()->user())
 		);
 

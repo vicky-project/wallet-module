@@ -25,7 +25,7 @@ class AccountController extends BaseController
 	{
 		try {
 			$accountsRepo = $this->accountRepository->accounts(auth()->user());
-			$accounts = $this->accountsRepository->getAccountMapping($accountsRepo);
+			$accounts = $this->accountRepository->getAccountsMapping($accountsRepo);
 			$stats = $this->accountRepository->getAccountStats(
 				$accountsRepo,
 				auth()->user()
