@@ -22,10 +22,11 @@ class AccountRequest extends FormRequest
 
 	public function rules()
 	{
+		dd($this);
 		$rules = [
 			"name" => "required|string|max:255",
 			"type" => ["required", Rule::enum(AccountType::class)],
-			"account_number" => "nullable|numeric|max:10",
+			"account_number" => "nullable|numeric|max:100",
 			"bank_name" => "nullable|string|max:500",
 			"initial_balance" => "nullable|min:0",
 			"current_balance" => "nullable|min:0",
@@ -43,8 +44,8 @@ class AccountRequest extends FormRequest
 	public function attributes()
 	{
 		return [
-			"name" => "Wallet Name",
-			"type" => "Wallet Type",
+			"name" => "Account Name",
+			"type" => "Account Type",
 			"account_number" => "Account Number",
 			"bank_name" => "Bank Name",
 			"initial_balance" => "Initial Balance",
