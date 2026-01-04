@@ -22,7 +22,6 @@ class AccountRequest extends FormRequest
 
 	public function rules()
 	{
-		dd($this);
 		$rules = [
 			"name" => "required|string|max:255",
 			"type" => ["required", Rule::enum(AccountType::class)],
