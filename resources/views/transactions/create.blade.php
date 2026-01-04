@@ -154,8 +154,8 @@
           <label for="account_id" class="form-label">Pilih Akun<span class="text-danger">*</span></label>
           <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
             @forelse($accounts as $account)
-            <option value="{{ $account->id }}" @selected(old('account_id', $preset['account_id']) == $account->id) data-balance="{{ $account->formatted_current_balance }}">
-              {{ $account->name }} ({{ $account->formatted_current_balance }})
+            <option value="{{ $account->id }}" @selected(old('account_id', $preset['account_id']) == $account->id) data-balance="{{ $account->formatted_balance }}">
+              {{ $account->name }} ({{ $account->formatted_balance }})
             </option>
             @empty
             <option value="">No Account</option>

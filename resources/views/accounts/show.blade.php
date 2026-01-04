@@ -5,7 +5,7 @@
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4 text-end">
-  <div class="d-flex justify-content-between align-items-center me-auto g-2">
+  <div class="d-flex justify-content-between align-items-center me-auto gap-2">
     <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i>
     </a>
@@ -24,7 +24,7 @@
 <!-- Account Overview -->
 <div class="row">
   <!-- Account Details -->
-  <div class="col-lg-4 mb-3">
+  <div class="col-lg-4 col-md-4 mb-3">
     <div class="card mb-4">
       <div class="card-body">
         <div class="d-flex align-items-center mb-4">
@@ -105,7 +105,7 @@
   </div>
 
   <!-- Transactions -->
-  <div class="col-lg-8 mb-3">
+  <div class="col-lg-8 col-md-8 mb-3">
     <!-- Balance History -->
     <div class="card mb-4">
       <div class="card-header">
