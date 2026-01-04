@@ -19,6 +19,7 @@ return new class extends Migration {
 			$table->string("bank_name")->nullable();
 			$table->bigInteger("initial_balance")->default(0);
 			$table->bigInteger("current_balance")->default(0);
+			$table->string("currency")->default("IDR");
 			$table->boolean("is_default")->default(false);
 			$table->timestamps();
 			$table->softDeletes();

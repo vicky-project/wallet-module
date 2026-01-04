@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'name' => 'Wallet',
+	"name" => "Wallet",
+	"default_currency" => "IDR",
 ];
