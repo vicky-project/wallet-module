@@ -265,6 +265,11 @@ class AccountRepository extends BaseRepository
 
 				// Simulate balance change for demo
 				// In production, this would query transaction history
+				dd(
+					$this->fromDatabaseAmount(
+						$account->current_balance->getAmount()->toInt()
+					)
+				);
 				$balance = $this->fromDatabaseAmount(
 					$account->current_balance->getAmount()->toInt()
 				)->plus(
