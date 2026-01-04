@@ -4,6 +4,7 @@ namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
 use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Wallet\Models\Account;
@@ -113,7 +114,12 @@ class AccountRepository extends BaseRepository
 		foreach ($accounts as $account) {
 			$type = $account->type->value;
 			if (!isset($typeBalances[$type])) {
-				$typeBalances[$type] = Money::of(0, "IDR");
+				$typeBalances[$type] = Money::of(
+					0,
+					$account->currency,
+					null,
+					RoundingMode::DOWN
+				);
 			}
 			$typeBalances[$type] = $typeBalances[$type]->plus(
 				$this->fromDatabaseAmount(
@@ -256,7 +262,14 @@ class AccountRepository extends BaseRepository
 			// In production, this would query transaction history
 			$balance = $this->fromDatabaseAmount(
 				$account->current_balance->getAmount()->toInt()
-			)->plus(Money::of(rand(-50000, 50000), "IDR"));
+			)->plus(
+				Money::of(
+					rand(-50000, 50000),
+					$account->currency ?? config("wallet.default_currency", "USD"),
+					null,
+					RoundingMode::DOWN
+				)
+			);
 
 			$balances->push($balance);
 		}
