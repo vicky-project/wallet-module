@@ -17,14 +17,18 @@ class AccountRepository extends BaseRepository
 		parent::__construct($model);
 	}
 
-	public function getAccounts(User $user): Collection
+	private function accounts(User $user)
 	{
 		return $this->model
-			->with(["transactions"])
 			->where("user_id", $user->id)
 			->orderBy("is_default", "desc")
 			->orderBy("type")
-			->orderBy("name")
+			->orderBy("name");
+	}
+
+	public function getAccounts(User $user): Collection
+	{
+		return $this->accounts()
 			->get()
 			->map(function ($account) {
 				$initial = $this->fromDatabaseAmount(
@@ -100,7 +104,7 @@ class AccountRepository extends BaseRepository
 	 */
 	public function getAccountStats(User $user): array
 	{
-		$accounts = $this->getAccounts($user);
+		$accounts = $this->accounts($user)->get();
 		$totalBalance = $this->getTotalBalance($user);
 
 		// Count accounts by type
