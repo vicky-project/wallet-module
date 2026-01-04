@@ -66,7 +66,7 @@
         <label for="initial_balance" class="form-label">Saldo Awal</label>
         <div class="input-group">
           <span class="input-group-text">Rp</span>
-          <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', isset($account) ? $account->initial_balance_float : 0) }}" placeholder="0" min="0" step="1000">
+          <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', isset($account) ? $account->initial_balance_float : 0) }}" placeholder="0" min="0">
         </div>
         @error('initial_balance')
           <div class="invalid-feedback">{{ $message }}</div>
@@ -79,7 +79,7 @@
         <label for="current_balance" class="form-label">Saldo Saat Ini</label>
         <div class="input-group">
           <span class="input-group-text">Rp</span>
-          <input type="number" class="form-control @error('current_balance') is-invalid @enderror" id="current_balance" name="current_balance" value="{{ old('current_balance', isset($account) ? $account->current_balance_float : 0) }}" placeholder="0" min="0" step="1000" @if($isEdit) readonly @endif>
+          <input type="number" class="form-control @error('current_balance') is-invalid @enderror" id="current_balance" name="current_balance" value="{{ old('current_balance', isset($account) ? $account->current_balance_float : 0) }}" placeholder="0" min="0" @if($isEdit) readonly @endif>
         </div>
         @error('current_balance')
           <div class="invalid-feedback">{{ $message }}</div>
