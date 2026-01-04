@@ -10,8 +10,11 @@ use Modules\Wallet\Http\Requests\AccountRequest;
 
 class AccountController extends BaseController
 {
-	public function __construct(protected AccountRepository $accountRepository)
+	protected $accountRepository;
+
+	public function __construct(AccountRepository $accountRepository)
 	{
+		$this->accountRepository = $accountRepository;
 	}
 
 	/**
