@@ -26,7 +26,7 @@ class MoneyCast implements CastsAttributes
 		// You might need to adjust the logic based on your table structure.
 		$currency =
 			$attributes["currency"] ??
-			($model->currency ?? config("finance.default_currency", "USD"));
+			($model->currency ?? config("wallet.default_currency", "USD"));
 
 		if (!is_numeric($value)) {
 			return null;
