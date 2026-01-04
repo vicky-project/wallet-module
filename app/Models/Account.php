@@ -37,7 +37,7 @@ class Account extends Model
 
 		static::creating(function ($account) {
 			if (!empty($account->initial_balance)) {
-				$account->current_balance = $this->initial_balance;
+				$account->current_balance = $account->initial_balance;
 			}
 		});
 
