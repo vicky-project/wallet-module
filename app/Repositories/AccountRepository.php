@@ -269,7 +269,7 @@ class AccountRepository extends BaseRepository
 					$account->current_balance->getAmount()->toInt()
 				)->plus(
 					Money::ofMinor(
-						rand(-50000, 50000),
+						rand(1000, 50000),
 						$account->currency ?? config("wallet.default_currency", "USD")
 					),
 					RoundingMode::DOWN
