@@ -285,11 +285,9 @@ class AccountRepository extends BaseRepository
 				"balances" => $balances->map(function ($balance) {
 					return $this->formatMoney(
 						$this->fromDatabaseAmount(
-							$balance,
+							$balance->getAmount()->toInt(),
 							$account->currency ?? config("wallet.default_currency", "USD")
 						)
-							->getAmount()
-							->toInt()
 					);
 				}),
 			];
