@@ -26,7 +26,7 @@
         <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required onchange="updateAccountPreview(this.value)">
           <option value="">Pilih jenis akun...</option>
           @foreach(\Modules\Wallet\Enums\AccountType::cases() as $accountType)
-            <option value="{{ $accountType->value }}" 
+            <option value="{{ $accountType }}" 
               {{ old('type', $account->type->value ?? '') == $accountType->value ? 'selected' : '' }}>
               {{ $accountType->name ?? $accountType->value }}
             </option>
