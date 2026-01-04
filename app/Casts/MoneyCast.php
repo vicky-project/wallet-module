@@ -33,7 +33,7 @@ class MoneyCast implements CastsAttributes
 		}
 
 		// Create a Money instance from the minor unit (cents) stored in the database.
-		return Money::ofMinor($value, $currency, null, RoundingMode::DOWN);
+		return Money::ofMinor($value, $currency);
 	}
 
 	/**
@@ -78,7 +78,7 @@ class MoneyCast implements CastsAttributes
 			}
 
 			// Money::of() handles string input like '19.99' correctly.
-			$money = Money::of($value, $currency, null, RoundingMode::DOWN);
+			$money = Money::of($value, $currency);
 			return $money->getMinorAmount()->toInt();
 		} catch (\Exception $e) {
 			throw new InvalidArgumentException(
