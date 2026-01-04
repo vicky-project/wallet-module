@@ -116,7 +116,7 @@ class AccountRepository extends BaseRepository
 			if (!isset($typeBalances[$type])) {
 				$typeBalances[$type] = Money::of(
 					0,
-					$account->currency,
+					$account->currency ?? config("wallet.default_currency", "USD"),
 					null,
 					RoundingMode::DOWN
 				);
