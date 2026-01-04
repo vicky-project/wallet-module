@@ -310,7 +310,8 @@ class AccountRepository extends BaseRepository
 		$account = $this->find($accountId);
 
 		$currentBalance = $this->fromDatabaseAmount(
-			$account->current_balance->getAmount()->toInt()
+			$account->current_balance->getAmount()->toInt(),
+			$account->currency ?? config("wallet.default_currency", "USD")
 		);
 
 		if ($operation === "add") {

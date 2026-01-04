@@ -26,7 +26,7 @@ abstract class BaseRepository
 		}
 
 		if (is_numeric($amount)) {
-			return Money::of($amount, $currency);
+			return Money::of($amount, $currency, null, RoundingMode::DOWN);
 		}
 
 		if (is_null($amount)) {
