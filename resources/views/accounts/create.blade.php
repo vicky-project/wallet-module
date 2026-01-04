@@ -21,18 +21,7 @@
     <div class="col-lg-8">
       <div class="card">
         <div class="card-body">
-          @if($errors->any())
-            <div class="alert alert-danger" role="alert">
-              <i class="bi bi-exclamation-triangle"></i>
-              Terdapat kesalahan dalam pengisian form.
-              <ul>
-                @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-          @endif
-
+          
           @include('wallet::accounts._form')
 
           <div class="mt-4">

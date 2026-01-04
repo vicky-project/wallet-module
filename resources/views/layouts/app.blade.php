@@ -665,6 +665,7 @@
         
         <!-- Main Dashboard Content -->
         <div class="container-fluid p-4">
+          @include('wallet::partials.flash-message')
           @yield('content')
         </div>
     </div>

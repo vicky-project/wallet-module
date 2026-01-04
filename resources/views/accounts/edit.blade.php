@@ -33,19 +33,6 @@
                         </div>
                     </div>
 
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            <i class="bi bi-check-circle"></i> {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if($errors->any())
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            Terdapat kesalahan dalam pengisian form.
-                        </div>
-                    @endif
-
                     @include('wallet::accounts._form', ['account' => $account])
 
                     <div class="mt-4 d-flex justify-content-between">

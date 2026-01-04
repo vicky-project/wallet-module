@@ -108,7 +108,7 @@ class AccountController extends BaseController
 		} catch (\Exception $e) {
 			logger()->error("Error showing account.", [
 				"message" => $e->getMessage(),
-				"trace" => $e->getTraceAsString(),
+				"trace" => $e->getTrace(),
 			]);
 			return redirect()
 				->back()
