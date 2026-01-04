@@ -125,7 +125,9 @@ class AccountRepository extends BaseRepository
 				);
 			}
 			$typeBalances[$type] = $typeBalances[$type]->plus(
-				$this->fromDatabaseAmount($account->current_balance)
+				$this->fromDatabaseAmount(
+					$account->current_balance->getAmount()->toInt()
+				)
 			);
 		}
 

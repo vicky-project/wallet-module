@@ -79,7 +79,7 @@ class MoneyCast implements CastsAttributes
 
 			// Money::of() handles string input like '19.99' correctly.
 			$money = Money::of($value, $currency);
-			return $money->getMinorAmount()->toInt();
+			return $money->getAmount()->toInt();
 		} catch (\Exception $e) {
 			throw new InvalidArgumentException(
 				"Invalid money value provided for {$key}: {$value}"
