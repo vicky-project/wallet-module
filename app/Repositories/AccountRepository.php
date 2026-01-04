@@ -265,19 +265,12 @@ class AccountRepository extends BaseRepository
 
 				// Simulate balance change for demo
 				// In production, this would query transaction history
-				dd(
-					$this->fromDatabaseAmount(
-						$account->current_balance->getAmount()->toInt()
-					)
-				);
 				$balance = $this->fromDatabaseAmount(
 					$account->current_balance->getAmount()->toInt()
 				)->plus(
-					Money::of(
+					Money::ofMinor(
 						rand(-50000, 50000),
-						$account->currency ?? config("wallet.default_currency", "USD"),
-						null,
-						RoundingMode::DOWN
+						$account->currency ?? config("wallet.default_currency", "USD")
 					),
 					RoundingMode::DOWN
 				);
