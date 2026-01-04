@@ -26,10 +26,10 @@ class AccountRepository extends BaseRepository
 			->get()
 			->map(function ($account) {
 				$initial = $this->fromDatabaseAmount(
-					$account->initial_balance->getMinorAmount()->toInt()
+					$account->initial_balance->getAmount()->toInt()
 				);
 				$current = $this->fromDatabaseAmount(
-					$account->current_balance->getMinorAmount()->toInt()
+					$account->current_balance->getAmount()->toInt()
 				);
 				$change = $current->minus($initial);
 
@@ -117,7 +117,7 @@ class AccountRepository extends BaseRepository
 			}
 			$typeBalances[$type] = $typeBalances[$type]->plus(
 				$this->fromDatabaseAmount(
-					$account->current_balance->getMinorAmount()->toInt()
+					$account->current_balance->getAmount()->toInt()
 				)
 			);
 		}
@@ -255,7 +255,7 @@ class AccountRepository extends BaseRepository
 			// Simulate balance change for demo
 			// In production, this would query transaction history
 			$balance = $this->fromDatabaseAmount(
-				$account->current_balance->getMinorAmount()->toInt()
+				$account->current_balance->getAmount()->toInt()
 			)->plus(Money::of(rand(-50000, 50000), "IDR"));
 
 			$balances->push($balance->getAmount()->toInt());
@@ -291,7 +291,7 @@ class AccountRepository extends BaseRepository
 		$account = $this->find($accountId);
 
 		$currentBalance = $this->fromDatabaseAmount(
-			$account->current_balance->getMinorAmount()->toInt()
+			$account->current_balance->getAmount()->toInt()
 		);
 
 		if ($operation === "add") {
@@ -317,7 +317,7 @@ class AccountRepository extends BaseRepository
 	{
 		$account = $this->find($accountId);
 		$currentBalance = $this->fromDatabaseAmount(
-			$account->current_balance->getMinorAmount()->toInt()
+			$account->current_balance->getAmount()->toInt()
 		);
 
 		return $currentBalance->isGreaterThanOrEqualTo($amount);
@@ -335,7 +335,7 @@ class AccountRepository extends BaseRepository
 			->mapWithKeys(function ($account) {
 				$balance = $this->formatMoney(
 					$this->fromDatabaseAmount(
-						$account->current_balance->getMinorAmount()->toInt()
+						$account->current_balance->getAmount()->toInt()
 					)
 				);
 				return [
