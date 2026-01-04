@@ -50,8 +50,8 @@ class MoneyCast implements CastsAttributes
 		}
 
 		if ($value instanceof Money) {
-			// If it's already a Money object, get its amount in minor units.
-			return $value->getMinorAmount()->toInt();
+			// If it's already a Money object, get its amount.
+			return $value->getAmount()->toInt();
 		}
 
 		// If it's a numeric string or float, create a Money object first.
