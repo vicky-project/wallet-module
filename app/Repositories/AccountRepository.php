@@ -254,9 +254,9 @@ class AccountRepository extends BaseRepository
 
 			// Simulate balance change for demo
 			// In production, this would query transaction history
-			$balance = $this->fromDatabaseAmount($account->current_balance)->plus(
-				Money::of(rand(-50000, 50000), "IDR")
-			);
+			$balance = $this->fromDatabaseAmount(
+				$account->current_balance->getMinorAmount()->toInt()
+			)->plus(Money::of(rand(-50000, 50000), "IDR"));
 
 			$balances->push($balance->getAmount()->toInt());
 		}
@@ -276,7 +276,6 @@ class AccountRepository extends BaseRepository
 	{
 		return $this->model
 			->where("user_id", $user->id)
-			->where("is_active", true)
 			->orderBy("current_balance", "desc")
 			->first();
 	}
@@ -291,7 +290,9 @@ class AccountRepository extends BaseRepository
 	): Account {
 		$account = $this->find($accountId);
 
-		$currentBalance = $this->fromDatabaseAmount($account->current_balance);
+		$currentBalance = $this->fromDatabaseAmount(
+			$account->current_balance->getMinorAmount()->toInt()
+		);
 
 		if ($operation === "add") {
 			$newBalance = $currentBalance->plus($amount);
@@ -315,7 +316,9 @@ class AccountRepository extends BaseRepository
 	public function hasSufficientBalance(int $accountId, Money $amount): bool
 	{
 		$account = $this->find($accountId);
-		$currentBalance = $this->fromDatabaseAmount($account->current_balance);
+		$currentBalance = $this->fromDatabaseAmount(
+			$account->current_balance->getMinorAmount()->toInt()
+		);
 
 		return $currentBalance->isGreaterThanOrEqualTo($amount);
 	}
