@@ -31,10 +31,10 @@ class AccountRepository extends BaseRepository
 	{
 		return $accountsCollection->map(function ($account) {
 			$initial = $this->fromDatabaseAmount(
-				$account->initial_balance->getAmount()->toInt()
+				$account->initial_balance->getMinorAmount()->toInt()
 			);
 			$current = $this->fromDatabaseAmount(
-				$account->current_balance->getAmount()->toInt()
+				$account->current_balance->getMinorAmount()->toInt()
 			);
 			$change = $current->minus($initial);
 
