@@ -25,8 +25,12 @@ class AccountRepository extends BaseRepository
 			->orderBy("name")
 			->get()
 			->map(function ($account) {
-				$initial = $this->fromDatabaseAmount($account->initial_balance);
-				$current = $this->fromDatabaseAmount($account->current_balance);
+				$initial = $this->fromDatabaseAmount(
+					$account->initial_balance->getMinorAmount()->toInt()
+				);
+				$current = $this->fromDatabaseAmount(
+					$account->current_balance->getMinorAmount()->toInt()
+				);
 				$change = $current->minus($initial);
 
 				$account->balance_change_amount = $change;
