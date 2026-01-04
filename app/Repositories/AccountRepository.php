@@ -119,17 +119,13 @@ class AccountRepository extends BaseRepository
 		foreach ($accountsCollection as $account) {
 			$type = $account->type->value;
 			if (!isset($typeBalances[$type])) {
-				$typeBalances[$type] = Money::of(
+				$typeBalances[$type] = Money::ofMinor(
 					0,
-					$account->currency ?? config("wallet.default_currency", "USD"),
-					null,
-					RoundingMode::DOWN
+					$account->currency ?? config("wallet.default_currency", "USD")
 				);
 			}
 			$typeBalances[$type] = $typeBalances[$type]->plus(
-				$this->fromDatabaseAmount(
-					$account->current_balance->getAmount()->toInt()
-				)
+				$this->fromDatabaseAmount($account->current_balance)
 			);
 		}
 
