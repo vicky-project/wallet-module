@@ -5,7 +5,7 @@
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4 text-end">
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary me-2">
       <i class="bi bi-arrow-left me-2"></i>
     </a>
