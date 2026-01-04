@@ -3,7 +3,7 @@
 namespace Modules\Wallet\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use Modules\Wallet\Enums\WalletType;
+use Modules\Wallet\Enums\AccountType;
 use Modules\Wallet\Constants\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
 
