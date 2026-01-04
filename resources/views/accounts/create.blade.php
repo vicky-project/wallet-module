@@ -25,6 +25,11 @@
             <div class="alert alert-danger">
               <i class="bi bi-exclamation-triangle"></i>
               Terdapat kesalahan dalam pengisian form.
+              <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+              </ul>
             </div>
           @endif
 
