@@ -91,7 +91,7 @@ class Account extends Model
 			return 0;
 		}
 
-		return $this->current_balance->formatTo("id_ID");
+		return $this->current_balance->formatTo("id-ID");
 	}
 
 	public function getFormattedInitialBalanceAttribute()
