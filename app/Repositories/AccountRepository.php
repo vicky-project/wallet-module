@@ -270,7 +270,9 @@ class AccountRepository extends BaseRepository
 				)->plus(
 					Money::of(
 						rand(-50000, 50000),
-						$account->currency ?? config("wallet.default_currency", "USD")
+						$account->currency ?? config("wallet.default_currency", "USD"),
+						null,
+						RoundingMode::DOWN
 					),
 					RoundingMode::DOWN
 				);
