@@ -51,7 +51,7 @@ abstract class BaseRepository
 		Money|int $amount,
 		string $currency = "IDR"
 	): Money {
-		return Money::ofMinor($amount, $currency);
+		return Money::ofMinor($amount, $currency, null, RoundingMode::DOWN);
 	}
 
 	/**
