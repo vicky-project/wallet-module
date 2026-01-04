@@ -1,6 +1,7 @@
 @extends('wallet::layouts.app')
 
 @section('content')
+@include('wallet::partials.fab')
 <h1 class="page-title">Dashboard Keuangan</h1>
 <!-- Quick Stats -->
 <div class="row mb-4" id="quickStats">
