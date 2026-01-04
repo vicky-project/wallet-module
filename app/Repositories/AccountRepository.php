@@ -28,7 +28,7 @@ class AccountRepository extends BaseRepository
 
 	public function getAccounts(User $user): Collection
 	{
-		return $this->accounts()
+		return $this->accounts($user)
 			->get()
 			->map(function ($account) {
 				$initial = $this->fromDatabaseAmount(
