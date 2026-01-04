@@ -29,6 +29,10 @@ class AccountController extends BaseController
 
 			return view("wallet::accounts.index", compact("accounts", "stats"));
 		} catch (\Exception $e) {
+			logger()->error("Error to get resource account", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
+			]);
 			return redirect()
 				->back()
 				->withErrors(["error" => $e->getMessage()]);
@@ -71,8 +75,6 @@ class AccountController extends BaseController
 	public function show(Account $account)
 	{
 		try {
-			$this->authorize("view", $account);
-
 			// Get recent transactions
 			$transactions = $this->accountRepository->getRecentTransactions(
 				$account->id
