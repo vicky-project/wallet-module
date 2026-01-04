@@ -25,7 +25,7 @@ class AccountRequest extends FormRequest
 		$rules = [
 			"name" => "required|string|max:255",
 			"type" => ["required", Rule::enum(AccountType::class)],
-			"account_number" => "nullable|numeric|max:100",
+			"account_number" => "nullable|numeric",
 			"bank_name" => "nullable|string|max:500",
 			"initial_balance" => "nullable|min:0",
 			"current_balance" => "nullable|min:0",
