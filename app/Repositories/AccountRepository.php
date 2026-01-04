@@ -156,12 +156,10 @@ class AccountRepository extends BaseRepository
 	 * Get recent transactions for account
 	 */
 	public function getRecentTransactions(
-		int $accountId,
+		Account $account,
 		int $limit = 10
 	): Collection {
-		$account = $this->find($accountId);
-
-		if (!$account) {
+		if (!$account->exists()) {
 			return collect();
 		}
 
@@ -243,11 +241,10 @@ class AccountRepository extends BaseRepository
 	/**
 	 * Get account balance history (last 30 days)
 	 */
-	public function getBalanceHistory(int $accountId, int $days = 30): array
+	public function getBalanceHistory(Account $account, int $days = 30): array
 	{
 		try {
-			$account = $this->find($accountId);
-			if (!$account) {
+			if (!$account->exists()) {
 				return [
 					"dates" => [],
 					"balances" => [],

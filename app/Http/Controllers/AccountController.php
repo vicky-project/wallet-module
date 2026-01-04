@@ -80,9 +80,7 @@ class AccountController extends BaseController
 	{
 		try {
 			// Get recent transactions
-			$transactions = $this->accountRepository->getRecentTransactions(
-				$account->id
-			);
+			$transactions = $this->accountRepository->getRecentTransactions($account);
 
 			// Calculate totals
 			$incomeTotal = $account
@@ -95,9 +93,7 @@ class AccountController extends BaseController
 				->sum("amount");
 
 			// Get balance history
-			$balanceHistory = $this->accountRepository->getBalanceHistory(
-				$account->id
-			);
+			$balanceHistory = $this->accountRepository->getBalanceHistory($account);
 
 			return view(
 				"wallet::accounts.show",
