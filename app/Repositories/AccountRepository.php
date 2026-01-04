@@ -329,7 +329,9 @@ class AccountRepository extends BaseRepository
 			->get()
 			->mapWithKeys(function ($account) {
 				$balance = $this->formatMoney(
-					$this->fromDatabaseAmount($account->current_balance)
+					$this->fromDatabaseAmount(
+						$account->current_balance->getMinorAmount()->toInt()
+					)
 				);
 				return [
 					$account->id => "{$account->name} ({$balance})",
