@@ -234,10 +234,10 @@ class TransactionController extends BaseController
 	 */
 	public function update(TransactionRequest $request, $id)
 	{
-		dd($request->validated());
 		try {
 			$user = Auth::user();
 			$transaction = $this->transactionRepository->find($id);
+			dd($transaction);
 
 			if (!$transaction || $transaction->user_id !== $user->id) {
 				abort(404, "Transaksi tidak ditemukan");

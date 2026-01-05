@@ -43,7 +43,7 @@ class TransactionRequest extends FormRequest
 		];
 
 		if ($this->isMethod("PUT") || $this->isMethod("PATCH")) {
-			unset($rules["type"], $rules["account_id"], $rules["amount"]);
+			unset($rules["account_id"], $rules["amount"]);
 		}
 
 		return $rules;
