@@ -1,5 +1,7 @@
 @extends('wallet::layouts.app')
 
+@use('Modules\Wallet\Enums\TransactionType')
+
 @section('content')
 @include('wallet::partials.fab')
 <h1 class="page-title">Dashboard Keuangan</h1>
@@ -91,18 +93,18 @@
         @else
           @foreach ($recentTransactions as $transaction)
           @php
-          $isIncome = $transaction["is_income"];
+          $isIncome = $transaction->type == TransactionType::INCOME
           @endphp
             <div class="transaction-item">
               <div class="transaction-icon {{ $isIncome ? 'bg-income' : 'bg-expense' }}">
                 <i class="bi {{ $isIncome ? 'bi-arrow-up-circle' : 'bi-arrow-down-circle' }} {{ $isIncome ? 'text-income' : 'text-expense' }}"></i>
               </div>
               <div class="flex-grow-1">
-                <h6 class="mb-0">{{ $transaction["title"] }}</h6>
-                <small class="text-muted">{{ $transaction["date"] }} • {{ $transaction["category"] }}</small>
+                <h6 class="mb-0">{{ $transaction->title }}</h6>
+                <small class="text-muted">{{ $transaction->transaction_date }} • {{ $transaction->category->name }}</small>
               </div>
               <div class="{{ $isIncome ? 'text-income' : 'text-expense'}} fw-bold">
-                {{ $isIncome ? '+' : '-'}}{{ $transaction["amount"] }}
+                {{ $isIncome ? '+' : '-'}}{{ $transaction->amount }}
               </div>
             </div>
           @endforeach
