@@ -4,6 +4,7 @@ namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
 use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Modules\Wallet\Models\Account;
@@ -265,7 +266,7 @@ class TransactionRepository extends BaseRepository
 			$account->current_balance = $this->toDatabaseAmount(
 				$this->fromDatabaseAmount(
 					$account->current_balance->getAmount()->toInt()
-				)->minus($amount->getAmount()->toInt())
+				)->minus($amount->getAmount()->toInt(), RoundingMode::DOWN)
 			);
 		}
 
