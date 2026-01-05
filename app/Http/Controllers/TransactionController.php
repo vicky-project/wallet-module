@@ -273,15 +273,18 @@ class TransactionController extends BaseController
 
 			// For expense, check account balance if amount or account changed
 			if (
-				$data["type"] === "expense" &&
+				$data["type"] === TransactionType::EXPENSE &&
 				($data["amount"] != $transaction->amount ||
 					$data["account_id"] != $transaction->account_id)
 			) {
 				$account = $this->accountRepository->find($data["account_id"]);
-				$amount = Money::of($data["amount"], "IDR");
+				$amount = Money::of($data["amount"], $account->currency);
 
 				// Calculate the net change needed
-				$oldAmount = Money::ofMinor($transaction->amount, "IDR");
+				$oldAmount = Money::ofMinor(
+					$transaction->amount,
+					$transaction->account->currency
+				);
 				$newAmount = $amount;
 				$difference = $newAmount->minus($oldAmount);
 
@@ -310,10 +313,9 @@ class TransactionController extends BaseController
 				$id,
 				$data
 			);
-			dd($updatedTransaction);
 
 			// Update budgets if expense
-			if ($data["type"] === "expense") {
+			if ($data["type"] === TransactionType::EXPENSE) {
 				// Update old category budget if category changed
 				if ($transaction->category_id != $updatedTransaction->category_id) {
 					$this->updateBudget(

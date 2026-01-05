@@ -135,7 +135,6 @@ class TransactionRepository extends BaseRepository
 
 		// Update account balance if amount changed
 		if ($transaction->account_id && $oldAmount != $transaction->amount) {
-			dd($oldTransaction, $transaction);
 			$this->adjustAccountBalance($oldTransaction, $transaction);
 		}
 
