@@ -185,7 +185,7 @@
                     </a>
                   </td>
                   <td class="{{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
-                    Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+                    Rp {{ number_format($transaction->amount->getAmount()->toInt(), 0, ',', '.') }}
                   </td>
                   <td>
                     @if($transaction->status === 'completed')

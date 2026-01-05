@@ -83,7 +83,9 @@ class CategoryController extends Controller
 				auth()->user()
 			);
 
-			return back()->with("success", "Category created successfully");
+			return redirect()
+				->route("apps.categories.index")
+				->with("success", "Category created successfully");
 		} catch (\Exception $e) {
 			return response()->json(
 				[

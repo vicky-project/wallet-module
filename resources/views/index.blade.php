@@ -104,7 +104,7 @@
                 <small class="text-muted">{{ $transaction->transaction_date }} • {{ $transaction->category->name }}</small>
               </div>
               <div class="{{ $isIncome ? 'text-income' : 'text-expense'}} fw-bold">
-                {{ $isIncome ? '+' : '-'}}{{ $transaction->amount }}
+                {{ $isIncome ? '+' : '-'}}{{ number_format($transaction->amount->getAmount()->toInt(), 0, ',', '.') }}
               </div>
             </div>
           @endforeach
