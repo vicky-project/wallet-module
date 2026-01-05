@@ -40,7 +40,7 @@
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Total Pengeluaran</h6>
             <h4 class="card-title mb-0 text-expense">
-              {{ $summary["expense"]->formatTo('id_ID') }}
+              {{ $summary["expense"] }}
             </h4>
           </div>
         </div>
@@ -57,7 +57,7 @@
            <div class="ms-3">
              <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
              <h4 class="card-title mb-0">
-               {{  $summary["net_balance"]->formatTo('id_ID') }}
+               {{  $summary["net_balance"] }}
              </h4>
            </div>
          </div>

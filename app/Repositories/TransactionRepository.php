@@ -243,9 +243,15 @@ class TransactionRepository extends BaseRepository
 			);
 
 		return [
-			"income" => $this->fromDatabaseAmount($income),
-			"expense" => $this->fromDatabaseAmount($expense),
-			"net_balance" => $this->fromDatabaseAmount($income - $expense),
+			"income" => $this->fromDatabaseAmount($income)
+				->getAmount()
+				->toInt(),
+			"expense" => $this->fromDatabaseAmount($expense)
+				->getAmount()
+				->toInt(),
+			"net_balance" => $this->fromDatabaseAmount($income - $expense)
+				->getAmount()
+				->toInt(),
 			"total_transactions" => $transactions->count(),
 		];
 	}
