@@ -176,6 +176,9 @@
 </div>
 
 <div class="card">
+  <div class="card-header text-end">
+    <h5 class="card-title">{{ now($filters['month'])->getMonth() }}</h5>
+  </div>
   <div class="card-body p-0">
     @if($transactions->count() > 0)
     <div class="table-responsive">
