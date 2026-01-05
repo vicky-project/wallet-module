@@ -96,6 +96,7 @@ class TransactionRepository extends BaseRepository
 	{
 		// Convert amount to Money and then to database format
 		$data["amount"] = $this->toDatabaseAmount($this->toMoney($data["amount"]));
+		dd($data["amount"]);
 
 		$data["user_id"] = $user->id;
 
