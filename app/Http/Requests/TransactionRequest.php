@@ -34,7 +34,10 @@ class TransactionRequest extends FormRequest
 			"reference_number" => "nullable|string|max:100",
 			"description" => "nullable|string|max:5000",
 			"is_recurring" => "nullable",
-			"recurring_period" => [Rule::requiredIf($this->is_recurring), "string"],
+			"recurring_period" => [
+				Rule::requiredIf(!is_null($this->is_recurring)),
+				"string",
+			],
 			"recurring_end_date" => "nullable|date",
 		];
 
