@@ -25,7 +25,7 @@ class TransactionRequest extends FormRequest
 	{
 		$rules = [
 			"account_id" => "required|exists:accounts,id",
-			"type" => ["required", Rule::enum(TransationType::class)],
+			"type" => ["required", Rule::enum(TransactionType::class)],
 			"title" => "required|string|max:500",
 			"amount" => "required|numeric|min:0.01",
 			"category_id" => "required|exists:categories,id",
@@ -34,7 +34,7 @@ class TransactionRequest extends FormRequest
 			"reference_number" => "nullable|string|max:100",
 			"description" => "nullable|string|max:5000",
 			"is_recurring" => "nullable",
-			"recurring_period" => "required_if:is_recurring,true|string",
+			"recurring_period" => "required_if:is_recurring,1|string",
 			"recurring_end_date" => "nullable|date",
 		];
 
