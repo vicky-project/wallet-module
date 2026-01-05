@@ -159,7 +159,8 @@ class Category extends Model
 			return null;
 		}
 
-		return "Rp " . number_format($this->budget_limit, 0, ",", ".");
+		return "Rp " .
+			number_format($this->budget_limit->getAmount()->toInt(), 0, ",", ".");
 	}
 
 	/**
