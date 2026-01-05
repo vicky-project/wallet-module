@@ -7,9 +7,11 @@
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h1 class="page-title">Daftar Transaksi</h1>
   <div>
-    {{ $filters['month'] }} ● {{ $filters['year'] }}
+    <h1 class="page-title">Daftar Transaksi</h1>
+  </div>
+  <div>
+    {{ $filters['month']->month }} ● {{ $filters['year'] }}
   </div>
 </div>
 
