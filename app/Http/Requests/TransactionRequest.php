@@ -36,6 +36,7 @@ class TransactionRequest extends FormRequest
 			"is_recurring" => "nullable",
 			"recurring_period" => [
 				Rule::requiredIf(!is_null($this->is_recurring)),
+				"nullable",
 				"string",
 			],
 			"recurring_end_date" => "nullable|date",
