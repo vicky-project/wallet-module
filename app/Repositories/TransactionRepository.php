@@ -222,14 +222,18 @@ class TransactionRepository extends BaseRepository
 		int $month = null,
 		int $year = null
 	): array {
-		$month = $month ?? date("m");
-		$year = $year ?? date("Y");
 		$currency = "IDR";
 
 		$transactions = $this->model
 			->where("user_id", $user->id)
-			->whereMonth("transaction_date", $month)
-			->whereYear("transaction_date", $year)
+			->when(
+				$month,
+				fn($query, $month) => $query->whereMonth("transaction_date", $month)
+			)
+			->when(
+				$year,
+				fn($query, $year) => $query->whereYear("transaction_date", $year)
+			)
 			->get();
 
 		$income = $transactions
