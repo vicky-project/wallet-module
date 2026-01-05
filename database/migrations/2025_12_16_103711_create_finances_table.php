@@ -112,33 +112,10 @@ return new class extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 		});
-
-		Schema::create("transfers", function (Blueprint $table) {
-			$table->id();
-			$table
-				->foreignId("user_id")
-				->constrained()
-				->onDelete("cascade");
-			$table
-				->foreignId("from_account_id")
-				->constrained("accounts")
-				->onDelete("cascade");
-			$table
-				->foreignId("to_account_id")
-				->constrained("accounts")
-				->onDelete("cascade");
-			$table->bigInteger("amount");
-			$table->date("transfer_date");
-			$table->text("description")->nullable();
-			$table->bigInteger("fee")->default(0);
-			$table->timestamps();
-			$table->softDeletes();
-		});
 	}
 
 	public function down()
 	{
-		Schema::dropIfExists("transfers");
 		Schema::dropIfExists("saving_goals");
 		Schema::dropIfExists("budgets");
 		Schema::dropIfExists("transactions");

@@ -86,7 +86,11 @@ class Category extends Model
 		return $this->transactions()
 			->whereMonth("transaction_date", $month)
 			->whereYear("transaction_date", $year)
-			->sum("amount");
+			->sum(
+				fn(Transaction $transaction) => $transaction->amount
+					->getAmount()
+					->toInt()
+			);
 	}
 
 	/**
@@ -172,7 +176,7 @@ class Category extends Model
 		}
 
 		$monthlyTotal = $this->getMonthlyTotal();
-		return $monthlyTotal > $this->budget_limit;
+		return $monthlyTotal > $this->budget_limit->getAmount()->toInt();
 	}
 
 	/**
