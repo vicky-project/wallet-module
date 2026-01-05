@@ -158,6 +158,17 @@ class BudgetRepository extends BaseRepository
 			),
 			"budget_usage_percentage" =>
 				$totalBudget > 0 ? ($totalSpent / $totalBudget) * 100 : 0,
+			"formatted_total_budget" => $this->formatMoney(
+				$this->fromDatabaseAmount($totalBudget)
+			),
+			"formatted_total_spent" => $this->formatMoney(
+				$this->fromDatabaseAmount($totalSpent)
+			),
+			"formatted_total_remaining" => $this->formatMoney(
+				$this->fromDatabaseAmount($totalBudget)->minus(
+					$this->fromDatabaseAmount($totalSpent)
+				)
+			),
 		];
 	}
 }
