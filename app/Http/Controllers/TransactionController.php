@@ -140,6 +140,7 @@ class TransactionController extends BaseController
 
 			// Check if account belongs to user
 			$account = $this->accountRepository->find($data["account_id"]);
+			dd($account);
 			if ($account->user_id !== $user->id) {
 				return redirect()
 					->back()
@@ -193,7 +194,7 @@ class TransactionController extends BaseController
 			abort(404, "Transaksi tidak ditemukan");
 		}
 
-		return view("transactions.show", compact("transaction"));
+		return view("wallet::transactions.show", compact("transaction"));
 	}
 
 	/**
@@ -213,7 +214,7 @@ class TransactionController extends BaseController
 		$accounts = $this->accountRepository->getActiveAccounts($user);
 
 		return view(
-			"transactions.edit",
+			"wallet::transactions.edit",
 			compact(
 				"transaction",
 				"incomeCategories",
@@ -325,7 +326,7 @@ class TransactionController extends BaseController
 			}
 
 			return redirect()
-				->route("transactions.index")
+				->route("apps.transactions.index")
 				->with("success", "Transaksi berhasil diperbarui");
 		} catch (\Exception $e) {
 			return redirect()
@@ -397,7 +398,8 @@ class TransactionController extends BaseController
 	 */
 	private function updateBudget($user, $categoryId, $amount)
 	{
-		$budget = $this->budgetRepository->model
+		$budget = $this->budgetRepository
+			->getModel()
 			->where("user_id", $user->id)
 			->where("category_id", $categoryId)
 			->where("month", date("m"))
