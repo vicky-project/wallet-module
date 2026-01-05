@@ -229,6 +229,7 @@ class TransactionRepository extends BaseRepository
 
 		$income = $transactions
 			->where("type", TransactionType::INCOME)
+			->dd()
 			->sum("amount");
 		$expense = $transactions
 			->where("type", TransactionType::EXPENSE)
