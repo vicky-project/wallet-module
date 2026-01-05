@@ -117,14 +117,14 @@
     <div class="card h-100">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">Ringkasan Anggaran</h5>
-        <a href="#" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
+        <a href="{{ route('apps.budgets.index') }}" class="btn btn-sm btn-outline-primary">Atur Anggaran</a>
       </div>
       <div class="card-body" id="budgetSummary">
         @if($budgetSummary["budgets"]->isEmpty())
         <div class="text-center py-4">
           <i class="bi bi-pie-chart display-4 text-muted"></i>
           <p class="text-muted mt-3">Belum ada anggaran.</p>
-          <a href="#" class="btn btn-primary btn-sm mt-2" role="button">Buat Anggaran</a>
+          <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary btn-sm mt-2" role="button">Buat Anggaran</a>
         </div>
         @else
         <div class="mb-3">

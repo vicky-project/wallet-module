@@ -83,6 +83,31 @@ class BudgetRepository extends BaseRepository
 	}
 
 	/**
+	 * Get all budgets for user
+	 */
+	public function getUserBudgets(User $user, array $filters = []): Collection
+	{
+		$query = $this->model->with("category")->where("user_id", $user->id);
+
+		if (isset($filters["month"])) {
+			$query->where("month", $filters["month"]);
+		}
+
+		if (isset($filters["year"])) {
+			$query->where("year", $filters["year"]);
+		}
+
+		if (isset($filters["category_id"])) {
+			$query->where("category_id", $filters["category_id"]);
+		}
+
+		return $query
+			->orderBy("year", "desc")
+			->orderBy("month", "desc")
+			->get();
+	}
+
+	/**
 	 * Update spent amount for budget
 	 */
 	public function updateSpentAmount(int $budgetId): Budget
