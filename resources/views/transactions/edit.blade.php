@@ -161,7 +161,7 @@
                             <span class="input-group-text">Rp</span>
                             <input type="text" class="form-control amount-input" 
                                    id="amount" name="amount" 
-                                   value="{{ old('amount', number_format($transaction->amount / 100, 0, ',', '.')) }}"
+                                   value="{{ old('amount', number_format($transaction->amount->getAmount()->toInt() / 100, 0, ',', '.')) }}"
                                    placeholder="0" required>
                         </div>
                         @error('amount')
@@ -291,7 +291,7 @@
                                     data-balance="{{ $account->formatted_current_balance }}">
                                 <div class="d-flex align-items-center">
                                     <i class="{{ $account->icon }} me-2" style="color: {{ $account->color }}"></i>
-                                    {{ $account->name }} ({{ $account->formatted_current_balance }})
+                                    {{ $account->name }} ({{ $account->formatted_balance }})
                                 </div>
                             </option>
                             @endforeach
