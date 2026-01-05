@@ -127,16 +127,16 @@
 <!-- Action Buttons -->
 <div class="row mb-4">
   <div class="col-12">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center gap-2">
       <div>
         <h5 class="mb-0">Daftar Anggaran</h5>
         <small class="text-muted">{{ \Modules\Wallet\Models\Budget::MONTH_NAMES[$month] }} {{ $year }}</small>
       </div>
       <div>
-        <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary me-2">
+        <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary">
           <i class="bi bi-plus-circle"></i>
         </a>
-        <a href="{{ route('apps.budgets.index', ['month' => date('m'), 'year' => date('Y')]) }}" class="btn btn-outline-secondary me-2">
+        <a href="{{ route('apps.budgets.index', ['month' => date('m'), 'year' => date('Y')]) }}" class="btn btn-outline-secondary">
           <i class="bi bi-calendar-month"></i>
         </a>
         <button type="button" class="btn btn-outline-info" onclick="updateSpentAmounts()">
