@@ -11,7 +11,7 @@
     <h1 class="page-title">Daftar Transaksi</h1>
   </div>
   <div>
-    {{ $filters['month']->month }} ● {{ $filters['year'] }}
+    {{ now($filters['month'])->month }} ● {{ $filters['year'] }}
   </div>
 </div>
 
