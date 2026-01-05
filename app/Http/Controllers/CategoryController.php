@@ -133,13 +133,7 @@ class CategoryController extends Controller
 				->route("apps.categories.index")
 				->with("success", "Category updated successfully");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -153,13 +147,7 @@ class CategoryController extends Controller
 
 			return back()->with("success", "Category deleted successfully");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 
