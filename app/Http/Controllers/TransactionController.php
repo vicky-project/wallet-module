@@ -216,7 +216,7 @@ class TransactionController extends BaseController
 
 		$incomeCategories = $this->categoryRepository->getByType("income", $user);
 		$expenseCategories = $this->categoryRepository->getByType("expense", $user);
-		$accounts = $this->accountRepository->getActiveAccounts($user);
+		$accounts = $this->accountRepository->accounts($user);
 
 		return view(
 			"wallet::transactions.edit",
