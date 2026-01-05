@@ -3,6 +3,7 @@
 @section('title', 'Detail Kategori - ' . $category->name . ' - ' . config('app.name'))
 
 @use('Modules\Wallet\Enums\CategoryType')
+@use('Modules\Wallet\Enums\TransactionType')
 
 @section('content')
 @include('wallet::partials.fab')
@@ -188,7 +189,7 @@
           <div class="col-md-6 mb-2">
             <div class="card bg-light">
               <div class="card-body">
-                <h6 class="text-muted mb-2">Rata-rata Transaksi</h6>
+                <h6 class="text-secondary mb-2">Rata-rata Transaksi</h6>
                 @php
                 $count = $category->transactions()->count();
                 $avg = $count > 0 ? $category->getMonthlyTotal() / $count : 0;
@@ -230,16 +231,14 @@
                       {{ Str::limit($transaction->description, 30) }}
                     </a>
                   </td>
-                  <td class="{{ $transaction->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
+                  <td class="{{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
                     Rp {{ number_format($transaction->amount->getAmount()->toInt(), 0, ',', '.') }}
                   </td>
                   <td>
-                    @if($transaction->status === 'completed')
-                      <span class="badge bg-success">Selesai</span>
-                    @elseif($transaction->status === 'pending')
-                      <span class="badge bg-warning">Pending</span>
+                    @if($transaction->is_verified)
+                      <span class="badge bg-success">Verified</span>
                     @else
-                      <span class="badge bg-secondary">Dibatalkan</span>
+                      <span class="badge bg-secondary">Unverified</span>
                     @endif
                   </td>
                 </tr>
