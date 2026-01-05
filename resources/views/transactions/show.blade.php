@@ -226,7 +226,7 @@
     <!-- Action Buttons -->
     <div class="card transaction-detail-card">
       <div class="card-body">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between align-items-center gap-2">
           <div>
             <a href="{{ route('apps.transactions.edit', $transaction->id) }}" class="btn btn-primary">
               <i class="bi bi-pencil me-2"></i>Edit Transaksi
