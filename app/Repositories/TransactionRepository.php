@@ -260,7 +260,7 @@ class TransactionRepository extends BaseRepository
 			$account->current_balance = $this->toDatabaseAmount(
 				$this->fromDatabaseAmount(
 					$account->current_balance->getAmount()->toInt()
-				)->plus($amount->getAmount()->toInt())
+				)->plus($amount->getAmount()->toInt(), RoundingMode::DOWN)
 			);
 		} else {
 			$account->current_balance = $this->toDatabaseAmount(
