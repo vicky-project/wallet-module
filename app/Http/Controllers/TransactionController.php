@@ -10,6 +10,7 @@ use Modules\Wallet\Repositories\{
 };
 use Modules\Wallet\Http\Requests\TransactionRequest;
 use Modules\Core\Http\Controllers\BaseController;
+use Modules\Wallet\Enums\TransactionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Brick\Money\Money;
@@ -147,8 +148,8 @@ class TransactionController extends BaseController
 			}
 
 			// For expense, check account balance
-			if ($data["type"] === "expense") {
-				$amount = Money::of($data["amount"], "IDR");
+			if ($data["type"] === TransactionType::EXPENSE) {
+				$amount = Money::of($data["amount"], $account->currency);
 				if (
 					!$this->accountRepository->hasSufficientBalance($account->id, $amount)
 				) {
@@ -165,12 +166,12 @@ class TransactionController extends BaseController
 			);
 
 			// Update budget if expense
-			if ($data["type"] === "expense") {
+			if ($data["type"] === TransactionType::EXPENSE) {
 				$this->updateBudget($user, $category->id, $data["amount"]);
 			}
 
 			return redirect()
-				->route("transactions.index")
+				->route("apps.transactions.index")
 				->with("success", "Transaksi berhasil ditambahkan");
 		} catch (\Exception $e) {
 			return redirect()
