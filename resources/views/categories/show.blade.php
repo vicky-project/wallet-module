@@ -189,12 +189,12 @@
           <div class="col-md-6 mb-2">
             <div class="card bg-light">
               <div class="card-body">
-                <h6 class="text-secondary mb-2">Rata-rata Transaksi</h6>
+                <h6 class="text-muted mb-2">Rata-rata Transaksi</h6>
                 @php
                 $count = $category->transactions()->count();
                 $avg = $count > 0 ? $category->getMonthlyTotal() / $count : 0;
                 @endphp
-                <h3 class="mb-0">Rp {{ number_format($avg, 0, ',', '.') }}</h3>
+                <h3 class="text-secondary mb-0">Rp {{ number_format($avg, 0, ',', '.') }}</h3>
               </div>
             </div>
           </div>
@@ -228,7 +228,7 @@
                   <td>{{ $transaction->transaction_date->format('d M Y') }}</td>
                   <td>
                     <a href="{{ route('apps.transactions.show', $transaction) }}">
-                      {{ Str::limit($transaction->description, 30) }}
+                      {{ Str::limit($transaction->description ?? $transaction->title, 30) }}
                     </a>
                   </td>
                   <td class="{{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
