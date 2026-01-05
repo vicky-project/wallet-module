@@ -49,9 +49,12 @@ abstract class BaseRepository
 	 */
 	protected function fromDatabaseAmount(
 		int $amount,
-		string $currency = "IDR"
+		string $currency = "IDR",
+		bool $isInt = false
 	): Money {
-		return Money::ofMinor($amount, $currency);
+		return $isInt
+			? Money::of($amount, $currency)
+			: Money::ofMinor($amount, $currency);
 	}
 
 	/**

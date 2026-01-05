@@ -220,6 +220,7 @@ class TransactionRepository extends BaseRepository
 	): array {
 		$month = $month ?? date("m");
 		$year = $year ?? date("Y");
+		$currency = "IDR";
 
 		$transactions = $this->model
 			->where("user_id", $user->id)
@@ -243,15 +244,13 @@ class TransactionRepository extends BaseRepository
 			);
 
 		return [
-			"income" => $this->fromDatabaseAmount($income)
-				->getAmount()
-				->toInt(),
-			"expense" => $this->fromDatabaseAmount($expense)
-				->getAmount()
-				->toInt(),
-			"net_balance" => $this->fromDatabaseAmount($income - $expense)
-				->getAmount()
-				->toInt(),
+			"income" => $this->fromDatabaseAmount($income, $currency, true),
+			"expense" => $this->fromDatabaseAmount($expense, $currency, true),
+			"net_balance" => $this->fromDatabaseAmount(
+				$income - $expense,
+				$currency,
+				true
+			),
 			"total_transactions" => $transactions->count(),
 		];
 	}
