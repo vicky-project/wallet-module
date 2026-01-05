@@ -129,13 +129,13 @@ class TransactionRepository extends BaseRepository
 				$this->toMoney($data["amount"])
 			);
 		}
-		dd($data);
 
 		$this->update($id, $data);
 		$transaction = $this->find($id);
 
 		// Update account balance if amount changed
 		if ($transaction->account_id && $oldAmount != $transaction->amount) {
+			dd($oldTransaction, $transaction);
 			$this->adjustAccountBalance($oldTransaction, $transaction);
 		}
 
