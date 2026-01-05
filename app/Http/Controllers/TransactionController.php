@@ -198,7 +198,6 @@ class TransactionController extends BaseController
 		if (!$transaction || $transaction->user_id !== $user->id) {
 			abort(404, "Transaksi tidak ditemukan");
 		}
-		dd($transaction);
 
 		return view("wallet::transactions.show", compact("transaction"));
 	}
