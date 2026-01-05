@@ -282,21 +282,19 @@ class CategoryRepository extends BaseRepository
 	 */
 	public function getCategoryStats(User $user): array
 	{
-		$totalCategories = $this->model->where("user_id", $user->id)->count();
-		$incomeCategories = $this->model
-			->where("user_id", $user->id)
+		$categoryModel = $this->model->where("user_id", $user->id);
+		$totalCategories = $categoryModel->count();
+		$incomeCategories = $categoryModel
 			->where("type", CategoryType::INCOME)
 			->where("is_active", true)
 			->count();
-		$expenseCategories = $this->model
-			->where("user_id", $user->id)
+		$expenseCategories = $categoryModel
 			->where("type", CategoryType::EXPENSE)
 			->where("is_active", true)
 			->count();
 
 		// Get categories with budget exceeded
-		$categoriesWithBudget = $this->model
-			->where("user_id", $user->id)
+		$categoriesWithBudget = $categoryModel
 			->where("type", CategoryType::EXPENSE)
 			->where("is_active", true)
 			->whereNotNull("budget_limit")
