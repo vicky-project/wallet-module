@@ -274,7 +274,9 @@ class TransactionRepository extends BaseRepository
 		}
 
 		$amount = $this->fromDatabaseAmount(
-			$transaction->amount->getAmount()->toInt()
+			$transaction->amount->getAmount()->toInt(),
+			$account->currency,
+			true
 		);
 
 		if ($transaction->type === TransactionType::INCOME) {
