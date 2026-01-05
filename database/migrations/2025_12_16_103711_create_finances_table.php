@@ -60,7 +60,7 @@ return new class extends Migration {
 			$table->text("description")->nullable();
 			$table->bigInteger("amount");
 			$table->string("type");
-			$table->date("transaction_date");
+			$table->dateTime("transaction_date");
 			$table->string("payment_method");
 			$table->string("reference_number")->nullable(); // no referensi
 			$table->boolean("is_recurring")->default(false);

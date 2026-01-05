@@ -26,7 +26,7 @@ class Transaction extends Model
 	];
 
 	protected $casts = [
-		"transaction_date" => "date",
+		"transaction_date" => "datetime",
 		"amount" => MoneyCast::class,
 		"is_recurring" => "boolean",
 		"is_verified" => "boolean",
