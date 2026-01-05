@@ -72,6 +72,7 @@ class DashboardController extends BaseController
 		// Get categories for quick add forms
 		$incomeCategories = $this->categoryRepository->getByType("income", $user);
 		$expenseCategories = $this->categoryRepository->getByType("expense", $user);
+		dd($recentTransactions);
 
 		return view(
 			"wallet::index",
