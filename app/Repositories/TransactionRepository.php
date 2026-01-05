@@ -103,8 +103,11 @@ class TransactionRepository extends BaseRepository
 		if (!isset($data["transaction_date"])) {
 			$data["transaction_date"] = Carbon::now();
 		}
-
-		$transaction = $this->create($data);
+		try {
+			$transaction = $this->create($data);
+		} catch (\Exception $e) {
+			throw $e;
+		}
 		dd($transaction);
 
 		// Update account balance
