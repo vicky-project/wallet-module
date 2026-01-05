@@ -40,7 +40,7 @@
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Total Pengeluaran</h6>
             <h4 class="card-title mb-0 text-expense">
-              {{ $summary["expense"] }}
+              {{ $summary["expense"]->formatTo('id_ID') }}
             </h4>
           </div>
         </div>
@@ -57,7 +57,7 @@
            <div class="ms-3">
              <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
              <h4 class="card-title mb-0">
-               {{  $summary["net_balance"] }}
+               {{  $summary["net_balance"]->formatTo('id_ID') }}
              </h4>
            </div>
          </div>
@@ -221,7 +221,7 @@
             </td>
             <td class="text-end">
               <div class="fw-bold {{ $transaction->type === TransactionType::INCOME ? 'text-income' : 'text-expense'}}">
-                {{ $transaction->type === TransactionType::INCOME ? '+' : '-'}}{{ $transaction->amount }}
+                {{ $transaction->type === TransactionType::INCOME ? '+' : '-'}}{{ $transaction->amount->formatTo('id_ID') }}
               </div>
               <small class="text-muted">
                 <span class="badge payment-method-badge bg-secondary">
