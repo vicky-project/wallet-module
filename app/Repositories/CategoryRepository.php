@@ -348,6 +348,7 @@ class CategoryRepository extends BaseRepository
 			->whereNotNull("budget_limit")
 			->get()
 			->filter(function ($category) use ($threshold) {
+				dd($category);
 				$usage = $category->budget_usage_percentage;
 				return $usage >= $threshold;
 			})
