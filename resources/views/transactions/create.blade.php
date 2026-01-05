@@ -56,17 +56,17 @@
         
         <!-- Title and Description -->
         <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="transaction_date" class="form-label">Date</label>
+            <input type="datetime-local" class="form-control @error('transaction_date') is-invalid @enderror" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}">
+            @error('transaction_date')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
+          </div>
           <div class="col-md-8 mb-3">
             <label for="title" class="form-label">Title<span class="text-danger">*</span></label>
             <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $preset['title']) }}" placeholder="Ex: Gaji Bulanan, Belanja Bulanan" required>
             @error('title')
-            <div class="text-danger small mt-1">{{ $message }}</div>
-            @enderror
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="transaction_date" class="form-label">Date<span class="text-danger">*</span></label>
-            <input type="date" class="form-control @error('transaction_date') is-invalid @enderror" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}" required>
-            @error('transaction_date')
             <div class="text-danger small mt-1">{{ $message }}</div>
             @enderror
           </div>

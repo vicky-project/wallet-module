@@ -29,7 +29,7 @@ class TransactionRequest extends FormRequest
 			"title" => "required|string|max:500",
 			"amount" => "required|numeric|min:0.01",
 			"category_id" => "required|exists:categories,id",
-			"transaction_date" => "required|date",
+			"transaction_date" => "nullable|date",
 			"payment_method" => "nullable|string|max:50",
 			"reference_number" => "nullable|string|max:100",
 			"description" => "nullable|string|max:5000",
