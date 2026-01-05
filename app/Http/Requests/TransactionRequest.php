@@ -2,7 +2,7 @@
 
 namespace Modules\Wallet\Http\Requests;
 
-use Modules\Wallet\Enums\TransationType;
+use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Constants\Permissions;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -48,7 +48,7 @@ class TransactionRequest extends FormRequest
 	public function withValidator($validator)
 	{
 		$validator->after(function ($validator) {
-			if ($this->type === TransationType::EXPENSE) {
+			if ($this->type === TransactionType::EXPENSE) {
 				$account = \Modules\Wallet\Models\Account::find($this->account_id);
 				if ($account && $account->current_balance < $this->amount) {
 					$validator
