@@ -11,7 +11,7 @@
     <h1 class="page-title">Daftar Transaksi</h1>
   </div>
   <div>
-    {{ $filters['month'] }} ● {{ $filters['year'] }}
+    {{ $filters['month'] ?? date('m') }} ● {{ $filters['year'] ?? date('Y') }}
   </div>
 </div>
 
@@ -177,7 +177,7 @@
 
 <div class="card">
   <div class="card-header text-end">
-    <h5 class="card-title">{{ $filters['month'] }} - {{ $filters['year'] }}</h5>
+    <h5 class="card-title">{{ $filters['month'] ?? date('m') }} - {{ $filters['year'] ?? date('Y') }}</h5>
   </div>
   <div class="card-body p-0">
     @if($transactions->count() > 0)
