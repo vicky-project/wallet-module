@@ -175,6 +175,12 @@ class TransactionController extends BaseController
 				->route("apps.transactions.index")
 				->with("success", "Transaksi berhasil ditambahkan");
 		} catch (\Exception $e) {
+			logger()->error("Error saving transaction", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace(),
+			]);
+
+			throw $e;
 			return redirect()
 				->back()
 				->withInput()
