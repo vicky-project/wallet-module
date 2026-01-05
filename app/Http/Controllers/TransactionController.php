@@ -306,11 +306,11 @@ class TransactionController extends BaseController
 				}
 			}
 
-			dd($data);
 			$updatedTransaction = $this->transactionRepository->updateTransaction(
 				$id,
 				$data
 			);
+			dd($updatedTransaction);
 
 			// Update budgets if expense
 			if ($data["type"] === "expense") {

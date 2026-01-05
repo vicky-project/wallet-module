@@ -129,6 +129,7 @@ class TransactionRepository extends BaseRepository
 				$this->toMoney($data["amount"])
 			);
 		}
+		dd($data);
 
 		$this->update($id, $data);
 		$transaction = $this->find($id);
