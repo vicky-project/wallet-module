@@ -134,13 +134,13 @@
       </div>
       <div>
         <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary me-2">
-          <i class="bi bi-plus-circle"></i> Tambah Anggaran
+          <i class="bi bi-plus-circle"></i>
         </a>
         <a href="{{ route('apps.budgets.index', ['month' => date('m'), 'year' => date('Y')]) }}" class="btn btn-outline-secondary me-2">
-          <i class="bi bi-calendar-month"></i> Bulan Ini
+          <i class="bi bi-calendar-month"></i>
         </a>
         <button type="button" class="btn btn-outline-info" onclick="updateSpentAmounts()">
-          <i class="bi bi-arrow-clockwise"></i> Perbarui Terpakai
+          <i class="bi bi-arrow-clockwise"></i>
         </button>
       </div>
     </div>
