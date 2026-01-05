@@ -215,7 +215,7 @@ class CategoryRepository extends BaseRepository
 		$total = $query->sum("amount");
 		$count = $query->count();
 
-		$budgetLimit = $category->budget_limit ?? 0;
+		$budgetLimit = $category->budget_limit->getAmount()->toInt() ?? 0;
 		$budgetUsage = $budgetLimit > 0 ? ($total / $budgetLimit) * 100 : null;
 
 		return [
