@@ -257,16 +257,12 @@ class TransactionRepository extends BaseRepository
 		);
 
 		if ($transaction->type === TransactionType::INCOME) {
-			$account->current_balance = $this->toDatabaseAmount(
-				$this->fromDatabaseAmount(
-					$account->current_balance->getAmount()->toInt()
-				)->plus($amount->getAmount()->toInt(), RoundingMode::DOWN)
+			$account->current_balance = $account->current_balance->plus(
+				$amount->getAmount()->toInt()
 			);
 		} else {
-			$account->current_balance = $this->toDatabaseAmount(
-				$this->fromDatabaseAmount(
-					$account->current_balance->getAmount()->toInt()
-				)->minus($amount->getAmount()->toInt(), RoundingMode::DOWN)
+			$account->current_balance = $account->current_balance->minus(
+				$amount->getAmount()->toInt()
 			);
 		}
 
