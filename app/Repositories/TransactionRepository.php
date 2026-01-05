@@ -173,7 +173,7 @@ class TransactionRepository extends BaseRepository
 			->get()
 			->map(function ($transaction) {
 				$transaction->formatted_amount = $this->formatMoney(
-					$this->fromDatabaseAmount($transaction->amount)
+					$this->fromDatabaseAmount($transaction->amount->getAmount()->toInt())
 				);
 				return $transaction;
 			});
