@@ -96,7 +96,6 @@ class TransactionRepository extends BaseRepository
 	{
 		// Convert amount to Money and then to database format
 		$data["amount"] = $this->toDatabaseAmount($this->toMoney($data["amount"]));
-		dd($data["amount"]);
 
 		$data["user_id"] = $user->id;
 
@@ -105,6 +104,7 @@ class TransactionRepository extends BaseRepository
 			$data["transaction_date"] = Carbon::now();
 		}
 
+		dd($data);
 		$transaction = $this->create($data);
 
 		// Update account balance
