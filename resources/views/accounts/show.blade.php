@@ -3,6 +3,7 @@
 @section('title', 'Detail Akun - ' . $account->name . ' - ' . config('app.name'))
 
 @use('Modules\Wallet\Helpers\Helper')
+@use('Modules\Wallet\Enums\TransactionType')
 
 @section('content')
 @include('wallet::partials.fab')
@@ -184,16 +185,14 @@
                       {{ Str::limit($transaction->description, 30) }}
                     </a>
                   </td>
-                  <td class="{{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
+                  <td class="{{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
                     Rp {{ number_format($transaction->amount->getAmount()->toInt(), 0, ',', '.') }}
                   </td>
                   <td>
-                    @if($transaction->status === 'completed')
-                    <span class="badge bg-success">Selesai</span>
-                    @elseif($transaction->status === 'pending')
-                    <span class="badge bg-warning">Pending</span>
+                    @if($transaction->is_verified)
+                    <span class="badge bg-success">Verified</span>
                     @else
-                    <span class="badge bg-secondary">Dibatalkan</span>
+                    <span class="badge bg-secondary">Unverified</span>
                     @endif
                   </td>
                 </tr>
