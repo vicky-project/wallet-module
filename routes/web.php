@@ -5,6 +5,7 @@ use Modules\Wallet\Http\Controllers\AccountController;
 use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
+use Modules\Wallet\Http\Controllers\BudgetController;
 
 Route::middleware(["auth"])
 	->prefix("apps")
@@ -42,4 +43,11 @@ Route::middleware(["auth"])
 			"toggleStatus",
 		])->name("categories.toggle-status");
 		Route::resource("categories", CategoryController::class);
+
+		// Budget Routes
+		Route::get("budgets/update-spent", [
+			BudgetController::class,
+			"updateSpent",
+		])->name("budgets.update-spent");
+		Route::resource("budgets", BudgetController::class);
 	});
