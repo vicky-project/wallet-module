@@ -11,7 +11,7 @@
     <h1 class="page-title">Daftar Transaksi</h1>
   </div>
   <div>
-    {{ now($filters['month'])->format('F') }} ● {{ $filters['year'] }}
+    {{ now(request()->month ?? $filters['month'])->format('F') }} ● {{ request()->year ?? $filters['year'] }}
   </div>
 </div>
 
@@ -177,7 +177,7 @@
 
 <div class="card">
   <div class="card-header text-end">
-    <h5 class="card-title">{{ now($filters['month'])->format('F') }} {{ $filters['year'] }}</h5>
+    <h5 class="card-title">{{ now(request()->month ?? $filters['month'])->format('F') }} {{ request()->year ?? $filters['year'] }}</h5>
   </div>
   <div class="card-body p-0">
     @if($transactions->count() > 0)
