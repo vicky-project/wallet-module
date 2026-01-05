@@ -71,7 +71,7 @@
        <div class="card-body">
          <div class="d-flex align-items-center">
            <div class="card-icon" style="background-color: rgba(59, 130, 246, 0.1);">
-             <i class="bi bi-stack-coin" style="color: #3b82f6"></i>
+             <i class="bi bi-cash-coin" style="color: #3b82f6"></i>
            </div>
            <div class="ms-3">
              <h6 class="card-subtitle mb-1">Total Transaksi</h6>
