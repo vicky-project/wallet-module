@@ -283,7 +283,7 @@
 
       <!-- Income Tab -->
       <div class="tab-pane fade" id="income" role="tabpanel">
-        @php $incomeCategories = $categories->where('type', 'income'); @endphp
+        @php $incomeCategories = $categories->where('type', CategoryType::INCOME); @endphp
         @if($incomeCategories->count() > 0)
           <div class="table-responsive">
             <table class="table table-hover">
@@ -334,7 +334,7 @@
 
       <!-- Expense Tab -->
       <div class="tab-pane fade" id="expense" role="tabpanel">
-        @php $expenseCategories = $categories->where('type', 'expense'); @endphp
+        @php $expenseCategories = $categories->where('type', CategoryType::EXPENSE); @endphp
         @if($expenseCategories->count() > 0)
           <div class="table-responsive">
             <table class="table table-hover">
