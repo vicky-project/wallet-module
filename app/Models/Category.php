@@ -12,6 +12,8 @@ class Category extends Model
 {
 	use HasFactory, SoftDeletes;
 
+	protected $with = ["transactions"];
+
 	protected $fillable = [
 		"user_id",
 		"name",
