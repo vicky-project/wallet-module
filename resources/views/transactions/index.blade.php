@@ -11,7 +11,7 @@
     <h1 class="page-title">Daftar Transaksi</h1>
   </div>
   <div>
-    {{ now(request()->input('month') ?? $filters['month'])->format('F') }} ● {{ request()->has('year') ? request()->input('year') : $filters['year'] }}
+    {{ now($filters['month'])->format('F') }} ● {{ request()->has('year') ? request()->input('year') : $filters['year'] }}
   </div>
 </div>
 
