@@ -225,7 +225,7 @@
             <tbody>
               @foreach($category->transactions()->latest()->take(10)->get() as $transaction)
                 <tr>
-                  <td>{{ $transaction->transaction_date->format('d M Y') }}</td>
+                  <td>{{ $transaction->transaction_date->format('d M Y H:i:s') }}</td>
                   <td>
                     <a href="{{ route('apps.transactions.show', $transaction) }}">
                       {{ Str::limit($transaction->description ?? $transaction->title, 30) }}
