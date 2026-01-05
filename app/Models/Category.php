@@ -192,8 +192,8 @@ class Category extends Model
 
 		$monthlyTotal = $this->getMonthlyTotal();
 		$percentage =
-			($monthlyTotal / $this->budget_limit->getAmount()->toInt()) * 100;
-			dd($percentage);
+			($this->budget_limit->getAmount()->toInt() / $monthlyTotal) * 100;
+		dd($percentage);
 
 		return min(100, round($percentage, 2));
 	}
