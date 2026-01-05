@@ -348,8 +348,27 @@ class CategoryRepository extends BaseRepository
 			->whereNotNull("budget_limit")
 			->get()
 			->filter(function ($category) use ($threshold) {
-				dd($category);
-				$usage = $category->budget_usage_percentage;
+				$usage = 0;
+				if (
+					$category->budget_limit ||
+					$category->budget_limit->getAmount()->toInt() > 0
+				) {
+					$monthlyTotal = $category
+						->transactions()
+						->whereMonth("transaction_date", date("m"))
+						->whereYear("transaction_date", date("Y"))
+						->sum("amount");
+					$usage = min(
+						100,
+						round(
+							($monthlyTotal / $category->budget_limit->getAmount()->toInt()) *
+								100,
+							2
+						)
+					);
+				}
+				//dd($category);
+				//$usage = $category->budget_usage_percentage;
 				return $usage >= $threshold;
 			})
 			->map(function ($category) {
