@@ -28,7 +28,7 @@ class TransactionRequest extends FormRequest
 			"type" => ["required", Rule::enum(TransationType::class)],
 			"title" => "required|string|max:500",
 			"amount" => "required|numeric|min:0.01",
-			"category_id" => "required|exist:categories,id",
+			"category_id" => "required|exists:categories,id",
 			"transaction_date" => "required|date",
 			"payment_method" => "nullable|string|max:50",
 			"reference_number" => "nullable|string|max:100",
