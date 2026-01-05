@@ -180,12 +180,16 @@ class Category extends Model
 	 */
 	public function getBudgetUsagePercentageAttribute()
 	{
-		if (!$this->budget_limit || $this->budget_limit == 0) {
+		if (
+			!$this->budget_limit ||
+			$this->budget_limit->getAmount()->toInt() == 0
+		) {
 			return 0;
 		}
 
 		$monthlyTotal = $this->getMonthlyTotal();
-		$percentage = ($monthlyTotal / $this->budget_limit) * 100;
+		$percentage =
+			($monthlyTotal / $this->budget_limit->getAmount()->toInt()) * 100;
 
 		return min(100, round($percentage, 2));
 	}
