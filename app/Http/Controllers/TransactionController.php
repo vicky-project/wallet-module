@@ -63,6 +63,8 @@ class TransactionController extends BaseController
 			$filters
 		);
 
+		dd($transactions);
+
 		// Get summary for the filtered period
 		$summary = $this->transactionRepository->getSummary(
 			$user,
