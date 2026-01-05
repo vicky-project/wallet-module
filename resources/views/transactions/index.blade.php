@@ -17,7 +17,7 @@
 
 <!-- Summary Cards -->
 <div class="row mb-4">
-  <div class="col-md-4 mb-3">
+  <div class="col-md-3 mb-3">
     <div class="card summary-card summary-income">
       <div class="card-body">
         <div class="d-flex align-items-center">
@@ -32,7 +32,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4 mb-3">
+  <div class="col-md-3 mb-3">
     <div class="card summary-card summary-expense">
       <div class="card-body">
         <div class="d-flex align-items-center">
@@ -49,7 +49,7 @@
       </div>
     </div>
   </div>
-   <div class="col-md-4 mb-3">
+  <div class="col-md-3 mb-3">
      <div class="card summary-card summary-net">
        <div class="card-body">
          <div class="d-flex align-items-center">
@@ -60,6 +60,23 @@
              <h6 class="card-subtitle mb-1">Saldo Bersih</h6>
              <h4 class="card-title mb-0">
                {{  $summary["net_balance"]->formatTo('id_ID') }}
+             </h4>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+  <div class="col-md-3 mb-3">
+     <div class="card summary-card summary-total">
+       <div class="card-body">
+         <div class="d-flex align-items-center">
+           <div class="card-icon" style="background-color: rgba(59, 130, 246, 0.1);">
+             <i class="bi bi-stack-coin" style="color: #3b82f6"></i>
+           </div>
+           <div class="ms-3">
+             <h6 class="card-subtitle mb-1">Total Transaksi</h6>
+             <h4 class="card-title mb-0">
+               {{  $summary["total_transactions"] }}
              </h4>
            </div>
          </div>
