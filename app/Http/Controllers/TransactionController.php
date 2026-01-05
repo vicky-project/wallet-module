@@ -63,14 +63,13 @@ class TransactionController extends BaseController
 			$filters
 		);
 
-		dd($transactions);
-
 		// Get summary for the filtered period
 		$summary = $this->transactionRepository->getSummary(
 			$user,
 			$filters["month"],
 			$filters["year"]
 		);
+		dd($summary);
 
 		// Get categories and accounts for filter dropdowns
 		$categories = $this->categoryRepository->getForDropdown($user);

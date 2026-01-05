@@ -221,7 +221,7 @@
             </td>
             <td class="text-end">
               <div class="fw-bold {{ $transaction->type === TransactionType::INCOME ? 'text-income' : 'text-expense'}}">
-                {{ $transaction->type === TransactionType::INCOME ? '+' : '-'}}{{ $transaction->formatted_amount }}
+                {{ $transaction->type === TransactionType::INCOME ? '+' : '-'}}{{ $transaction->amount }}
               </div>
               <small class="text-muted">
                 <span class="badge payment-method-badge bg-secondary">
