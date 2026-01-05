@@ -130,6 +130,10 @@ class TransactionRepository extends BaseRepository
 			);
 		}
 
+		if (!isset($data["is_recurring"]) && $oldTransaction->is_recurring) {
+			$data["is_recurring"] = false;
+		}
+
 		$this->update($id, $data);
 		$transaction = $this->find($id);
 

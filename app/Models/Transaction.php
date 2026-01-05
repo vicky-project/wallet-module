@@ -34,6 +34,23 @@ class Transaction extends Model
 		"type" => TransactionType::class,
 	];
 
+	protected static function boot()
+	{
+		parent::boot();
+
+		static::saving(function ($transaction) {
+			if (!$transaction->is_recurring) {
+				self::where("user_id", $transaction->user_id)
+					->where("id", $transaction->id)
+					->where("account_id", $transaction->account_id)
+					->update([
+						"recurring_period" => null,
+						"recurring_end_date" => null,
+					]);
+			}
+		});
+	}
+
 	// Relationships
 	public function user()
 	{
