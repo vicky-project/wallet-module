@@ -3,7 +3,7 @@
 namespace Modules\Wallet\Models;
 
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Cast\MoneyCast;
+use Modules\Wallet\Casts\MoneyCast;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
