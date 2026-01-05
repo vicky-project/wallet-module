@@ -140,7 +140,6 @@ class TransactionController extends BaseController
 
 			// Check if account belongs to user
 			$account = $this->accountRepository->find($data["account_id"]);
-			dd($account);
 			if ($account->user_id !== $user->id) {
 				return redirect()
 					->back()
@@ -165,6 +164,7 @@ class TransactionController extends BaseController
 				$data,
 				$user
 			);
+			dd($transaction);
 
 			// Update budget if expense
 			if ($data["type"] === TransactionType::EXPENSE) {
