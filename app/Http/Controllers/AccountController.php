@@ -39,7 +39,7 @@ class AccountController extends BaseController
 			]);
 			return redirect()
 				->back()
-				->withErrors(["error" => $e->getMessage()]);
+				->withErrors($e->getMessage());
 		}
 	}
 
@@ -69,7 +69,7 @@ class AccountController extends BaseController
 			return redirect()
 				->back()
 				->withInput()
-				->withErrors(["error" => $e->getMessage()]);
+				->withErrors($e->getMessage());
 		}
 	}
 
@@ -111,9 +111,7 @@ class AccountController extends BaseController
 				"trace" => $e->getTrace(),
 			]);
 			throw $e;
-			return redirect()
-				->back()
-				->withErrors(["error" => $e->getMessage()]);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -127,7 +125,7 @@ class AccountController extends BaseController
 		} catch (\Exception $e) {
 			return redirect()
 				->back()
-				->withErrors(["error" => $e->getMessage()]);
+				->withErrors($e->getMessage());
 		}
 	}
 
@@ -151,7 +149,7 @@ class AccountController extends BaseController
 			return redirect()
 				->back()
 				->withInput()
-				->withErrors(["error" => $e->getMessage()]);
+				->withErrors($e->getMessage());
 		}
 	}
 
@@ -167,9 +165,7 @@ class AccountController extends BaseController
 			if ($account->transactions()->exists()) {
 				return redirect()
 					->back()
-					->withErrors([
-						"error" => "Akun tidak dapat dihapus karena memiliki transaksi",
-					]);
+					->withErrors("Akun tidak dapat dihapus karena memiliki transaksi");
 			}
 
 			$account->delete();
@@ -180,7 +176,7 @@ class AccountController extends BaseController
 		} catch (\Exception $e) {
 			return redirect()
 				->back()
-				->withErrors(["error" => $e->getMessage()]);
+				->withErrors($e->getMessage());
 		}
 	}
 

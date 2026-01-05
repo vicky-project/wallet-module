@@ -2,12 +2,14 @@
 
 namespace Modules\Wallet\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Models\Category;
+use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Repositories\BudgetRepository;
-use Carbon\Carbon;
+use Modules\Wallet\Http\Requests\BudgetRequest;
 
 class BudgetController extends BaseController
 {
@@ -67,7 +69,7 @@ class BudgetController extends BaseController
 		// Get expense categories
 		$categories = Category::where("user_id", $user->id)
 			->orWhereNull("user_id")
-			->where("type", "expense")
+			->where("type", CategoryType::EXPENSE)
 			->get();
 
 		$currentMonth = Carbon::now()->month;
@@ -82,23 +84,17 @@ class BudgetController extends BaseController
 	/**
 	 * Store a newly created budget.
 	 */
-	public function store(Request $request)
+	public function store(BudgetRequest $request)
 	{
-		$request->validate([
-			"category_id" => "required|exists:categories,id",
-			"amount" => "required|numeric|min:1",
-			"month" => "required|integer|between:1,12",
-			"year" => "required|integer|min:2020|max:" . (Carbon::now()->year + 5),
-		]);
-
 		$user = auth()->user();
+		$data = $request->validated();
 
 		// Check if budget already exists for this category and period
 		$exists = $this->budgetRepository->existsForCategory(
 			$user,
-			$request->category_id,
-			$request->month,
-			$request->year
+			$data["category_id"],
+			$data["month"],
+			$data["year"]
 		);
 
 		if ($exists) {
@@ -112,7 +108,7 @@ class BudgetController extends BaseController
 		}
 
 		try {
-			$budget = $this->budgetRepository->createBudget($request->all(), $user);
+			$budget = $this->budgetRepository->createBudget($data, $user);
 
 			return redirect()
 				->route("apps.budgets.index")
@@ -121,17 +117,17 @@ class BudgetController extends BaseController
 			return redirect()
 				->back()
 				->withInput()
-				->with("error", "Gagal membuat anggaran: " . $e->getMessage());
+				->withErrors("Gagal membuat anggaran: " . $e->getMessage());
 		}
 	}
 
 	/**
 	 * Show the form for editing the specified budget.
 	 */
-	public function edit($id)
+	public function edit(Budget $budget)
 	{
 		$user = auth()->user();
-		$budget = Budget::with("category")->findOrFail($id);
+		$budget->load("category");
 
 		// Authorization check
 		if ($budget->user_id != $user->id) {
@@ -141,7 +137,7 @@ class BudgetController extends BaseController
 		// Get expense categories
 		$categories = Category::where("user_id", $user->id)
 			->orWhereNull("user_id")
-			->where("type", "expense")
+			->where("type", CategoryType::EXPENSE)
 			->get();
 
 		return view("wallet::budgets.edit", compact("budget", "categories"));
@@ -150,17 +146,9 @@ class BudgetController extends BaseController
 	/**
 	 * Update the specified budget.
 	 */
-	public function update(Request $request, $id)
+	public function update(BudgetRequest $request, Budget $budget)
 	{
-		$request->validate([
-			"category_id" => "required|exists:categories,id",
-			"amount" => "required|numeric|min:1",
-			"month" => "required|integer|between:1,12",
-			"year" => "required|integer|min:2020|max:" . (Carbon::now()->year + 5),
-		]);
-
 		$user = auth()->user();
-		$budget = Budget::findOrFail($id);
 
 		// Authorization check
 		if ($budget->user_id != $user->id) {
@@ -172,21 +160,19 @@ class BudgetController extends BaseController
 			->where("category_id", $request->category_id)
 			->where("month", $request->month)
 			->where("year", $request->year)
-			->where("id", "!=", $id)
+			->where("id", "!=", $budget->id)
 			->exists();
 
 		if ($exists) {
-			return redirect()
-				->back()
+			return back()
 				->withInput()
-				->with(
-					"error",
+				->withErrors(
 					"Anggaran untuk kategori ini pada periode tersebut sudah ada."
 				);
 		}
 
 		try {
-			$this->budgetRepository->updateBudget($id, $request->all());
+			$this->budgetRepository->updateBudget($budget->id, $request->validated());
 
 			return redirect()
 				->route("apps.budgets.index")
@@ -195,17 +181,16 @@ class BudgetController extends BaseController
 			return redirect()
 				->back()
 				->withInput()
-				->with("error", "Gagal memperbarui anggaran: " . $e->getMessage());
+				->withErrors("Gagal memperbarui anggaran: " . $e->getMessage());
 		}
 	}
 
 	/**
 	 * Remove the specified budget.
 	 */
-	public function destroy($id)
+	public function destroy(Budget $budget)
 	{
 		$user = auth()->user();
-		$budget = Budget::findOrFail($id);
 
 		// Authorization check
 		if ($budget->user_id != $user->id) {
@@ -213,7 +198,7 @@ class BudgetController extends BaseController
 		}
 
 		try {
-			$this->budgetRepository->delete($id);
+			$this->budgetRepository->delete($budget->id);
 
 			return redirect()
 				->route("apps.budgets.index")
@@ -221,7 +206,7 @@ class BudgetController extends BaseController
 		} catch (\Exception $e) {
 			return redirect()
 				->back()
-				->with("error", "Gagal menghapus anggaran: " . $e->getMessage());
+				->withErrors("Gagal menghapus anggaran: " . $e->getMessage());
 		}
 	}
 
@@ -235,16 +220,14 @@ class BudgetController extends BaseController
 		try {
 			$this->budgetRepository->updateAllBudgetsSpent($user);
 
-			return redirect()
-				->back()
-				->with("success", "Jumlah terpakai anggaran berhasil diperbarui.");
+			return back()->with(
+				"success",
+				"Jumlah terpakai anggaran berhasil diperbarui."
+			);
 		} catch (\Exception $e) {
 			return redirect()
 				->back()
-				->with(
-					"error",
-					"Gagal memperbarui jumlah terpakai: " . $e->getMessage()
-				);
+				->withErrors("Gagal memperbarui jumlah terpakai: " . $e->getMessage());
 		}
 	}
 }
