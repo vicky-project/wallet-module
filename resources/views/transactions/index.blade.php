@@ -24,7 +24,7 @@
           </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Total Pemasukan</h6>
-            <h4 class="card-title mb-0 text-income">{{ $summary['income'] }}</h4>
+            <h4 class="card-title mb-0 text-income">{{ $summary['income']->formatTo('id_ID') }}</h4>
           </div>
         </div>
       </div>
