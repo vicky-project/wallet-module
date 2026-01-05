@@ -237,7 +237,6 @@ class TransactionController extends BaseController
 		try {
 			$user = Auth::user();
 			$transaction = $this->transactionRepository->find($id);
-			dd($transaction);
 
 			if (!$transaction || $transaction->user_id !== $user->id) {
 				abort(404, "Transaksi tidak ditemukan");
@@ -307,6 +306,7 @@ class TransactionController extends BaseController
 				}
 			}
 
+			dd($data);
 			$updatedTransaction = $this->transactionRepository->updateTransaction(
 				$id,
 				$data
