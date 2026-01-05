@@ -2,6 +2,8 @@
 
 @section('title', 'Edit Transaksi')
 
+@use('Modules\Wallet\Enums\TransactionType')
+
 @push('styles')
 <!-- Reuse the same styles from create.blade.php -->
 <style>
@@ -141,14 +143,12 @@
                 <div class="form-section">
                     <h5>Tipe Transaksi</h5>
                     <div class="type-toggle mb-4">
-                        <input type="radio" id="type_income" name="type" value="income" 
-                               {{ old('type', $transaction->type) == 'income' ? 'checked' : '' }}>
+                        <input type="radio" id="type_income" name="type" value="income" @checked(old('type', $transaction->type) == TransactionType::INCOME)>
                         <label for="type_income" class="text-income">
                             <i class="bi bi-arrow-up-circle me-2"></i>Pemasukan
                         </label>
                         
-                        <input type="radio" id="type_expense" name="type" value="expense"
-                               {{ old('type', $transaction->type) == 'expense' ? 'checked' : '' }}>
+                        <input type="radio" id="type_expense" name="type" value="expense" @checked(old('type', $transaction->type) == TransactionType::EXPENSE)>
                         <label for="type_expense" class="text-expense">
                             <i class="bi bi-arrow-down-circle me-2"></i>Pengeluaran
                         </label>
@@ -161,7 +161,7 @@
                             <span class="input-group-text">Rp</span>
                             <input type="text" class="form-control amount-input" 
                                    id="amount" name="amount" 
-                                   value="{{ old('amount', number_format($transaction->amount->getAmount()->toInt() / 100, 0, ',', '.')) }}"
+                                   value="{{ old('amount', $transaction->amount->getAmount()->toInt()) }}"
                                    placeholder="0" required>
                         </div>
                         @error('amount')
@@ -183,8 +183,8 @@
                         
                         <div class="col-md-4 mb-3">
                             <label for="transaction_date" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="transaction_date" name="transaction_date"
-                                   value="{{ old('transaction_date', $transaction->transaction_date->format('Y-m-d')) }}" required>
+                            <input type="datetime-local" class="form-control" id="transaction_date" name="transaction_date"
+                                   value="{{ old('transaction_date', $transaction->transaction_date->format('Y-m-d H:i:s')) }}" required>
                             @error('transaction_date')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
@@ -208,7 +208,7 @@
                     
                     <!-- Income Categories -->
                     <div id="incomeCategories" class="category-options" 
-                         style="{{ old('type', $transaction->type) == 'income' ? '' : 'display: none;' }}">
+                         style="{{ old('type', $transaction->type) == TransactionType::INCOME ? '' : 'display: none;' }}">
                         @forelse($incomeCategories as $category)
                         <label class="category-option">
                             <input type="radio" name="category_id" value="{{ $category->id }}"
@@ -235,7 +235,7 @@
                     
                     <!-- Expense Categories -->
                     <div id="expenseCategories" class="category-options"
-                         style="{{ old('type', $transaction->type) == 'expense' ? '' : 'display: none;' }}">
+                         style="{{ old('type', $transaction->type) == TransactionType::EXPENSE ? '' : 'display: none;' }}">
                         @forelse($expenseCategories as $category)
                         <label class="category-option">
                             <input type="radio" name="category_id" value="{{ $category->id }}"
