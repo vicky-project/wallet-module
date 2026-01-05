@@ -182,7 +182,7 @@
                   </td>
                   <td>
                     <a href="{{ route('apps.transactions.show', $transaction) }}">
-                      {{ Str::limit($transaction->description, 30) }}
+                      {{ Str::limit($transaction->description ?? $transaction->title, 30) }}
                     </a>
                   </td>
                   <td class="{{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
