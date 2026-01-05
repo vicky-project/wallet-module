@@ -4,12 +4,12 @@
 
 @use('Modules\Wallet\Enums\TransactionType')
 
-
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="page-title">Daftar Transaksi</h1>
   <div>
+    {{ $filters['month'] }} ● {{ $filters['year'] }}
   </div>
 </div>
 
@@ -67,7 +67,9 @@
 </div>
 
 <!-- Filter Section -->
-<div class="accordion accordion-flush filter-card mb-4" id="accordionFilter">
+<div class="card filter-card mb-4">
+  <div class="card-body">
+    <div class="accordion accordion-flush filter-card mb-4" id="accordionFilter">
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
@@ -168,8 +170,6 @@
     </div>
   </div>
 </div>
-<div class="card filter-card mb-4">
-  <div class="card-body">
   </div>
 </div>
 
