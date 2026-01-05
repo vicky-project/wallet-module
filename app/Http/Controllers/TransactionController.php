@@ -234,6 +234,7 @@ class TransactionController extends BaseController
 	 */
 	public function update(TransactionRequest $request, $id)
 	{
+		dd($request->validated);
 		try {
 			$user = Auth::user();
 			$transaction = $this->transactionRepository->find($id);
@@ -334,6 +335,11 @@ class TransactionController extends BaseController
 				->route("apps.transactions.index")
 				->with("success", "Transaksi berhasil diperbarui");
 		} catch (\Exception $e) {
+			logger()->error("Failed to save transaction updated.", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace(),
+			]);
+
 			return redirect()
 				->back()
 				->withInput()
