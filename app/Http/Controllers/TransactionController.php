@@ -49,14 +49,6 @@ class TransactionController extends BaseController
 			"search",
 		]);
 
-		// Set default month/year if not provided
-		if (!isset($filters["month"])) {
-			$filters["month"] = date("m");
-		}
-		if (!isset($filters["year"])) {
-			$filters["year"] = date("Y");
-		}
-
 		// Get transactions with filters
 		$transactions = $this->transactionRepository->getWithFilters(
 			$user,
