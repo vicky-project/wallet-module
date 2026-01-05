@@ -1,4 +1,4 @@
-@extends('wallet::layouts.apps')
+@extends('wallet::layouts.app')
 
 @section('title', 'Anggaran - ' . config('app.name'))
 
