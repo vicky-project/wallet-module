@@ -103,12 +103,8 @@ class TransactionRepository extends BaseRepository
 		if (!isset($data["transaction_date"])) {
 			$data["transaction_date"] = Carbon::now();
 		}
-		try {
-			$transaction = $this->create($data);
-		} catch (\Exception $e) {
-			throw $e;
-		}
-		dd($transaction);
+
+		$transaction = $this->create($data);
 
 		// Update account balance
 		if ($transaction->account_id) {
@@ -255,15 +251,21 @@ class TransactionRepository extends BaseRepository
 			return;
 		}
 
-		$amount = $this->fromDatabaseAmount($transaction->amount);
+		$amount = $this->fromDatabaseAmount(
+			$transaction->amount->getAmount()->toInt()
+		);
 
-		if ($transaction->type === "income") {
+		if ($transaction->type === TransactionType::INCOME) {
 			$account->current_balance = $this->toDatabaseAmount(
-				$this->fromDatabaseAmount($account->current_balance)->plus($amount)
+				$this->fromDatabaseAmount(
+					$account->current_balance->getAmount()->toInt()
+				)->plus($amount->getAmount()->toInt())
 			);
 		} else {
 			$account->current_balance = $this->toDatabaseAmount(
-				$this->fromDatabaseAmount($account->current_balance)->minus($amount)
+				$this->fromDatabaseAmount(
+					$account->current_balance->getAmount()->toInt()
+				)->minus($amount->getAmount()->toInt())
 			);
 		}
 

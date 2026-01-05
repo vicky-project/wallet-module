@@ -164,7 +164,6 @@ class TransactionController extends BaseController
 				$data,
 				$user
 			);
-			dd($transaction);
 
 			// Update budget if expense
 			if ($data["type"] === TransactionType::EXPENSE) {
