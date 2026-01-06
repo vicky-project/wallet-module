@@ -172,7 +172,7 @@
                   @php
                   $monthlyTotal = $category->getExpenseTotal();
                   $budgetUsage = $category->getActiveBudget()?->percentage;
-                  $isExceeded = $category->getActiveBudget()->isExceeded;
+                  $isExceeded = $category->getActiveBudget()?->isExceeded;
                   @endphp
                   <tr data-type="{{ $category->type }}" data-status="{{ $category->is_active ? 'active' : 'inactive' }}" class="{{ $isExceeded ? 'table-danger' : '' }}">
                     <td>{{ $index + 1 }}</td>
