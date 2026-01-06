@@ -333,7 +333,7 @@ class BudgetRepository extends BaseRepository
 	}
 
 	/**
-	 * Check budget health status
+	 * Get budget health status with detailed analysis
 	 */
 	public function getBudgetHealthStatus(
 		User $user,
@@ -343,6 +343,7 @@ class BudgetRepository extends BaseRepository
 		$month = $month ?? Carbon::now()->month;
 		$year = $year ?? date("Y");
 
+		// Get budgets with spent calculation
 		$budgets = $this->model
 			->with("category")
 			->where("user_id", $user->id)
@@ -350,40 +351,96 @@ class BudgetRepository extends BaseRepository
 			->where("year", $year)
 			->where("is_active", true)
 			->get()
-			->each(function ($budget) {
-				$budget->updateSpentAmount();
+			->map(function ($budget) {
+				return $this->calculateSpentFromTransactions($budget);
 			});
 
-		$exceeded = $budgets->filter(fn($b) => $b->isExceeded)->count();
-		$warning = $budgets->filter(fn($b) => $b->status === "warning")->count();
-		$moderate = $budgets->filter(fn($b) => $b->status === "moderate")->count();
-		$good = $budgets->filter(fn($b) => $b->status === "good")->count();
+		// Count budgets by status
+		$exceeded = $budgets->filter(fn($b) => $b->percentage >= 100)->count();
+		$warning = $budgets
+			->filter(fn($b) => $b->percentage >= 80 && $b->percentage < 100)
+			->count();
+		$moderate = $budgets
+			->filter(fn($b) => $b->percentage >= 50 && $b->percentage < 80)
+			->count();
+		$good = $budgets->filter(fn($b) => $b->percentage < 50)->count();
 
-		$totalCategories = Category::where("type", CategoryType::EXPENSE)
+		// Count total expense categories
+		$totalExpenseCategories = Category::where("type", "expense")
+			->where("is_budgetable", true)
 			->where(function ($query) use ($user) {
 				$query->where("user_id", $user->id)->orWhereNull("user_id");
 			})
 			->count();
 
 		$budgetedCategories = $budgets->count();
-		$unbudgetedCategories = $totalCategories - $budgetedCategories;
+		$unbudgetedCategories = $totalExpenseCategories - $budgetedCategories;
+
+		// Calculate health score (0-100)
+		$healthScore =
+			$totalExpenseCategories > 0
+				? round(
+					(($good * 1 + $moderate * 0.7 + $warning * 0.4 - $exceeded * 0.5) /
+						$totalExpenseCategories) *
+						100,
+					0
+				)
+				: 0;
+
+		// Ensure health score is within bounds
+		$healthScore = max(0, min(100, $healthScore));
+
+		// Determine health status
+		if ($healthScore >= 80) {
+			$healthStatus = "excellent";
+			$healthStatusColor = "success";
+			$healthMessage = "Anggaran Anda dalam kondisi sangat baik!";
+		} elseif ($healthScore >= 60) {
+			$healthStatus = "good";
+			$healthStatusColor = "info";
+			$healthMessage = "Anggaran Anda dalam kondisi baik.";
+		} elseif ($healthScore >= 40) {
+			$healthStatus = "fair";
+			$healthStatusColor = "warning";
+			$healthMessage = "Anggaran Anda perlu perhatian.";
+		} else {
+			$healthStatus = "poor";
+			$healthStatusColor = "danger";
+			$healthMessage = "Anggaran Anda dalam kondisi kritis!";
+		}
+
+		// Get budgets that need attention
+		$attentionBudgets = $budgets
+			->filter(fn($b) => $b->percentage >= 80)
+			->sortByDesc("percentage")
+			->take(3);
 
 		return [
+			// Counts
 			"exceeded" => $exceeded,
 			"warning" => $warning,
 			"moderate" => $moderate,
 			"good" => $good,
+
+			// Category analysis
+			"total_expense_categories" => $totalExpenseCategories,
 			"total_budgeted" => $budgetedCategories,
 			"unbudgeted_categories" => $unbudgetedCategories,
-			"health_score" =>
-				$totalCategories > 0
-					? round(
-						(($good * 1 + $moderate * 0.7 + $warning * 0.4 - $exceeded * 0.5) /
-							$totalCategories) *
-							100,
-						0
-					)
-					: 0,
+
+			// Health score
+			"health_score" => $healthScore,
+			"health_status" => $healthStatus,
+			"health_status_color" => $healthStatusColor,
+			"health_message" => $healthMessage,
+
+			// Attention items
+			"attention_budgets" => $attentionBudgets,
+			"has_attention_items" => $attentionBudgets->count() > 0,
+
+			// Period
+			"period" => Budget::MONTH_NAMES[$month] . " " . $year,
+			"month" => $month,
+			"year" => $year,
 		];
 	}
 }

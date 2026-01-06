@@ -47,6 +47,12 @@ class BudgetController extends BaseController
 		// Get summary
 		$summary = $this->budgetRepository->getBudgetSummary($user, $month, $year);
 
+		$health = $this->budgetRepository->getBudgetHealthStatus(
+			$user,
+			$year,
+			$month
+		);
+
 		// Get categories for filter
 		$categories = Category::where("user_id", $user->id)
 			->orWhereNull("user_id")
@@ -55,7 +61,15 @@ class BudgetController extends BaseController
 
 		return view(
 			"wallet::budgets.index",
-			compact("budgets", "summary", "categories", "month", "year", "categoryId")
+			compact(
+				"budgets",
+				"summary",
+				"categories",
+				"month",
+				"year",
+				"categoryId",
+				"health"
+			)
 		);
 	}
 
