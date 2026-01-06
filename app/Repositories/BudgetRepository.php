@@ -79,13 +79,12 @@ class BudgetRepository extends BaseRepository
 		return $this->model
 			->with([
 				"category" => function ($query) {
-					$query->where("type", CategoryType::EXPENSE);
+					$query->expense();
 				},
 			])
 			->where("user_id", $user->id)
-			->where("is_active", true)
-			->where("month", $currentMonth)
-			->where("year", $currentYear)
+			->forPeriod($currentMonth, $currentYear)
+			->active()
 			->get()
 			->each(function ($budget) {
 				// Update spent amount dari transaksi
@@ -108,7 +107,7 @@ class BudgetRepository extends BaseRepository
 		$budgets = $this->model
 			->with([
 				"category" => function ($query) {
-					$query->where("type", CategoryType::EXPENSE);
+					$query->expense();
 				},
 			])
 			->where("user_id", $user->id)
@@ -136,10 +135,8 @@ class BudgetRepository extends BaseRepository
 			$totalBudget > 0 ? round(($totalSpent / $totalBudget) * 100, 2) : 0;
 
 		// Dapatkan kategori expense yang TIDAK memiliki budget
-		$unbudgetedCategories = Category::where("type", CategoryType::EXPENSE)
-			->where(function ($query) use ($user) {
-				$query->where("user_id", $user->id)->orWhereNull("user_id");
-			})
+		$unbudgetedCategories = Category::expense()
+			->forUser($user->id)
 			->whereDoesntHave("budgets", function ($query) use ($month, $year) {
 				$query
 					->where("month", $month)
