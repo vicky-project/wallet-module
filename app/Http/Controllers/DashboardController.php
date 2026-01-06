@@ -216,8 +216,9 @@ class DashboardController extends BaseController
 		$change = $current->minus($previous);
 		$percentage = $change
 			->getAmount()
-			->dividedBy($previous->getAmount(), RoundingMode::DOWN)
-			->multipliedBy(100, RoundingMode::DOWN);
+			->toInt()
+			->dividedBy($previous->getAmount()->toInt())
+			->multipliedBy(100);
 
 		return $percentage->toFloat();
 	}
