@@ -13,7 +13,7 @@ class Category extends Model
 {
 	use HasFactory, SoftDeletes;
 
-	protected $with = ["transactions"];
+	protected $with = ["transactions", "budgets"];
 
 	protected $fillable = [
 		"user_id",
