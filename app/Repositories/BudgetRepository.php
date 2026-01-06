@@ -272,8 +272,8 @@ class BudgetRepository extends BaseRepository
 		array $budgetedCategoryIds
 	): array {
 		// Get categories without budget and their expenses in single query
-		$result = Category::expense()
-			->forUser($userId)
+		$result = Category::forUser($userId)
+			->where("categories.type", CategoryType::EXPENSE)
 			->whereDoesntHave("budgets", function ($query) use ($month, $year) {
 				$query
 					->where("month", $month)
