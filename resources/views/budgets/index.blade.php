@@ -3,7 +3,7 @@
 @section('title', 'Anggaran - ' . config('app.name'))
 
 @section('content')
-@include('wallet:partials.fab')
+@include('wallet::partials.fab')
     <div class="row mb-4">
         <div class="col-12">
             <div class="page-title">
