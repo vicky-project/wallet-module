@@ -296,8 +296,7 @@ class BudgetRepository extends BaseRepository
 				"categories.*",
 				DB::raw("COALESCE(SUM(transactions.amount), 0) as category_expense"),
 			])
-			->groupBy("categories.id")
-			->groupBy("categories.user_id")
+			->groupBy("categories")
 			->get();
 
 		return [
