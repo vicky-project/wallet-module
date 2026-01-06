@@ -209,6 +209,7 @@ class BudgetRepository extends BaseRepository
 				"year" => $year,
 				"include_inactive" => false,
 			]);
+			dd($budgets);
 
 			// Calculate totals
 			$totalBudget = $budgets->sum(
