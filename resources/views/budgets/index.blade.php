@@ -247,6 +247,7 @@
                     <button type="button" class="btn btn-outline-info me-2" onclick="updateSpentAmounts()">
                         <i class="bi bi-arrow-clockwise"></i> Perbarui Terpakai
                     </button>
+                    @if(Route::has('apps.budgets.export'))
                     <div class="dropdown d-inline-block me-2">
                         <button class="btn btn-outline-success dropdown-toggle" type="button" 
                                 data-bs-toggle="dropdown">
@@ -254,12 +255,18 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
+                                <a class="dropdown-item" href="{{ route('apps.budgets.export', ['format' => 'pdf', 'month' => $month, 'year' => $year]) }}">
+                                    <i class="bi bi-file-pdf me-2"></i> PDF
+                                </a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('apps.budgets.export', ['format' => 'excel', 'month' => $month, 'year' => $year]) }}">
                                     <i class="bi bi-file-excel me-2"></i> Excel
                                 </a>
                             </li>
                         </ul>
                     </div>
+                    @endif
                     <form action="{{ route('apps.budgets.create-from-suggestions') }}" method="POST" class="d-inline">
                         @csrf
                         <input type="hidden" name="month" value="{{ $month }}">
