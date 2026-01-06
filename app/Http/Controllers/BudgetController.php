@@ -81,10 +81,8 @@ class BudgetController extends BaseController
 		$user = auth()->user();
 
 		// Get expense categories
-		$categories = Category::where("type", CategoryType::EXPENSE)
-			->where(function ($query) use ($user) {
-				$query->where("user_id", $user->id)->orWhereNull("user_id");
-			})
+		$categories = Category::expense()
+			->forUser($user->id)
 			->get();
 
 		$currentMonth = Carbon::now()->month;

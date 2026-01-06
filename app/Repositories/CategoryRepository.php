@@ -346,7 +346,10 @@ class CategoryRepository extends BaseRepository
 			->active()
 			->get()
 			->filter(function ($category) use ($threshold) {
-				$usage = $category->getActiveBudget()->percentage;
+				$usage = 0;
+				if ($category->hasActiveBudget()) {
+					$usage = $category->getActiveBudget()->percentage;
+				}
 				return $usage >= $threshold;
 			})
 			->map(function ($category) {
