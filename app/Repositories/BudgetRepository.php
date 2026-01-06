@@ -51,6 +51,7 @@ class BudgetRepository extends BaseRepository
 		// Set default spent to 0
 		$data["spent"] = 0;
 		$data["is_active"] = true;
+		dd($data);
 
 		return $this->create($data);
 	}
