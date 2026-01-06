@@ -167,7 +167,7 @@
           @endif
         @endforeach
         @php
-        $isExceededBudgets = $budget->filter(fn($exceeded) => $exceeded->isExceeded);
+        $isExceededBudgets = $budgets->filter(fn($exceeded) => $exceeded->isExceeded);
         @endphp
         @if($isExceededBudgets->count() > 0)
           <div class="alert alert-warning mt-4">
