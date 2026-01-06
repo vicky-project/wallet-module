@@ -176,7 +176,7 @@ class Category extends Model
 		$month = $month ?? date("m");
 		$year = $year ?? date("Y");
 
-		return $this->Transaction()
+		return $this->transactions()
 			->expense()
 			->whereMonth("transaction_date", $month)
 			->whereYear("transaction_date", $year)
@@ -188,7 +188,7 @@ class Category extends Model
 		$month = $month ?? date("m");
 		$year = $year ?? date("Y");
 
-		return $this->Transaction()
+		return $this->rransactions()
 			->income()
 			->whereMonth("transaction_date", $month)
 			->whereYear("transaction_date", $year)
