@@ -156,9 +156,8 @@ class BudgetRepository extends BaseRepository
 				},
 			])
 			->where("user_id", $user->id)
-			->where("is_active", true)
-			->where("month", $month)
-			->where("year", $year)
+			->active()
+			->forPeriod($month, $year)
 			->get()
 			->each(function ($budget) {
 				// Update spent amount sebelum perhitungan
@@ -216,23 +215,23 @@ class BudgetRepository extends BaseRepository
 
 		return [
 			"budgets" => $budgets,
-			"total_budget" => $totalBudget / 100,
-			"total_spent" => $totalSpent / 100,
-			"total_remaining" => $totalRemaining / 100,
+			"total_budget" => $totalBudget,
+			"total_spent" => $totalSpent,
+			"total_remaining" => $totalRemaining,
 			"budget_usage_percentage" => $budgetUsagePercentage,
 			"formatted_total_budget" =>
-				"Rp " . number_format($totalBudget / 100, 0, ",", "."),
+				"Rp " . number_format($totalBudget, 0, ",", "."),
 			"formatted_total_spent" =>
 				"Rp " . number_format($totalSpent / 100, 0, ",", "."),
 			"formatted_total_remaining" =>
-				"Rp " . number_format($totalRemaining / 100, 0, ",", "."),
+				"Rp " . number_format($totalRemaining, 0, ",", "."),
 			"unbudgeted_categories" => $unbudgetedCategories,
-			"unbudgeted_expenses" => $unbudgetedExpenses / 100,
+			"unbudgeted_expenses" => $unbudgetedExpenses,
 			"formatted_unbudgeted_expenses" =>
-				"Rp " . number_format($unbudgetedExpenses / 100, 0, ",", "."),
-			"total_expenses" => $totalExpenses / 100,
+				"Rp " . number_format($unbudgetedExpenses, 0, ",", "."),
+			"total_expenses" => $totalExpenses,
 			"formatted_total_expenses" =>
-				"Rp " . number_format($totalExpenses / 100, 0, ",", "."),
+				"Rp " . number_format($totalExpenses, 0, ",", "."),
 			"budgeted_expense_percentage" => $budgetedExpensePercentage,
 		];
 	}
