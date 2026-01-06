@@ -63,7 +63,7 @@ abstract class BaseRepository
 	protected function formatMoney(Money|int $money): string
 	{
 		if (is_int($money)) {
-			$money = Money::of($money);
+			$money = Money::of($money, "IDR");
 		}
 		return $money->formatTo("id_ID");
 	}
