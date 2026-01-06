@@ -11,6 +11,7 @@ use Modules\Wallet\Repositories\{
 	AccountRepository
 };
 use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -215,8 +216,8 @@ class DashboardController extends BaseController
 		$change = $current->minus($previous);
 		$percentage = $change
 			->getAmount()
-			->dividedBy($previous->getAmount())
-			->multipliedBy(100);
+			->dividedBy($previous->getAmount(), RoundingMode::DOWN)
+			->multipliedBy(100, RoundingMode::DOWN);
 
 		return $percentage->toFloat();
 	}
