@@ -60,8 +60,11 @@ abstract class BaseRepository
 	/**
 	 * Format Money for display
 	 */
-	protected function formatMoney(Money $money): string
+	protected function formatMoney(Money|int $money): string
 	{
+		if (is_int($money)) {
+			$money = Money::of($amount);
+		}
 		return $money->formatTo("id_ID");
 	}
 
