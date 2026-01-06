@@ -67,17 +67,24 @@ class BudgetController extends BaseController
 		$user = auth()->user();
 
 		// Get expense categories
-		$categories = Category::where("user_id", $user->id)
-			->orWhereNull("user_id")
-			->where("type", CategoryType::EXPENSE)
+		$categories = Category::where("type", CategoryType::EXPENSE)
+			->where(function ($query) use ($user) {
+				$query->where("user_id", $user->id)->orWhereNull("user_id");
+			})
 			->get();
 
 		$currentMonth = Carbon::now()->month;
 		$currentYear = Carbon::now()->year;
 
+		$suggestions = $this->budgetRepository->getBudgetSuggestions(
+			$user,
+			$currentMonth,
+			$currentYear
+		);
+
 		return view(
 			"wallet::budgets.create",
-			compact("categories", "currentMonth", "currentYear")
+			compact("categories", "currentMonth", "currentYear", "suggestions")
 		);
 	}
 
@@ -88,6 +95,13 @@ class BudgetController extends BaseController
 	{
 		$user = auth()->user();
 		$data = $request->validated();
+
+		$category = Category::find($data["category_id"]);
+		if (!$category || $category->type !== CategoryType::EXPENSE) {
+			return back()
+				->withInput()
+				->withErrors("Budget only can used by expense category.");
+		}
 
 		// Check if budget already exists for this category and period
 		$exists = $this->budgetRepository->existsForCategory(

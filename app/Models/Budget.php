@@ -3,6 +3,8 @@
 namespace Modules\Wallet\Models;
 
 use Modules\Wallet\Casts\MoneyCast;
+use Modules\Wallet\Enums\CategoryType;
+use Modules\Wallet\Enums\TransactionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,7 +19,8 @@ class Budget extends Model
 		"amount",
 		"month",
 		"year",
-		"spent",
+		"spent", // Ini akan diupdate dari transaksi expense pada kategori ini
+		"is_active", // Status aktif/tidak aktif
 	];
 
 	protected $casts = [
@@ -25,6 +28,7 @@ class Budget extends Model
 		"spent" => MoneyCast::class,
 		"month" => "integer",
 		"year" => "integer",
+		"is_active" => "boolean",
 		"created_at" => "datetime",
 		"updated_at" => "datetime",
 		"deleted_at" => "datetime",
@@ -55,11 +59,14 @@ class Budget extends Model
 	}
 
 	/**
-	 * Relationship with Category
+	 * Relationship with Category (hanya kategori expense)
 	 */
 	public function category()
 	{
-		return $this->belongsTo(Category::class);
+		return $this->belongsTo(Category::class)->where(
+			"type",
+			CategoryType::EXPENSE
+		);
 	}
 
 	/**
@@ -69,29 +76,24 @@ class Budget extends Model
 	{
 		return max(
 			0,
-			$this->amount->getMinorAmount()->toInt() -
-				$this->spent->getMinorAmount()->toInt()
+			$this->amount->getAmount()->toInt() - $this->spent->getAmount()->toInt()
 		);
 	}
 
 	/**
-	 * Calculate percentage spent
+	 * Calculate percentage spent - INI YANG DIPERBAIKI
+	 * Persentase dihitung dari spent/amount
 	 */
 	public function getPercentageAttribute()
 	{
-		if ($this->amount->getMinorAmount()->toInt() == 0) {
+		$amount = $this->amount->getAmount()->toInt();
+		$spent = $this->spent->getAmount()->toInt();
+
+		if ($amount == 0) {
 			return 0;
 		}
 
-		return min(
-			100,
-			round(
-				($this->spent->getMinorAmount()->toInt() /
-					$this->amount->getMinorAmount()->toInt()) *
-					100,
-				2
-			)
-		);
+		return min(100, round(($spent / $amount) * 100, 2));
 	}
 
 	/**
@@ -100,7 +102,7 @@ class Budget extends Model
 	public function getFormattedAmountAttribute()
 	{
 		return "Rp " .
-			number_format($this->amount->getMinorAmount()->toInt(), 0, ",", ".");
+			number_format($this->amount->getAmount()->toInt() / 100, 0, ",", ".");
 	}
 
 	/**
@@ -109,7 +111,7 @@ class Budget extends Model
 	public function getFormattedSpentAttribute()
 	{
 		return "Rp " .
-			number_format($this->spent->getMinorAmount()->toInt(), 0, ",", ".");
+			number_format($this->spent->getAmount()->toInt() / 100, 0, ",", ".");
 	}
 
 	/**
@@ -117,7 +119,7 @@ class Budget extends Model
 	 */
 	public function getFormattedRemainingAttribute()
 	{
-		return "Rp " . number_format($this->remaining, 0, ",", ".");
+		return "Rp " . number_format($this->remaining / 100, 0, ",", ".");
 	}
 
 	/**
@@ -141,8 +143,8 @@ class Budget extends Model
 	 */
 	public function getIsExceededAttribute()
 	{
-		return $this->spent->getMinorAmount()->toInt() >
-			$this->amount->getMinorAmount()->toInt();
+		return $this->spent->getAmount()->toInt() >
+			$this->amount->getAmount()->toInt();
 	}
 
 	/**
@@ -168,14 +170,21 @@ class Budget extends Model
 	 */
 	public function getStatusColorAttribute()
 	{
-		$statusColors = [
+		return match ($this->status) {
 			"exceeded" => "danger",
 			"warning" => "warning",
 			"moderate" => "info",
 			"good" => "success",
-		];
+			default => "secondary",
+		};
+	}
 
-		return $statusColors[$this->status] ?? "secondary";
+	/**
+	 * Scope for active budgets
+	 */
+	public function scopeActive($query)
+	{
+		return $query->where("is_active", true);
 	}
 
 	/**
@@ -195,17 +204,20 @@ class Budget extends Model
 	}
 
 	/**
-	 * Update spent amount from transactions
+	 * Update spent amount from transactions - INI YANG DIPERBAIKI
+	 * Hanya hitung dari transaksi expense pada kategori ini
 	 */
 	public function updateSpentAmount()
 	{
+		// HITUNG TOTAL PENGELUARAN PADA KATEGORI INI
 		$totalSpent = Transaction::where("user_id", $this->user_id)
 			->where("category_id", $this->category_id)
-			->where("type", "expense")
+			->where("type", TransactionType::EXPENSE) // HANYA TRANSAKSI EXPENSE
 			->whereMonth("transaction_date", $this->month)
 			->whereYear("transaction_date", $this->year)
 			->sum("amount");
 
+		// Update spent amount
 		$this->spent = $totalSpent;
 		$this->save();
 
@@ -236,6 +248,23 @@ class Budget extends Model
 	 */
 	public function getFormattedDailyBudgetAttribute()
 	{
-		return "Rp " . number_format($this->daily_budget, 0, ",", ".");
+		return "Rp " . number_format($this->daily_budget / 100, 0, ",", ".");
+	}
+
+	/**
+	 * Get budget progress data for charts
+	 */
+	public function getProgressDataAttribute()
+	{
+		$spent = $this->spent->getAmount()->toInt() / 100;
+		$amount = $this->amount->getAmount()->toInt() / 100;
+		$remaining = max(0, $amount - $spent);
+
+		return [
+			"spent" => $spent,
+			"remaining" => $remaining,
+			"amount" => $amount,
+			"percentage" => $this->percentage,
+		];
 	}
 }

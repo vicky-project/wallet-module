@@ -65,6 +65,7 @@
           <div>
             <h6 class="text-muted mb-2">Total Anggaran</h6>
             <h4 class="mb-0">{{ $summary['formatted_total_budget'] }}</h4>
+            <small class="text-muted">{{ count($budgets) }} kategory</small>
           </div>
           <div class="card-icon bg-success">
             <i class="bi bi-wallet2 text-white"></i>
@@ -80,6 +81,7 @@
           <div>
             <h6 class="text-muted mb-2">Total Terpakai</h6>
             <h4 class="mb-0">{{ $summary['formatted_total_spent'] }}</h4>
+            <small class="text-muted">{{ $summary['budget_usage_percentage'] }}% from budget</small>
           </div>
           <div class="card-icon bg-info">
             <i class="bi bi-currency-dollar text-white"></i>
@@ -95,6 +97,7 @@
           <div>
             <h6 class="text-muted mb-2">Total Sisa</h6>
             <h4 class="mb-0">{{ $summary['formatted_total_remaining'] }}</h4>
+            <small class="text-muted">Not used</small>
           </div>
           <div class="card-icon bg-primary">
             <i class="bi bi-piggy-bank text-white"></i>
@@ -108,15 +111,74 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <h6 class="text-muted mb-2">Penggunaan</h6>
-            <h4 class="mb-0">{{ $summary['budget_usage_percentage'] }}%</h4>
-            <div class="progress mt-2" style="height: 6px;">
-              <div class="progress-bar bg-{{ $summary['budget_usage_percentage'] >= 100 ? 'danger' : ($summary['budget_usage_percentage'] >= 80 ? 'warning' : 'success') }}" style="width: {{ min($summary['budget_usage_percentage'], 100) }}%">
+            <h6 class="text-muted mb-2">Pengeluaran Lain</h6>
+            <h4 class="mb-0">{{ $summary['formatted_unbudgeted_expenses'] }}</h4>
+            <small class="text-muted">
+              {{ $summary['budgeted_expense_percentage'] }}% pengeluaran ter-anggaran
+            </small>
+          </div>
+          <div class="card-icon bg-warning">
+            <i class="bi bi-exclamation-triangle text-white"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Health Status -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title mb-3">Kesehatan Anggaran</h6>
+        @php
+          $health = $budgetRepository->getBudgetHealthStatus(auth()->user(), $month, $year);
+        @endphp
+        <div class="row">
+          <div class="col-md-6">
+            <div class="progress mb-3" style="height: 20px;">
+              <div class="progress-bar bg-success" style="width: {{ $health['health_score'] }}%">
+                {{ $health['health_score'] }}%
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-3">
+                <div class="text-success">
+                  <h4>{{ $health['good'] }}</h4>
+                  <small>Baik</small>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="text-info">
+                  <h4>{{ $health['moderate'] }}</h4>
+                  <small>Sedang</small>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="text-warning">
+                  <h4>{{ $health['warning'] }}</h4>
+                  <small>Peringatan</small>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="text-danger">
+                  <h4>{{ $health['exceeded'] }}</h4>
+                  <small>Melebihi</small>
+                </div>
               </div>
             </div>
           </div>
-          <div class="card-icon bg-warning">
-            <i class="bi bi-percent text-white"></i>
+          <div class="col-md-6">
+            <div class="alert alert-info">
+              <h6><i class="bi bi-info-circle me-2"></i>Statistik Anggaran</h6>
+              <ul class="mb-0">
+                <li>Total kategori dengan anggaran: {{ $health['total_budgeted'] }}</li>
+                <li>Kategori tanpa anggaran: {{ $health['unbudgeted_categories'] }}</li>
+                <li>Pengeluaran ter-anggaran: {{ $summary['budgeted_expense_percentage'] }}%</li>
+                <li>Pengeluaran di luar anggaran: {{ $summary['formatted_unbudgeted_expenses'] }}</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

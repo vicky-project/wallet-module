@@ -34,8 +34,7 @@ return new class extends Migration {
 			$table->string("name"); // Makanan, Transportasi, Gaji, dll
 			$table->string("type"); // pemasukan/pengeluaran
 			$table->string("icon")->default("bi-wallet");
-			$table->decimal("budget_limit", 15, 2)->nullable(); // batas anggaran
-			$table->boolean("is_active")->default(true);
+			$table->boolean("is_budgetable")->default(true);
 			$table->timestamps();
 			$table->softDeletes();
 
@@ -87,8 +86,7 @@ return new class extends Migration {
 			$table->integer("month"); // 1-12
 			$table->integer("year");
 			$table->bigInteger("spent")->default(0);
-			$table->decimal("remaining", 15, 2)->virtualAs("amount - spent");
-			$table->decimal("percentage", 5, 2)->virtualAs("(spent / amount) * 100");
+			$table->boolean("is_active");
 			$table->timestamps();
 			$table->softDeletes();
 
