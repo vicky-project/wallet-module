@@ -443,4 +443,20 @@ class BudgetRepository extends BaseRepository
 			"year" => $year,
 		];
 	}
+
+	/**
+	 * Check if budget exists for category in period
+	 */
+	public function existsForCategory(
+		User $user,
+		int $categoryId,
+		int $month,
+		int $year
+	): bool {
+		return $this->model
+			->where("user_id", $user->id)
+			->where("category_id", $categoryId)
+			->forPeriod($month, $year)
+			->exists();
+	}
 }
