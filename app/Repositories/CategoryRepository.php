@@ -285,19 +285,18 @@ class CategoryRepository extends BaseRepository
 		$categoryModel = $this->model->where("user_id", $user->id);
 		$totalCategories = $categoryModel->count();
 		$incomeCategories = $categoryModel
-			->where("type", CategoryType::INCOME)
-			->where("is_active", true)
+			->income()
+			->active()
 			->count();
 		$expenseCategories = $categoryModel
-			->where("type", CategoryType::EXPENSE)
-			->where("is_active", true)
+			->expense()
+			->active()
 			->count();
 
 		// Get categories with budget exceeded
 		$categoriesWithBudget = $categoryModel
-			->where("type", CategoryType::EXPENSE)
-			->where("is_active", true)
-			->whereNotNull("budget_limit")
+			->expense()
+			->active()
 			->get();
 
 		$budgetExceededCount = $categoriesWithBudget
@@ -311,8 +310,8 @@ class CategoryRepository extends BaseRepository
 			"income" => $incomeCategories,
 			"expense" => $expenseCategories,
 			"active" => $this->model
-				->where("user_id", $user->id)
-				->where("is_active", true)
+				->forUser($user->id)
+				->active()
 				->count(),
 			"with_budget" => $categoriesWithBudget->count(),
 			"budget_exceeded" => $budgetExceededCount,
