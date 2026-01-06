@@ -159,8 +159,13 @@ class BudgetRepository extends BaseRepository
 			$key = $budget->category_id . "-" . $budget->month . "-" . $budget->year;
 			$budget->spent = $spentAmounts[$key]->total_spent ?? 0;
 			$budget->percentage =
-				$budget->amount > 0
-					? round(($budget->spent / $budget->amount) * 100, 2)
+				$budget->amount->getAmount()->toInt() > 0
+					? round(
+						($budget->spent->getAmount()->toInt() /
+							$budget->amount->getAmount()->toInt()) *
+							100,
+						2
+					)
 					: 0;
 		}
 	}
