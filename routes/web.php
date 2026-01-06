@@ -49,5 +49,9 @@ Route::middleware(["auth"])
 			BudgetController::class,
 			"updateSpent",
 		])->name("budgets.update-spent");
+		Route::post("budgets/create-from-suggestions", [
+			BudgetController::class,
+			"createFromSuggestions",
+		])->name("budgets.create-from-suggestions");
 		Route::resource("budgets", BudgetController::class);
 	});
