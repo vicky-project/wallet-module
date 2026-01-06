@@ -35,6 +35,7 @@ return new class extends Migration {
 			$table->string("type"); // pemasukan/pengeluaran
 			$table->string("icon")->default("bi-wallet");
 			$table->boolean("is_budgetable")->default(true);
+			$table->boolean("is_active")->default(true);
 			$table->timestamps();
 			$table->softDeletes();
 
