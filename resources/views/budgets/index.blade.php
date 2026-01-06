@@ -229,8 +229,8 @@
                     <small class="text-muted">{{ \Modules\Wallet\Models\Budget::MONTH_NAMES[$month] }} {{ $year }}</small>
                 </div>
                 <div>
-                    <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary me-2">
-                        <i class="bi bi-plus-circle"></i> Tambah Anggaran
+                    <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary" title="Create">
+                        <i class="bi bi-plus-circle"></i>
                     </a>
                     <a href="{{ route('apps.budgets.index', ['month' => date('m'), 'year' => date('Y')]) }}" 
                        class="btn btn-outline-secondary" title="Bulan Ini">
