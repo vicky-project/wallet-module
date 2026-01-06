@@ -218,7 +218,7 @@ class DashboardController extends BaseController
 			->dividedBy($previous->getAmount()->toInt())
 			->multipliedBy(100);
 
-		return $percentage->toFloat();
+		return $percentage->getMinorAmount()->toFloat();
 	}
 
 	/**
