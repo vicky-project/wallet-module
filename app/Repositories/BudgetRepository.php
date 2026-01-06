@@ -14,8 +14,6 @@ use Illuminate\Support\Collection;
 
 class BudgetRepository extends BaseRepository
 {
-	protected $model;
-
 	public function __construct(Budget $model)
 	{
 		$this->model = $model;
