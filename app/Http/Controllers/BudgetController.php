@@ -27,7 +27,6 @@ class BudgetController extends BaseController
 	{
 		$user = auth()->user();
 
-		// Get filter parameters
 		$month = $request->get("month", Carbon::now()->month);
 		$year = $request->get("year", Carbon::now()->year);
 		$categoryId = $request->get("category_id");
@@ -41,35 +40,19 @@ class BudgetController extends BaseController
 			$filters["category_id"] = $categoryId;
 		}
 
-		// Get budgets
-		$budgets = $this->budgetRepository->getUserBudgets($user, $filters);
-
-		// Get summary
-		$summary = $this->budgetRepository->getBudgetSummary($user, $month, $year);
-
-		$health = $this->budgetRepository->getBudgetHealthStatus(
-			$user,
-			$month,
-			$year
-		);
+		// Get all data in single repository call
+		$data = $this->budgetRepository->getUserBudgetsWithSummary($user, $filters);
 
 		// Get categories for filter
-		$categories = Category::where("user_id", $user->id)
-			->orWhereNull("user_id")
-			->where("type", "expense")
+		$categories = Category::where(function ($query) use ($user) {
+			$query->where("user_id", $user->id)->orWhereNull("user_id");
+		})
+			->where("type", CategoryType::EXPENSE)
 			->get();
 
 		return view(
 			"wallet::budgets.index",
-			compact(
-				"budgets",
-				"summary",
-				"categories",
-				"month",
-				"year",
-				"categoryId",
-				"health"
-			)
+			array_merge($data, compact("categories", "month", "year", "categoryId"))
 		);
 	}
 
@@ -181,11 +164,13 @@ class BudgetController extends BaseController
 			abort(403, "Unauthorized action.");
 		}
 
+		$data = $request->validated();
+
 		// Check if budget already exists for this category and period (excluding current)
 		$exists = Budget::where("user_id", $user->id)
-			->where("category_id", $request->category_id)
-			->where("month", $request->month)
-			->where("year", $request->year)
+			->where("category_id", $data["category_id"])
+			->where("month", $data["month"])
+			->where("year", $data["year"])
 			->where("id", "!=", $budget->id)
 			->exists();
 
@@ -198,7 +183,7 @@ class BudgetController extends BaseController
 		}
 
 		try {
-			$this->budgetRepository->updateBudget($budget->id, $request->validated());
+			$this->budgetRepository->updateBudget($budget->id, $data);
 
 			return redirect()
 				->route("apps.budgets.index")

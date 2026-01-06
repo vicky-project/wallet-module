@@ -3,17 +3,20 @@
 namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
-use Brick\Money\Money;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Modules\Wallet\Enums\CategoryType;
+use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Models\Transaction;
-use Modules\Wallet\Enums\CategoryType;
-use Modules\Wallet\Enums\TransactionType;
-use Illuminate\Support\Collection;
 
 class BudgetRepository extends BaseRepository
 {
+	private const CACHE_DURATION = 3600; // 1 jam
+
 	public function __construct(Budget $model)
 	{
 		$this->model = $model;
@@ -24,7 +27,6 @@ class BudgetRepository extends BaseRepository
 	 */
 	public function createBudget(array $data, User $user): Budget
 	{
-		// Validasi kategori harus expense
 		$category = Category::find($data["category_id"]);
 		if (!$category || $category->type !== CategoryType::EXPENSE) {
 			throw new \Exception(
@@ -33,24 +35,14 @@ class BudgetRepository extends BaseRepository
 		}
 
 		$data["user_id"] = $user->id;
-
-		// Convert amount to minor units
-		if (isset($data["amount"])) {
-			$data["amount"] = (int) $data["amount"];
-		}
-
-		// Set default month/year if not provided
-		if (!isset($data["month"])) {
-			$data["month"] = Carbon::now()->month;
-		}
-
-		if (!isset($data["year"])) {
-			$data["year"] = Carbon::now()->year;
-		}
-
-		// Set default spent to 0
+		$data["amount"] = (int) ($data["amount"] ?? 0);
+		$data["month"] = $data["month"] ?? Carbon::now()->month;
+		$data["year"] = $data["year"] ?? Carbon::now()->year;
 		$data["spent"] = 0;
 		$data["is_active"] = true;
+
+		// Invalidate cache
+		$this->invalidateUserBudgetCache($user->id, $data["month"], $data["year"]);
 
 		return $this->create($data);
 	}
@@ -61,178 +53,242 @@ class BudgetRepository extends BaseRepository
 	public function updateBudget(int $id, array $data): Budget
 	{
 		if (isset($data["amount"])) {
-			$data["amount"] = (int) ($data["amount"] * 100); // Convert to minor units
+			$data["amount"] = (int) ($data["amount"] * 100);
+		}
+
+		$budget = $this->find($id);
+		if ($budget) {
+			$this->invalidateUserBudgetCache(
+				$budget->user_id,
+				$budget->month,
+				$budget->year
+			);
 		}
 
 		$this->update($id, $data);
 		return $this->find($id);
 	}
 
+	/**
+	 * Get user budgets with caching
+	 */
 	public function getUserBudgets(User $user, array $filters = []): Collection
 	{
-		$query = $this->model
-			->with([
-				"category" => function ($query) {
-					$query->expense();
-				},
-			])
-			->where("user_id", $user->id);
+		$month = $filters["month"] ?? Carbon::now()->month;
+		$year = $filters["year"] ?? Carbon::now()->year;
 
-		if (isset($filters["month"])) {
-			$query->where("month", $filters["month"]);
-		}
-		if (isset($filters["year"])) {
-			$query->where("year", $filters["year"]);
-		}
+		$cacheKey = $this->getUserBudgetsCacheKey($user->id, $month, $year);
 
-		if (isset($filters["category_id"])) {
-			$query->where("category_id", $filters["category_id"]);
-		}
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$filters
+		) {
+			$query = $this->model->with(["category"])->where("user_id", $user->id);
 
-		if (!isset($filters["include_inactive"]) || $filters["include_inactive"]) {
-			$query->where("is_active", true);
-		}
+			if (isset($filters["month"])) {
+				$query->where("month", $filters["month"]);
+			}
+			if (isset($filters["year"])) {
+				$query->where("year", $filters["year"]);
+			}
+			if (isset($filters["category_id"])) {
+				$query->where("category_id", $filters["category_id"]);
+			}
+			if (
+				!isset($filters["include_inactive"]) ||
+				$filters["include_inactive"]
+			) {
+				$query->where("is_active", true);
+			}
 
-		return $query
-			->orderBy("year", "desc")
-			->orderBy("month", "desc")
-			->get()
-			->map(fn($budget) => $this->calculateSpentFromTransactions($budget));
-	}
+			$budgets = $query
+				->orderBy("year", "desc")
+				->orderBy("month", "desc")
+				->get();
 
-	private function calculateSpentFromTransactions(Budget $budget): Budget
-	{
-		$totalSpent = Transaction::where("user_id", $budget->user_id)
-			->where("category_id", $budget->category_id)
-			->expense()
-			->whereMonth("transaction_date", $budget->month)
-			->whereYear("transaction_date", $budget->year)
-			->sum("amount");
+			// Load spent amounts in single query
+			if ($budgets->isNotEmpty()) {
+				$this->loadSpentAmounts($budgets);
+			}
 
-		$budget->spent = $totalSpent;
-		return $budget;
+			return $budgets;
+		});
 	}
 
 	/**
-	 * Get current month's budget - HANYA KATEGORI EXPENSE
+	 * Load spent amounts for multiple budgets efficiently
+	 */
+	private function loadSpentAmounts(Collection $budgets): void
+	{
+		$budgetIds = $budgets->pluck("id")->toArray();
+		$userIds = $budgets
+			->pluck("user_id")
+			->unique()
+			->toArray();
+
+		if (empty($budgetIds)) {
+			return;
+		}
+
+		// Get all spent amounts in single query
+		$spentAmounts = Transaction::select([
+			"category_id",
+			DB::raw("MONTH(transaction_date) as month"),
+			DB::raw("YEAR(transaction_date) as year"),
+			DB::raw("SUM(amount) as total_spent"),
+		])
+			->whereIn("user_id", $userIds)
+			->whereIn("category_id", $budgets->pluck("category_id")->unique())
+			->where("type", TransactionType::EXPENSE)
+			->whereBetween("transaction_date", [
+				$budgets->min("year") . "-" . $budgets->min("month") . "-01",
+				$budgets->max("year") . "-" . $budgets->max("month") . "-31",
+			])
+			->groupBy(
+				"category_id",
+				DB::raw("MONTH(transaction_date)"),
+				DB::raw("YEAR(transaction_date)")
+			)
+			->get()
+			->keyBy(function ($item) {
+				return $item->category_id . "-" . $item->month . "-" . $item->year;
+			});
+
+		// Map spent amounts to budgets
+		foreach ($budgets as $budget) {
+			$key = $budget->category_id . "-" . $budget->month . "-" . $budget->year;
+			$budget->spent = $spentAmounts[$key]->total_spent ?? 0;
+			$budget->percentage =
+				$budget->amount > 0
+					? round(($budget->spent / $budget->amount) * 100, 2)
+					: 0;
+		}
+	}
+
+	/**
+	 * Get current month's budget
 	 */
 	public function getCurrentBudget(User $user): Collection
 	{
 		$currentMonth = Carbon::now()->month;
 		$currentYear = Carbon::now()->year;
 
-		return $this->model
-			->with([
-				"category" => function ($query) {
-					$query->expense();
-				},
-			])
-			->where("user_id", $user->id)
-			->forPeriod($currentMonth, $currentYear)
-			->active()
-			->get()
-			->each(function ($budget) {
-				// Update spent amount dari transaksi
-				$budget->updateSpentAmount();
-			});
+		return $this->getUserBudgets($user, [
+			"month" => $currentMonth,
+			"year" => $currentYear,
+			"include_inactive" => false,
+		]);
 	}
 
 	/**
-	 * Get budget summary - PERHITUNGAN YANG BENAR
+	 * Get budget summary with optimized queries
 	 */
 	public function getBudgetSummary(
 		User $user,
 		int $month = null,
 		int $year = null
 	): array {
-		$month = $month ?? date("m");
-		$year = $year ?? date("Y");
+		$month = $month ?? Carbon::now()->month;
+		$year = $year ?? Carbon::now()->year;
 
-		// Dapatkan semua budget aktif untuk periode tertentu
-		$budgets = $this->model
-			->with([
-				"category" => function ($query) {
-					$query->expense();
-				},
-			])
-			->where("user_id", $user->id)
-			->active()
-			->forPeriod($month, $year)
-			->get()
-			->each(function ($budget) {
-				// Update spent amount sebelum perhitungan
-				$budget->updateSpentAmount();
-			});
+		$cacheKey = $this->getBudgetSummaryCacheKey($user->id, $month, $year);
 
-		// Hitung total
-		$totalBudget = $budgets->sum(function ($budget) {
-			return $budget->amount->getAmount()->toInt();
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$month,
+			$year
+		) {
+			// Get budgets with spent amounts
+			$budgets = $this->getUserBudgets($user, [
+				"month" => $month,
+				"year" => $year,
+				"include_inactive" => false,
+			]);
+
+			// Calculate totals
+			$totalBudget = $budgets->sum("amount");
+			$totalSpent = $budgets->sum("spent");
+			$totalRemaining = max(0, $totalBudget - $totalSpent);
+			$budgetUsagePercentage =
+				$totalBudget > 0 ? round(($totalSpent / $totalBudget) * 100, 2) : 0;
+
+			// Get unbudgeted expenses in single query
+			$budgetedCategoryIds = $budgets->pluck("category_id")->toArray();
+
+			$unbudgetedData = $this->getUnbudgetedExpenses(
+				$user->id,
+				$month,
+				$year,
+				$budgetedCategoryIds
+			);
+
+			// Get total expenses
+			$totalExpenses = Transaction::where("user_id", $user->id)
+				->where("type", TransactionType::EXPENSE)
+				->whereMonth("transaction_date", $month)
+				->whereYear("transaction_date", $year)
+				->sum("amount");
+
+			$budgetedExpensePercentage =
+				$totalExpenses > 0 ? round(($totalSpent / $totalExpenses) * 100, 2) : 0;
+
+			return [
+				"budgets" => $budgets,
+				"total_budget" => $totalBudget,
+				"total_spent" => $totalSpent,
+				"total_remaining" => $totalRemaining,
+				"budget_usage_percentage" => $budgetUsagePercentage,
+				"formatted_total_budget" => $this->formatMoney($totalBudget),
+				"formatted_total_spent" => $this->formatMoney($totalSpent),
+				"formatted_total_remaining" => $this->formatMoney($totalRemaining),
+				"unbudgeted_categories" => $unbudgetedData["categories"],
+				"unbudgeted_expenses" => $unbudgetedData["total"],
+				"formatted_unbudgeted_expenses" => $this->formatMoney(
+					$unbudgetedData["total"]
+				),
+				"total_expenses" => $totalExpenses,
+				"formatted_total_expenses" => $this->formatMoney($totalExpenses),
+				"budgeted_expense_percentage" => $budgetedExpensePercentage,
+			];
 		});
+	}
 
-		$totalSpent = $budgets->sum(function ($budget) {
-			return $budget->spent->getAmount()->toInt();
-		});
-
-		$totalRemaining = max(0, $totalBudget - $totalSpent);
-
-		$budgetUsagePercentage =
-			$totalBudget > 0 ? round(($totalSpent / $totalBudget) * 100, 2) : 0;
-
-		// Dapatkan kategori expense yang TIDAK memiliki budget
-		$unbudgetedCategories = Category::expense()
-			->forUser($user->id)
+	/**
+	 * Get unbudgeted expenses efficiently
+	 */
+	private function getUnbudgetedExpenses(
+		int $userId,
+		int $month,
+		int $year,
+		array $budgetedCategoryIds
+	): array {
+		// Get categories without budget and their expenses in single query
+		$result = Category::expense()
+			->forUser($userId)
 			->whereDoesntHave("budgets", function ($query) use ($month, $year) {
 				$query
 					->where("month", $month)
 					->where("year", $year)
 					->where("is_active", true);
 			})
+			->leftJoin("transactions", function ($join) use ($userId, $month, $year) {
+				$join
+					->on("categories.id", "=", "transactions.category_id")
+					->where("transactions.user_id", $userId)
+					->where("transactions.type", TransactionType::EXPENSE)
+					->whereMonth("transactions.transaction_date", $month)
+					->whereYear("transactions.transaction_date", $year);
+			})
+			->select([
+				"categories.*",
+				DB::raw("COALESCE(SUM(transactions.amount), 0) as category_expense"),
+			])
+			->groupBy("categories.id")
 			->get();
 
-		// Hitung pengeluaran pada kategori tanpa budget
-		$unbudgetedExpenses = 0;
-		foreach ($unbudgetedCategories as $category) {
-			$categoryExpenses = Transaction::where("user_id", $user->id)
-				->where("category_id", $category->id)
-				->where("type", TransactionType::EXPENSE)
-				->whereMonth("transaction_date", $month)
-				->whereYear("transaction_date", $year)
-				->sum("amount");
-
-			$unbudgetedExpenses += $categoryExpenses;
-		}
-
-		// Hitung total pengeluaran bulan ini (semua kategori expense)
-		$totalExpenses = Transaction::where("user_id", $user->id)
-			->where("type", TransactionType::EXPENSE)
-			->whereMonth("transaction_date", $month)
-			->whereYear("transaction_date", $year)
-			->sum("amount");
-
-		// Persentase pengeluaran yang ter-budget
-		$budgetedExpensePercentage =
-			$totalExpenses > 0 ? round(($totalSpent / $totalExpenses) * 100, 2) : 0;
-
 		return [
-			"budgets" => $budgets,
-			"total_budget" => $totalBudget,
-			"total_spent" => $totalSpent,
-			"total_remaining" => $totalRemaining,
-			"budget_usage_percentage" => $budgetUsagePercentage,
-			"formatted_total_budget" =>
-				"Rp " . number_format($totalBudget, 0, ",", "."),
-			"formatted_total_spent" =>
-				"Rp " . number_format($totalSpent / 100, 0, ",", "."),
-			"formatted_total_remaining" =>
-				"Rp " . number_format($totalRemaining, 0, ",", "."),
-			"unbudgeted_categories" => $unbudgetedCategories,
-			"unbudgeted_expenses" => $unbudgetedExpenses,
-			"formatted_unbudgeted_expenses" =>
-				"Rp " . number_format($unbudgetedExpenses, 0, ",", "."),
-			"total_expenses" => $totalExpenses,
-			"formatted_total_expenses" =>
-				"Rp " . number_format($totalExpenses, 0, ",", "."),
-			"budgeted_expense_percentage" => $budgetedExpensePercentage,
+			"categories" => $result,
+			"total" => $result->sum("category_expense"),
 		];
 	}
 
@@ -247,15 +303,9 @@ class BudgetRepository extends BaseRepository
 		$month = $month ?? Carbon::now()->month;
 		$year = $year ?? Carbon::now()->year;
 
-		$budgets = $this->model
-			->where("user_id", $user->id)
-			->where("month", $month)
-			->where("year", $year)
-			->get();
-
-		foreach ($budgets as $budget) {
-			$budget->updateSpentAmount();
-		}
+		// Invalidate cache instead of loading all budgets
+		$this->invalidateUserBudgetCache($user->id, $month, $year);
+		$this->invalidateBudgetSummaryCache($user->id, $month, $year);
 	}
 
 	/**
@@ -264,24 +314,15 @@ class BudgetRepository extends BaseRepository
 	public function updateSpentOnTransaction(Transaction $transaction): void
 	{
 		if ($transaction->type !== TransactionType::EXPENSE) {
-			return; // Hanya update untuk transaksi expense
+			return;
 		}
 
 		$month = $transaction->transaction_date->month;
 		$year = $transaction->transaction_date->year;
 
-		// Cari budget untuk kategori ini pada periode transaksi
-		$budget = $this->model
-			->where("user_id", $transaction->user_id)
-			->where("category_id", $transaction->category_id)
-			->where("month", $month)
-			->where("year", $year)
-			->where("is_active", true)
-			->first();
-
-		if ($budget) {
-			$budget->updateSpentAmount();
-		}
+		// Invalidate caches for the affected period
+		$this->invalidateUserBudgetCache($transaction->user_id, $month, $year);
+		$this->invalidateBudgetSummaryCache($transaction->user_id, $month, $year);
 	}
 
 	/**
@@ -297,42 +338,39 @@ class BudgetRepository extends BaseRepository
 			$previousYear = $year - 1;
 		}
 
-		// Dapatkan pengeluaran bulan sebelumnya per kategori
-		$previousExpenses = Transaction::where("user_id", $user->id)
+		// Get previous expenses with categories in single query
+		$previousExpenses = Transaction::with("category")
+			->where("user_id", $user->id)
 			->where("type", TransactionType::EXPENSE)
 			->whereMonth("transaction_date", $previousMonth)
 			->whereYear("transaction_date", $previousYear)
 			->selectRaw("category_id, SUM(amount) as total_spent")
 			->groupBy("category_id")
 			->get()
-			->keyBy("category_id");
+			->filter(
+				fn($expense) => $expense->category &&
+					$expense->category->type === CategoryType::EXPENSE
+			);
 
-		$suggestions = [];
+		return $previousExpenses
+			->map(function ($expense) {
+				$suggestedAmount = round($expense->total_spent / 100) * 1.1; // Convert to IDR + 10% buffer
 
-		foreach ($previousExpenses as $categoryId => $expense) {
-			$category = Category::find($categoryId);
-			if ($category && $category->type === CategoryType::EXPENSE) {
-				$suggestedAmount = round($expense->total_spent / 100); // Convert to IDR
-
-				// Tambahkan buffer 10% untuk bulan depan
-				$suggestedAmount = $suggestedAmount * 1.1;
-
-				$suggestions[] = [
-					"category_id" => $categoryId,
-					"category_name" => $category->name,
+				return [
+					"category_id" => $expense->category_id,
+					"category_name" => $expense->category->name,
 					"previous_spent" => $expense->total_spent / 100,
 					"suggested_amount" => $suggestedAmount,
-					"formatted_suggested_amount" =>
-						"Rp " . number_format($suggestedAmount, 0, ",", "."),
+					"formatted_suggested_amount" => $this->formatMoney(
+						$suggestedAmount * 100
+					),
 				];
-			}
-		}
-
-		return $suggestions;
+			})
+			->toArray();
 	}
 
 	/**
-	 * Get budget health status with detailed analysis
+	 * Get budget health status with optimized queries
 	 */
 	public function getBudgetHealthStatus(
 		User $user,
@@ -340,107 +378,113 @@ class BudgetRepository extends BaseRepository
 		int $year = null
 	): array {
 		$month = $month ?? Carbon::now()->month;
-		$year = $year ?? date("Y");
+		$year = $year ?? Carbon::now()->year;
 
-		// Get budgets with spent calculation
-		$budgets = $this->model
-			->with("category")
-			->where("user_id", $user->id)
-			->where("month", $month)
-			->where("year", $year)
-			->where("is_active", true)
-			->get()
-			->map(function ($budget) {
-				return $this->calculateSpentFromTransactions($budget);
-			});
+		$cacheKey = $this->getHealthStatusCacheKey($user->id, $month, $year);
 
-		// Count budgets by status
-		$exceeded = $budgets->filter(fn($b) => $b->percentage >= 100)->count();
-		$warning = $budgets
-			->filter(fn($b) => $b->percentage >= 80 && $b->percentage < 100)
-			->count();
-		$moderate = $budgets
-			->filter(fn($b) => $b->percentage >= 50 && $b->percentage < 80)
-			->count();
-		$good = $budgets->filter(fn($b) => $b->percentage < 50)->count();
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$month,
+			$year
+		) {
+			// Get budgets with spent already calculated
+			$budgets = $this->getUserBudgets($user, [
+				"month" => $month,
+				"year" => $year,
+				"include_inactive" => false,
+			]);
 
-		// Count total expense categories
-		$totalExpenseCategories = Category::where("type", "expense")
-			->where("is_budgetable", true)
-			->where(function ($query) use ($user) {
-				$query->where("user_id", $user->id)->orWhereNull("user_id");
-			})
-			->count();
-
-		$budgetedCategories = $budgets->count();
-		$unbudgetedCategories = $totalExpenseCategories - $budgetedCategories;
-
-		// Calculate health score (0-100)
-		$healthScore =
-			$totalExpenseCategories > 0
-				? round(
-					(($good * 1 + $moderate * 0.7 + $warning * 0.4 - $exceeded * 0.5) /
-						$totalExpenseCategories) *
-						100,
-					0
+			// Count budgets by status
+			$exceeded = $budgets
+				->filter(fn($b) => ($b->percentage ?? 0) >= 100)
+				->count();
+			$warning = $budgets
+				->filter(
+					fn($b) => ($b->percentage ?? 0) >= 80 && ($b->percentage ?? 0) < 100
 				)
-				: 0;
+				->count();
+			$moderate = $budgets
+				->filter(
+					fn($b) => ($b->percentage ?? 0) >= 50 && ($b->percentage ?? 0) < 80
+				)
+				->count();
+			$good = $budgets->filter(fn($b) => ($b->percentage ?? 0) < 50)->count();
 
-		// Ensure health score is within bounds
-		$healthScore = max(0, min(100, $healthScore));
+			// Get expense categories count
+			$totalExpenseCategories = Category::where("type", "expense")
+				->where("is_budgetable", true)
+				->where(function ($query) use ($user) {
+					$query->where("user_id", $user->id)->orWhereNull("user_id");
+				})
+				->count();
 
-		// Determine health status
-		if ($healthScore >= 80) {
-			$healthStatus = "excellent";
-			$healthStatusColor = "success";
-			$healthMessage = "Anggaran Anda dalam kondisi sangat baik!";
-		} elseif ($healthScore >= 60) {
-			$healthStatus = "good";
-			$healthStatusColor = "info";
-			$healthMessage = "Anggaran Anda dalam kondisi baik.";
-		} elseif ($healthScore >= 40) {
-			$healthStatus = "fair";
-			$healthStatusColor = "warning";
-			$healthMessage = "Anggaran Anda perlu perhatian.";
-		} else {
-			$healthStatus = "poor";
-			$healthStatusColor = "danger";
-			$healthMessage = "Anggaran Anda dalam kondisi kritis!";
-		}
+			$budgetedCategories = $budgets->count();
+			$unbudgetedCategories = $totalExpenseCategories - $budgetedCategories;
 
-		// Get budgets that need attention
-		$attentionBudgets = $budgets
-			->filter(fn($b) => $b->percentage >= 80)
-			->sortByDesc("percentage")
-			->take(3);
+			// Calculate health score
+			$healthScore =
+				$totalExpenseCategories > 0
+					? max(
+						0,
+						min(
+							100,
+							round(
+								(($good * 1 +
+									$moderate * 0.7 +
+									$warning * 0.4 -
+									$exceeded * 0.5) /
+									$totalExpenseCategories) *
+									100,
+								0
+							)
+						)
+					)
+					: 0;
 
-		return [
-			// Counts
-			"exceeded" => $exceeded,
-			"warning" => $warning,
-			"moderate" => $moderate,
-			"good" => $good,
+			// Determine health status
+			if ($healthScore >= 80) {
+				$healthStatus = "excellent";
+				$healthStatusColor = "success";
+				$healthMessage = "Anggaran Anda dalam kondisi sangat baik!";
+			} elseif ($healthScore >= 60) {
+				$healthStatus = "good";
+				$healthStatusColor = "info";
+				$healthMessage = "Anggaran Anda dalam kondisi baik.";
+			} elseif ($healthScore >= 40) {
+				$healthStatus = "fair";
+				$healthStatusColor = "warning";
+				$healthMessage = "Anggaran Anda perlu perhatian.";
+			} else {
+				$healthStatus = "poor";
+				$healthStatusColor = "danger";
+				$healthMessage = "Anggaran Anda dalam kondisi kritis!";
+			}
 
-			// Category analysis
-			"total_expense_categories" => $totalExpenseCategories,
-			"total_budgeted" => $budgetedCategories,
-			"unbudgeted_categories" => $unbudgetedCategories,
+			// Get attention budgets
+			$attentionBudgets = $budgets
+				->filter(fn($b) => ($b->percentage ?? 0) >= 80)
+				->sortByDesc("percentage")
+				->take(3);
 
-			// Health score
-			"health_score" => $healthScore,
-			"health_status" => $healthStatus,
-			"health_status_color" => $healthStatusColor,
-			"health_message" => $healthMessage,
-
-			// Attention items
-			"attention_budgets" => $attentionBudgets,
-			"has_attention_items" => $attentionBudgets->count() > 0,
-
-			// Period
-			"period" => Budget::MONTH_NAMES[$month] . " " . $year,
-			"month" => $month,
-			"year" => $year,
-		];
+			return [
+				"exceeded" => $exceeded,
+				"warning" => $warning,
+				"moderate" => $moderate,
+				"good" => $good,
+				"total_expense_categories" => $totalExpenseCategories,
+				"total_budgeted" => $budgetedCategories,
+				"unbudgeted_categories" => $unbudgetedCategories,
+				"health_score" => $healthScore,
+				"health_status" => $healthStatus,
+				"health_status_color" => $healthStatusColor,
+				"health_message" => $healthMessage,
+				"attention_budgets" => $attentionBudgets,
+				"has_attention_items" => $attentionBudgets->count() > 0,
+				"period" => Budget::MONTH_NAMES[$month] . " " . $year,
+				"month" => $month,
+				"year" => $year,
+			];
+		});
 	}
 
 	/**
@@ -457,5 +501,92 @@ class BudgetRepository extends BaseRepository
 			->where("category_id", $categoryId)
 			->forPeriod($month, $year)
 			->exists();
+	}
+
+	/**
+	 * Cache key generators
+	 */
+	private function getUserBudgetsCacheKey(
+		int $userId,
+		int $month,
+		int $year
+	): string {
+		return "user_budgets_{$userId}_{$month}_{$year}";
+	}
+
+	private function getBudgetSummaryCacheKey(
+		int $userId,
+		int $month,
+		int $year
+	): string {
+		return "budget_summary_{$userId}_{$month}_{$year}";
+	}
+
+	private function getHealthStatusCacheKey(
+		int $userId,
+		int $month,
+		int $year
+	): string {
+		return "budget_health_{$userId}_{$month}_{$year}";
+	}
+
+	/**
+	 * Cache invalidation methods
+	 */
+	private function invalidateUserBudgetCache(
+		int $userId,
+		int $month,
+		int $year
+	): void {
+		Cache::forget($this->getUserBudgetsCacheKey($userId, $month, $year));
+	}
+
+	private function invalidateBudgetSummaryCache(
+		int $userId,
+		int $month,
+		int $year
+	): void {
+		Cache::forget($this->getBudgetSummaryCacheKey($userId, $month, $year));
+		Cache::forget($this->getHealthStatusCacheKey($userId, $month, $year));
+	}
+
+	// Tambahkan method ini di BudgetRepository
+
+	/**
+	 * Get user budgets with summary in single call
+	 */
+	public function getUserBudgetsWithSummary(
+		User $user,
+		array $filters = []
+	): array {
+		$month = $filters["month"] ?? Carbon::now()->month;
+		$year = $filters["year"] ?? Carbon::now()->year;
+
+		$cacheKey = "user_budgets_summary_{$user->id}_{$month}_{$year}";
+
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$filters,
+			$month,
+			$year
+		) {
+			$budgets = $this->getUserBudgets($user, $filters);
+			$summary = $this->getBudgetSummary($user, $month, $year);
+			$health = $this->getBudgetHealthStatus($user, $month, $year);
+
+			return [
+				"budgets" => $budgets,
+				"summary" => $summary,
+				"health" => $health,
+			];
+		});
+	}
+
+	/**
+	 * Format money helper
+	 */
+	private function formatMoney($amount): string
+	{
+		return "Rp " . number_format($amount, 0, ",", ".");
 	}
 }
