@@ -121,11 +121,11 @@
       </div>
       <div class="card-body" id="budgetSummary">
         @if($budgetSummary["budgets"]->isEmpty())
-        <div class="text-center py-4">
-          <i class="bi bi-pie-chart display-4 text-muted"></i>
-          <p class="text-muted mt-3">Belum ada anggaran.</p>
-          <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary btn-sm mt-2" role="button">Buat Anggaran</a>
-        </div>
+          <div class="text-center py-4">
+            <i class="bi bi-pie-chart display-4 text-muted"></i>
+            <p class="text-muted mt-3">Belum ada anggaran.</p>
+            <a href="{{ route('apps.budgets.create') }}" class="btn btn-primary btn-sm mt-2" role="button">Buat Anggaran</a>
+          </div>
         @else
         <div class="mb-3">
           <div class="d-flex justify-content-between align-items-center mb-2">
@@ -142,14 +142,14 @@
         </div>
         
         @foreach($budgetSummary["budgets"] as $budget)
-        @php
-        $progressClass = "bg-success";
-        if($budget->percentage >= 100) {
-        $progressClass = "bg-danger";
-        } elseif($budget->percentage >= 80) {
-        $progressClass = "bg-warning";
-        }
-        @endphp
+          @php
+          $progressClass = "bg-success";
+          if($budget->percentage >= 100) {
+            $progressClass = "bg-danger";
+          } elseif($budget->percentage >= 80) {
+            $progressClass = "bg-warning";
+          }
+          @endphp
           <div class="mb-3">
             <div class="d-flex justify-content-between mb-1">
               <span>{{ $budget->category->name }}</span>

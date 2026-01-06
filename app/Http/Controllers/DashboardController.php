@@ -61,6 +61,8 @@ class DashboardController extends BaseController
 			$currentYear
 		);
 
+		$budgets = $this->budgetRepository->getUserBudgets($user);
+
 		// Get active saving goals
 		$savingGoals = $this->savingGoalRepository->getActiveGoals($user);
 
@@ -78,6 +80,7 @@ class DashboardController extends BaseController
 			compact(
 				"stats",
 				"recentTransactions",
+				"budgets",
 				"budgetSummary",
 				"savingGoals",
 				"accounts",
