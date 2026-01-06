@@ -171,7 +171,7 @@
                 @foreach($categories as $index => $category)
                   @php
                   $monthlyTotal = $category->getExpenseTotal();
-                  $budgetUsage = $category->getActiveBudget()->percentage;
+                  $budgetUsage = $category->getActiveBudget()?->percentage;
                   $isExceeded = $category->getActiveBudget()->isExceeded;
                   @endphp
                   <tr data-type="{{ $category->type }}" data-status="{{ $category->is_active ? 'active' : 'inactive' }}" class="{{ $isExceeded ? 'table-danger' : '' }}">
