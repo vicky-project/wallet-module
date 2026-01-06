@@ -271,37 +271,54 @@ class BudgetRepository extends BaseRepository
 		int $year,
 		array $budgetedCategoryIds
 	): array {
-		// Get categories without budget and their expenses in single query
-		$result = Category::where(function ($query) use ($userId) {
-			$query
-				->where("categories.user_id", $userId)
-				->orWhereNull("categories.user_id");
-		})
-			->where("categories.type", CategoryType::EXPENSE)
+		// Gunakan query terpisah untuk menghindari masalah GROUP BY
+		// 1. Dapatkan kategori tanpa budget
+		$categories = Category::expense()
+			->forUser($userId)
 			->whereDoesntHave("budgets", function ($query) use ($month, $year) {
 				$query
 					->where("month", $month)
 					->where("year", $year)
 					->where("is_active", true);
 			})
-			->leftJoin("transactions", function ($join) use ($userId, $month, $year) {
-				$join
-					->on("categories.id", "=", "transactions.category_id")
-					->where("transactions.user_id", $userId)
-					->where("transactions.type", TransactionType::EXPENSE)
-					->whereMonth("transactions.transaction_date", $month)
-					->whereYear("transactions.transaction_date", $year);
-			})
-			->select([
-				"categories.*",
-				DB::raw("COALESCE(SUM(transactions.amount), 0) as category_expense"),
-			])
-			->groupBy("categories.id")
-			->get();
+			->get([
+				"id",
+				"name",
+				"type",
+				"color",
+				"icon",
+				"user_id",
+				"is_budgetable",
+			]);
+
+		if ($categories->isEmpty()) {
+			return [
+				"categories" => $categories,
+				"total" => 0,
+			];
+		}
+
+		// 2. Hitung total expenses untuk kategori-kategori tersebut dalam 1 query
+		$categoryExpenses = Transaction::where("user_id", $userId)
+			->where("type", TransactionType::EXPENSE)
+			->whereIn("category_id", $categories->pluck("id"))
+			->whereMonth("transaction_date", $month)
+			->whereYear("transaction_date", $year)
+			->select(["category_id", DB::raw("SUM(amount) as total_spent")])
+			->groupBy("category_id")
+			->pluck("total_spent", "category_id");
+
+		// 3. Gabungkan data
+		$totalUnbudgeted = 0;
+		foreach ($categories as $category) {
+			$expense = $categoryExpenses[$category->id] ?? 0;
+			$category->category_expense = $expense;
+			$totalUnbudgeted += $expense;
+		}
 
 		return [
-			"categories" => $result,
-			"total" => $result->sum("category_expense"),
+			"categories" => $categories,
+			"total" => $totalUnbudgeted,
 		];
 	}
 
