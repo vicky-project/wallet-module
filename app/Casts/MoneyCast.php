@@ -46,7 +46,7 @@ class MoneyCast implements CastsAttributes
 		array $attributes
 	): mixed {
 		if ($value === null || $value === "" || $value === 0) {
-			return null;
+			return 0;
 		}
 
 		if ($value instanceof Money) {
@@ -64,7 +64,7 @@ class MoneyCast implements CastsAttributes
 			if (is_string($value)) {
 				$value = trim($value);
 				if (empty($value)) {
-					return null;
+					return 0;
 				}
 
 				$value = preg_replace("/[^0-9.,-]/", "", $value);
