@@ -134,10 +134,10 @@
           </div>
           <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="fw-medium">Total Terpakai</span>
-            <span class="{{ $budgetSummary['total_usage_percentage'] >= 100 ? 'text-danger' : 'text-success' }}">{{ $budgetSummary["total_spent"] }}</span>
+            <span class="{{ $budgetSummary['budget_usage_percentage'] >= 100 ? 'text-danger' : 'text-success' }}">{{ $budgetSummary["total_spent"] }}</span>
           </div>
           <div class="progress mb-4" style="height: 10px;">
-            <div class="progress-bar {{ $budgetSummary['total_usage_percentage'] >= 100 ? 'bg-danger' : ($budgetSummary['total_usage_percentage'] >= 80 ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $budgetSummary['total_usage_percentage'] }}%"></div>
+            <div class="progress-bar {{ $budgetSummary['budget_usage_percentage'] >= 100 ? 'bg-danger' : ($budgetSummary['budget_usage_percentage'] >= 80 ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $budgetSummary['budget_usage_percentage'] }}%"></div>
           </div>
         </div>
         
