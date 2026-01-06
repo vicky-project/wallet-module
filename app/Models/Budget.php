@@ -248,7 +248,7 @@ class Budget extends Model
 	 */
 	public function getFormattedDailyBudgetAttribute()
 	{
-		return "Rp " . number_format($this->daily_budget / 100, 0, ",", ".");
+		return "Rp " . number_format($this->daily_budget, 0, ",", ".");
 	}
 
 	/**
