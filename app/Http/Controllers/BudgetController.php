@@ -49,8 +49,8 @@ class BudgetController extends BaseController
 
 		$health = $this->budgetRepository->getBudgetHealthStatus(
 			$user,
-			$year,
-			$month
+			$month,
+			$year
 		);
 
 		// Get categories for filter
