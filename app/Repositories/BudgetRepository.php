@@ -281,15 +281,7 @@ class BudgetRepository extends BaseRepository
 					->where("year", $year)
 					->where("is_active", true);
 			})
-			->get([
-				"id",
-				"name",
-				"type",
-				"color",
-				"icon",
-				"user_id",
-				"is_budgetable",
-			]);
+			->get();
 
 		if ($categories->isEmpty()) {
 			return [
