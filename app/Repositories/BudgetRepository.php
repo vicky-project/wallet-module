@@ -217,6 +217,7 @@ class BudgetRepository extends BaseRepository
 			$totalSpent = $budgets->sum(
 				fn(Budget $budget) => $budget->spent->getAmount()->toInt()
 			);
+
 			$totalRemaining = max(0, $totalBudget - $totalSpent);
 			$budgetUsagePercentage =
 				$totalBudget > 0 ? round(($totalSpent / $totalBudget) * 100, 2) : 0;
