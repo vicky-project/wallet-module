@@ -42,7 +42,7 @@ class BudgetController extends BaseController
 		}
 
 		// Get budgets
-		$budgets = $this->budgetRepository->getCurrentBudget($user, $filters);
+		$budgets = $this->budgetRepository->getUserBudgets($user, $filters);
 
 		// Get summary
 		$summary = $this->budgetRepository->getBudgetSummary($user, $month, $year);

@@ -68,6 +68,51 @@ class BudgetRepository extends BaseRepository
 		return $this->find($id);
 	}
 
+	public function getUserBudgets(User $user, array $filters = []): Collection
+	{
+		$query = $this->model
+			->with([
+				"category" => function ($query) {
+					$query->expense();
+				},
+			])
+			->where("user_id", $user->id);
+
+		if (isset($filters["month"])) {
+			$query->where("month", $filters["month"]);
+		}
+		if (isset($filters["year"])) {
+			$query->where("year", $filters["year"]);
+		}
+
+		if (isset($filters["category_id"])) {
+			$query->where("category_id", $filters["category_id"]);
+		}
+
+		if (!isset($filters["include_inactive"]) || $filters["include_inactive"]) {
+			$query->where("is_active", true);
+		}
+
+		return $query
+			->orderBy("year", "desc")
+			->orderBy("month", "desc")
+			->get()
+			->map(fn($budget) => $this->calculateSpentFromTransactions($budget));
+	}
+
+	private function calculateSpentFromTransactions(Budget $budget): Budget
+	{
+		$totalSpent = Transaction::where("user_id", $budget->user_id)
+			->where("category_id", $budget->category_id)
+			->expense()
+			->whereMonth("transaction_date", $budget->month)
+			->whereYear("transaction_date", $budget->year)
+			->sum("amount");
+
+		$budget->spent = $totalSpent;
+		return $budget;
+	}
+
 	/**
 	 * Get current month's budget - HANYA KATEGORI EXPENSE
 	 */
