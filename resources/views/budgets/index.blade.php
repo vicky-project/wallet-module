@@ -254,11 +254,6 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="{{ route('apps.budgets.export', ['format' => 'pdf', 'month' => $month, 'year' => $year]) }}">
-                                    <i class="bi bi-file-pdf me-2"></i> PDF
-                                </a>
-                            </li>
-                            <li>
                                 <a class="dropdown-item" href="{{ route('apps.budgets.export', ['format' => 'excel', 'month' => $month, 'year' => $year]) }}">
                                     <i class="bi bi-file-excel me-2"></i> Excel
                                 </a>
