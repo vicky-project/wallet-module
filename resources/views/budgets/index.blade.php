@@ -62,7 +62,7 @@
 
     <!-- Summary Cards -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="card border-success">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="card border-info">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -94,7 +94,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="card border-primary">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -110,7 +110,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="card border-warning">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -187,15 +187,7 @@
 
     <!-- Chart Visualization -->
     <div class="row mb-4">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-title mb-3">Visualisasi Anggaran</h6>
-                    <canvas id="budgetChart" height="250"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title mb-3">Performa Anggaran</h6>
@@ -241,17 +233,17 @@
                         <i class="bi bi-plus-circle"></i> Tambah Anggaran
                     </a>
                     <a href="{{ route('apps.budgets.index', ['month' => date('m'), 'year' => date('Y')]) }}" 
-                       class="btn btn-outline-secondary me-2">
-                        <i class="bi bi-calendar-month"></i> Bulan Ini
+                       class="btn btn-outline-secondary" title="Bulan Ini">
+                        <i class="bi bi-calendar-month"></i>
                     </a>
-                    <button type="button" class="btn btn-outline-info me-2" onclick="updateSpentAmounts()">
-                        <i class="bi bi-arrow-clockwise"></i> Perbarui Terpakai
+                    <button type="button" class="btn btn-outline-info" onclick="updateSpentAmounts()" title="Perbarui Terpakai">
+                        <i class="bi bi-arrow-clockwise"></i>
                     </button>
                     @if(Route::has('apps.budgets.export'))
                     <div class="dropdown d-inline-block me-2">
                         <button class="btn btn-outline-success dropdown-toggle" type="button" 
-                                data-bs-toggle="dropdown">
-                            <i class="bi bi-download"></i> Ekspor
+                                data-bs-toggle="dropdown" title="Ekspor">
+                            <i class="bi bi-download"></i>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
@@ -272,8 +264,8 @@
                         <input type="hidden" name="month" value="{{ $month }}">
                         <input type="hidden" name="year" value="{{ $year }}">
                         <button type="submit" class="btn btn-outline-warning" 
-                                onclick="return confirm('Buat anggaran dari saran pengeluaran bulan sebelumnya?')">
-                            <i class="bi bi-magic"></i> Buat dari Saran
+                                onclick="return confirm('Buat anggaran dari saran pengeluaran bulan sebelumnya?')" title="Buat dari Saran">
+                            <i class="bi bi-magic"></i>
                         </button>
                     </form>
                 </div>
