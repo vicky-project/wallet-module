@@ -157,6 +157,7 @@ class BudgetRepository extends BaseRepository
 		// Map spent amounts to budgets
 		foreach ($budgets as $budget) {
 			$key = $budget->category_id . "-" . $budget->month . "-" . $budget->year;
+			dd($budget, $spentAmounts[$key]);
 			$budget->spent = $spentAmounts[$key]->total_spent ?? 0;
 			$budget->percentage =
 				$budget->amount->getAmount()->toInt() > 0
