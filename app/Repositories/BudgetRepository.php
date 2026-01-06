@@ -520,7 +520,7 @@ class BudgetRepository extends BaseRepository
 		int $month,
 		int $year
 	): string {
-		return "user_budgets_{$userId}_{$month}_{$year}";
+		return "user_budgetss_{$userId}_{$month}_{$year}";
 	}
 
 	private function getBudgetSummaryCacheKey(
