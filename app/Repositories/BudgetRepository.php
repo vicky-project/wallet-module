@@ -581,12 +581,4 @@ class BudgetRepository extends BaseRepository
 			];
 		});
 	}
-
-	/**
-	 * Format money helper
-	 */
-	private function formatMoney($amount): string
-	{
-		return "Rp " . number_format($amount, 0, ",", ".");
-	}
 }
