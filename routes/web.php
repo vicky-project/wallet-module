@@ -53,5 +53,9 @@ Route::middleware(["auth"])
 			BudgetController::class,
 			"createFromSuggestions",
 		])->name("budgets.create-from-suggestions");
+		Route::get("budgets/toggle-active", [
+			BudgetController::class,
+			"toggleActive",
+		])->name("budgets.toggle-active");
 		Route::resource("budgets", BudgetController::class);
 	});
