@@ -341,43 +341,22 @@ class CategoryRepository extends BaseRepository
 	public function getBudgetWarnings(User $user, int $threshold = 80): Collection
 	{
 		return $this->model
-			->where("user_id", $user->id)
-			->where("type", CategoryType::EXPENSE)
-			->where("is_active", true)
-			->whereNotNull("budget_limit")
+			->forUser($user->id)
+			->expense()
+			->active()
 			->get()
 			->filter(function ($category) use ($threshold) {
-				$usage = 0;
-				if (
-					$category->budget_limit ||
-					$category->budget_limit->getAmount()->toInt() > 0
-				) {
-					$monthlyTotal = $category
-						->transactions()
-						->whereMonth("transaction_date", date("m"))
-						->whereYear("transaction_date", date("Y"))
-						->sum("amount");
-					$usage = min(
-						100,
-						round(
-							($monthlyTotal / $category->budget_limit->getAmount()->toInt()) *
-								100,
-							2
-						)
-					);
-				}
-				//dd($category);
-				//$usage = $category->budget_usage_percentage;
+				$usage = $category->getActiveBudget()->percentage;
 				return $usage >= $threshold;
 			})
 			->map(function ($category) {
 				return [
 					"category" => $category,
-					"usage_percentage" => $category->budget_usage_percentage,
-					"monthly_total" => $category->getMonthlyTotal(),
-					"budget_limit" => $category->budget_limit,
+					"usage_percentage" => $category->getActiveBudget()->percentage,
+					"monthly_total" => $category->getExpenseTotal(),
+					"budget_limit" => $category->getActiveBudget()->amount,
 					"formatted_budget_limit" => $category->formatted_budget_limit,
-					"is_exceeded" => $category->has_budget_exceeded,
+					"is_exceeded" => $category->getActiveBudget()->isExceeded,
 				];
 			});
 	}
