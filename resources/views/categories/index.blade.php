@@ -170,9 +170,9 @@
               <tbody id="categoryTableBody">
                 @foreach($categories as $index => $category)
                   @php
-                  $monthlyTotal = $category->getMonthlyTotal();
-                  $budgetUsage = $category->budget_usage_percentage;
-                  $isExceeded = $category->has_budget_exceeded;
+                  $monthlyTotal = $category->getExpenseTotal();
+                  $budgetUsage = $category->getActiveBudget()->percentage;
+                  $isExceeded = $category->getActiveBudget()->isExceeded;
                   @endphp
                   <tr data-type="{{ $category->type }}" data-status="{{ $category->is_active ? 'active' : 'inactive' }}" class="{{ $isExceeded ? 'table-danger' : '' }}">
                     <td>{{ $index + 1 }}</td>
