@@ -26,7 +26,7 @@ class BudgetRepository extends BaseRepository
 	{
 		// Validasi kategori harus expense
 		$category = Category::find($data["category_id"]);
-		if (!$category || $category->type !== "expense") {
+		if (!$category || $category->type !== CategoryType::EXPENSE) {
 			throw new \Exception(
 				"Anggaran hanya dapat dibuat untuk kategori pengeluaran"
 			);
@@ -36,7 +36,7 @@ class BudgetRepository extends BaseRepository
 
 		// Convert amount to minor units
 		if (isset($data["amount"])) {
-			$data["amount"] = (int) ($data["amount"] * 100); // Convert to minor units
+			$data["amount"] = (int) $data["amount"];
 		}
 
 		// Set default month/year if not provided
