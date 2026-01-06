@@ -114,21 +114,6 @@ class Category extends Model
 	}
 
 	/**
-	 * Get transactions expense total
-	 */
-	public function getExpenseTotal($month = null, $year = null)
-	{
-		$month = $month ?? date("m");
-		$year = $year ?? date("Y");
-
-		return $this->transactions()
-			->where("type", TransactionType::EXPENSE)
-			->whereMonth("transaction_date", $month)
-			->whereYear("transaction_date", $year)
-			->sum("amount");
-	}
-
-	/**
 	 * Scope for income categories
 	 */
 	public function scopeIncome($query)
