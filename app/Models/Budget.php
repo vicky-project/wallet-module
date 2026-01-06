@@ -102,7 +102,7 @@ class Budget extends Model
 	public function getFormattedAmountAttribute()
 	{
 		return "Rp " .
-			number_format($this->amount->getAmount()->toInt() / 100, 0, ",", ".");
+			number_format($this->amount->getAmount()->toInt(), 0, ",", ".");
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Budget extends Model
 	public function getFormattedSpentAttribute()
 	{
 		return "Rp " .
-			number_format($this->spent->getAmount()->toInt() / 100, 0, ",", ".");
+			number_format($this->spent->getAmount()->toInt(), 0, ",", ".");
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Budget extends Model
 	 */
 	public function getFormattedRemainingAttribute()
 	{
-		return "Rp " . number_format($this->remaining / 100, 0, ",", ".");
+		return "Rp " . number_format($this->remaining, 0, ",", ".");
 	}
 
 	/**
@@ -256,8 +256,8 @@ class Budget extends Model
 	 */
 	public function getProgressDataAttribute()
 	{
-		$spent = $this->spent->getAmount()->toInt() / 100;
-		$amount = $this->amount->getAmount()->toInt() / 100;
+		$spent = $this->spent->getAmount()->toInt();
+		$amount = $this->amount->getAmount()->toInt();
 		$remaining = max(0, $amount - $spent);
 
 		return [
