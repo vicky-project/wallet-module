@@ -3,7 +3,7 @@
 @section('title', 'Edit Akun: ' . $account->name)
 
 @section('content')
-<div class="container-fluid p-4">
+@include('wallet::partials.fab')
     <!-- Page Header -->
     <div class="row mb-4">
         <div class="col">
@@ -80,7 +80,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">

@@ -45,9 +45,7 @@
                        class="form-control @error('initial_balance') is-invalid @enderror" 
                        id="initial_balance" 
                        name="initial_balance" 
-                       value="{{ old('initial_balance', isset($account) ? $account->initial_balance->getMinorAmount()->toInt() / 100 : 0) }}" 
-                       step="1000"
-                       min="0"
+                       value="{{ old('initial_balance', isset($account) ? $account->initial_balance->getAmount()->toInt() : 0) }}" min="0"
                        placeholder="0">
                 <span class="input-group-text">,00</span>
             </div>
@@ -60,18 +58,11 @@
         <div class="col-md-6 mb-3">
             <label for="currency" class="form-label">Mata Uang <span class="text-danger">*</span></label>
             <select class="form-select @error('currency') is-invalid @enderror" id="currency" name="currency" required>
-                <option value="IDR" {{ old('currency', $account->currency ?? 'IDR') == 'IDR' ? 'selected' : '' }}>
-                    IDR - Rupiah Indonesia
+              @foreach(\Modules\Wallet\Helpers\Helper::listCurrencies() as $name => $currency)
+                <option value="{{ $name }}" {{ old('currency', $account->currency ?? 'IDR') == 'IDR' ? 'selected' : '' }} @selected(old('currency', $account->currency ?? 'IDR') == $name)>
+                    {{ $currency}}
                 </option>
-                <option value="USD" {{ old('currency', $account->currency ?? '') == 'USD' ? 'selected' : '' }}>
-                    USD - US Dollar
-                </option>
-                <option value="EUR" {{ old('currency', $account->currency ?? '') == 'EUR' ? 'selected' : '' }}>
-                    EUR - Euro
-                </option>
-                <option value="SGD" {{ old('currency', $account->currency ?? '') == 'SGD' ? 'selected' : '' }}>
-                    SGD - Dollar Singapura
-                </option>
+                @endforeach
             </select>
             @error('currency')
                 <div class="invalid-feedback">{{ $message }}</div>
