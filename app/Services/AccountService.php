@@ -6,6 +6,7 @@ use App\Models\User;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Enums\AccountType;
+use Modules\Wallet\Enums\TransactionType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Brick\Money\Money;
@@ -162,22 +163,22 @@ class AccountService
 		return DB::transaction(function () use ($account) {
 			$income = $account
 				->transactions()
-				->where("type", "income")
+				->income()
 				->sum("amount");
 
 			$expense = $account
 				->transactions()
-				->where("type", "expense")
+				->expense()
 				->sum("amount");
 
 			$transfersIn = $account
 				->destinationTransactions()
-				->where("type", "transfer")
+				->transfer()
 				->sum("amount");
 
 			$transfersOut = $account
 				->transactions()
-				->where("type", "transfer")
+				->transfer()
 				->sum("amount");
 
 			// Calculate new balance: initial_balance + income - expense + transfers_in - transfers_out

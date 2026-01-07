@@ -78,6 +78,11 @@ class Transaction extends Model
 		return $query->where("type", TransactionType::EXPENSE);
 	}
 
+	public function scopeTransfer($query)
+	{
+		return $query->where("type", TransactionType::TRANSFER);
+	}
+
 	public function scopeThisMonth($query)
 	{
 		return $query

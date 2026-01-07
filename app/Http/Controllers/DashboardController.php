@@ -45,8 +45,8 @@ class DashboardController extends BaseController
 		$totalIncome = 0;
 		$totalExpense = 0;
 		foreach ($accountAnalytics as $analytic) {
-			$totalIncome += $analytic["income"]->getMinorAmount()->toInt();
-			$totalExpense += $analytic["expense"]->getMinorAmount()->toInt();
+			$totalIncome += $analytic["income"]->getAmount()->toInt();
+			$totalExpense += $analytic["expense"]->getAmount()->toInt();
 		}
 
 		// Get recent transactions if service exists
