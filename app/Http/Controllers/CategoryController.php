@@ -23,15 +23,13 @@ class CategoryController extends Controller
 	public function index(Request $request)
 	{
 		try {
-			$categories = $this->categoryRepository->getUserCategories(
+			$data = $this->categoryRepository->getUserCategoriesWithStats(
 				$request->type,
 				$request->include_inactive ?? true
 			);
-			//dd($categories);
+			dd($data);
 
-			$stats = $this->categoryRepository->getCategoryStats(auth()->user());
-
-			return view("wallet::categories.index", compact("categories", "stats"));
+			return view("wallet::categories.index", $data);
 		} catch (\Exception $e) {
 			return response()->json(
 				[

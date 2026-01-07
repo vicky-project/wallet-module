@@ -4,6 +4,8 @@ namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Enums\TransactionType;
@@ -11,29 +13,40 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoryRepository extends BaseRepository
 {
+	private const CACHE_DURATION = 3600; // 1 jam
+
 	public function __construct(Category $model)
 	{
-		parent::__construct($model);
+		$this->model = $model;
 	}
 
 	/**
-	 * Get all categories for current user with filters
+	 * Get all categories for current user with filters (cached)
 	 */
 	public function getUserCategories(
 		string $type = null,
 		bool $includeInactive = false
 	): Collection {
-		$query = $this->model->where("user_id", auth()->id());
+		$user = auth()->user();
+		$cacheKey = "user_categories_{$user->id}_{$type}_{$includeInactive}";
 
-		if ($type) {
-			$query->where("type", $type);
-		}
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$type,
+			$includeInactive
+		) {
+			$query = $this->model->where("user_id", $user->id);
 
-		if (!$includeInactive) {
-			$query->where("is_active", true);
-		}
+			if ($type) {
+				$query->where("type", $type);
+			}
 
-		return $query->orderBy("name")->get();
+			if (!$includeInactive) {
+				$query->where("is_active", true);
+			}
+
+			return $query->orderBy("name")->get();
+		});
 	}
 
 	/**
@@ -41,23 +54,23 @@ class CategoryRepository extends BaseRepository
 	 */
 	public function createCategory(array $data, User $user): Category
 	{
-		// Convert budget limit to Money
 		if (isset($data["budget_limit"])) {
 			$data["budget_limit"] = $this->toDatabaseAmount(
 				$this->toMoney($data["budget_limit"] ?: 0)
 			);
 		}
 
-		// Set user_id and default icon if not provided
 		$data["user_id"] = $user->id;
 
-		// If icon is not provided, try to get from default icons based on name
 		if (!isset($data["icon"]) && isset($data["name"])) {
 			$data["icon"] = $this->getDefaultIcon(
 				$data["name"],
 				$data["type"] ?? CategoryType::EXPENSE
 			);
 		}
+
+		// Invalidate cache
+		$this->invalidateUserCategoryCache($user->id);
 
 		return $this->create($data);
 	}
@@ -73,7 +86,6 @@ class CategoryRepository extends BaseRepository
 			);
 		}
 
-		// If name is changed and icon is default, update icon too
 		if (isset($data["name"]) && !isset($data["icon"])) {
 			$currentIcon = $category->icon;
 			$defaultIcons = Category::DEFAULT_ICONS[$category->type] ?? [];
@@ -83,6 +95,9 @@ class CategoryRepository extends BaseRepository
 				$data["icon"] = $this->getDefaultIcon($data["name"], $category->type);
 			}
 		}
+
+		// Invalidate cache
+		$this->invalidateUserCategoryCache($category->user_id);
 
 		$this->update($category->id, $data);
 		return $this->find($category->id);
@@ -103,24 +118,34 @@ class CategoryRepository extends BaseRepository
 			throw new \Exception("Cannot delete category that has budgets");
 		}
 
+		// Invalidate cache
+		$this->invalidateUserCategoryCache($category->user_id);
+
 		return $category->delete();
 	}
 
 	/**
-	 * Get categories by type
+	 * Get categories by type (cached)
 	 */
 	public function getByType(string $type, User $user): Collection
 	{
-		return $this->model
-			->where("user_id", $user->id)
-			->where("type", $type)
-			->where("is_active", true)
-			->orderBy("name")
-			->get();
+		$cacheKey = "user_categories_by_type_{$user->id}_{$type}";
+
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$type
+		) {
+			return $this->model
+				->where("user_id", $user->id)
+				->where("type", $type)
+				->where("is_active", true)
+				->orderBy("name")
+				->get();
+		});
 	}
 
 	/**
-	 * Get categories with monthly totals
+	 * Get categories with monthly totals (optimized with single query)
 	 */
 	public function getWithMonthlyTotals(
 		User $user,
@@ -130,72 +155,103 @@ class CategoryRepository extends BaseRepository
 		$month = $month ?? date("m");
 		$year = $year ?? date("Y");
 
+		// Single query with subquery for monthly totals
 		return $this->model
 			->where("user_id", $user->id)
 			->where("type", CategoryType::EXPENSE)
-			->with([
-				"transactions" => function ($query) use ($month, $year) {
-					$query
-						->whereMonth("transaction_date", $month)
-						->whereYear("transaction_date", $year)
-						->where("type", TransactionType::EXPENSE);
-				},
+			->select(["*"])
+			->addSelect([
+				"monthly_total" => DB::table("transactions")
+					->selectRaw("COALESCE(SUM(amount), 0)")
+					->whereColumn("category_id", "categories.id")
+					->where("user_id", $user->id)
+					->where("type", TransactionType::EXPENSE)
+					->whereMonth("transaction_date", $month)
+					->whereYear("transaction_date", $year),
 			])
 			->get()
 			->map(function ($category) {
-				$monthlyTotal = $category->getMonthlyTotal();
+				$monthlyTotal = $category->monthly_total;
 				$category->monthly_total = $monthlyTotal;
 				$category->budget_usage = $category->budget_limit
 					? ($monthlyTotal / $category->budget_limit) * 100
 					: 0;
-				$category->has_budget_exceeded = $category->getHasBudgetExceededAttribute();
+				$category->has_budget_exceeded =
+					$category->budget_limit && $monthlyTotal > $category->budget_limit;
 				return $category;
 			});
 	}
 
 	/**
-	 * Get categories for dropdown
+	 * Get categories for dropdown (cached)
 	 */
 	public function getForDropdown(User $user, string $type = null): array
 	{
-		$query = $this->model
-			->where("user_id", $user->id)
-			->where("is_active", true);
+		$cacheKey = "categories_dropdown_{$user->id}_{$type}";
 
-		if ($type) {
-			$query->where("type", $type);
-		}
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$type
+		) {
+			$query = $this->model
+				->where("user_id", $user->id)
+				->where("is_active", true);
 
-		return $query
-			->orderBy("type")
-			->orderBy("name")
-			->get()
-			->mapWithKeys(function ($category) {
-				$typeLabel =
-					$category->type === CategoryType::INCOME
-						? "Pemasukan"
-						: "Pengeluaran";
-				return [
-					$category->id => "[{$typeLabel}] {$category->name}",
-				];
-			})
-			->toArray();
+			if ($type) {
+				$query->where("type", $type);
+			}
+
+			return $query
+				->orderBy("type")
+				->orderBy("name")
+				->get()
+				->mapWithKeys(function ($category) {
+					$typeLabel =
+						$category->type === CategoryType::INCOME
+							? "Pemasukan"
+							: "Pengeluaran";
+					return [
+						$category->id => "[{$typeLabel}] {$category->name}",
+					];
+				})
+				->toArray();
+		});
 	}
 
 	/**
-	 * Reorder categories
+	 * Reorder categories (batch update)
 	 */
 	public function reorderCategories(array $categories): void
 	{
-		foreach ($categories as $item) {
-			$this->model
-				->where("id", $item["id"])
-				->update(["order" => $item["order"]]);
+		$cases = [];
+		$ids = [];
+		$params = [];
+
+		foreach ($categories as $index => $item) {
+			$id = (int) $item["id"];
+			$order = (int) $item["order"];
+
+			$cases[] = "WHEN id = ? THEN ?";
+			$params[] = $id;
+			$params[] = $order;
+			$ids[] = $id;
 		}
+
+		if (empty($cases)) {
+			return;
+		}
+
+		$idsStr = implode(",", $ids);
+		$casesStr = implode(" ", $cases);
+
+		DB::update(
+			"UPDATE categories SET `order` = CASE {$casesStr} END WHERE id IN ({$idsStr})",
+			$params
+		);
 	}
 
 	/**
-	 * Get category usage statistics
+	 * Get category usage statistics (optimized)
 	 */
 	public function getCategoryUsage(
 		Category $category,
@@ -212,11 +268,23 @@ class CategoryRepository extends BaseRepository
 			$query->whereDate("transaction_date", "<=", $endDate);
 		}
 
-		$total = $query->sum("amount");
-		$count = $query->count();
+		// Single query untuk semua aggregasi
+		$stats = $query
+			->select([
+				DB::raw("COALESCE(SUM(amount), 0) as total_amount"),
+				DB::raw("COUNT(*) as transaction_count"),
+			])
+			->first();
 
-		$budgetLimit = $category->budget_limit->getAmount()->toInt() ?? 0;
+		$total = $stats->total_amount ?? 0;
+		$count = $stats->transaction_count ?? 0;
+		$budgetLimit = $category->budget_limit
+			? $category->budget_limit->getAmount()->toInt()
+			: 0;
 		$budgetUsage = $budgetLimit > 0 ? ($total / $budgetLimit) * 100 : null;
+
+		// Gunakan cached monthly total dari scope
+		$monthlyTotal = $category->getCachedMonthlyTotal();
 
 		return [
 			"category" => $category,
@@ -225,21 +293,33 @@ class CategoryRepository extends BaseRepository
 			"budget_usage" => $budgetUsage,
 			"budget_exceeded" => $budgetLimit > 0 && $total > $budgetLimit,
 			"average_transaction" => $count > 0 ? $total / $count : 0,
-			"monthly_total" => $category->getMonthlyTotal(),
+			"monthly_total" => $monthlyTotal,
 			"budget_usage_percentage" => $category->budget_usage_percentage,
 			"formatted_budget_limit" => $category->formatted_budget_limit,
 		];
 	}
 
 	/**
-	 * Get all categories usage statistics
+	 * Get all categories usage statistics (optimized with single query)
 	 */
 	public function getAllCategoriesUsage(
 		?string $startDate = null,
 		?string $endDate = null
 	): Collection {
-		return $this->model
-			->with([
+		$query = $this->model->withCount([
+			"transactions" => function ($query) use ($startDate, $endDate) {
+				if ($startDate) {
+					$query->whereDate("transaction_date", ">=", $startDate);
+				}
+				if ($endDate) {
+					$query->whereDate("transaction_date", "<=", $endDate);
+				}
+			},
+		]);
+
+		// Subquery untuk total amount
+		$query->withSum(
+			[
 				"transactions" => function ($query) use ($startDate, $endDate) {
 					if ($startDate) {
 						$query->whereDate("transaction_date", ">=", $startDate);
@@ -248,23 +328,25 @@ class CategoryRepository extends BaseRepository
 						$query->whereDate("transaction_date", "<=", $endDate);
 					}
 				},
-			])
-			->get()
-			->map(function ($category) {
-				$total = $category->transactions->sum("amount");
-				$budgetLimit = $category->budget_limit ?? 0;
+			],
+			"amount"
+		);
 
-				return [
-					"category" => $category,
-					"total_amount" => $total,
-					"transaction_count" => $category->transactions->count(),
-					"budget_usage" =>
-						$budgetLimit > 0 ? ($total / $budgetLimit) * 100 : null,
-					"budget_exceeded" => $budgetLimit > 0 && $total > $budgetLimit,
-					"budget_usage_percentage" => $category->budget_usage_percentage,
-					"formatted_budget_limit" => $category->formatted_budget_limit,
-				];
-			});
+		return $query->get()->map(function ($category) {
+			$total = $category->transactions_sum_amount ?? 0;
+			$budgetLimit = $category->budget_limit ?? 0;
+
+			return [
+				"category" => $category,
+				"total_amount" => $total,
+				"transaction_count" => $category->transactions_count,
+				"budget_usage" =>
+					$budgetLimit > 0 ? ($total / $budgetLimit) * 100 : null,
+				"budget_exceeded" => $budgetLimit > 0 && $total > $budgetLimit,
+				"budget_usage_percentage" => $category->budget_usage_percentage,
+				"formatted_budget_limit" => $category->formatted_budget_limit,
+			];
+		});
 	}
 
 	/**
@@ -274,48 +356,61 @@ class CategoryRepository extends BaseRepository
 	{
 		$category->is_active = !$category->is_active;
 		$category->save();
+
+		// Invalidate cache
+		$this->invalidateUserCategoryCache($category->user_id);
+
 		return $category;
 	}
 
 	/**
-	 * Get category statistics for dashboard
+	 * Get category statistics for dashboard (optimized with single query)
 	 */
 	public function getCategoryStats(User $user): array
 	{
-		$categoryModel = $this->model->where("user_id", $user->id);
-		$totalCategories = $categoryModel->count();
-		$incomeCategories = $categoryModel
-			->income()
-			->active()
-			->count();
-		$expenseCategories = $categoryModel
-			->expense()
-			->active()
-			->count();
+		$cacheKey = "category_stats_{$user->id}";
 
-		// Get categories with budget exceeded
-		$categoriesWithBudget = $categoryModel
-			->expense()
-			->active()
-			->get();
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user
+		) {
+			// Single query untuk semua stats
+			$stats = $this->model
+				->where("user_id", $user->id)
+				->selectRaw(
+					"
+                    COUNT(*) as total,
+                    SUM(CASE WHEN type = 'income' AND is_active = 1 THEN 1 ELSE 0 END) as income,
+                    SUM(CASE WHEN type = 'expense' AND is_active = 1 THEN 1 ELSE 0 END) as expense,
+                    SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active,
+                    SUM(CASE WHEN type = 'expense' AND is_active = 1 AND budget_limit IS NOT NULL THEN 1 ELSE 0 END) as with_budget
+                "
+				)
+				->first();
 
-		$budgetExceededCount = $categoriesWithBudget
-			->filter(function ($category) {
-				return $category->has_budget_exceeded;
-			})
-			->count();
+			// Hitung budget exceeded (gunakan subquery untuk efisiensi)
+			$budgetExceededCount = $this->model
+				->where("user_id", $user->id)
+				->where("type", "expense")
+				->where("is_active", true)
+				->whereNotNull("budget_limit")
+				->whereHas("transactions", function ($query) {
+					$query
+						->select(DB::raw("COALESCE(SUM(amount), 0) as total"))
+						->whereMonth("transaction_date", now()->month)
+						->whereYear("transaction_date", now()->year)
+						->havingRaw("total > budget_limit");
+				})
+				->count();
 
-		return [
-			"total" => $totalCategories,
-			"income" => $incomeCategories,
-			"expense" => $expenseCategories,
-			"active" => $this->model
-				->forUser($user->id)
-				->active()
-				->count(),
-			"with_budget" => $categoriesWithBudget->count(),
-			"budget_exceeded" => $budgetExceededCount,
-		];
+			return [
+				"total" => $stats->total ?? 0,
+				"income" => $stats->income ?? 0,
+				"expense" => $stats->expense ?? 0,
+				"active" => $stats->active ?? 0,
+				"with_budget" => $stats->with_budget ?? 0,
+				"budget_exceeded" => $budgetExceededCount,
+			];
+		});
 	}
 
 	/**
@@ -336,32 +431,45 @@ class CategoryRepository extends BaseRepository
 	}
 
 	/**
-	 * Get categories with budget warnings
+	 * Get categories with budget warnings (optimized)
 	 */
 	public function getBudgetWarnings(User $user, int $threshold = 80): Collection
 	{
+		$currentMonth = date("m");
+		$currentYear = date("Y");
+
+		// Single query dengan subquery untuk monthly total
 		return $this->model
-			->forUser($user->id)
-			->expense()
-			->active()
+			->where("user_id", $user->id)
+			->where("type", "expense")
+			->where("is_active", true)
+			->whereNotNull("budget_limit")
+			->select(["*"])
+			->addSelect([
+				"current_month_total" => DB::table("transactions")
+					->selectRaw("COALESCE(SUM(amount), 0)")
+					->whereColumn("category_id", "categories.id")
+					->where("user_id", $user->id)
+					->where("type", TransactionType::EXPENSE)
+					->whereMonth("transaction_date", $currentMonth)
+					->whereYear("transaction_date", $currentYear),
+			])
 			->get()
-			->filter(function ($category) use ($threshold) {
-				$usage = 0;
-				if ($category->hasActiveBudget()) {
-					$usage = $category->getActiveBudget()->percentage;
-				}
-				return $usage >= $threshold;
-			})
-			->map(function ($category) {
+			->map(function ($category) use ($threshold) {
+				$monthlyTotal = $category->current_month_total ?? 0;
+				$budgetLimit = $category->budget_limit;
+				$usage = $budgetLimit > 0 ? ($monthlyTotal / $budgetLimit) * 100 : 0;
+
 				return [
 					"category" => $category,
-					"usage_percentage" => $category->getActiveBudget()->percentage,
-					"monthly_total" => $category->getExpenseTotal(),
-					"budget_limit" => $category->getActiveBudget()->amount,
+					"usage_percentage" => $usage,
+					"monthly_total" => $monthlyTotal,
+					"budget_limit" => $budgetLimit,
 					"formatted_budget_limit" => $category->formatted_budget_limit,
-					"is_exceeded" => $category->getActiveBudget()->isExceeded,
+					"is_exceeded" => $monthlyTotal > $budgetLimit,
 				];
-			});
+			})
+			->filter(fn($item) => $item["usage_percentage"] >= $threshold);
 	}
 
 	/**
@@ -390,5 +498,62 @@ class CategoryRepository extends BaseRepository
 			})
 			->orderBy("name")
 			->get();
+	}
+
+	/**
+	 * Invalidate user category cache
+	 */
+	private function invalidateUserCategoryCache(int $userId): void
+	{
+		$patterns = [
+			"user_categories_{$userId}_*",
+			"user_categories_by_type_{$userId}_*",
+			"categories_dropdown_{$userId}_*",
+			"category_stats_{$userId}",
+		];
+
+		foreach ($patterns as $pattern) {
+			$this->clearCacheByPattern($pattern);
+		}
+	}
+
+	/**
+	 * Clear cache by pattern (for file-based cache, implementasi sederhana)
+	 */
+	private function clearCacheByPattern(string $pattern): void
+	{
+		// Untuk driver cache yang mendukung tags atau pattern
+		if (method_exists(Cache::store(), "tags")) {
+			// Implementasi berdasarkan environment cache
+			Cache::tags(["categories"])->flush();
+		} else {
+			// Fallback: clear semua cache kategori untuk user tertentu
+			Cache::forget($pattern);
+		}
+	}
+
+	/**
+	 * Get combined data for dashboard/index (optimized untuk controller)
+	 */
+	public function getUserCategoriesWithStats(
+		string $type = null,
+		bool $includeInactive = false
+	): array {
+		$user = auth()->user();
+		$cacheKey = "user_categories_with_stats_{$user->id}_{$type}_{$includeInactive}";
+
+		return Cache::remember($cacheKey, self::CACHE_DURATION, function () use (
+			$user,
+			$type,
+			$includeInactive
+		) {
+			$categories = $this->getUserCategories($type, $includeInactive);
+			$stats = $this->getCategoryStats($user);
+
+			return [
+				"categories" => $categories,
+				"stats" => $stats,
+			];
+		});
 	}
 }
