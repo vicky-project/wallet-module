@@ -343,7 +343,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
                 <i class="bi bi-list-ul me-2"></i>Daftar Akun
-                <span class="badge bg-secondary ms-2">{{ $accounts->total() }}</span>
+                <span class="badge bg-secondary ms-2">{{ $accounts->count() }}</span>
             </h5>
             <div class="d-flex align-items-center">
                 <div class="dropdown me-2">
