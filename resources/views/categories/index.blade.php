@@ -199,14 +199,14 @@
                       @endif
                     </td>
                     <td>
-                      @if($category->budget_limit)
-                        <div class="fw-bold">{{ $category->formatted_budget_limit }}</div>
+                      @if($category->hasActiveBudget())
+                        <div class="fw-bold">{{ $category->getActiveBudget()->formatted_amount }}</div>
                       @else
                         <span class="text-muted">-</span>
                       @endif
                     </td>
                     <td>
-                      @if($category->type === CategoryType::EXPENSE && $category->budget_limit)
+                      @if($category->type === CategoryType::EXPENSE && $category->hasActiveBudget())
                         <div class="d-flex align-items-center">
                           <div class="me-2" style="width: 100px;">
                             <div class="progress" style="height: 8px;">
