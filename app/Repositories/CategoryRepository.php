@@ -436,6 +436,8 @@ class CategoryRepository extends BaseRepository
 					->count();
 			}
 
+			dd($stats);
+
 			return [
 				"total" => $stats->total ?? 0,
 				"income" => $stats->income ?? 0,
