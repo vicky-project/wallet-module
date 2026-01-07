@@ -459,23 +459,16 @@
                                     </td>
                                     <td class="text-end">
                                         <div class="action-buttons d-flex justify-content-end">
-                                            <button class="btn btn-outline-info btn-sm me-2 view-account"
-                                                    data-id="{{ $account->id }}"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-title="Lihat detail">
+                                            <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-info btn-sm me-2 view-account" data-bs-toggle="tooltip" data-bs-title="Lihat detail">
                                                 <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-warning btn-sm me-2 edit-account"
-                                                    data-id="{{ $account->id }}"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-title="Edit akun">
+                                            </a>
+                                            <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-outline-warning btn-sm me-2 edit-account" data-bs-toggle="tooltip" data-bs-title="Edit akun">
                                                 <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm delete-account"
-                                                    data-id="{{ $account->id }}"
-                                                    data-name="{{ $account->name }}"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-title="Hapus akun">
+                                            </a>
+                       <form method="POST" action="{{ route('apps.accounts.destroy', $account) }}">
+                         @csrf
+                         @method('DELETE')
+                       </form>                     <button type="submit" class="btn btn-outline-danger btn-sm delete-account" data-bs-toggle="tooltip" data-bs-title="Hapus akun" onclick="return confirm('Are you sure to delete account: {{ $accounts->name }}');">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -589,121 +582,6 @@
                         console.error('Error:', error);
                         showToast('error', 'Gagal', 'Terjadi kesalahan saat mengatur akun default');
                     });
-                }
-            });
-        });
-        
-        // Delete account
-        document.querySelectorAll('.delete-account').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent row click
-                const accountId = this.getAttribute('data-id');
-                const accountName = this.getAttribute('data-name');
-                
-                if (confirm(`Apakah Anda yakin ingin menghapus akun "${accountName}"?`)) {
-                    fetch(`{{ route("apps.accounts.destroy", "") }}/${accountId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showToast('success', 'Berhasil', 'Akun berhasil dihapus');
-                            setTimeout(() => location.reload(), 1500);
-                        } else {
-                            showToast('error', 'Gagal', data.message || 'Terjadi kesalahan');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showToast('error', 'Gagal', 'Terjadi kesalahan saat menghapus akun');
-                    });
-                }
-            });
-        });
-        
-        // View account modal
-        document.querySelectorAll('.view-account').forEach(button => {
-            button.addEventListener('click', async function(e) {
-                e.stopPropagation(); // Prevent row click
-                const accountId = this.getAttribute('data-id');
-                
-                try {
-                    const response = await fetch(`{{ route("apps.accounts.show", "") }}/${accountId}`);
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        // Populate modal with account data
-                        const account = data.data;
-                        
-                        // Set modal content
-                        document.getElementById('viewAccountName').textContent = account.name;
-                        document.getElementById('viewAccountType').textContent = account.type.label;
-                        document.getElementById('viewAccountBalance').textContent = account.balance;
-                        document.getElementById('viewAccountInitialBalance').textContent = account.initial_balance;
-                        document.getElementById('viewAccountCurrency').textContent = account.currency;
-                        document.getElementById('viewAccountNumber').textContent = account.account_number || '-';
-                        document.getElementById('viewBankName').textContent = account.bank_name || '-';
-                        document.getElementById('viewAccountStatus').innerHTML = account.is_active 
-                            ? '<span class="badge bg-success">Aktif</span>' 
-                            : '<span class="badge bg-danger">Nonaktif</span>';
-                        document.getElementById('viewAccountDefault').innerHTML = account.is_default 
-                            ? '<span class="badge bg-primary">Ya</span>' 
-                            : '<span class="badge bg-secondary">Tidak</span>';
-                        document.getElementById('viewAccountNotes').textContent = account.notes || '-';
-                        
-                        // Show modal
-                        const modal = new bootstrap.Modal(document.getElementById('viewAccountModal'));
-                        modal.show();
-                    } else {
-                        showToast('error', 'Gagal', data.message || 'Terjadi kesalahan');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    showToast('error', 'Gagal', 'Terjadi kesalahan saat mengambil data akun');
-                }
-            });
-        });
-        
-        // Edit account modal
-        document.querySelectorAll('.edit-account').forEach(button => {
-            button.addEventListener('click', async function(e) {
-                e.stopPropagation(); // Prevent row click
-                const accountId = this.getAttribute('data-id');
-                
-                try {
-                    const response = await fetch(`{{ route("apps.accounts.show", "") }}/${accountId}`);
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        const account = data.data;
-                        
-                        // Populate edit form
-                        document.getElementById('editAccountId').value = account.id;
-                        document.getElementById('editName').value = account.name;
-                        document.getElementById('editType').value = account.type.value;
-                        document.getElementById('editInitialBalance').value = account.initial_balance.match(/\d+/g).join('') / 100;
-                        document.getElementById('editCurrency').value = account.currency;
-                        document.getElementById('editAccountNumber').value = account.account_number || '';
-                        document.getElementById('editBankName').value = account.bank_name || '';
-                        document.getElementById('editColor').value = account.color;
-                        document.getElementById('editIcon').value = account.icon;
-                        document.getElementById('editIsActive').checked = account.is_active;
-                        document.getElementById('editIsDefault').checked = account.is_default;
-                        document.getElementById('editNotes').value = account.notes || '';
-                        
-                        // Show modal
-                        const modal = new bootstrap.Modal(document.getElementById('editAccountModal'));
-                        modal.show();
-                    } else {
-                        showToast('error', 'Gagal', data.message || 'Terjadi kesalahan');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    showToast('error', 'Gagal', 'Terjadi kesalahan saat mengambil data akun');
                 }
             });
         });
