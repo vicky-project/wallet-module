@@ -19,6 +19,11 @@ class AccountService
 		$this->repository = $repository;
 	}
 
+	public function getRepository(): AccountRepository
+	{
+		return $this->repository;
+	}
+
 	/**
 	 * Create new account with validation
 	 */

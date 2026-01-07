@@ -57,10 +57,9 @@ class DashboardController extends BaseController
 		$netCashFlow = $totalIncome - $totalExpense;
 
 		// Get popular accounts (most used)
-		$popularAccounts = $this->accountService->repository->getPopularAccounts(
-			$user,
-			3
-		);
+		$popularAccounts = $this->accountService
+			->getRepository()
+			->getPopularAccounts($user, 3);
 
 		// Get monthly trends (last 6 months)
 		$monthlyTrends = $this->getMonthlyTrends($user, 6);
