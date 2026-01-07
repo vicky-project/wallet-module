@@ -63,10 +63,10 @@
   </div>
 
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="mb-3">
         <label for="initial_balance" class="form-label">Saldo Awal</label>
-        <div class="input-group">
+        <div class="input-group row">
           <div class="col-4">
             <select class="form-select" name="currency">
               @foreach(Helper::listCurrencies() as $name => $currency)
@@ -82,25 +82,6 @@
           <div class="invalid-feedback">{{ $message }}</div>
         @enderror
         <small class="text-muted">Saldo saat pertama kali menambahkan akun</small>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="mb-3">
-        <label for="current_balance" class="form-label">Saldo Saat Ini</label>
-        <div class="input-group">
-          <span class="input-group-text">Rp</span>
-          <input type="number" class="form-control @error('current_balance') is-invalid @enderror" id="current_balance" name="current_balance" value="{{ old('current_balance', isset($account) ? $account->current_balance->getAmount()->toInt() : 0) }}" placeholder="0" min="0" @if($isEdit) readonly @endif>
-        </div>
-        @error('current_balance')
-          <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-        <small class="text-muted">
-          @if($isEdit)
-          Saldo saat ini (otomatis terupdate dari transaksi)
-          @else
-          Akan sama dengan saldo awal
-          @endif
-        </small>
       </div>
     </div>
   </div>
