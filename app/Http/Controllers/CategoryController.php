@@ -23,10 +23,10 @@ class CategoryController extends Controller
 	public function index(Request $request)
 	{
 		try {
-			[
+			list(
 				$categories,
 				$stats,
-			] = $this->categoryRepository->getUserCategoriesWithStats(
+			) = $this->categoryRepository->getUserCategoriesWithStats(
 				$request->type,
 				$request->include_inactive ?? true
 			);
