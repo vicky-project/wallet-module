@@ -66,7 +66,7 @@
     <div class="col-md-12">
       <div class="mb-3">
         <label for="initial_balance" class="form-label">Saldo Awal</label>
-        <div class="input-group row gap-1">
+        <div class="input-group">
           <div class="col-4">
             <select class="form-select" name="currency">
               @foreach(Helper::listCurrencies() as $name => $currency)
