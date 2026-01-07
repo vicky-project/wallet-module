@@ -239,11 +239,6 @@ class AccountService
 		return $analytics;
 	}
 
-	public function getAccountTypeDistribution(User $user): Collection
-	{
-		return $this->repository->getAccountTypeDistribution($user);
-	}
-
 	/**
 	 * Validate account before operations
 	 */
