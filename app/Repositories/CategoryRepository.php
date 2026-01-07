@@ -463,8 +463,8 @@ class CategoryRepository extends BaseRepository
 			function () use ($user, $currentMonth, $currentYear, $threshold) {
 				// Single query dengan subquery untuk monthly total dan budget
 				$categories = Category::where("user_id", $user->id)
-					->where("type", "expense")
-					->where("is_active", true)
+					->expense()
+					->active()
 					->whereHas("budgets", function ($query) use (
 						$currentMonth,
 						$currentYear
@@ -499,7 +499,9 @@ class CategoryRepository extends BaseRepository
 						return [
 							"category" => $category,
 							"usage_percentage" => $usage,
-							"monthly_total" => $monthlyTotal,
+							"monthly_total" => $this->formatMoney(
+								$this->fromDatabaseAmount($monthlyTotal)
+							),
 							"budget_limit" => $budget
 								? $budget->amount->getAmount()->toInt()
 								: 0,
