@@ -87,7 +87,6 @@
 @php
   $budgetWarnings = app(\Modules\Wallet\Repositories\CategoryRepository::class)
     ->getBudgetWarnings(auth()->user());
-    dd($budgetWarnings);
 @endphp
     
 @if($budgetWarnings->count() > 0)
