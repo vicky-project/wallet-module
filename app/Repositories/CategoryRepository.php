@@ -404,8 +404,8 @@ class CategoryRepository extends BaseRepository
 			$currentYear = date("Y");
 
 			$categoriesWithBudget = Category::where("user_id", $user->id)
-				->where("type", "expense")
-				->where("is_active", true)
+				->expense()
+				->active()
 				->whereHas("budgets", function ($query) use (
 					$currentMonth,
 					$currentYear
@@ -421,8 +421,8 @@ class CategoryRepository extends BaseRepository
 			$budgetExceededCount = 0;
 			if ($categoriesWithBudget > 0) {
 				$budgetExceededCount = Category::where("user_id", $user->id)
-					->where("type", "expense")
-					->where("is_active", true)
+					->expense()
+					->active()
 					->whereHas("budgets", function ($query) use (
 						$currentMonth,
 						$currentYear
@@ -436,7 +436,7 @@ class CategoryRepository extends BaseRepository
 					->count();
 			}
 
-			dd($stats);
+			dd($stats, $categoriesWithBudget, $budgetExceededCount);
 
 			return [
 				"total" => $stats->total ?? 0,
