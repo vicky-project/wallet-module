@@ -246,7 +246,6 @@ class BudgetRepository extends BaseRepository
 				->whereMonth("transaction_date", $month)
 				->whereYear("transaction_date", $year)
 				->sum("amount");
-			dd($totalExpenses);
 
 			$budgetedExpensePercentage =
 				$totalExpenses > 0 ? round(($totalSpent / $totalExpenses) * 100, 2) : 0;
@@ -266,7 +265,7 @@ class BudgetRepository extends BaseRepository
 					$unbudgetedData["total"]
 				),
 				"total_expenses" => $totalExpenses,
-				"formatted_total_expenses" => $this->formatMoney($totalExpenses),
+				"formatted_total_expenses" => $this->formatMoney((int) $totalExpenses),
 				"budgeted_expense_percentage" => $budgetedExpensePercentage,
 			];
 		});
