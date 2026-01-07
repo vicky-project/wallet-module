@@ -501,12 +501,6 @@
         </div>
     </div>
 
-<!-- Create Account Modal -->
-@include('wallet::accounts.partials.modals.create')
-
-<!-- Edit Account Modal -->
-@include('wallet::accounts.partials.modals.edit')
-
 <!-- View Account Modal -->
 @include('wallet::partials.accounts.show-modal')
 
