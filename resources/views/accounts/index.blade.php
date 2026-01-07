@@ -154,345 +154,334 @@
 
 @section('content')
 @include('wallet::partials.fab')
-    <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="page-title mb-2">
-                <i class="bi bi-wallet2 me-2"></i>Kelola Akun
-            </h2>
-            <p class="text-muted mb-0">Kelola semua akun keuangan Anda di satu tempat. Pantau saldo, transaksi, dan kinerja akun.</p>
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAccountModal">
-                <i class="bi bi-plus-circle me-2"></i>Tambah Akun Baru
-            </button>
-        </div>
-    </div>
+<!-- Page Header -->
+<div class="row mb-4">
+  <div class="col">
+    <h2 class="page-title mb-2">
+      <i class="bi bi-wallet2 me-2"></i>Kelola Akun
+    </h2>
+    <p class="text-muted mb-0">Kelola semua akun keuangan Anda di satu tempat. Pantau saldo, transaksi, dan kinerja akun.</p>
+  </div>
+  <div class="col-auto">
+    <a href="{{ route('apps.accounts.create') }}" class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i>
+    </a>
+  </div>
+</div>
 
-    <!-- Filter Section -->
-    <div class="card mb-4 filter-card" id="filterCard">
-        <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" 
-             data-bs-toggle="collapse" 
-             data-bs-target="#filterCollapse" 
-             aria-expanded="false" 
-             aria-controls="filterCollapse">
-            <h5 class="mb-0">
-                <i class="bi bi-funnel me-2"></i>Filter Pencarian
-            </h5>
-            <i class="bi bi-chevron-down transition-rotate"></i>
-        </div>
-        
-        <div class="collapse" id="filterCollapse">
-            <div class="card-body">
-                <form action="{{ route('apps.accounts.index') }}" method="GET" id="filterForm">
-                    <div class="row g-3">
-                        <!-- Type Filter -->
-                        <div class="col-md-4">
-                            <label for="type" class="form-label">Tipe Akun</label>
-                            <select class="form-select" id="type" name="type">
-                                <option value="">Semua Tipe</option>
-                                @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
-                                    <option value="{{ $type->value }}" {{ request('type') == $type->value ? 'selected' : '' }}>
-                                        {{ $type->label() }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <!-- Status Filter -->
-                        <div class="col-md-4">
-                            <label for="is_active" class="form-label">Status</label>
-                            <select class="form-select" id="is_active" name="is_active">
-                                <option value="">Semua Status</option>
-                                <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Search -->
-                        <div class="col-md-4">
-                            <label for="search" class="form-label">Cari</label>
-                            <div class="input-group">
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="search" 
-                                       name="search" 
-                                       placeholder="Cari nama atau nomor akun..."
-                                       value="{{ request('search') }}">
-                                <button class="btn btn-outline-secondary" type="button" id="clearSearch">
-                                    <i class="bi bi-x"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary me-2">
-                                    <i class="bi bi-search me-1"></i>Terapkan Filter
-                                </button>
-                                <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<!-- Filter Section -->
+<div class="card mb-4 filter-card" id="filterCard">
+  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+    <h5 class="mb-0">
+      <i class="bi bi-funnel me-2"></i>Filter Pencarian
+    </h5>
+    <i class="bi bi-chevron-down transition-rotate"></i>
+  </div>
 
-    <!-- Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-primary border-4 h-100">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="text-muted fw-semibold mb-2">Total Akun</h6>
-                            <h2 class="mb-0">{{ $summary['total_accounts'] ?? 0 }}</h2>
-                        </div>
-                        <div class="col-auto">
-                            <div class="account-icon bg-primary bg-opacity-10 text-primary">
-                                <i class="bi bi-wallet2"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <small class="text-muted">
-                            <i class="bi bi-check-circle me-1"></i>{{ $summary['active'] ?? 0 }} aktif
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-success border-4 h-100">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="text-muted fw-semibold mb-2">Total Saldo</h6>
-                            <h3 class="mb-0 currency">{{ $summary['total_balance'] ?? 0 }}</h3>
-                        </div>
-                        <div class="col-auto">
-                            <div class="account-icon bg-success bg-opacity-10 text-success">
-                                <i class="bi bi-cash-stack"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <small class="text-success">
-                            <i class="bi bi-arrow-up-right me-1"></i>Semua mata uang
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-info border-4 h-100">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="text-muted fw-semibold mb-2">Total Aset</h6>
-                            <h3 class="mb-0 currency">{{ $summary['asset_balance'] ?? 0 }}</h3>
-                        </div>
-                        <div class="col-auto">
-                            <div class="account-icon bg-info bg-opacity-10 text-info">
-                                <i class="bi bi-graph-up"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <small class="text-info">
-                            <i class="bi bi-building me-1"></i>{{ $summary['asset_accounts'] ?? 0 }} akun
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-warning border-4 h-100">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="text-muted fw-semibold mb-2">Total Liabilitas</h6>
-                            <h3 class="mb-0 currency">{{ abs($summary['liability_balance'] ?? 0) }}</h3>
-                        </div>
-                        <div class="col-auto">
-                            <div class="account-icon bg-warning bg-opacity-10 text-warning">
-                                <i class="bi bi-credit-card"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <small class="text-warning">
-                            <i class="bi bi-calculator me-1"></i>Kartu kredit & pinjaman
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="collapse" id="filterCollapse">
+    <div class="card-body">
+      <form action="{{ route('apps.accounts.index') }}" method="GET" id="filterForm">
+        <div class="row g-3">
+          <!-- Type Filter -->
+          <div class="col-md-4">
+            <label for="type" class="form-label">Tipe Akun</label>
+            <select class="form-select" id="type" name="type">
+              <option value="">Semua Tipe</option>
+              @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
+                <option value="{{ $type->value }}" {{ request('type') == $type->value ? 'selected' : '' }}>
+                  {{ $type->label() }}
+                </option>
+              @endforeach
+            </select>
+          </div>
 
-    <!-- Accounts List -->
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
-                <i class="bi bi-list-ul me-2"></i>Daftar Akun
-                <span class="badge bg-secondary ms-2">{{ $accounts->count() }}</span>
-            </h5>
-            <div class="d-flex align-items-center">
-                <div class="dropdown me-2">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-download me-1"></i>Ekspor
+          <!-- Status Filter -->
+          <div class="col-md-4">
+            <label for="is_active" class="form-label">Status</label>
+            <select class="form-select" id="is_active" name="is_active">
+              <option value="">Semua Status</option>
+              <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
+              <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
+            </select>
+          </div>
+
+          <!-- Search -->
+          <div class="col-md-4">
+            <label for="search" class="form-label">Cari</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="search" name="search" placeholder="Cari nama atau nomor akun..." value="{{ request('search') }}">
+              <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary me-2">
+                <i class="bi bi-search me-1"></i>Terapkan Filter
+              </button>
+              <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise me-1"></i>Reset
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-start border-primary border-4 h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col">
+            <h6 class="text-muted fw-semibold mb-2">Total Akun</h6>
+            <h2 class="mb-0">{{ $summary['total_accounts'] ?? 0 }}</h2>
+          </div>
+          <div class="col-auto">
+            <div class="account-icon bg-primary bg-opacity-10 text-primary">
+              <i class="bi bi-wallet2"></i>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <small class="text-muted">
+            <i class="bi bi-check-circle me-1"></i>{{ $summary['active'] ?? 0 }} aktif
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-start border-success border-4 h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col">
+            <h6 class="text-muted fw-semibold mb-2">Total Saldo</h6>
+            <h3 class="mb-0 currency">{{ $summary['total_balance'] ?? 0 }}</h3>
+          </div>
+          <div class="col-auto">
+            <div class="account-icon bg-success bg-opacity-10 text-success">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <small class="text-success">
+            <i class="bi bi-arrow-up-right me-1"></i>Semua mata uang
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-start border-info border-4 h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col">
+            <h6 class="text-muted fw-semibold mb-2">Total Aset</h6>
+            <h3 class="mb-0 currency">{{ $summary['asset_balance'] ?? 0 }}</h3>
+          </div>
+          <div class="col-auto">
+            <div class="account-icon bg-info bg-opacity-10 text-info">
+              <i class="bi bi-graph-up"></i>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <small class="text-info">
+            <i class="bi bi-building me-1"></i>{{ $summary['asset_accounts'] ?? 0 }} akun
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-start border-warning border-4 h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col">
+            <h6 class="text-muted fw-semibold mb-2">Total Liabilitas</h6>
+            <h3 class="mb-0 currency">{{ abs($summary['liability_balance'] ?? 0) }}</h3>
+          </div>
+          <div class="col-auto">
+            <div class="account-icon bg-warning bg-opacity-10 text-warning">
+              <i class="bi bi-credit-card"></i>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <small class="text-warning">
+            <i class="bi bi-calculator me-1"></i>Kartu kredit
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Accounts List -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">
+      <i class="bi bi-list-ul me-2"></i>Daftar Akun
+      <span class="badge bg-secondary ms-2">{{ $accounts->count() }}</span>
+    </h5>
+    <div class="d-flex align-items-center">
+      <div class="dropdown me-2">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <i class="bi bi-download me-1"></i>Ekspor
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>CSV</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>PDF</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xlsx me-2"></i>Excel</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-outline-secondary btn-sm" id="refreshAccounts">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+    </div>
+  </div>
+        
+  <div class="card-body">
+    @if($accounts->isEmpty())
+      <!-- Empty State -->
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <i class="bi bi-wallet2"></i>
+        </div>
+        <h5 class="mb-3">Belum ada akun</h5>
+        <p class="text-muted mb-4">Mulai dengan menambahkan akun keuangan pertama Anda untuk melacak pengeluaran dan pemasukan.</p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+          <i class="bi bi-plus-circle me-2"></i>Tambah Akun Baru
+        </button>
+      </div>
+    @else
+      <!-- Accounts List -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th width="300">Nama Akun</th>
+              <th>Tipe</th>
+              <th>Saldo</th>
+              <th>Status</th>
+              <th>Default</th>
+              <th class="text-end">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($accounts as $account)
+              <tr class="cursor-pointer" onclick="window.location.href='{{ route('apps.accounts.show', $account) }}'">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="account-icon me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+                      <i class="{{ $account->icon }}"></i>
+                    </div>
+                    <div>
+                      <strong class="d-block">{{ $account->name }}</strong>
+                      @if($account->account_number)
+                        <small class="text-muted">{{ $account->account_number }}</small>
+                      @endif
+                      @if($account->bank_name)
+                        <small class="text-muted d-block">{{ $account->bank_name }}</small>
+                      @endif
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  @php
+                    $badgeClass = 'badge-cash';
+                    switch($account->type->value) {
+                      case 'cash': $badgeClass = 'badge-cash'; break;
+                      case 'bank': $badgeClass = 'badge-bank'; break;
+                      case 'ewallet': $badgeClass = 'badge-ewallet'; break;
+                      case 'credit_card': $badgeClass = 'badge-credit-card'; break;
+                      case 'investment': $badgeClass = 'badge-investment'; break;
+                      case 'savings': $badgeClass = 'badge-savings'; break;
+                    }
+                  @endphp
+                  <span class="badge {{ $badgeClass }} account-type-badge">
+                    {{ $account->type->label() }}
+                  </span>
+                </td>
+                <td>
+                  <div class="balance-display currency">{{ $account->balance->getMinorAmount()->toInt() }}</div>
+                  <div class="balance-change text-muted">
+                    <small>
+                      Mata uang: {{ $account->currency }}
+                    </small>
+                  </div>
+                </td>
+                <td>
+                  @if($account->is_active)
+                    <span class="d-flex align-items-center">
+                      <span class="status-indicator status-active"></span>
+                      <span class="text-success">Aktif</span>
+                    </span>
+                  @else
+                    <span class="d-flex align-items-center">
+                      <span class="status-indicator status-inactive"></span>
+                      <span class="text-danger">Nonaktif</span>
+                    </span>
+                  @endif
+                </td>
+                <td>
+                  @if($account->is_default)
+                    <span class="badge bg-primary">Default</span>
+                  @else
+                    <button class="btn btn-outline-primary btn-sm set-default" data-id="{{ $account->id }}" data-bs-toggle="tooltip" data-bs-title="Set sebagai akun default">
+                      <i class="bi bi-star"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>CSV</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>PDF</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xlsx me-2"></i>Excel</a></li>
-                    </ul>
-                </div>
-                <button class="btn btn-outline-secondary btn-sm" id="refreshAccounts">
-                    <i class="bi bi-arrow-clockwise"></i>
-                </button>
-            </div>
-        </div>
-        
-        <div class="card-body">
-            @if($accounts->isEmpty())
-                <!-- Empty State -->
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i class="bi bi-wallet2"></i>
-                    </div>
-                    <h5 class="mb-3">Belum ada akun</h5>
-                    <p class="text-muted mb-4">Mulai dengan menambahkan akun keuangan pertama Anda untuk melacak pengeluaran dan pemasukan.</p>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAccountModal">
-                        <i class="bi bi-plus-circle me-2"></i>Tambah Akun Baru
-                    </button>
-                </div>
-            @else
-                <!-- Accounts List -->
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th width="300">Nama Akun</th>
-                                <th>Tipe</th>
-                                <th>Saldo</th>
-                                <th>Status</th>
-                                <th>Default</th>
-                                <th class="text-end">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($accounts as $account)
-                                <tr class="cursor-pointer" onclick="window.location.href='{{ route('apps.accounts.show', $account) }}'">
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="account-icon me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                                                <i class="{{ $account->icon }}"></i>
-                                            </div>
-                                            <div>
-                                                <strong class="d-block">{{ $account->name }}</strong>
-                                                @if($account->account_number)
-                                                    <small class="text-muted">{{ $account->account_number }}</small>
-                                                @endif
-                                                @if($account->bank_name)
-                                                    <small class="text-muted d-block">{{ $account->bank_name }}</small>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @php
-                                            $badgeClass = 'badge-cash';
-                                            switch($account->type->value) {
-                                                case 'cash': $badgeClass = 'badge-cash'; break;
-                                                case 'bank': $badgeClass = 'badge-bank'; break;
-                                                case 'ewallet': $badgeClass = 'badge-ewallet'; break;
-                                                case 'credit_card': $badgeClass = 'badge-credit-card'; break;
-                                                case 'investment': $badgeClass = 'badge-investment'; break;
-                                                case 'savings': $badgeClass = 'badge-savings'; break;
-                                            }
-                                        @endphp
-                                        <span class="badge {{ $badgeClass }} account-type-badge">
-                                            {{ $account->type->label() }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="balance-display currency">{{ $account->balance->getMinorAmount()->toInt() }}</div>
-                                        <div class="balance-change text-muted">
-                                            <small>
-                                                Mata uang: {{ $account->currency }}
-                                            </small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if($account->is_active)
-                                            <span class="d-flex align-items-center">
-                                                <span class="status-indicator status-active"></span>
-                                                <span class="text-success">Aktif</span>
-                                            </span>
-                                        @else
-                                            <span class="d-flex align-items-center">
-                                                <span class="status-indicator status-inactive"></span>
-                                                <span class="text-danger">Nonaktif</span>
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($account->is_default)
-                                            <span class="badge bg-primary">Default</span>
-                                        @else
-                                            <button class="btn btn-outline-primary btn-sm set-default" 
-                                                    data-id="{{ $account->id }}"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-title="Set sebagai akun default">
-                                                <i class="bi bi-star"></i>
-                                            </button>
-                                        @endif
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="action-buttons d-flex justify-content-end">
-                                            <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-info btn-sm me-2 view-account" data-bs-toggle="tooltip" data-bs-title="Lihat detail">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-outline-warning btn-sm me-2 edit-account" data-bs-toggle="tooltip" data-bs-title="Edit akun">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                       <form method="POST" action="{{ route('apps.accounts.destroy', $account) }}">
-                         @csrf
-                         @method('DELETE')
-                       </form>                     <button type="submit" class="btn btn-outline-danger btn-sm delete-account" data-bs-toggle="tooltip" data-bs-title="Hapus akun" onclick="return confirm('Are you sure to delete account: {{ $accounts->name }}');">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                  @endif
+                </td>
+                <td class="text-end">
+                  <div class="action-buttons d-flex justify-content-end">
+                    <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-info btn-sm me-2 view-account" data-bs-toggle="tooltip" data-bs-title="Lihat detail">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-outline-warning btn-sm me-2 edit-account" data-bs-toggle="tooltip" data-bs-title="Edit akun">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <form method="POST" action="{{ route('apps.accounts.destroy', $account) }}">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-outline-danger btn-sm delete-account" data-bs-toggle="tooltip" data-bs-title="Hapus akun" onclick="return confirm('Are you sure to delete account: {{ $accounts->name }}');">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
                 
-                <!-- Pagination -->
-                @if($accounts->hasPages())
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div class="text-muted">
-                            Menampilkan {{ $accounts->firstItem() }} sampai {{ $accounts->lastItem() }} dari {{ $accounts->total() }} akun
-                        </div>
-                        <nav>
-                            {{ $accounts->links('pagination::bootstrap-5') }}
-                        </nav>
-                    </div>
-                @endif
-            @endif
+      <!-- Pagination -->
+      @if($accounts->hasPages())
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <div class="text-muted">
+            Menampilkan {{ $accounts->firstItem() }} sampai {{ $accounts->lastItem() }} dari {{ $accounts->total() }} akun
+          </div>
+          <nav>
+            {{ $accounts->links('pagination::bootstrap-5') }}
+          </nav>
         </div>
-    </div>
+      @endif
+    @endif
+  </div>
+</div>
 
 <!-- View Account Modal -->
 @include('wallet::partials.accounts.show-modal')
@@ -552,39 +541,6 @@
                 window.location.reload();
             });
         }
-        
-        // Set default account
-        document.querySelectorAll('.set-default').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent row click
-                const accountId = this.getAttribute('data-id');
-                
-                if (confirm('Apakah Anda yakin ingin menjadikan akun ini sebagai default?')) {
-                    fetch(`{{ route("apps.accounts.set-default", "") }}/${accountId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({})
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showToast('success', 'Berhasil', 'Akun berhasil diatur sebagai default');
-                            setTimeout(() => location.reload(), 1500);
-                        } else {
-                            showToast('error', 'Gagal', data.message || 'Terjadi kesalahan');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showToast('error', 'Gagal', 'Terjadi kesalahan saat mengatur akun default');
-                    });
-                }
-            });
-        });
         
         // Toast notification function
         function showToast(type, title, message) {
