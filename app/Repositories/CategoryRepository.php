@@ -500,11 +500,15 @@ class CategoryRepository extends BaseRepository
 							"category" => $category,
 							"usage_percentage" => $usage,
 							"monthly_total" => $monthlyTotal,
-							"budget_limit" => $budget ? $budget->amount : 0,
+							"budget_limit" => $budget
+								? $budget->amount->getAmount()->toInt()
+								: 0,
 							"formatted_budget_limit" => $budget
 								? $budget->formatted_amount
 								: "Rp 0",
-							"is_exceeded" => $budget && $monthlyTotal > $budget->amount,
+							"is_exceeded" =>
+								$budget &&
+								$monthlyTotal > $budget->amount->getAmount()->toInt(),
 						];
 					})
 					->filter(fn($item) => $item["usage_percentage"] >= $threshold);
