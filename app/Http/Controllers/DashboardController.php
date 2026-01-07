@@ -28,7 +28,7 @@ class DashboardController extends BaseController
 		// Get accounts summary
 		$accountSummary = $this->accountService->getAccountSummary($user);
 
-		$accounTypeDistribution = $this->accountService->getAccountTypeDistribution(
+		$accountTypeDistribution = $this->accountService->getAccountTypeDistribution(
 			$user
 		);
 
@@ -68,7 +68,7 @@ class DashboardController extends BaseController
 			"wallet::index",
 			compact(
 				"accountSummary",
-				"accounTypeDistribution",
+				"accountTypeDistribution",
 				"accountAnalytics",
 				"totalIncome",
 				"totalExpense",
