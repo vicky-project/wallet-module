@@ -362,9 +362,9 @@
         </div>
         <h5 class="mb-3">Belum ada akun</h5>
         <p class="text-muted mb-4">Mulai dengan menambahkan akun keuangan pertama Anda untuk melacak pengeluaran dan pemasukan.</p>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+        <a href="{{ route('apps.accounts.create') }}" class="btn btn-primary">
           <i class="bi bi-plus-circle me-2"></i>Tambah Akun Baru
-        </button>
+        </a>
       </div>
     @else
       <!-- Accounts List -->
@@ -482,10 +482,6 @@
     @endif
   </div>
 </div>
-
-<!-- View Account Modal -->
-@include('wallet::partials.accounts.show-modal')
-
 @endsection
 
 @push('scripts')
