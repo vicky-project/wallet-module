@@ -5,6 +5,15 @@ use Modules\Wallet\Enums\CategoryType;
 
 class Helper
 {
+	public static function formatMoney(int|string|float $money)
+	{
+		if (!is_int($money)) {
+			$money = (int) $money;
+		}
+
+		return number_format($money, 0, ",", ".");
+	}
+
 	public static function listCurrencies()
 	{
 		return collect(config("money.currencies"))

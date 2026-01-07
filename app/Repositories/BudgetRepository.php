@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Models\Budget;
@@ -248,8 +249,8 @@ class BudgetRepository extends BaseRepository
 
 			return [
 				"budgets" => $budgets,
-				"total_budget" => $totalBudget,
-				"total_spent" => $totalSpent,
+				"total_budget" => Helper::formatMoney($totalBudget),
+				"total_spent" => Helper::formatMoney($totalSpent),
 				"total_remaining" => $totalRemaining,
 				"budget_usage_percentage" => $budgetUsagePercentage,
 				"formatted_total_budget" => $this->formatMoney(

@@ -1,6 +1,7 @@
 @extends('wallet::layouts.app')
 
 @use('Modules\Wallet\Enums\TransactionType')
+@use('Modules\Wallet\Helpers\Helper')
 
 @section('content')
 @include('wallet::partials.fab')
@@ -104,7 +105,7 @@
                 <small class="text-muted">{{ $transaction->transaction_date }} • {{ $transaction->category->name }}</small>
               </div>
               <div class="{{ $isIncome ? 'text-income' : 'text-expense'}} fw-bold">
-                {{ $isIncome ? '+' : '-'}}{{ number_format($transaction->amount->getAmount()->toInt(), 0, ',', '.') }}
+                {{ $isIncome ? '+' : '-'}}{{ Helper::formatMoney($transaction->amount->getAmount()->toInt()) }}
               </div>
             </div>
           @endforeach
@@ -153,7 +154,7 @@
           <div class="mb-3">
             <div class="d-flex justify-content-between mb-1">
               <span>{{ $budget->category->name }}</span>
-              <span>{{ $budget->spent }} / {{ $budget->amount }}</span>
+              <span>{{ $budget->spent->formatTo('id_ID') }} / {{ $budget->amount->formatTo('id_ID') }}</span>
             </div>
             <div class="progress {{ $progressClass }}" style="height: 10px;">
               <div class="progress-bar bg-success" role="progressbar" style="width: {{ $budget->percentage }}%" title="{{ $budget->percentage }}% terpakai"></div>
