@@ -265,7 +265,9 @@ class BudgetRepository extends BaseRepository
 					$unbudgetedData["total"]
 				),
 				"total_expenses" => $totalExpenses,
-				"formatted_total_expenses" => $this->formatMoney((int) $totalExpenses),
+				"formatted_total_expenses" => $this->formatMoney(
+					(int) $totalExpenses / 100
+				),
 				"budgeted_expense_percentage" => $budgetedExpensePercentage,
 			];
 		});
