@@ -217,7 +217,6 @@ class BudgetRepository extends BaseRepository
 				"year" => $year,
 				"include_inactive" => false,
 			]);
-			dd($budgets);
 
 			// Calculate totals
 			$totalBudget = $budgets->sum(
@@ -226,7 +225,6 @@ class BudgetRepository extends BaseRepository
 			$totalSpent = $budgets->sum(
 				fn(Budget $budget) => $budget->spent->getAmount()->toInt()
 			);
-			dd($totalSpent);
 
 			$totalRemaining = max(0, $totalBudget - $totalSpent);
 			$budgetUsagePercentage =
