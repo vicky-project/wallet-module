@@ -733,7 +733,7 @@
         if (recalculateBtn) {
             recalculateBtn.addEventListener('click', function() {
                 if (confirm('Apakah Anda yakin ingin menghitung ulang semua saldo akun?')) {
-                    fetch('{{ route("apps.accounts.bulk-recalculate") }}', {
+                    fetch('{{ route("apps.financial") }}', {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
