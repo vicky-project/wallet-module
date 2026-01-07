@@ -27,10 +27,9 @@ class AccountController extends BaseController
 			$user = $request->user();
 			$filters = $request->only(["type", "is_active", "search"]);
 
-			$accounts = $this->service->getRepository->getUserAccounts(
-				$user,
-				$filters
-			);
+			$accounts = $this->service
+				->getRepository()
+				->getUserAccounts($user, $filters);
 			$stats = $this->service->getAccountSummary($user);
 
 			return view("wallet::accounts.index", compact("accounts", "stats"));
