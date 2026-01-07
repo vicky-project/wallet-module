@@ -510,7 +510,9 @@ class CategoryRepository extends BaseRepository
 								: "Rp 0",
 							"is_exceeded" =>
 								$budget &&
-								$monthlyTotal > $budget->amount->getAmount()->toInt(),
+								$this->toDatabaseAmount(
+									$this->fromDatabaseAmount($monthlyTotal)
+								) > $budget->amount->getAmount()->toInt(),
 						];
 					})
 					->filter(fn($item) => $item["usage_percentage"] >= $threshold);
