@@ -42,7 +42,6 @@ class BudgetController extends BaseController
 
 		// Get all data in single repository call
 		$data = $this->budgetRepository->getUserBudgetsWithSummary($user, $filters);
-		dd($data);
 
 		// Get categories for filter
 		$categories = Category::where(function ($query) use ($user) {
