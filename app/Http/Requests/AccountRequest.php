@@ -28,7 +28,7 @@ class AccountRequest extends FormRequest
 			"account_number" => "nullable|numeric",
 			"bank_name" => "nullable|string|max:500",
 			"initial_balance" => "nullable|min:0",
-			"current_balance" => "nullable|min:0",
+			"currency" => "required|string",
 			"is_default" => "boolean",
 		];
 
@@ -48,7 +48,7 @@ class AccountRequest extends FormRequest
 			"account_number" => "Account Number",
 			"bank_name" => "Bank Name",
 			"initial_balance" => "Initial Balance",
-			"current_balance" => "Current Balance",
+			"currency" => "Currency",
 			"is_default" => "As Default",
 		];
 	}

@@ -58,12 +58,6 @@ class AccountRepository extends BaseRepository
 			$this->toMoney($data["initial_balance"] ?? 0)
 		);
 
-		$data["current_balance"] = $this->toDatabaseAmount(
-			$this->toMoney(
-				$data["current_balance"] ?? ($data["initial_balance"] ?? 0)
-			)
-		);
-
 		return $this->create($data);
 	}
 
