@@ -67,6 +67,12 @@
       <div class="mb-3">
         <label for="initial_balance" class="form-label">Saldo Awal</label>
         <div class="input-group">
+          <select class="form-select" name="currency">
+            @foreach(Helper::listCurrencies() as $name => $currency)
+            {{ dd($name, $currency) }}
+            <option></option>
+            @endforeach
+          </select>
           <span class="input-group-text">Rp</span>
           <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', isset($account) ? $account->initial_balance->getAmount()->toInt() : 0) }}" placeholder="0" min="0">
         </div>

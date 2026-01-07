@@ -2,9 +2,10 @@
 
 @section('title', 'Tambah Akun Baru - ' . config('app.name'))
 
+@use('Modules\Wallet\Helpers\Helper')
+
 @section('content')
 @include('wallet::partials.fab')
-<div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center mb-4 text-end">
     <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left me-2"></i>Kembali
@@ -36,5 +37,4 @@
       </div>
     </div>
   </div>
-</div>
 @endsection
