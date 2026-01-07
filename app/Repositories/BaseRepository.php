@@ -49,9 +49,14 @@ abstract class BaseRepository
 	 */
 	protected function fromDatabaseAmount(
 		int $amount,
-		string $currency = "IDR",
+		?string $currency = null,
 		bool $isInt = false
 	): Money {
+		$currency =
+			$currency ??
+			($money->getCurrency()->getCurrencyCode() ??
+				config("wallet.default_currency", "USD"));
+
 		return $isInt
 			? Money::of($amount, $currency)
 			: Money::ofMinor($amount, $currency);
