@@ -245,11 +245,8 @@ class BudgetRepository extends BaseRepository
 				->where("type", TransactionType::EXPENSE)
 				->whereMonth("transaction_date", $month)
 				->whereYear("transaction_date", $year)
-				->sum(
-					fn(Transaction $transaction) => $transaction->amount
-						->getAmount()
-						->toInt()
-				);
+				->sum("amount");
+			dd($totalExpenses);
 
 			$budgetedExpensePercentage =
 				$totalExpenses > 0 ? round(($totalSpent / $totalExpenses) * 100, 2) : 0;
