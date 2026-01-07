@@ -4,6 +4,7 @@ namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Brick\Money\Money;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -157,8 +158,13 @@ class BudgetRepository extends BaseRepository
 		// Map spent amounts to budgets
 		foreach ($budgets as $budget) {
 			$key = $budget->category_id . "-" . $budget->month . "-" . $budget->year;
-			dd($budget, $spentAmounts[$key]);
-			$budget->spent = $spentAmounts[$key]->total_spent ?? 0;
+
+			$budget->spent = Money::ofMinor(
+				$spentAmounts[$key]->total_spent ?? 0,
+				"IDR"
+			)
+				->getAmount()
+				->toInt();
 			$budget->percentage =
 				$budget->amount->getAmount()->toInt() > 0
 					? round(
@@ -575,8 +581,6 @@ class BudgetRepository extends BaseRepository
 		Cache::forget($this->getBudgetSummaryCacheKey($userId, $month, $year));
 		Cache::forget($this->getHealthStatusCacheKey($userId, $month, $year));
 	}
-
-	// Tambahkan method ini di BudgetRepository
 
 	/**
 	 * Get user budgets with summary in single call
