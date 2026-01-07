@@ -3,13 +3,7 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Modules\Core\Http\Controllers\BaseController;
-use Modules\Wallet\Repositories\{
-	TransactionRepository,
-	CategoryRepository,
-	BudgetRepository,
-	SavingGoalRepository,
-	AccountRepository
-};
+use Modules\Wallet\Services\{AccountService};
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
 use Carbon\Carbon;
@@ -17,76 +11,71 @@ use Illuminate\Http\Request;
 
 class DashboardController extends BaseController
 {
-	protected $transactionRepository;
-	protected $categoryRepository;
-	protected $budgetRepository;
-	protected $savingGoalRepository;
-	protected $accountRepository;
+	protected AccountService $accountService;
 
-	public function __construct(
-		TransactionRepository $transactionRepository,
-		CategoryRepository $categoryRepository,
-		BudgetRepository $budgetRepository,
-		SavingGoalRepository $savingGoalRepository,
-		AccountRepository $accountRepository
-	) {
-		$this->transactionRepository = $transactionRepository;
-		$this->categoryRepository = $categoryRepository;
-		$this->budgetRepository = $budgetRepository;
-		$this->savingGoalRepository = $savingGoalRepository;
-		$this->accountRepository = $accountRepository;
+	public function __construct(AccountService $accountService)
+	{
+		$this->accountService = $accountService;
 	}
 
 	/**
 	 * Display main dashboard
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		$user = auth()->user();
-		$currentMonth = Carbon::now()->month;
-		$currentYear = Carbon::now()->year;
+		$user = $request->user();
 
-		// Get dashboard statistics
-		$stats = $this->getDashboardStats($user, $currentMonth, $currentYear);
+		// Get accounts summary
+		$accountSummary = $this->accountService->getAccountSummary($user);
 
-		// Get recent transactions
-		$recentTransactions = $this->transactionRepository->getRecentTransactions(
-			$user,
-			10
+		$accounTypeDistribution = $this->accountService->getAccountTypeDistribution(
+			$user
 		);
 
-		// Get budget summary for current month
-		$budgetSummary = $this->budgetRepository->getBudgetSummary(
+		// Get account analytics for current month
+		$currentMonth = date("m");
+		$currentYear = date("Y");
+		$accountAnalytics = $this->accountService->getAccountAnalytics(
 			$user,
 			$currentMonth,
 			$currentYear
 		);
 
-		$budgets = $this->budgetRepository->getUserBudgets($user);
+		// Calculate total income and expense from analytics
+		$totalIncome = 0;
+		$totalExpense = 0;
+		foreach ($accountAnalytics as $analytic) {
+			$totalIncome += $analytic["income"]->getMinorAmount()->toInt();
+			$totalExpense += $analytic["expense"]->getMinorAmount()->toInt();
+		}
 
-		// Get active saving goals
-		$savingGoals = $this->savingGoalRepository->getActiveGoals($user);
+		// Get recent transactions if service exists
+		$recentTransactions = [];
+		$totalTransactions = 0;
 
-		// Get accounts summary
-		$accounts = $this->accountRepository->getAccountsMapping(
-			$this->accountRepository->accounts(auth()->user())
+		// Calculate net cash flow
+		$netCashFlow = $totalIncome - $totalExpense;
+
+		// Get popular accounts (most used)
+		$popularAccounts = $this->accountService->repository->getPopularAccounts(
+			$user,
+			3
 		);
 
-		// Get categories for quick add forms
-		$incomeCategories = $this->categoryRepository->getByType("income", $user);
-		$expenseCategories = $this->categoryRepository->getByType("expense", $user);
+		// Get monthly trends (last 6 months)
+		$monthlyTrends = $this->getMonthlyTrends($user, 6);
 
 		return view(
 			"wallet::index",
 			compact(
-				"stats",
-				"recentTransactions",
-				"budgets",
-				"budgetSummary",
-				"savingGoals",
-				"accounts",
-				"incomeCategories",
-				"expenseCategories"
+				"accountSummary",
+				"accounTypeDistribution",
+				"accountAnalytics",
+				"totalIncome",
+				"totalExpense",
+				"netCashFlow",
+				"popularAccounts",
+				"monthlyTrends"
 			)
 		);
 	}

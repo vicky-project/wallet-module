@@ -5,31 +5,30 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Repositories\AccountRepository;
+use Modules\Wallet\Services\AccountService;
 use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Http\Requests\AccountRequest;
 
 class AccountController extends BaseController
 {
-	protected $accountRepository;
+	protected AccountService $service;
 
-	public function __construct(AccountRepository $accountRepository)
+	public function __construct(AccountService $service)
 	{
-		$this->accountRepository = $accountRepository;
+		$this->service = $service;
 	}
 
 	/**
 	 * Display a listing of accounts
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		try {
-			$accountsRepo = $this->accountRepository->accounts(auth()->user());
-			$accounts = $this->accountRepository->getAccountsMapping($accountsRepo);
-			$stats = $this->accountRepository->getAccountStats(
-				$accountsRepo,
-				auth()->user()
-			);
+			$user = $request->user();
+			$filters = $request->only(["type", "is_active", "search"]);
+
+			$accounts = $this->service->repository->getUserAccounts($user, $filters);
+			$stats = $this->service->getAccountSummary($user);
 
 			return view("wallet::accounts.index", compact("accounts", "stats"));
 		} catch (\Exception $e) {
@@ -57,10 +56,8 @@ class AccountController extends BaseController
 	public function store(AccountRequest $request)
 	{
 		try {
-			$account = $this->accountRepository->createAccount(
-				$request->validated(),
-				auth()->user()
-			);
+			$user = $request->user();
+			$account = $this->service->createAccount($user, $request->validated());
 
 			return redirect()
 				->route("apps.accounts.index")
@@ -76,7 +73,7 @@ class AccountController extends BaseController
 	/**
 	 * Display the specified account
 	 */
-	public function show(Account $account)
+	public function show(Request $request, Account $account)
 	{
 		try {
 			// Get recent transactions
@@ -135,12 +132,7 @@ class AccountController extends BaseController
 	public function update(AccountRequest $request, Account $account)
 	{
 		try {
-			$this->authorize("update", $account);
-
-			$this->accountRepository->updateAccount(
-				$account->id,
-				$request->validated()
-			);
+			$this->service->updateAccount($account, $request->validated());
 
 			return redirect()
 				->route("apps.accounts.show", $account)

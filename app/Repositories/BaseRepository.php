@@ -2,10 +2,11 @@
 
 namespace Modules\Wallet\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class BaseRepository
 {
@@ -80,7 +81,7 @@ abstract class BaseRepository
 	 */
 	public function update(int $id, array $data): bool
 	{
-		$model = $this->model->findOrFail($id);
+		$model = $this->findOrFail($id);
 		return $model->update($data);
 	}
 
@@ -89,35 +90,87 @@ abstract class BaseRepository
 	 */
 	public function delete(int $id): bool
 	{
-		return $this->model->destroy($id);
+		$model = $this->findOrFail($id);
+		return $model->delete();
+	}
+
+	/**
+	 * Restore soft delete record
+	 */
+	public function restore(int $id): bool
+	{
+		return $this->model
+			->withTrashed()
+			->where("id", $id)
+			->restore();
+	}
+
+	/**
+	 * Force delete record
+	 */
+	public function forceDelete(int $id): bool
+	{
+		$model = $this->model->withTrashed()->findOrFail($id);
+		return $model->forceDelete();
 	}
 
 	/**
 	 * Find by ID
 	 */
-	public function find(int $id): ?Model
+	public function find(int $id, array $with = []): ?Model
 	{
-		return $this->model->find($id);
+		return $this->model->with($with)->find($id);
+	}
+
+	/**
+	 * Find by ID
+	 */
+	public function findOrFail(int $id, array $with = []): Model
+	{
+		return $this->model->with($with)->findOrFail($id);
 	}
 
 	/**
 	 * Get all records
 	 */
-	public function all(): Collection
+	public function all(array $columns = ["*"]): Collection
 	{
-		return $this->model->all();
+		return $this->model->all($columns);
 	}
 
 	/**
 	 * Get paginated records
 	 */
-	public function paginate(int $perPage = 15)
-	{
-		return $this->model->paginate($perPage);
+	public function paginate(
+		int $perPage = 15,
+		array $columns = ["*"]
+	): LengthAwarePaginator {
+		return $this->model->paginate($perPage, $columns);
 	}
 
-	public function getModel()
+	public function getModel(): Model
 	{
 		return $this->model;
+	}
+
+	public function query()
+	{
+		return $this->model->newQuery();
+	}
+
+	/**
+	 * Update or create
+	 */
+	public function updateOrCreate(array $attributes, array $values = []): Model
+	{
+		return $this->model->updateOrCreate($attributes, $values);
+	}
+
+	/**
+	 * First or create
+	 */
+	public function firstOrCreate(array $attributes, array $values = []): Model
+	{
+		return $this->model->firstOrCreate($attributes, $values);
 	}
 }

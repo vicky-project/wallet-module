@@ -2,12 +2,11 @@
 
 namespace Modules\Wallet\Models;
 
-use Brick\Money\Money;
-use Brick\Math\RoundingMode;
-use Modules\Wallet\Casts\MoneyCast;
-use Modules\Wallet\Enums\AccountType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Wallet\Casts\MoneyCast;
+use Modules\Wallet\Enums\AccountType;
+use Modules\Wallet\Enums\TransactionType;
 
 class Account extends Model
 {
@@ -17,129 +16,179 @@ class Account extends Model
 		"user_id",
 		"name",
 		"type",
-		"account_number",
-		"currency",
-		"bank_name",
-		"current_balance",
+		"balance",
 		"initial_balance",
+		"currency",
+		"account_number",
+		"bank_name",
+		"color",
+		"icon",
+		"is_active",
 		"is_default",
+		"notes",
 	];
 
 	protected $casts = [
 		"type" => AccountType::class,
-		"current_balance" => MoneyCast::class,
+		"balance" => MoneyCast::class,
 		"initial_balance" => MoneyCast::class,
+		"is_active" => "boolean",
 		"is_default" => "boolean",
+		"created_at" => "datetime",
+		"updated_at" => "datetime",
+		"deleted_at" => "datetime",
 	];
 
-	protected static function boot()
+	protected $attributes = [
+		"type" => "cash",
+		"currency" => "IDR",
+		"color" => "#3490dc",
+		"icon" => "bi-wallet",
+		"is_active" => true,
+		"is_default" => false,
+	];
+
+	public static function boot()
 	{
 		parent::boot();
 
 		static::creating(function ($account) {
-			if (!empty($account->initial_balance)) {
-				$account->current_balance = $account->initial_balance;
+			// Ensure only one default account per user
+			if ($account->is_default) {
+				self::where("user_id", $account->user_id)
+					->where("is_default", true)
+					->update(["is_default" => false]);
 			}
 		});
 
-		static::saving(function ($account) {
+		static::updating(function ($account) {
+			// Ensure only one default account per user
 			if ($account->is_default) {
 				self::where("user_id", $account->user_id)
+					->where("is_default", true)
 					->where("id", "!=", $account->id)
 					->update(["is_default" => false]);
 			}
 		});
 	}
 
+	/**
+	 * Relationship with User
+	 */
 	public function user()
 	{
 		return $this->belongsTo(config("auth.providers.users.model"));
 	}
 
+	/**
+	 * Relationship with Transactions (as source account)
+	 */
 	public function transactions()
 	{
 		return $this->hasMany(Transaction::class);
 	}
 
-	public function deposit(Money $amount)
+	/**
+	 * Relationship with Transactions (as destination account for transfers)
+	 */
+	public function destinationTransactions()
 	{
-		$this->current_balance = $this->current_balance->plus(
-			$amount,
-			RoundingMode::DOWN
-		);
-		$this->save();
-		return $this;
+		return $this->hasMany(Transaction::class, "to_account_id");
 	}
 
-	public function withdraw(Money $amount)
+	/**
+	 * Scope for active accounts
+	 */
+	public function scopeActive($query)
 	{
-		if ($this->current_balance->isLessThan($amount)) {
-			throw new \Exception("Insufficient balance");
-		}
-
-		$this->current_balance = $this->current_balance->minus(
-			$amount,
-			RoundingMode::DOWN
-		);
-		$this->save();
-
-		return $this;
+		return $query->where("is_active", true);
 	}
 
-	public function getFormattedBalanceAttribute()
-	{
-		if (!$this->current_balance) {
-			return 0;
-		}
-
-		return $this->current_balance->formatTo("id_ID");
-	}
-
-	public function getFormattedInitialBalanceAttribute()
-	{
-		if (!$this->initial_balance) {
-			return 0;
-		}
-
-		return $this->initial_balance->formatTo("id_ID");
-	}
-
-	public function getTypeLabelAttribute()
-	{
-		return $this->type->name;
-	}
-
-	public function getBalanceChangeAttribute()
-	{
-		if (!$this->current_balance || !$this->initial_balance) {
-			return 0;
-		}
-
-		return $this->current_balance->getAmount()->toFloat() -
-			$this->initial_balance->getAmount()->toFloat();
-	}
-
-	public function getFormattedBalanceChangeAttribute()
-	{
-		$change = $this->balanceChange;
-		$formatted = "Rp" . number_format(abs($change), 0, ",", ".");
-
-		if ($change > 0) {
-			return "+{$formatted}";
-		} elseif ($change < 0) {
-			return "-{$formatted}";
-		}
-
-		return $formatted;
-	}
-
-	public function getIsBalancePositiveAttribute()
-	{
-		return $this->balanceChange > 0;
-	}
-
+	/**
+	 * Scope for default account
+	 */
 	public function scopeDefault($query)
 	{
 		return $query->where("is_default", true);
+	}
+
+	/**
+	 * Scope for specific type
+	 */
+	public function scopeType($query, $type)
+	{
+		return $query->where("type", $type);
+	}
+
+	/**
+	 * Scope for user accounts
+	 */
+	public function scopeForUser($query, $userId)
+	{
+		return $query->where("user_id", $userId);
+	}
+
+	/**
+	 * Check if account is liability (credit card or loan)
+	 */
+	public function isLiability(): bool
+	{
+		return in_array($this->type, [AccountType::CREDIT_CARD]);
+	}
+
+	/**
+	 * Check if account is asset
+	 */
+	public function isAsset(): bool
+	{
+		return !$this->isLiability();
+	}
+
+	/**
+	 * Get formatted balance
+	 */
+	public function getFormattedBalanceAttribute(): string
+	{
+		return $this->balance->formatTo("id_ID");
+	}
+
+	/**
+	 * Get formatted initial balance
+	 */
+	public function getFormattedInitialBalanceAttribute(): string
+	{
+		return $this->initial_balance->formatTo("id_ID");
+	}
+
+	/**
+	 * Get total income for period
+	 */
+	public function getIncomeForPeriod($startDate, $endDate)
+	{
+		return $this->transactions()
+			->where("type", TransactionType::INCOME)
+			->whereBetween("transaction_date", [$startDate, $endDate])
+			->sum("amount");
+	}
+
+	/**
+	 * Get total expense for period
+	 */
+	public function getExpenseForPeriod($startDate, $endDate)
+	{
+		return $this->transactions()
+			->where("type", TransactionType::EXPENSE)
+			->whereBetween("transaction_date", [$startDate, $endDate])
+			->sum("amount");
+	}
+
+	/**
+	 * Get net flow for period (income - expense)
+	 */
+	public function getNetFlowForPeriod($startDate, $endDate)
+	{
+		$income = $this->getIncomeForPeriod($startDate, $endDate);
+		$expense = $this->getExpenseForPeriod($startDate, $endDate);
+		return $income->minus($expense);
 	}
 }
