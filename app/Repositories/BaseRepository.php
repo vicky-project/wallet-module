@@ -52,10 +52,7 @@ abstract class BaseRepository
 		?string $currency = null,
 		bool $isInt = false
 	): Money {
-		$currency =
-			$currency ??
-			($amount->getCurrency()->getCurrencyCode() ??
-				config("wallet.default_currency", "USD"));
+		$currency = $currency ?? config("wallet.default_currency", "USD");
 
 		return $isInt
 			? Money::of($amount, $currency)
