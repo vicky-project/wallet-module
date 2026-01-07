@@ -4,7 +4,6 @@ namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
 use Carbon\Carbon;
-use Brick\Money\Money;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -159,12 +158,9 @@ class BudgetRepository extends BaseRepository
 		foreach ($budgets as $budget) {
 			$key = $budget->category_id . "-" . $budget->month . "-" . $budget->year;
 
-			$budget->spent = Money::ofMinor(
-				$spentAmounts[$key]->total_spent ?? 0,
-				"IDR"
-			)
-				->getAmount()
-				->toInt();
+			$budget->spent = $this->toDatabaseAmount(
+				$this->toMoney($spentAmounts[$key]->total_spent ?? 0)
+			);
 			$budget->save();
 			$budget->percentage =
 				$budget->amount->getAmount()->toInt() > 0
@@ -256,17 +252,23 @@ class BudgetRepository extends BaseRepository
 				"total_spent" => $totalSpent,
 				"total_remaining" => $totalRemaining,
 				"budget_usage_percentage" => $budgetUsagePercentage,
-				"formatted_total_budget" => $this->formatMoney($totalBudget),
-				"formatted_total_spent" => $this->formatMoney($totalSpent),
-				"formatted_total_remaining" => $this->formatMoney($totalRemaining),
+				"formatted_total_budget" => $this->formatMoney(
+					$this->toMoney($totalBudget)
+				),
+				"formatted_total_spent" => $this->formatMoney(
+					$this->toMoney($totalSpent)
+				),
+				"formatted_total_remaining" => $this->formatMoney(
+					$this->toMoney($totalRemaining)
+				),
 				"unbudgeted_categories" => $unbudgetedData["categories"],
 				"unbudgeted_expenses" => $unbudgetedData["total"],
 				"formatted_unbudgeted_expenses" => $this->formatMoney(
-					$unbudgetedData["total"]
+					$this->toMoney($unbudgetedData["total"])
 				),
 				"total_expenses" => $totalExpenses,
 				"formatted_total_expenses" => $this->formatMoney(
-					(int) $totalExpenses / 100
+					$this->toMoney((int) $totalExpenses / 100)
 				),
 				"budgeted_expense_percentage" => $budgetedExpensePercentage,
 			];

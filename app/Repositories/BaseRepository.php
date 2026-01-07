@@ -25,7 +25,7 @@ abstract class BaseRepository
 			return $amount;
 		}
 
-		if (is_numeric($amount)) {
+		if (is_numeric($amount) || is_int($amount)) {
 			return Money::of($amount, $currency);
 		}
 
@@ -60,11 +60,8 @@ abstract class BaseRepository
 	/**
 	 * Format Money for display
 	 */
-	protected function formatMoney(Money|int $money): string
+	protected function formatMoney(Money $money): string
 	{
-		if (is_int($money)) {
-			$money = Money::of($money, "IDR");
-		}
 		return $money->formatTo("id_ID");
 	}
 
