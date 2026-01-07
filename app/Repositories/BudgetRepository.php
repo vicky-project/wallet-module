@@ -165,6 +165,7 @@ class BudgetRepository extends BaseRepository
 			)
 				->getAmount()
 				->toInt();
+			$budget->save();
 			$budget->percentage =
 				$budget->amount->getAmount()->toInt() > 0
 					? round(
