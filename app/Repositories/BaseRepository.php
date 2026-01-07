@@ -54,7 +54,7 @@ abstract class BaseRepository
 	): Money {
 		$currency =
 			$currency ??
-			($money->getCurrency()->getCurrencyCode() ??
+			($amount->getCurrency()->getCurrencyCode() ??
 				config("wallet.default_currency", "USD"));
 
 		return $isInt
