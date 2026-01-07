@@ -492,8 +492,8 @@ class CategoryRepository extends BaseRepository
 							$currentYear
 						);
 						$usage =
-							$budget && $budget->amount > 0
-								? ($monthlyTotal / $budget->amount) * 100
+							$budget && $budget->amount->getAmount()->toInt() > 0
+								? ($monthlyTotal / $budget->amount->getAmount()->toInt()) * 100
 								: 0;
 
 						return [
