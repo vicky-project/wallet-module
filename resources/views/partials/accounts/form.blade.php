@@ -114,7 +114,7 @@
       <div class="card border-0 bg-light">
         <div class="card-body">
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" @checked(old('is_active', $account->is_active ?? true))>
+            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $account->is_active ?? true))>
             <label class="form-check-label fw-semibold" for="is_active">
               <i class="bi bi-check-circle text-success me-2"></i>Aktifkan Akun
             </label>
@@ -128,7 +128,7 @@
       <div class="card border-0 bg-light">
         <div class="card-body">
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="is_default" name="is_default" @checked(old('is_default', $account->is_defaultb?? false))>
+            <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1" @checked(old('is_default', $account->is_defaultb?? false))>
             <label class="form-check-label fw-semibold" for="is_default">
               <i class="bi bi-star text-warning me-2"></i>Jadikan Akun Default
             </label>
