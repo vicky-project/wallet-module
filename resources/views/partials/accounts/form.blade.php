@@ -219,7 +219,7 @@
     // Color reset button
     const resetColorBtn = document.getElementById('resetColor');
     resetColorBtn.addEventListener('click', function() {
-      colorInput.value = '#3490dc';
+      colorInput.value = accountTypeMap[typeSelect.value].color ?? '#3490dc';
       updateIconPreviewColor();
     });
         
