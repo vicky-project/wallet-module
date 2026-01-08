@@ -56,7 +56,7 @@ class Helper
 			],
 			"ewallet" => [
 				"icon" => "bi-phone",
-				"color" => "#8b5cf6",
+				"color" => "#f59e0b",
 				"label" => "E-Wallet",
 				"bankPlaceholder" => "Contoh: Dana, OVO, GoPay",
 			],
@@ -68,7 +68,7 @@ class Helper
 			],
 			"investment" => [
 				"icon" => "bi-graph-up",
-				"color" => "#f59e0b",
+				"color" => "#8b5cf6",
 				"label" => "Investasi",
 				"bankPlaceholder" => "Contoh: Reksadana, Saham, Crypto",
 			],
