@@ -456,7 +456,7 @@
                     <form method="POST" action="{{ route('apps.accounts.destroy', $account) }}">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" class="btn btn-outline-danger btn-sm delete-account" data-bs-toggle="tooltip" data-bs-title="Hapus akun" onclick="return confirm('Are you sure to delete account: {{ $accounts->name }}');">
+                      <button type="submit" class="btn btn-outline-danger btn-sm delete-account" data-bs-toggle="tooltip" data-bs-title="Hapus akun" onclick="return confirm('Are you sure to delete account: {{ $account->name }}');">
                         <i class="bi bi-trash"></i>
                       </button>
                     </form>
