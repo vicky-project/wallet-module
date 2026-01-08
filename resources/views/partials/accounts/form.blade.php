@@ -40,7 +40,7 @@
         <div class="col-md-6 mb-3">
             <label for="initial_balance" class="form-label">Saldo Awal</label>
             <div class="input-group">
-                <span class="input-group-text">Rp</span>
+                <span class="input-group-text" id="currency-symbol">Rp</span>
                 <input type="number" 
                        class="form-control @error('initial_balance') is-invalid @enderror" 
                        id="initial_balance" 
@@ -59,7 +59,7 @@
             <label for="currency" class="form-label">Mata Uang <span class="text-danger">*</span></label>
             <select class="form-select @error('currency') is-invalid @enderror" id="currency" name="currency" required>
               @foreach(\Modules\Wallet\Helpers\Helper::listCurrencies() as $name => $currency)
-                <option value="{{ $name }}" {{ old('currency', $account->currency ?? 'IDR') == 'IDR' ? 'selected' : '' }} @selected(old('currency', $account->currency ?? 'IDR') == $name)>
+                <option value="{{ $name }}" @selected(old('currency', $account->currency ?? 'IDR') == $name)>
                     {{ $currency}}
                 </option>
                 @endforeach
@@ -123,33 +123,11 @@
             <div class="row">
                 <div class="col-9">
                     <select class="form-select @error('icon') is-invalid @enderror" id="icon" name="icon">
-                        <option value="bi-wallet" {{ old('icon', $account->icon ?? 'bi-wallet') == 'bi-wallet' ? 'selected' : '' }}>
-                            Wallet (Dompet)
+                      @foreach(\Modules\Wallet\Helpers\Helper::accountTypeMap() as $type => $item)
+                        <option value="{{ $item['icon'] }}"@selected(old('icon', $account->icon) == $item['icon'])>
+                            {{ $item['label'] }}
                         </option>
-                        <option value="bi-bank" {{ old('icon', $account->icon ?? '') == 'bi-bank' ? 'selected' : '' }}>
-                            Bank (Bank)
-                        </option>
-                        <option value="bi-credit-card" {{ old('icon', $account->icon ?? '') == 'bi-credit-card' ? 'selected' : '' }}>
-                            Credit Card (Kartu Kredit)
-                        </option>
-                        <option value="bi-cash" {{ old('icon', $account->icon ?? '') == 'bi-cash' ? 'selected' : '' }}>
-                            Cash (Tunai)
-                        </option>
-                        <option value="bi-piggy-bank" {{ old('icon', $account->icon ?? '') == 'bi-piggy-bank' ? 'selected' : '' }}>
-                            Piggy Bank (Celengan)
-                        </option>
-                        <option value="bi-building" {{ old('icon', $account->icon ?? '') == 'bi-building' ? 'selected' : '' }}>
-                            Building (Gedung)
-                        </option>
-                        <option value="bi-phone" {{ old('icon', $account->icon ?? '') == 'bi-phone' ? 'selected' : '' }}>
-                            Phone (HP)
-                        </option>
-                        <option value="bi-safe" {{ old('icon', $account->icon ?? '') == 'bi-safe' ? 'selected' : '' }}>
-                            Safe (Brankas)
-                        </option>
-                        <option value="bi-graph-up" {{ old('icon', $account->icon ?? '') == 'bi-graph-up' ? 'selected' : '' }}>
-                            Graph Up (Investasi)
-                        </option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-3">
