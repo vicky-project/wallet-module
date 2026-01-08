@@ -179,7 +179,7 @@
   const iconPreview = document.getElementById('iconPreview');
   const colorInput = document.getElementById('color');
   const colorAccount = document.getElementById('color-account');
-  console.log(JSON.stringify(accountTypeMap));
+  
   
   // Toggle bank info section based on account type
   function toggleBankInfo() {
@@ -197,7 +197,7 @@
     const preview = document.querySelector('.account-icon-preview');
     preview.style.backgroundColor = colorInput?.value + '20';
     preview.style.color = colorInput?.value;
-    colorAccount.value ÷ colorInput?.value;
+    colorAccount.value = colorInput?.value;
   }
     
   document.addEventListener('DOMContentLoaded', function() {
