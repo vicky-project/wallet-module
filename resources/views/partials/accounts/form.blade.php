@@ -21,7 +21,7 @@
       <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
             <option value="">Pilih Tipe Akun</option>
             @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
-              <option value="{{ $type->value }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value) data-type-name="{{ $type->value }}">
+              <option value="{{ $type->value }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value) data-type="{{ $type->value }}">
                 {{ $type->label() }}
               </option>
             @endforeach
@@ -202,7 +202,7 @@
         typeSelect.addEventListener('change', function() {
           toggleBankInfo();
           
-          const typeName = this.getAttribute('data-type-name');
+          const typeName = this.options[typeSelect.value].dataset.type;
           console.log(typeName);
           const item = accountTypeMap[typeName];
           iconInput.value = item.icon;
