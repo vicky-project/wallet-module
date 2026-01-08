@@ -1,6 +1,8 @@
 <?php
 namespace Modules\Wallet\Enums;
 
+use Modules\Wallet\Helpers\Helper;
+
 enum AccountType: string
 {
 	case CASH = "cash";
@@ -13,6 +15,7 @@ enum AccountType: string
 
 	public function label(): string
 	{
+		return Helper::accountTypeMap($this->value)["label"];
 		return match ($this) {
 			self::CASH => "Tunai",
 			self::BANK => "Bank",
@@ -26,14 +29,6 @@ enum AccountType: string
 
 	public function icon(?string $type = null): string
 	{
-		return match ($type ?? $this) {
-			self::CASH => "bi-cash-stack",
-			self::BANK => "bi-bank",
-			self::E_WALLET => "bi-phone",
-			self::CREDIT_CARD => "bi-credit-card",
-			self::INVESTMENT => "bi-graph-up",
-			self::SAVINGS => "bi-piggy-bank",
-			self::OTHER => "bi-coin",
-		};
+		return Helper::accountTypeMap($type ?? $this->value)["icon"];
 	}
 }

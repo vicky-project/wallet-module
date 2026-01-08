@@ -172,8 +172,7 @@
 
 @push('scripts')
 <script>
-  const accountTypeMap = @json(AccountType::cases());
-  console.log(accountTypeMap)
+  const accountTypeMap = @json(Helper::accountTypeMap());
   const typeSelect = document.getElementById('type');
   const bankInfoSection = document.getElementById('bankInfoSection');
   // Icon preview update

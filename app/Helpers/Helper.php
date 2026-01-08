@@ -78,6 +78,12 @@ class Helper
 				"label" => "Tabungan",
 				"bankPlaceholder" => "Tidak ada (Celengan)",
 			],
+			"other" => [
+				"icon" => "bi-coin",
+				"color" => "",
+				"label" => "Lainnya",
+				"bankPlaceholder" => "Tidak ada (Lainnya)",
+			],
 		];
 
 		return isset($type) && !is_null($type) ? $typeMap[$type] : $typeMap;
