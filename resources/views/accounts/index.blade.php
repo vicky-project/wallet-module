@@ -265,7 +265,7 @@
         <div class="row align-items-center">
           <div class="col">
             <h6 class="text-muted fw-semibold mb-2">Total Saldo</h6>
-            <h3 class="mb-0 currency">{{ $summary['total_balance'] ?? 0 }}</h3>
+            <h3 class="mb-0 currency">{{ $stats['total_balance'] ?? 0 }}</h3>
           </div>
           <div class="col-auto">
             <div class="account-icon bg-success bg-opacity-10 text-success">
@@ -288,7 +288,7 @@
         <div class="row align-items-center">
           <div class="col">
             <h6 class="text-muted fw-semibold mb-2">Total Aset</h6>
-            <h3 class="mb-0 currency">{{ $summary['asset_balance'] ?? 0 }}</h3>
+            <h3 class="mb-0 currency">{{ $stats['asset_balance'] ?? 0 }}</h3>
           </div>
           <div class="col-auto">
             <div class="account-icon bg-info bg-opacity-10 text-info">
