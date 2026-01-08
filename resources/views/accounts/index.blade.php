@@ -467,18 +467,6 @@
           </tbody>
         </table>
       </div>
-                
-      <!-- Pagination -->
-      @if($accounts->hasPages())
-        <div class="d-flex justify-content-between align-items-center mt-4">
-          <div class="text-muted">
-            Menampilkan {{ $accounts->firstItem() }} sampai {{ $accounts->lastItem() }} dari {{ $accounts->total() }} akun
-          </div>
-          <nav>
-            {{ $accounts->links('pagination::bootstrap-5') }}
-          </nav>
-        </div>
-      @endif
     @endif
   </div>
 </div>
