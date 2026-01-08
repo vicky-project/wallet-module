@@ -242,7 +242,7 @@
         <div class="row align-items-center">
           <div class="col">
             <h6 class="text-muted fw-semibold mb-2">Total Akun</h6>
-            <h2 class="mb-0">{{ $summary['total_accounts'] ?? 0 }}</h2>
+            <h2 class="mb-0">{{ $stats['total_accounts'] ?? 0 }}</h2>
           </div>
           <div class="col-auto">
             <div class="account-icon bg-primary bg-opacity-10 text-primary">
