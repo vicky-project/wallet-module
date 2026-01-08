@@ -207,13 +207,15 @@
     // Listen for changes
     typeSelect.addEventListener('change', function() {
       toggleBankInfo();
-          
-      const typeName = typeSelect.options[typeSelect.value];
-      console.log(typeName);
-      const item = accountTypeMap[typeName];
-      iconInput.value = item.icon;
-      iconPreview.className = item.icon;
-      colorAccount.value = item.color;
+      
+      if(typeSelect.value) {
+        const typeName = typeSelect.options[typeSelect.value];
+        console.log(typeName);
+        const item = accountTypeMap[typeName];
+        iconInput.value = item.icon;
+        iconPreview.className = item.icon;
+        colorAccount.value = item.color;
+      }
     });
         
     // Color reset button
