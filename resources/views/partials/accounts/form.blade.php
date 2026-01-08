@@ -17,7 +17,7 @@
     <div class="col-md-6 mb-3">
       <label for="type" class="form-label">Tipe Akun <span class="text-danger">*</span></label>
       <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
           <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
             <option value="">Pilih Tipe Akun</option>
             @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
@@ -27,7 +27,7 @@
             @endforeach
           </select>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
           <div class="input-group">
             <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly disabled>
             <input type="hidden" name="color" value="#3490dc" id="color-account">
@@ -173,6 +173,7 @@
 @push('scripts')
 <script>
   const accountTypeMap = @json(\Modules\Wallet\Helpers\Helper::accountTypeMap())
+  
     document.addEventListener('DOMContentLoaded', function() {
         // Toggle bank info section based on account type
         const typeSelect = document.getElementById('type');
