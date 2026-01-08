@@ -6,7 +6,7 @@
 
   <div class="row">
     <!-- Basic Information -->
-    <div class="col-6 mb-3">
+    <div class="col-md-6 mb-3">
       <label for="name" class="form-label">Nama Akun <span class="text-danger">*</span></label>
       <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $account->name ?? '') }}" required placeholder="Contoh: BCA Tabungan, OVO, Dompet Tunai">
       @error('name')
@@ -14,10 +14,10 @@
       @enderror
     </div>
     
-    <div class="col-6 mb-3">
+    <div class="col-md-6 mb-3">
       <label for="type" class="form-label">Tipe Akun <span class="text-danger">*</span></label>
       <div class="row">
-        <div class="col-9 mb-3">
+        <div class="col-md-9 mb-3">
           <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
             <option value="">Pilih Tipe Akun</option>
             @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
@@ -27,7 +27,7 @@
             @endforeach
           </select>
         </div>
-        <div class="col-3 mb-3">
+        <div class="col-md-3 mb-3">
           <div class="input-group">
             <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly disabled>
             <input type="hidden" name="color" value="#3490dc" id="color-account">
