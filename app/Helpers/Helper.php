@@ -74,13 +74,13 @@ class Helper
 			],
 			"savings" => [
 				"icon" => "bi-piggy-bank",
-				"color" => "",
+				"color" => "#a81cb6",
 				"label" => "Tabungan",
 				"bankPlaceholder" => "Tidak ada (Celengan)",
 			],
 			"other" => [
 				"icon" => "bi-coin",
-				"color" => "",
+				"color" => "#cdba3d",
 				"label" => "Lainnya",
 				"bankPlaceholder" => "Tidak ada (Lainnya)",
 			],

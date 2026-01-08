@@ -16,15 +16,6 @@ enum AccountType: string
 	public function label(): string
 	{
 		return Helper::accountTypeMap($this->value)["label"];
-		return match ($this) {
-			self::CASH => "Tunai",
-			self::BANK => "Bank",
-			self::E_WALLET => "E-Wallet",
-			self::CREDIT_CARD => "Kartu Kredit",
-			self::INVESTMENT => "Investasi",
-			self::SAVINGS => "Tabungan",
-			self::OTHER => "Lainnya",
-		};
 	}
 
 	public function icon(?string $type = null): string
