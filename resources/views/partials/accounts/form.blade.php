@@ -122,12 +122,9 @@
             <label for="icon" class="form-label">Ikon Akun</label>
             <div class="row">
                 <div class="col-9">
-                      @foreach(\Modules\Wallet\Helpers\Helper::accountTypeMap() as $type => $item)
-                      {{ dd($type, $item) }}}
-                      @endforeach
                     <select class="form-select @error('icon') is-invalid @enderror" id="icon" name="icon">
                       @foreach(\Modules\Wallet\Helpers\Helper::accountTypeMap() as $type => $item)
-                        <option value="{{ $item['icon'] }}"@selected(old('icon', $account->icon) == $item['icon'])>
+                        <option value="{{ $item['icon'] }}" @selected(old('icon', $account->icon) == $item['icon'])>
                             {{ $item['label'] }}
                         </option>
                         @endforeach
