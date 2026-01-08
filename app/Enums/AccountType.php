@@ -24,9 +24,9 @@ enum AccountType: string
 		};
 	}
 
-	public function icon(): string
+	public function icon(?string $type = null): string
 	{
-		return match ($this) {
+		return match ($type ?? $this) {
 			self::CASH => "bi-cash-stack",
 			self::BANK => "bi-bank",
 			self::E_WALLET => "bi-phone",

@@ -72,6 +72,12 @@ class Helper
 				"label" => "Investasi",
 				"bankPlaceholder" => "Contoh: Reksadana, Saham, Crypto",
 			],
+			"savings" => [
+				"icon" => "bi-piggy-bank",
+				"color" => "",
+				"label" => "Tabungan",
+				"bankPlaceholder" => "Tidak ada (Celengan)",
+			],
 		];
 
 		return isset($type) && !is_null($type) ? $typeMap[$type] : $typeMap;

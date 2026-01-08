@@ -1,4 +1,5 @@
 @use('Modules\Wallet\Helpers\Helper')
+@use('Modules\Wallet\Enums\AccountType')
 
 <form action="{{ $action }}" method="POST" id="accountForm">
   @if(isset($account) && $account->id)
@@ -171,7 +172,8 @@
 
 @push('scripts')
 <script>
-  const accountTypeMap = @json(Helper::accountTypeMap());
+  const accountTypeMap = @json(AccountType::cases());
+  console.log(accountTypeMap)
   const typeSelect = document.getElementById('type');
   const bankInfoSection = document.getElementById('bankInfoSection');
   // Icon preview update
