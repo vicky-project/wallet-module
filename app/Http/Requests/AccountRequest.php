@@ -14,7 +14,7 @@ class AccountRequest extends FormRequest
 		return auth()->check() &&
 			(auth()
 				->user()
-				->can(Permissions::CREATE_ACOUNTS) ||
+				->can(Permissions::CREATE_ACCOUNTS) ||
 				auth()
 					->user()
 					->can(Permissions::EDIT_ACCOUNTS));
