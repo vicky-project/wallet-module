@@ -20,13 +20,13 @@
     <div class="col-md-6 mb-3">
       <label for="type" class="form-label">Tipe Akun <span class="text-danger">*</span></label>
       <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
-            <option value="">Pilih Tipe Akun</option>
-            @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
-              <option value="{{ $type->value }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value) data-type="{{ $type->value }}">
-                {{ $type->label() }}
-              </option>
-            @endforeach
-          </select>
+        <option value="">Pilih Tipe Akun</option>
+        @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
+          <option value="{{ $type->value }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value) data-type="{{ $type->value }}">
+            {{ $type->label() }}
+          </option>
+        @endforeach
+      </select>
       @error('type')
         <div class="invalid-feedback">{{ $message }}</div>
       @enderror
@@ -90,7 +90,7 @@
         <input type="color" class="form-control form-control-color @error('color') is-invalid @enderror" id="color" name="color" value="{{ old('color', $account->color ?? '#3490dc') }}" title="Pilih warna untuk akun">
         <button type="button" class="btn btn-outline-secondary" id="resetColor">Reset</button>
       </div>
-      <small class="form-text text-muted">Warna akan digunakan untuk tampilan visual akun</small>
+      <small class="form-text text-muted">Warna akan digunakan untuk tampilan visual/ikon akun</small>
       @error('color')
         <div class="invalid-feedback">{{ $message }}</div>
       @enderror
@@ -101,9 +101,10 @@
         <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly disabled>
         <input type="hidden" name="color" value="#3490dc" id="color-account">
         <div class="account-icon-preview" style="background-color: {{ old('color', $account->color ?? '#3490dc') }}20; color: {{ old('color', $account->color ?? '#3490dc') }}">
-              <i id="iconPreview" class="bi {{ old('icon', $account->icon ?? 'bi-wallet') }}"></i>
-            </div>
+          <i id="iconPreview" class="bi {{ old('icon', $account->icon ?? 'bi-wallet') }}"></i>
+        </div>
       </div>
+      <small class="form-text text-muted">Icon dipilih otomatis ketika memilih type akun.</small>
     </div>
   </div>
 
@@ -180,6 +181,8 @@
   const iconPreview = document.getElementById('iconPreview');
   const colorInput = document.getElementById('color');
   const colorAccount = document.getElementById('color-account');
+  const currencySelect = document.getElementById("currency");
+  const currencySymbol = document.getElementById('currency-symbol');
   
   
   // Toggle bank info section based on account type
@@ -199,6 +202,11 @@
     preview.style.backgroundColor = colorInput?.value + '20';
     preview.style.color = colorInput?.value;
     colorAccount.value = colorInput?.value;
+  }
+  
+  function updateCurrencySymbol() {
+    const symbol = currencySymbol.textContent.match(/(?<=\().*?(?=\))/g);
+    currencySymbol.textContent = symbol[0];
   }
     
   document.addEventListener('DOMContentLoaded', function() {
@@ -233,6 +241,8 @@
         
     // Initialize icon preview
     updateIconPreviewColor();
+    
+    currencySelect.addEventListener('change', updateCurrencySymbol);
         
     // Form validation
     const form = document.getElementById('accountForm');
