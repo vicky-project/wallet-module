@@ -214,6 +214,9 @@
         iconInput.value = item.icon;
         iconPreview.className = item.icon;
         colorAccount.value = item.color;
+        colorInput.value = item.color;
+        
+        updateIconPreviewColor();
       }
     });
         
