@@ -1,3 +1,5 @@
+@use('Modules\Wallet\Helpers\Helper')
+
 <form action="{{ $action }}" method="POST" id="accountForm">
   @if(isset($account) && $account->id)
     @method('PUT')
@@ -169,7 +171,7 @@
 
 @push('scripts')
 <script>
-  const accountTypeMap = @json(\Modules\Wallet\Helpers\Helper::accountTypeMap());
+  const accountTypeMap = @json(Helper::accountTypeMap());
   
     document.addEventListener('DOMContentLoaded', function() {
         // Toggle bank info section based on account type
