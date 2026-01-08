@@ -205,7 +205,7 @@
   }
   
   function updateCurrencySymbol() {
-    const symbol = currencySymbol.textContent.match(/\(([^)]+)\)/);
+    const symbol = currencySelect.options[currencySelect.selectedIndex].textContent.match(/\(([^)]+)\)/);
     alert(symbol[1]);
     currencySymbol.textContent = symbol[1];
   }
