@@ -74,7 +74,7 @@ class Helper
 			],
 		];
 
-		return isset($type) ? $typeMap[$type] : $typeMap;
+		return isset($type) && !is_null($type) ? $typeMap[$type] : $typeMap;
 	}
 
 	public static function categoriesIconList(): array
