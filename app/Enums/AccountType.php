@@ -23,4 +23,17 @@ enum AccountType: string
 			self::OTHER => "Lainnya",
 		};
 	}
+
+	public function icon(): string
+	{
+		return match ($this) {
+			self::CASH => "bi-cash-stack",
+			self::BANK => "bi-bank",
+			self::E_WALLET => "bi-phone",
+			self::CREDIT_CARD => "bi-credit-card",
+			self::INVESTMENT => "bi-graph-up",
+			self::SAVINGS => "bi-piggy-bank",
+			self::OTHER => "bi-coin",
+		};
+	}
 }

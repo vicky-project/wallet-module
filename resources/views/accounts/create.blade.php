@@ -44,8 +44,8 @@
             
     <!-- Quick Tips -->
     <div class="card mt-4">
-      <div class="card-header bg-light">
-        <h6 class="mb-0">
+      <div class="card-header">
+        <h6 class="mb-0 text-bg-warning">
           <i class="bi bi-lightbulb text-warning me-2"></i>Tips Penggunaan
         </h6>
       </div>
