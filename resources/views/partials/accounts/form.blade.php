@@ -36,19 +36,6 @@
   <div class="row">
     <!-- Balance Information -->
     <div class="col-md-6 mb-3">
-      <label for="initial_balance" class="form-label">Saldo Awal</label>
-      <div class="input-group">
-        <span class="input-group-text" id="currency-symbol">Rp</span>
-        <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', isset($account) ? $account->initial_balance->getAmount()->toInt() : 0) }}" min="0" placeholder="0">
-        <span class="input-group-text">,00</span>
-      </div>
-      <small class="form-text text-muted">Saldo saat pertama kali menambahkan akun</small>
-      @error('initial_balance')
-        <div class="invalid-feedback">{{ $message }}</div>
-      @enderror
-    </div>
-
-    <div class="col-md-6 mb-3">
       <label for="currency" class="form-label">Mata Uang <span class="text-danger">*</span></label>
       <select class="form-select @error('currency') is-invalid @enderror" id="currency" name="currency" required>
         @foreach(\Modules\Wallet\Helpers\Helper::listCurrencies() as $name => $currency)
@@ -58,6 +45,19 @@
         @endforeach
       </select>
       @error('currency')
+        <div class="invalid-feedback">{{ $message }}</div>
+      @enderror
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="initial_balance" class="form-label">Saldo Awal</label>
+      <div class="input-group">
+        <span class="input-group-text" id="currency-symbol">Rp</span>
+        <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', isset($account) ? $account->initial_balance->getAmount()->toInt() : 0) }}" min="0" placeholder="0">
+        <span class="input-group-text">,00</span>
+      </div>
+      <small class="form-text text-muted">Saldo saat pertama kali menambahkan akun</small>
+      @error('initial_balance')
         <div class="invalid-feedback">{{ $message }}</div>
       @enderror
     </div>
