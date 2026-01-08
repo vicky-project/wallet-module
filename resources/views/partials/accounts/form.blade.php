@@ -172,32 +172,37 @@
 @push('scripts')
 <script>
   const accountTypeMap = @json(Helper::accountTypeMap());
+  const typeSelect = document.getElementById('type');
+  const bankInfoSection = document.getElementById('bankInfoSection');
+  // Icon preview update
+  const iconInput = document.getElementById('icon');
+  const iconPreview = document.getElementById('iconPreview');
+  const colorInput = document.getElementById('color');
+  const colorAccount = document.getElementById('color-account');
   console.log(JSON.stringify(accountTypeMap));
   
-  document.addEventListener('DOMContentLoaded', function() {
-    // Toggle bank info section based on account type
-    const typeSelect = document.getElementById('type');
-    const bankInfoSection = document.getElementById('bankInfoSection');
-        
-    function toggleBankInfo() {
-      const selectedType = typeSelect.value;
-      const showBankInfo = ['bank', 'credit_card', 'ewallet'].includes(selectedType);
+  // Toggle bank info section based on account type
+  function toggleBankInfo() {
+    const selectedType = typeSelect?.value;
+    const showBankInfo = ['bank', 'credit_card', 'ewallet'].includes(selectedType);
 
-      if (showBankInfo) {
-        bankInfoSection.style.display = 'block';
-      } else {
-        bankInfoSection.style.display = 'none';
-      }
+    if (showBankInfo) {
+      bankInfoSection.style.display = 'block';
+    } else {
+      bankInfoSection.style.display = 'none';
     }
-        
+  }
+    
+  function updateIconPreviewColor() {
+    const preview = document.querySelector('.account-icon-preview');
+    preview.style.backgroundColor = colorInput?.value + '20';
+    preview.style.color = colorInput?.value;
+    colorAccount.value ÷ colorInput?.value;
+  }
+    
+  document.addEventListener('DOMContentLoaded', function() {
     // Set initial state
     toggleBankInfo();
-        
-    // Icon preview update
-    const iconInput = document.getElementById('icon');
-    const iconPreview = document.getElementById('iconPreview');
-    const colorInput = document.getElementById('color');
-    const colorAccount = document.getElementById('color-account');
         
     // Listen for changes
     typeSelect.addEventListener('change', function() {
@@ -221,12 +226,6 @@
     // Update icon preview color when color changes
     colorInput.addEventListener('input', updateIconPreviewColor);
         
-    function updateIconPreviewColor() {
-      const preview = document.querySelector('.account-icon-preview');
-      preview.style.backgroundColor = colorInput.value + '20';
-      preview.style.color = colorInput.value;
-      colorAccount.value ÷ colorInput.value;
-    }
         
     // Initialize icon preview
     updateIconPreviewColor();
