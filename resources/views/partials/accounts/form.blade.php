@@ -210,7 +210,7 @@
       
       if(typeSelect.value) {
         const typeBankSelect = document.getElementById('type');
-        console.log(JSON.stringify(typeBankSelect.options));
+        console.log(accountTypeMap[typeSelect.value]);
         const item = accountTypeMap[typeName];
         iconInput.value = item.icon;
         iconPreview.className = item.icon;
