@@ -210,7 +210,7 @@
       
       if(typeSelect.value) {
         const typeName = typeSelect.options[typeSelect.value];
-        console.log(typeName);
+        console.log(typeSelect.value);
         const item = accountTypeMap[typeName];
         iconInput.value = item.icon;
         iconPreview.className = item.icon;
