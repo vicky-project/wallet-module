@@ -237,43 +237,11 @@
     // Form validation
     const form = document.getElementById('accountForm');
     form.addEventListener('submit', function(e) {
-      // Convert initial balance to minor units
-      const initialBalanceInput = document.getElementById('initial_balance');
-      if (initialBalanceInput.value) {
-        // Multiply by 100 to convert to minor units
-        const value = parseFloat(initialBalanceInput.value);
-        if (!isNaN(value)) {
-          // The MoneyCast will handle conversion, but we need to ensure it's a number
-          initialBalanceInput.value = value;
-        }
-      }
-            
       // Show loading state
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
       submitBtn.disabled = true;
-            
-      // The form will submit normally
-    });
-        
-    // Format currency on blur
-    const initialBalanceInput = document.getElementById('initial_balance');
-    initialBalanceInput.addEventListener('blur', function() {
-      const value = parseFloat(this.value);
-      if (!isNaN(value)) {
-        this.value = value.toLocaleString('id-ID', {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        });
-      }
-    });
-        
-    initialBalanceInput.addEventListener('focus', function() {
-      const value = parseFloat(this.value.replace(/\./g, ''));
-      if (!isNaN(value)) {
-        this.value = value;
-      }
     });
   });
 </script>
