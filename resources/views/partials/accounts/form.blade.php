@@ -14,11 +14,9 @@
       @enderror
     </div>
     
-    <div class="col-md-6 mb-3">
+    <div class="col-md-3 mb-3">
       <label for="type" class="form-label">Tipe Akun <span class="text-danger">*</span></label>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
+      <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
             <option value="">Pilih Tipe Akun</option>
             @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
               <option value="{{ $type->value }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value) data-type-name="{{ $type->value }}">
@@ -26,20 +24,19 @@
               </option>
             @endforeach
           </select>
-        </div>
-        <div class="col-md-6 mb-3">
-          <div class="input-group input-group-sm">
-            <input type="text" class="form-control form-control-sm" name="icon" id="icon" value="bi-wallet" readonly disabled>
+      @error('type')
+        <div class="invalid-feedback">{{ $message }}</div>
+      @enderror
+    </div>
+    <div class="col-md-3 mb-3">
+      <label class="form-label">Icon</label>
+      <div class="input-group">
+            <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly disabled>
             <input type="hidden" name="color" value="#3490dc" id="color-account">
             <div class="account-icon-preview" style="background-color: {{ old('color', $account->color ?? '#3490dc') }}20; color: {{ old('color', $account->color ?? '#3490dc') }}">
               <i id="iconPreview" class="bi {{ old('icon', $account->icon ?? 'bi-wallet') }}"></i>
             </div>
-          </div>
-        </div>
       </div>
-      @error('type')
-        <div class="invalid-feedback">{{ $message }}</div>
-      @enderror
     </div>
   </div>
 
