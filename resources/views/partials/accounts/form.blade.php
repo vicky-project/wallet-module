@@ -208,7 +208,7 @@
     typeSelect.addEventListener('change', function() {
       toggleBankInfo();
           
-      const typeName = this.options[typeSelect.value].dataset.type;
+      const typeName = this.options[typeSelect.value];
       console.log(typeName);
       const item = accountTypeMap[typeName];
       iconInput.value = item.icon;
