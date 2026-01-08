@@ -169,7 +169,7 @@
 
 @push('scripts')
 <script>
-  const accountTypeMap = @json(\Modules\Wallet\Helpers\Helper::accountTypeMap())
+  const accountTypeMap = @json(\Modules\Wallet\Helpers\Helper::accountTypeMap());
   
     document.addEventListener('DOMContentLoaded', function() {
         // Toggle bank info section based on account type
@@ -201,6 +201,7 @@
           toggleBankInfo();
           
           const typeName = this.getAttribute('data-type-name');
+          console.log(typeName);
           const item = accountTypeMap[typeName];
           iconInput.value = item.icon;
           iconPreview.className = item.icon;
