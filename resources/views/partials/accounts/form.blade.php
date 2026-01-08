@@ -172,106 +172,107 @@
 @push('scripts')
 <script>
   const accountTypeMap = @json(Helper::accountTypeMap());
+  console.log(JSON.stringify(accountTypeMap));
   
-    document.addEventListener('DOMContentLoaded', function() {
-        // Toggle bank info section based on account type
-        const typeSelect = document.getElementById('type');
-        const bankInfoSection = document.getElementById('bankInfoSection');
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle bank info section based on account type
+    const typeSelect = document.getElementById('type');
+    const bankInfoSection = document.getElementById('bankInfoSection');
         
-        function toggleBankInfo() {
-            const selectedType = typeSelect.value;
-            const showBankInfo = ['bank', 'credit_card', 'ewallet'].includes(selectedType);
-            
-            if (showBankInfo) {
-                bankInfoSection.style.display = 'block';
-            } else {
-                bankInfoSection.style.display = 'none';
-            }
-        }
+    function toggleBankInfo() {
+      const selectedType = typeSelect.value;
+      const showBankInfo = ['bank', 'credit_card', 'ewallet'].includes(selectedType);
+
+      if (showBankInfo) {
+        bankInfoSection.style.display = 'block';
+      } else {
+        bankInfoSection.style.display = 'none';
+      }
+    }
         
-        // Set initial state
-        toggleBankInfo();
+    // Set initial state
+    toggleBankInfo();
         
-        // Icon preview update
-        const iconInput = document.getElementById('icon');
-        const iconPreview = document.getElementById('iconPreview');
-        const colorInput = document.getElementById('color');
-        const colorAccount = document.getElementById('color-account');
+    // Icon preview update
+    const iconInput = document.getElementById('icon');
+    const iconPreview = document.getElementById('iconPreview');
+    const colorInput = document.getElementById('color');
+    const colorAccount = document.getElementById('color-account');
         
-        // Listen for changes
-        typeSelect.addEventListener('change', function() {
-          toggleBankInfo();
+    // Listen for changes
+    typeSelect.addEventListener('change', function() {
+      toggleBankInfo();
           
-          const typeName = this.options[typeSelect.value].dataset.type;
-          console.log(typeName);
-          const item = accountTypeMap[typeName];
-          iconInput.value = item.icon;
-          iconPreview.className = item.icon;
-          colorAccount.value = item.color;
-        });
-        
-        // Color reset button
-        const resetColorBtn = document.getElementById('resetColor');
-        resetColorBtn.addEventListener('click', function() {
-            colorInput.value = '#3490dc';
-            updateIconPreviewColor();
-        });
-        
-        // Update icon preview color when color changes
-        colorInput.addEventListener('input', updateIconPreviewColor);
-        
-        function updateIconPreviewColor() {
-            const preview = document.querySelector('.account-icon-preview');
-            preview.style.backgroundColor = colorInput.value + '20';
-            preview.style.color = colorInput.value;
-            colorAccount.value ÷ colorInput.value;
-        }
-        
-        // Initialize icon preview
-        updateIconPreviewColor();
-        
-        // Form validation
-        const form = document.getElementById('accountForm');
-        form.addEventListener('submit', function(e) {
-            // Convert initial balance to minor units
-            const initialBalanceInput = document.getElementById('initial_balance');
-            if (initialBalanceInput.value) {
-                // Multiply by 100 to convert to minor units
-                const value = parseFloat(initialBalanceInput.value);
-                if (!isNaN(value)) {
-                    // The MoneyCast will handle conversion, but we need to ensure it's a number
-                    initialBalanceInput.value = value;
-                }
-            }
-            
-            // Show loading state
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
-            submitBtn.disabled = true;
-            
-            // The form will submit normally
-        });
-        
-        // Format currency on blur
-        const initialBalanceInput = document.getElementById('initial_balance');
-        initialBalanceInput.addEventListener('blur', function() {
-            const value = parseFloat(this.value);
-            if (!isNaN(value)) {
-                this.value = value.toLocaleString('id-ID', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                });
-            }
-        });
-        
-        initialBalanceInput.addEventListener('focus', function() {
-            const value = parseFloat(this.value.replace(/\./g, ''));
-            if (!isNaN(value)) {
-                this.value = value;
-            }
-        });
+      const typeName = this.options[typeSelect.value].dataset.type;
+      console.log(typeName);
+      const item = accountTypeMap[typeName];
+      iconInput.value = item.icon;
+      iconPreview.className = item.icon;
+      colorAccount.value = item.color;
     });
+        
+    // Color reset button
+    const resetColorBtn = document.getElementById('resetColor');
+    resetColorBtn.addEventListener('click', function() {
+      colorInput.value = '#3490dc';
+      updateIconPreviewColor();
+    });
+        
+    // Update icon preview color when color changes
+    colorInput.addEventListener('input', updateIconPreviewColor);
+        
+    function updateIconPreviewColor() {
+      const preview = document.querySelector('.account-icon-preview');
+      preview.style.backgroundColor = colorInput.value + '20';
+      preview.style.color = colorInput.value;
+      colorAccount.value ÷ colorInput.value;
+    }
+        
+    // Initialize icon preview
+    updateIconPreviewColor();
+        
+    // Form validation
+    const form = document.getElementById('accountForm');
+    form.addEventListener('submit', function(e) {
+      // Convert initial balance to minor units
+      const initialBalanceInput = document.getElementById('initial_balance');
+      if (initialBalanceInput.value) {
+        // Multiply by 100 to convert to minor units
+        const value = parseFloat(initialBalanceInput.value);
+        if (!isNaN(value)) {
+          // The MoneyCast will handle conversion, but we need to ensure it's a number
+          initialBalanceInput.value = value;
+        }
+      }
+            
+      // Show loading state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
+      submitBtn.disabled = true;
+            
+      // The form will submit normally
+    });
+        
+    // Format currency on blur
+    const initialBalanceInput = document.getElementById('initial_balance');
+    initialBalanceInput.addEventListener('blur', function() {
+      const value = parseFloat(this.value);
+      if (!isNaN(value)) {
+        this.value = value.toLocaleString('id-ID', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        });
+      }
+    });
+        
+    initialBalanceInput.addEventListener('focus', function() {
+      const value = parseFloat(this.value.replace(/\./g, ''));
+      if (!isNaN(value)) {
+        this.value = value;
+      }
+    });
+  });
 </script>
 
 <style>
