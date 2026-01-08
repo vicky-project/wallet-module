@@ -206,6 +206,7 @@
   
   function updateCurrencySymbol() {
     const symbol = currencySymbol.textContent.match(/(?<=\().*?(?=\))/g);
+    alert(symbol);
     currencySymbol.textContent = symbol[0];
   }
     
