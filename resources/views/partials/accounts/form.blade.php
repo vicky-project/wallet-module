@@ -209,8 +209,8 @@
       toggleBankInfo();
       
       if(typeSelect.value) {
-        const typeName = document.getElementById('type').options[typeSelect.value];
-        console.log(JSON.stringify(typeName));
+        const typeBankSelect = document.getElementById('type');
+        console.log(JSON.stringify(typeBankSelect.options));
         const item = accountTypeMap[typeName];
         iconInput.value = item.icon;
         iconPreview.className = item.icon;
