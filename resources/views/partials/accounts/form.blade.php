@@ -29,9 +29,9 @@
         </div>
         <div class="col-md-6 mb-3">
           <div class="input-group input-group-sm">
-            <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly disabled>
+            <input type="text" class="form-control-sm" name="icon" id="icon" value="bi-wallet" readonly disabled>
             <input type="hidden" name="color" value="#3490dc" id="color-account">
-            <div class="account-icon-preview ms-2" style="background-color: {{ old('color', $account->color ?? '#3490dc') }}20; color: {{ old('color', $account->color ?? '#3490dc') }}">
+            <div class="account-icon-preview" style="background-color: {{ old('color', $account->color ?? '#3490dc') }}20; color: {{ old('color', $account->color ?? '#3490dc') }}">
               <i id="iconPreview" class="bi {{ old('icon', $account->icon ?? 'bi-wallet') }}"></i>
             </div>
           </div>
