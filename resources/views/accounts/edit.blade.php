@@ -7,7 +7,15 @@
 <!-- Page Header -->
 <div class="row mb-4">
   <div class="col">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center text-end">
+      <div class="d-flex gap-2 me-auto">
+        <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
+          <i class="bi bi-eye me-1"></i>Lihat
+        </a>
+        <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Kembali
+        </a>
+      </div>
       <div>
         <h2 class="page-title mb-2">
           <i class="bi bi-pencil-square text-warning me-2"></i>Edit Akun
@@ -16,42 +24,34 @@
           Perbarui informasi akun <strong>{{ $account->name }}</strong>.
         </p>
       </div>
-      <div class="d-flex gap-2">
-        <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
-          <i class="bi bi-eye me-1"></i>Lihat
-        </a>
-        <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left me-1"></i>Kembali
-        </a>
-      </div>
     </div>
   </div>
 </div>
 
-    <!-- Form Card -->
-    <div class="row">
-        <div class="col-lg-10 col-xl-8 mx-auto">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="bi bi-pencil-square me-2"></i>Edit Informasi Akun
-                        </h5>
-                        <div class="account-icon" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                            <i class="{{ $account->icon }}"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
+<!-- Form Card -->
+<div class="row">
+  <div class="col-lg-10 col-xl-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>Edit Informasi Akun
+          </h5>
+          <div class="account-icon" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+            <i class="{{ $account->icon }}"></i>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
                     @include('wallet::partials.accounts.form', [
                         'action' => route('apps.accounts.update', $account),
                         'account' => $account
                     ])
                 </div>
-            </div>
+    </div>
             
-            <!-- Danger Zone -->
-            <div class="card border-danger mt-4">
+    <!-- Danger Zone -->
+    <div class="card border-danger mt-4">
                 <div class="card-header bg-danger text-white">
                     <h6 class="mb-0">
                         <i class="bi bi-exclamation-triangle me-2"></i>Zona Bahaya
@@ -78,8 +78,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+  </div>
+</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
