@@ -789,6 +789,7 @@
             // Update total balance
             const totalBalanceEl = document.querySelector('.stat-card:nth-child(1) h2.currency');
             if (totalBalanceEl && data.account_summary.total_balance) {
+            console.log(data.account_summary);
                 totalBalanceEl.textContent = new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
