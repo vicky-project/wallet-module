@@ -20,7 +20,7 @@ abstract class BaseRepository
 	/**
 	 * Convert value to Money object
 	 */
-	protected function toMoney($amount, string $currency = "IDR"): Money
+	public function toMoney($amount, string $currency = "IDR"): Money
 	{
 		if ($amount instanceof Money) {
 			return $amount;
