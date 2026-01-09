@@ -17,8 +17,6 @@ class Budget extends Model
 		"user_id",
 		"category_id",
 		"amount",
-		"month",
-		"year",
 		"spent", // Ini akan diupdate dari transaksi expense pada kategori ini
 		"is_active", // Status aktif/tidak aktif
 	];
@@ -26,8 +24,6 @@ class Budget extends Model
 	protected $casts = [
 		"amount" => MoneyCast::class,
 		"spent" => MoneyCast::class,
-		"month" => "integer",
-		"year" => "integer",
 		"is_active" => "boolean",
 		"created_at" => "datetime",
 		"updated_at" => "datetime",
