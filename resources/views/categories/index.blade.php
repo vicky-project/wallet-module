@@ -1,464 +1,378 @@
+<!-- resources/views/wallet/categories/index.blade.php -->
 @extends('wallet::layouts.app')
-
-@section('title', 'Kategori - ' . config('app.name', 'VickyServer'))
-
-@use('Modules\Wallet\Enums\CategoryType')
 
 @section('content')
 @include('wallet::partials.fab')
-<!-- Page Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <div>
-    <h1 class="page-title mb-2">
-      <i class="bi bi-pie-chart me-2"></i>Kategori
-    </h1>
-    <p class="small text-muted mb-0">Kelola kategori pemasukan dan pengeluaran Anda</p>
-  </div>
-  <a href="{{ route('apps.categories.create') }}" class="btn btn-primary" role="button">
-    <i class="bi bi-plus-circle me-2"></i>Create
-  </a>
-</div>
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Kategori</h5>
+                    <h2 class="card-text">{{ $stats['total'] ?? 0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Kategori Aktif</h5>
+                    <h2 class="card-text">{{ $stats['active'] ?? 0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Pemasukan</h5>
+                    <h2 class="card-text">{{ $stats['income'] ?? 0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Pengeluaran</h5>
+                    <h2 class="card-text">{{ $stats['expense'] ?? 0 }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Stats Cards -->
-<div class="row mb-4">
-  <div class="col-md-3 mb-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="text-muted mb-1">Total Kategori</h6>
-            <h3 class="mb-0">{{ $stats['total'] ?? 0 }}</h3>
-          </div>
-          <div class="card-icon bg-primary text-white">
-            <i class="bi bi-tags"></i>
-          </div>
-        </div>
-      </div>
+    <!-- Budget Warnings Alert -->
+    @if($budgetWarnings->count() > 0)
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <h5><i class="fas fa-exclamation-triangle"></i> Peringatan Budget!</h5>
+        <p>{{ $budgetWarnings->count() }} kategori telah melebihi atau mendekati limit budget.</p>
+        <ul class="mb-0">
+            @foreach($budgetWarnings->take(3) as $warning)
+            <li>{{ $warning['category']->name }} - {{ number_format($warning['usage_percentage'], 1) }}%</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-  </div>
-  <div class="col-md-3 mb-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="text-muted mb-1">Pemasukan</h6>
-            <h3 class="mb-0">{{ $stats['income'] ?? 0 }}</h3>
-          </div>
-          <div class="card-icon bg-success text-white">
-            <i class="bi bi-arrow-up-circle"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3 mb-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="text-muted mb-1">Pengeluaran</h6>
-            <h3 class="mb-0">{{ $stats['expense'] ?? 0 }}</h3>
-          </div>
-          <div class="card-icon bg-danger text-white">
-            <i class="bi bi-arrow-down-circle"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3 mb-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="text-muted mb-1">Aktif</h6>
-            <h3 class="mb-0">{{ $stats['active'] ?? 0 }}</h3>
-          </div>
-          <div class="card-icon bg-warning text-white">
-            <i class="bi bi-check-circle"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    @endif
 
-<!-- Budget Warnings -->
-@php
-  $budgetWarnings = app(\Modules\Wallet\Repositories\CategoryRepository::class)
-    ->getBudgetWarnings(auth()->user());
-@endphp
-    
-@if($budgetWarnings->count() > 0)
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card border-warning">
-        <div class="card-header bg-warning text-white">
-          <i class="bi bi-exclamation-triangle me-2"></i>
-          Peringatan Anggaran
+    <!-- Categories Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Daftar Kategori</h5>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+                <i class="fas fa-plus"></i> Tambah Kategori
+            </button>
         </div>
         <div class="card-body">
-          <div class="row">
-            @foreach($budgetWarnings as $warning)
-            <div class="col-md-4 mb-3">
-              <div class="d-flex align-items-center">
-                <div class="transaction-icon me-3" style="background-color: #f8961e; color: white;">
-                  <i class="bi bi-exclamation-circle"></i>
+            <!-- Search and Filter -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Cari kategori..." id="searchInput">
                 </div>
-                <div>
-                  <h6 class="mb-1">{{ $warning['category']->name }}</h6>
-                  <div class="progress" style="height: 8px;">
-                    <div class="progress-bar 
-                    @if($warning['is_exceeded']) bg-danger 
-                    @else bg-warning
-                    @endif" role="progressbar" style="width: {{ min($warning['usage_percentage'], 100) }}%"></div>
-                  </div>
-                  <small class="text-muted">
-                    {{ number_format($warning['usage_percentage'], 1) }}% dari 
-                    {{ $warning['formatted_budget_limit'] }}
-                  </small>
+                <div class="col-md-3">
+                    <select class="form-control" id="typeFilter">
+                        <option value="">Semua Tipe</option>
+                        <option value="income">Pemasukan</option>
+                        <option value="expense">Pengeluaran</option>
+                    </select>
                 </div>
-              </div>
             </div>
-            @endforeach
-          </div>
+
+            <!-- Categories Table -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAll">
+                            </th>
+                            <th>Nama</th>
+                            <th>Tipe</th>
+                            <th>Deskripsi</th>
+                            <th>Total Bulan Ini</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($categories as $category)
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="category-checkbox" value="{{ $category->id }}">
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-{{ $category->icon }} me-2"></i>
+                                    {{ $category->name }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ $category->type === 'income' ? 'success' : 'danger' }}">
+                                    {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                </span>
+                            </td>
+                            <td>{{ Str::limit($category->description, 50) }}</td>
+                            <td>
+                                @if($category->type === 'expense')
+                                <div class="d-flex flex-column">
+                                    <span class="text-{{ $category->has_budget_exceeded ?? false ? 'danger' : 'dark' }}">
+                                        Rp {{ number_format($category->monthly_total ?? 0, 0, ',', '.') }}
+                                    </span>
+                                    @if($category->budget_usage_percentage ?? 0 > 0)
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-{{ $category->has_budget_exceeded ?? false ? 'danger' : 'info' }}" 
+                                             style="width: {{ min($category->budget_usage_percentage, 100) }}%">
+                                        </div>
+                                    </div>
+                                    <small>{{ number_format($category->budget_usage_percentage, 1) }}%</small>
+                                    @endif
+                                </div>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ $category->is_active ? 'success' : 'secondary' }}">
+                                    {{ $category->is_active ? 'Aktif' : 'Nonaktif' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-info" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editCategoryModal"
+                                            data-id="{{ $category->id }}"
+                                            data-name="{{ $category->name }}"
+                                            data-type="{{ $category->type }}"
+                                            data-description="{{ $category->description }}"
+                                            data-icon="{{ $category->icon }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-category" 
+                                            data-id="{{ $category->id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-sm btn-secondary bulk-action" data-action="activate">
+                        Aktifkan
+                    </button>
+                    <button class="btn btn-sm btn-secondary bulk-action" data-action="deactivate">
+                        Nonaktifkan
+                    </button>
+                    <button class="btn btn-sm btn-danger bulk-action" data-action="delete">
+                        Hapus
+                    </button>
+                </div>
+                {{ $categories->links() }}
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-@endif
 
-<!-- Categories Table -->
-<div class="card">
-  <div class="card-body">
-    <!-- Filter Tabs -->
-    <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button">
-          <i class="bi bi-grid me-1"></i> All
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button">
-          <i class="bi bi-arrow-up-circle me-1 text-success"></i> Income
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense" type="button">
-          <i class="bi bi-arrow-down-circle me-1 text-danger"></i> Expense
-        </button>
-      </li>
-    </ul>
-
-    <!-- Tab Content -->
-    <div class="tab-content" id="categoryTabsContent">
-      <div class="tab-pane fade show active" id="all" role="tabpanel">
-        @if($categories->count() > 0)
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th width="50">#</th>
-                  <th>Nama Kategori</th>
-                  <th>Tipe</th>
-                  <th>Anggaran</th>
-                  <th>Penggunaan Bulan Ini</th>
-                  <th>Status</th>
-                  <th width="150" class="text-end">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="categoryTableBody">
-                @foreach($categories as $index => $category)
-                  @php
-                  $monthlyTotal = $category->getExpenseTotal();
-                  $budgetUsage = $category->getActiveBudget()?->percentage;
-                  $isExceeded = $category->getActiveBudget()?->isExceeded;
-                  @endphp
-                  <tr data-type="{{ $category->type }}" data-status="{{ $category->is_active ? 'active' : 'inactive' }}" class="{{ $isExceeded ? 'table-danger' : '' }}">
-                    <td>{{ $index + 1 }}</td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="transaction-icon" style="background-color: {{ $category->color ?? ($category->type === CategoryType::INCOME ? '#10b981' : '#ef4444') }}; color: white;">
-                          <i class="bi {{ $category->icon_class }}"></i>
-                        </div>
-                        <div class="ms-3">
-                          <h6 class="mb-0">{{ $category->name }}</h6>
-                          <small class="text-muted">{{ $category->description ?? 'Tidak ada deskripsi' }}</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      @if($category->type === CategoryType::INCOME)
-                        <span class="badge bg-success">
-                          <i class="bi bi-arrow-up-circle me-1"></i>Pemasukan
-                        </span>
-                      @else
-                        <span class="badge bg-danger">
-                          <i class="bi bi-arrow-down-circle me-1"></i>Pengeluaran
-                        </span>
-                      @endif
-                    </td>
-                    <td>
-                      @if($category->hasActiveBudget())
-                        <div class="fw-bold">{{ $category->getActiveBudget()->formatted_amount }}</div>
-                      @else
-                        <span class="text-muted">-</span>
-                      @endif
-                    </td>
-                    <td>
-                      @if($category->type === CategoryType::EXPENSE && $category->hasActiveBudget())
-                        <div class="d-flex align-items-center">
-                          <div class="me-2" style="width: 100px;">
-                            <div class="progress" style="height: 8px;">
-                              <div class="progress-bar
-                              @if($isExceeded) bg-danger
-                              @elseif($budgetUsage >= 80) bg-warning
-                              @else bg-success
-                              @endif" role="progressbar" style="width: {{ min($budgetUsage, 100) }}%">
-                              </div>
-                            </div>
-                          </div>
-                          <small class="{{ $isExceeded ? 'text-danger fw-bold' : 'text-muted' }}">
-                            {{ number_format($budgetUsage, 1) }}%
-                          </small>
-                        </div>
-                        <small class="text-muted">
-                          Rp {{ number_format($monthlyTotal, 0, ',', '.') }}
-                        </small>
-                      @else
-                        <span class="text-muted">-</span>
-                      @endif
-                    </td>
-                    <td>
-                      @if($category->is_active)
-                        <span class="badge bg-success">Aktif</span>
-                      @else
-                        <span class="badge bg-secondary">Nonaktif</span>
-                      @endif
-                    </td>
-                    <td class="text-end">
-                      <div class="btn-group" role="group">
-                        <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-sm btn-outline-info">
-                          <i class="bi bi-eye"></i>
-                        </a>
-                        <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-sm btn-outline-primary">
-                          <i class="bi bi-pencil"></i>
-                        </a>
-                        <form action="{{ route('apps.categories.toggle-status', $category) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('PUT')
-                          <button type="submit" class="btn btn-sm btn-outline-warning">
-                            @if($category->is_active)
-                            <i class="bi bi-toggle-off" title="Nonaktifkan"></i>
-                            @else
-                            <i class="bi bi-toggle-on" title="Aktifkan"></i>
-                            @endif
-                          </button>
-                        </form>
-                        <form action="{{ route('apps.categories.destroy', $category) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus kategori ini? Transaksi yang terkait akan tetap ada.')">
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-        @else
-          <div class="text-center py-5">
-            <i class="bi bi-pie-chart display-1 text-muted"></i>
-            <h4 class="mt-3">Belum ada kategori</h4>
-            <p class="text-muted">Mulai dengan membuat kategori pertama Anda</p>
-            <a href="{{ route('apps.categories.create') }}" class="btn btn-primary" role="button">
-              <i class="bi bi-plus-circle me-2"></i>Tambah Kategori
-            </a>
-          </div>
-        @endif
-      </div>
-
-      <!-- Income Tab -->
-      <div class="tab-pane fade" id="income" role="tabpanel">
-        @php $incomeCategories = $categories->where('type', CategoryType::INCOME); @endphp
-        @if($incomeCategories->count() > 0)
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Nama Kategori</th>
-                  <th>Icon</th>
-                  <th>Status</th>
-                  <th class="text-end">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($incomeCategories as $category)
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="transaction-icon bg-success text-white me-3">
-                          <i class="bi {{ $category->icon_class }}"></i>
-                        </div>
-                        <div>
-                          <h6 class="mb-0">{{ $category->name }}</h6>
-                          <small class="text-muted">{{ $category->description ?? 'Tidak ada deskripsi' }}</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td><i class="bi {{ $category->icon_class }} fs-5"></i></td>
-                    <td>
-                      @if($category->is_active)
-                      <span class="badge bg-success">Aktif</span>
-                      @else
-                      <span class="badge bg-secondary">Nonaktif</span>
-                      @endif
-                    </td>
-                    <td class="text-end">
-                      <!-- Similar action buttons -->
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-        @else
-          <div class="text-center py-4">
-            <p class="text-muted">Belum ada kategori pemasukan</p>
-          </div>
-        @endif
-      </div>
-
-      <!-- Expense Tab -->
-      <div class="tab-pane fade" id="expense" role="tabpanel">
-        @php $expenseCategories = $categories->where('type', CategoryType::EXPENSE); @endphp
-        @if($expenseCategories->count() > 0)
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Nama Kategori</th>
-                  <th>Anggaran</th>
-                  <th>Penggunaan</th>
-                  <th>Status</th>
-                  <th class="text-end">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($expenseCategories as $category)
-                  @php
-                  $budgetUsage = $category->budget_usage_percentage;
-                  $isExceeded = $category->has_budget_exceeded;
-                  @endphp
-                  <tr class="{{ $isExceeded ? 'table-danger' : '' }}">
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="transaction-icon bg-danger text-white me-3">
-                          <i class="bi {{ $category->icon_class }}"></i>
-                        </div>
-                        <div>
-                          <h6 class="mb-0">{{ $category->name }}</h6>
-                          <small class="text-muted">{{ $category->description ?? 'Tidak ada deskripsi' }}</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      @if($category->budget_limit)
-                        <div class="fw-bold">{{ $category->formatted_budget_limit }}</div>
-                      @else
-                        <span class="text-muted">-</span>
-                      @endif
-                    </td>
-                    <td>
-                      @if($category->budget_limit)
-                        <div class="d-flex align-items-center">
-                          <div class="me-2" style="width: 80px;">
-                            <div class="progress" style="height: 6px;">
-                              <div class="progress-bar 
-                                @if($isExceeded) bg-danger 
-                                @elseif($budgetUsage >= 80) bg-warning 
-                                @else bg-success @endif" style="width: {{ min($budgetUsage, 100) }}%">
-                              </div>
-                            </div>
-                          </div>
-                          <small>{{ number_format($budgetUsage, 1) }}%</small>
-                        </div>
-                      @else
-                        <span class="text-muted">-</span>
-                      @endif
-                    </td>
-                    <td>
-                      @if($category->is_active)
-                        <span class="badge bg-success">Aktif</span>
-                      @else
-                        <span class="badge bg-secondary">Nonaktif</span>
-                      @endif
-                    </td>
-                    <td class="text-end">
-                      <!-- Similar action buttons -->
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-        @else
-          <div class="text-center py-4">
-            <p class="text-muted">Belum ada kategori pengeluaran</p>
-          </div>
-        @endif
-      </div>
+<!-- Create Category Modal -->
+<div class="modal fade" id="createCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="createCategoryForm">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Kategori Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form fields -->
+                    <div class="mb-3">
+                        <label class="form-label">Nama Kategori</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipe</label>
+                        <select class="form-control" name="type" required>
+                            <option value="expense">Pengeluaran</option>
+                            <option value="income">Pemasukan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi (Opsional)</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editCategoryForm">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Kategori</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form fields will be populated by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection
 
-@push('styles')
-<style>
-    .progress-thin {
-        height: 6px;
-        margin-top: 5px;
-    }
-    
-    .budget-warning {
-        background-color: rgba(248, 150, 30, 0.1);
-        border-left: 4px solid #f8961e;
-    }
-    
-    .budget-danger {
-        background-color: rgba(239, 68, 68, 0.1);
-        border-left: 4px solid #ef4444;
-    }
-</style>
-@endpush
-
 @push('scripts')
 <script>
-    // Show budget warnings
-    document.getElementById('showBudgetWarnings')?.addEventListener('click', function(e) {
+$(document).ready(function() {
+    // Create category form
+    $('#createCategoryForm').submit(function(e) {
         e.preventDefault();
-        const warnings = document.querySelector('.card.border-warning');
-        if (warnings) {
-            warnings.scrollIntoView({ behavior: 'smooth' });
-            warnings.classList.add('animate__animated', 'animate__pulse');
-            setTimeout(() => {
-                warnings.classList.remove('animate__animated', 'animate__pulse');
-            }, 1000);
+        
+        $.ajax({
+            url: '{{ route("wallet.categories.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#createCategoryModal').modal('hide');
+                    location.reload();
+                }
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message || 'Terjadi kesalahan');
+            }
+        });
+    });
+
+    // Edit category modal
+    $('#editCategoryModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var modal = $(this);
+        
+        modal.find('.modal-body').html(`
+            <div class="mb-3">
+                <label class="form-label">Nama Kategori</label>
+                <input type="text" class="form-control" name="name" value="${button.data('name')}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tipe</label>
+                <select class="form-control" name="type" required>
+                    <option value="expense" ${button.data('type') === 'expense' ? 'selected' : ''}>Pengeluaran</option>
+                    <option value="income" ${button.data('type') === 'income' ? 'selected' : ''}>Pemasukan</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Deskripsi (Opsional)</label>
+                <textarea class="form-control" name="description" rows="3">${button.data('description') || ''}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ikon (Opsional)</label>
+                <input type="text" class="form-control" name="icon" value="${button.data('icon') || ''}" placeholder="fa-shopping-cart">
+                <small class="text-muted">Nama ikon dari FontAwesome</small>
+            </div>
+        `);
+        
+        modal.find('form').attr('action', `/wallet/categories/${button.data('id')}`);
+    });
+
+    // Edit category form
+    $('#editCategoryForm').submit(function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#editCategoryModal').modal('hide');
+                    location.reload();
+                }
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message || 'Terjadi kesalahan');
+            }
+        });
+    });
+
+    // Delete category
+    $('.delete-category').click(function() {
+        if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
+            var categoryId = $(this).data('id');
+            
+            $.ajax({
+                url: `/wallet/categories/${categoryId}`,
+                method: 'DELETE',
+                data: {_token: '{{ csrf_token() }}'},
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.message || 'Terjadi kesalahan');
+                }
+            });
         }
     });
 
-    // Search Categories
-    document.getElementById('searchCategories')?.addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#categoryTableBody tr');
+    // Bulk actions
+    $('.bulk-action').click(function() {
+        var selectedIds = [];
+        $('.category-checkbox:checked').each(function() {
+            selectedIds.push($(this).val());
+        });
+
+        if (selectedIds.length === 0) {
+            alert('Pilih minimal satu kategori');
+            return;
+        }
+
+        var action = $(this).data('action');
         
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        if (action === 'delete') {
+            if (!confirm(`Apakah Anda yakin ingin menghapus ${selectedIds.length} kategori?`)) {
+                return;
+            }
+        }
+
+        $.ajax({
+            url: '{{ route("wallet.categories.bulk-update") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                category_ids: selectedIds,
+                action: action
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                }
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message || 'Terjadi kesalahan');
+            }
         });
     });
+
+    // Select all checkbox
+    $('#selectAll').change(function() {
+        $('.category-checkbox').prop('checked', $(this).prop('checked'));
+    });
+});
 </script>
 @endpush

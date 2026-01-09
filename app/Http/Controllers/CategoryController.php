@@ -5,16 +5,22 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Category;
-use Modules\Wallet\Repositories\CategoryRepository;
+use Modules\Wallet\Services\CategoryService;
 use Modules\Wallet\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
-	protected $categoryRepository;
+	/**
+	 * @var CategoryService
+	 */
+	protected $categoryService;
 
-	public function __construct(CategoryRepository $categoryRepository)
+	/**
+	 * @param CategoryService $categoryService
+	 */
+	public function __construct(CategoryService $categoryService)
 	{
-		$this->categoryRepository = $categoryRepository;
+		$this->categoryService = $categoryService;
 	}
 
 	/**
@@ -22,54 +28,22 @@ class CategoryController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		try {
-			$data = $this->categoryRepository->getUserCategoriesWithStats(
-				$request->type,
-				$request->include_inactive ?? true
-			);
+		$data = $this->categoryService->getIndexData();
+		$categories = $this->categoryService->getPaginatedCategories(
+			perPage: $request->get("per_page", 15),
+			type: $request->get("type"),
+			search: $request->get("search"),
+			includeInactive: $request->boolean("include_inactive")
+		);
 
-			$categories = $data["categories"];
-			$stats = $data["stats"];
+		// Get budget warnings for alert
+		$budgetWarnings = $this->categoryService->getBudgetWarnings();
 
-			return view("wallet::categories.index", compact("categories", "stats"));
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-					"trace" => $e->getTraceAsString(),
-				],
-				500
-			);
-		}
-	}
-
-	public function create()
-	{
-		return view("wallet::categories.create");
-	}
-
-	/**
-	 * Get categories by type
-	 */
-	public function byType($type)
-	{
-		try {
-			$categories = $this->categoryRepository->getUserCategories($type);
-
-			return response()->json([
-				"success" => true,
-				"data" => $categories,
-			]);
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
-		}
+		return view("wallet::categories.index", [
+			"categories" => $categories,
+			"stats" => $data["stats"],
+			"budgetWarnings" => $budgetWarnings,
+		]);
 	}
 
 	/**
@@ -77,48 +51,26 @@ class CategoryController extends Controller
 	 */
 	public function store(CategoryRequest $request)
 	{
-		//dd($request->validated());
 		try {
-			$category = $this->categoryRepository->createCategory(
-				$request->validated(),
-				auth()->user()
-			);
+			$category = $this->categoryService->createCategory($request->validated());
 
-			return redirect()
-				->route("apps.categories.index")
-				->with("success", "Category created successfully");
+			return response()->json(
+				[
+					"success" => true,
+					"message" => "Category created successfully",
+					"category" => $category,
+				],
+				201
+			);
 		} catch (\Exception $e) {
 			return response()->json(
 				[
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				400
 			);
 		}
-	}
-
-	/**
-	 * Display the specified category
-	 */
-	public function show(Category $category)
-	{
-		try {
-			return view("wallet::categories.show", compact("category"));
-		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				500
-			);
-		}
-	}
-
-	public function edit(Request $request, Category $category)
-	{
-		return view("wallet::categories.edit", compact("category"));
 	}
 
 	/**
@@ -127,16 +79,24 @@ class CategoryController extends Controller
 	public function update(CategoryRequest $request, Category $category)
 	{
 		try {
-			$category = $this->categoryRepository->updateCategory(
+			$updatedCategory = $this->categoryService->updateCategory(
 				$category,
 				$request->validated()
 			);
 
-			return redirect()
-				->route("apps.categories.index")
-				->with("success", "Category updated successfully");
+			return response()->json([
+				"success" => true,
+				"message" => "Category updated successfully",
+				"category" => $updatedCategory,
+			]);
 		} catch (\Exception $e) {
-			return back()->withErrors($e->getMessage());
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				400
+			);
 		}
 	}
 
@@ -146,31 +106,11 @@ class CategoryController extends Controller
 	public function destroy(Category $category)
 	{
 		try {
-			$this->categoryRepository->deleteCategory($category);
-
-			return back()->with("success", "Category deleted successfully");
-		} catch (\Exception $e) {
-			return back()->withErrors($e->getMessage());
-		}
-	}
-
-	/**
-	 * Reorder categories
-	 */
-	public function reorder(Request $request)
-	{
-		$request->validate([
-			"categories" => "required|array",
-			"categories.*.id" => "required|exists:finance_categories,id",
-			"categories.*.order" => "required|integer|min:0",
-		]);
-
-		try {
-			$this->categoryRepository->reorderCategories($request->categories);
+			$this->categoryService->deleteCategory($category);
 
 			return response()->json([
 				"success" => true,
-				"message" => "Categories reordered successfully",
+				"message" => "Category deleted successfully",
 			]);
 		} catch (\Exception $e) {
 			return response()->json(
@@ -178,37 +118,50 @@ class CategoryController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				400
 			);
 		}
 	}
 
+	/**
+	 * Toggle category status
+	 */
 	public function toggleStatus(Category $category)
 	{
-		$category = $this->categoryRepository->toggleStatus($category);
+		try {
+			$updatedCategory = $this->categoryService->toggleStatus($category);
 
-		return back()->with("success", "Berhasil mengubah status kategori.");
+			return response()->json([
+				"success" => true,
+				"message" => "Category status updated",
+				"category" => $updatedCategory,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				400
+			);
+		}
 	}
 
 	/**
 	 * Get category usage statistics
 	 */
-	public function usage(Request $request, Category $category = null)
+	public function usage(Category $category, Request $request)
 	{
 		try {
-			if ($category) {
-				$this->authorize("view", $category);
-				$stats = $this->categoryRepository->getCategoryUsage($category);
-			} else {
-				$stats = $this->categoryRepository->getAllCategoriesUsage(
-					$request->start_date,
-					$request->end_date
-				);
-			}
+			$usage = $this->categoryService->getCategoryUsage(
+				$category,
+				$request->get("start_date"),
+				$request->get("end_date")
+			);
 
 			return response()->json([
 				"success" => true,
-				"data" => $stats,
+				"data" => $usage,
 			]);
 		} catch (\Exception $e) {
 			return response()->json(
@@ -216,41 +169,56 @@ class CategoryController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				400
 			);
 		}
 	}
 
-	// Tambahkan method ini ke controller yang sudah ada
 	/**
-	 * Get budget warnings for categories
+	 * Bulk update categories
 	 */
-	public function budgetWarnings(Request $request)
+	public function bulkUpdate(Request $request)
 	{
+		$request->validate([
+			"category_ids" => "required|array",
+			"category_ids.*" => "exists:categories,id",
+			"is_active" => "boolean",
+			"is_budgetable" => "boolean",
+		]);
+
 		try {
-			$threshold = $request->threshold ?? 80;
-			$warnings = $this->categoryRepository->getBudgetWarnings(
-				auth()->user(),
-				$threshold
+			$count = $this->categoryService->bulkUpdate(
+				$request->category_ids,
+				$request->only(["is_active", "is_budgetable"])
 			);
 
-			if ($request->expectsJson()) {
-				return response()->json([
-					"success" => true,
-					"data" => $warnings,
-					"count" => $warnings->count(),
-				]);
-			}
-
-			return view("wallet::categories.budget-warnings", compact("warnings"));
+			return response()->json([
+				"success" => true,
+				"message" => "{$count} categories updated successfully",
+			]);
 		} catch (\Exception $e) {
 			return response()->json(
 				[
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				400
 			);
 		}
+	}
+
+	/**
+	 * Get categories for dropdown
+	 */
+	public function dropdown(Request $request)
+	{
+		$categories = $this->categoryService->getCategoriesForDropdown(
+			$request->get("type")
+		);
+
+		return response()->json([
+			"success" => true,
+			"data" => $categories,
+		]);
 	}
 }

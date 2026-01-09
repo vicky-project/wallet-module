@@ -13,11 +13,8 @@ use Brick\Money\Money;
 
 class AccountService
 {
-	protected AccountRepository $repository;
-
-	public function __construct(AccountRepository $repository)
+	public function __construct(protected AccountRepository $repository)
 	{
-		$this->repository = $repository;
 	}
 
 	public function getRepository(): AccountRepository
