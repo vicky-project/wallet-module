@@ -464,11 +464,11 @@
                         <div class="col-6">
                           <form method="POST" action="{{ route('apps.accounts.recalculate-all') }}">
                             @csrf
-                          </form>
                             <button type="submit" class="btn btn-warning quick-action-btn" onclick="return confirm('All balance account will be recalculate ?')">
                                 <i class="bi bi-arrow-clockwise display-6 mb-2"></i>
                                 <div>Hitung Ulang</div>
                             </button>
+                          </form>
                         </div>
                     </div>
                 </div>
