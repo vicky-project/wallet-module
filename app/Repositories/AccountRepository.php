@@ -174,7 +174,7 @@ class AccountRepository extends BaseRepository
 		$accountCount = $accounts->count();
 
 		foreach ($accounts as $account) {
-			$balance = $account->balance->getAmount()->toInt();
+			$balance = $account->balance->getMinorAmount()->toInt();
 
 			if ($account->isLiability()) {
 				$liabilityBalance += $balance;
