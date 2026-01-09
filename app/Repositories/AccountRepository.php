@@ -214,6 +214,7 @@ class AccountRepository extends BaseRepository
 				DB::raw("SUM(balance) as total_balance")
 			)
 			->groupBy("type")
+			->groupBy("currency")
 			->get();
 	}
 
