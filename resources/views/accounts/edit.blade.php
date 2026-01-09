@@ -7,15 +7,30 @@
     <!-- Page Header -->
     <div class="row mb-4">
         <div class="col">
-            <div class="d-flex justify-content-between align-items-center text-end">
-                <div class="d-flex gap-2 me-auto">
-                    <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-eye me-1"></i>Lihat
-                    </a>
-                    <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Kembali
-                    </a>
-                </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('apps.dashboard') }}">
+                            <i class="bi bi-house-door"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('apps.accounts.index') }}">
+                            <i class="bi bi-wallet2"></i> Akun
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('apps.accounts.show', $account) }}">
+                            <i class="bi bi-eye"></i> {{ Str::limit($account->name, 20) }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h2 class="page-title mb-2">
                         <i class="bi bi-pencil-square text-warning me-2"></i>Edit Akun
@@ -23,6 +38,14 @@
                     <p class="text-muted mb-0">
                         Perbarui informasi akun <strong>{{ $account->name }}</strong>.
                     </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-eye me-1"></i>Lihat
+                    </a>
+                    <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali
+                    </a>
                 </div>
             </div>
         </div>
@@ -83,52 +106,52 @@
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteAccountModalLabel">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Penghapusan
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mb-4">
-                    <div class="account-icon mx-auto mb-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                        <i class="{{ $account->icon }} fs-2"></i>
-                    </div>
-                    <h5 class="mb-3">Hapus Akun "{{ $account->name }}"?</h5>
-                    <p class="text-muted">
-                        Anda akan menghapus akun <strong>{{ $account->name }}</strong> dan semua data terkait.
-                        Tindakan ini tidak dapat dibatalkan.
-                    </p>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteAccountModalLabel">
+          <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Penghapusan
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <div class="account-icon mx-auto mb-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+            <i class="{{ $account->icon }} fs-2"></i>
+          </div>
+          <h5 class="mb-3">Hapus Akun "{{ $account->name }}"?</h5>
+          <p class="text-muted">
+            Anda akan menghapus akun <strong>{{ $account->name }}</strong> dan semua data terkait.
+            Tindakan ini tidak dapat dibatalkan.
+          </p>
                     
-                    @if($account->transactions_count > 0)
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-circle me-2"></i>
-                            Akun ini memiliki <strong>{{ $account->transactions_count }} transaksi</strong> yang akan terhapus.
-                        </div>
-                    @endif
+          @if($account->transactions_count > 0)
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-circle me-2"></i>
+              Akun ini memiliki <strong>{{ $account->transactions_count }} transaksi</strong> yang akan terhapus.
+            </div>
+          @endif
                     
-                    <div class="form-check mt-4">
-                        <input class="form-check-input" type="checkbox" id="confirmDelete">
-                        <label class="form-check-label" for="confirmDelete">
-                            Saya mengerti bahwa tindakan ini tidak dapat dibatalkan
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('apps.accounts.destroy', $account) }}" method="POST" id="deleteForm">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" id="deleteButton" disabled>
-                        <i class="bi bi-trash me-1"></i>Hapus Akun
-                    </button>
-                </form>
-            </div>
+          <div class="form-check mt-4">
+            <input class="form-check-input" type="checkbox" id="confirmDelete">
+            <label class="form-check-label" for="confirmDelete">
+              Saya mengerti bahwa tindakan ini tidak dapat dibatalkan
+            </label>
+          </div>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form action="{{ route('apps.accounts.destroy', $account) }}" method="POST" id="deleteForm">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger" id="deleteButton" disabled>
+            <i class="bi bi-trash me-1"></i>Hapus Akun
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 @push('scripts')

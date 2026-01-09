@@ -375,7 +375,7 @@
       <div class="card-body">
         <div class="stats-grid">
           <div class="text-center">
-            <div class="rounded-circle bg-light p-3 my-2">
+            <div class="rounded-circle bg-light p-3 mb-2">
               <i class="bi bi-palette text-primary fs-4"></i>
             </div>
             <div class="small text-muted">Warna</div>
