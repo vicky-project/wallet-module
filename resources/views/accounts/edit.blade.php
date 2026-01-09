@@ -4,52 +4,29 @@
 
 @section('content')
 @include('wallet::partials.fab')
-    <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-2">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('apps.dashboard') }}">
-                            <i class="bi bi-house-door"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('apps.accounts.index') }}">
-                            <i class="bi bi-wallet2"></i> Akun
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('apps.accounts.show', $account) }}">
-                            <i class="bi bi-eye"></i> {{ Str::limit($account->name, 20) }}
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </li>
-                </ol>
-            </nav>
-            
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="page-title mb-2">
-                        <i class="bi bi-pencil-square text-warning me-2"></i>Edit Akun
-                    </h2>
-                    <p class="text-muted mb-0">
-                        Perbarui informasi akun <strong>{{ $account->name }}</strong>.
-                    </p>
-                </div>
-                <div class="d-flex gap-2">
-                    <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-eye me-1"></i>Lihat
-                    </a>
-                    <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Kembali
-                    </a>
-                </div>
-            </div>
-        </div>
+<!-- Page Header -->
+<div class="row mb-4">
+  <div class="col">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title mb-2">
+          <i class="bi bi-pencil-square text-warning me-2"></i>Edit Akun
+        </h2>
+        <p class="text-muted mb-0">
+          Perbarui informasi akun <strong>{{ $account->name }}</strong>.
+        </p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
+          <i class="bi bi-eye me-1"></i>Lihat
+        </a>
+        <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Kembali
+        </a>
+      </div>
     </div>
+  </div>
+</div>
 
     <!-- Form Card -->
     <div class="row">
