@@ -51,7 +51,7 @@
     </div>
             
     <!-- Danger Zone -->
-    <div class="card border-danger mt-4">
+    <div class="card border-danger my-4">
       <div class="card-header bg-danger text-white">
         <h6 class="mb-0">
           <i class="bi bi-exclamation-triangle me-2"></i>Zona Bahaya

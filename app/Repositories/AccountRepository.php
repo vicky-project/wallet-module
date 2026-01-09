@@ -3,9 +3,11 @@
 namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Models\Account;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Wallet\Enums\AccountType;
 
@@ -21,29 +23,40 @@ class AccountRepository extends BaseRepository
 	 */
 	public function getUserAccounts(User $user, array $filters = []): Collection
 	{
-		$query = $this->model->where("user_id", $user->id);
+		$cachekey = Helper::generateCacheKey(
+			"user_accounts",
+			array_merge(["user_id" => $user->id], $filters)
+		);
 
-		if (isset($filters["type"])) {
-			$query->where("type", $filters["type"]);
-		}
+		return Cache::remeber(
+			$cachekey,
+			config("wallet.cache_ttl"),
+			function () use ($user, $filters) {
+				$query = $this->model->where("user_id", $user->id);
 
-		if (isset($filters["is_active"])) {
-			$query->where("is_active", (bool) $filters["is_active"]);
-		}
+				if (isset($filters["type"])) {
+					$query->where("type", $filters["type"]);
+				}
 
-		if (isset($filters["search"])) {
-			$search = $filters["search"];
-			$query->where(function ($q) use ($search) {
-				$q->where("name", "like", "%{$search}%")
-					->orWhere("account_number", "like", "%{$search}%")
-					->orWhere("bank_name", "like", "%{$search}%");
-			});
-		}
+				if (isset($filters["is_active"])) {
+					$query->where("is_active", (bool) $filters["is_active"]);
+				}
 
-		return $query
-			->orderBy("is_default", "desc")
-			->orderBy("name")
-			->get();
+				if (isset($filters["search"])) {
+					$search = $filters["search"];
+					$query->where(function ($q) use ($search) {
+						$q->where("name", "like", "%{$search}%")
+							->orWhere("account_number", "like", "%{$search}%")
+							->orWhere("bank_name", "like", "%{$search}%");
+					});
+				}
+
+				return $query
+					->orderBy("is_default", "desc")
+					->orderBy("name")
+					->get();
+			}
+		);
 	}
 
 	/**

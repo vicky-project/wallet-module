@@ -6,6 +6,16 @@ use Modules\Wallet\Enums\CategoryType;
 
 class Helper
 {
+	/**
+	 * Generate cache key based on parameters
+	 */
+	public static function generateCacheKey(
+		string $prefix,
+		array $params = []
+	): string {
+		return $prefix . "_" . md5(serialize($params));
+	}
+
 	public static function toMoney(
 		string|int $money,
 		string $currency = "IDR",
