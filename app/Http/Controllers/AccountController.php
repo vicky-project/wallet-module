@@ -158,13 +158,12 @@ class AccountController extends BaseController
 	/**
 	 * Toggle account default status
 	 */
-	public function toggleDefault(Account $account)
+	public function setDefault(Request $request, Account $account)
 	{
+		$user = $request->user();
 		try {
-			$this->authorize("update", $account);
-
 			// Set all accounts to non-default
-			Account::where("user_id", auth()->id())
+			Account::where("user_id", $user)
 				->where("id", "!=", $account->id)
 				->update(["is_default" => false]);
 
@@ -176,13 +175,9 @@ class AccountController extends BaseController
 				? "diatur sebagai default"
 				: "dinonaktifkan sebagai default";
 
-			return redirect()
-				->back()
-				->with("success", "Akun berhasil {$status}");
+			return back()->with("success", "Akun berhasil {$status}");
 		} catch (\Exception $e) {
-			return redirect()
-				->back()
-				->withErrors(["error" => $e->getMessage()]);
+			return back()->withErrors(["error" => $e->getMessage()]);
 		}
 	}
 

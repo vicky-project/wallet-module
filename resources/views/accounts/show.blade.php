@@ -316,7 +316,7 @@
           <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#adjustBalanceModal">
             <i class="bi bi-sliders me-1"></i>Adjust Saldo
           </button>
-          <a href="{{ route('apps.accounts.recalculate-balance', $account) }}" class="btn btn-outline-info" onclick="return confirm('Hitung ulang saldo berdasarkan transaksi?')">
+          <a href="{{ route('apps.accounts.recalculate', $account) }}" class="btn btn-outline-info" onclick="return confirm('Hitung ulang saldo berdasarkan transaksi?')">
             <i class="bi bi-arrow-clockwise me-1"></i>Hitung Ulang
           </a>
           @if(!$account->is_default)

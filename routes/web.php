@@ -16,9 +16,9 @@ Route::middleware(["auth"])
 		);
 
 		// Account Routes
-		Route::put("accounts/toggle-default", [
+		Route::put("accounts/{account}/set-default", [
 			AccountController::class,
-			"toggleDefault",
+			"setDefault",
 		])->name("accounts.set-default");
 		Route::post("accounts/recalculate-all", [
 			AccountController::class,
