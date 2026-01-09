@@ -8,6 +8,9 @@ use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Services\AccountService;
 use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Http\Requests\AccountRequest;
+use Illuminate\Http\JsonResponse;
+use Modules\Wallet\Http\Resources\AccountResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class AccountController extends BaseController
 {
@@ -224,6 +227,34 @@ class AccountController extends BaseController
 					"message" => $e->getMessage(),
 				],
 				500
+			);
+		}
+	}
+
+	/**
+	 * Recalculate account balance.
+	 */
+	public function recalculateBalance(
+		Request $request,
+		Account $account
+	): JsonResponse {
+		try {
+			$this->service->validateAccount($account, $request->user());
+			$this->service->recalculateBalance($account);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Account balance recalculated successfully",
+				"data" => new AccountResource($account->fresh()),
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => "Failed to recalculate balance",
+					"error" => $e->getMessage(),
+				],
+				Response::HTTP_BAD_REQUEST
 			);
 		}
 	}

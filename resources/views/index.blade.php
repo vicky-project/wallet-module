@@ -698,18 +698,9 @@
         function getAccountTypeColor(type) {
             const typeStr = type && typeof type === 'object' ? type.value : type;
             
-            const colorMap = {
-                'cash': '#20c997',
-                'bank': '#0d6efd',
-                'ewallet': '#6f42c1',
-                'credit_card': '#fd7e14',
-                'investment': '#17a2b8',
-                'savings': '#198754',
-                'loan': '#dc3545',
-                'other': '#6c757d'
-            };
+            const colorMap = @json(Helper::accountTypeMap());
             
-            return colorMap[typeStr] || '#6c757d';
+            return colorMap[typeStr].color || '#6c757d';
         }
         
         // Period filter
