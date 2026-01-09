@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @include('wallet::accounts.partials.form', [
+                    @include('wallet::partials.accounts.form', [
                         'action' => route('apps.accounts.update', $account),
                         'account' => $account
                     ])
