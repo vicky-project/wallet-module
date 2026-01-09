@@ -258,4 +258,23 @@ class AccountController extends BaseController
 			);
 		}
 	}
+
+	public function recalculateAllBalance(Request $request)
+	{
+		$user = $request->user();
+		try {
+			if ($this->service->bulkRecalculateBalances($user)) {
+				return back()->with("success", "Balance updated successfuly");
+			}
+
+			return back()->withErrors("Failed to recalculate all balance");
+		} catch (\Exception $e) {
+			logger()->error("Failed to recalculate all accounts", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace(),
+			]);
+
+			return back()->withErors($e->getMessage);
+		}
+	}
 }

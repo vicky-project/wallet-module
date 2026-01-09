@@ -20,9 +20,13 @@ Route::middleware(["auth"])
 			AccountController::class,
 			"toggleDefault",
 		])->name("accounts.set-default");
+		Route::post("accounts/recalculate-all", [
+			AccountController::class,
+			"recalculateAllBalance",
+		])->name("accounts.recalculate-all");
 		Route::post("accounts/{account}/recalculate", [
 			AccountController::class,
-			"",
+			"recalculateBalance",
 		])->name("accounts.recalculate");
 		Route::resource("accounts", AccountController::class);
 

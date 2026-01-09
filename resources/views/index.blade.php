@@ -462,7 +462,10 @@
                             </button>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-warning quick-action-btn" id="recalculateBalances">
+                          <form method="POST" action="{{ route('apps.accounts.recalculate-all') }}">
+                            @csrf
+                          </form>
+                            <button type="submit" class="btn btn-warning quick-action-btn" onclick="return confirm('All balance account will be recalculate ?')">
                                 <i class="bi bi-arrow-clockwise display-6 mb-2"></i>
                                 <div>Hitung Ulang</div>
                             </button>
@@ -721,35 +724,6 @@
             });
         });
         
-        // Recalculate balances button
-        const recalculateBtn = document.getElementById('recalculateBalances');
-        if (recalculateBtn) {
-            recalculateBtn.addEventListener('click', function() {
-                if (confirm('Apakah Anda yakin ingin menghitung ulang semua saldo akun?')) {
-                    fetch('{{ secure_url(config("app.url") . "/api/apps/recalculate") }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showToast('success', 'Berhasil', data.message);
-                            setTimeout(() => location.reload(), 2000);
-                        } else {
-                            showToast('error', 'Gagal', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showToast('error', 'Gagal', 'Terjadi kesalahan');
-                    });
-                }
-            });
-        }
-        
         // Function to load dashboard data
         function loadDashboardData(period) {
             const button = document.querySelector('.dropdown-toggle');
@@ -789,7 +763,6 @@
             // Update total balance
             const totalBalanceEl = document.querySelector('.stat-card:nth-child(1) h2.currency');
             if (totalBalanceEl && data.account_summary.total_balance) {
-            console.log(data.account_summary);
                 totalBalanceEl.textContent = new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
