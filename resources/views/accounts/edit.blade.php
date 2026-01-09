@@ -43,41 +43,41 @@
         </div>
       </div>
       <div class="card-body">
-                    @include('wallet::partials.accounts.form', [
-                        'action' => route('apps.accounts.update', $account),
-                        'account' => $account
-                    ])
-                </div>
+        @include('wallet::partials.accounts.form', [
+          'action' => route('apps.accounts.update', $account),
+          'account' => $account
+        ])
+      </div>
     </div>
             
     <!-- Danger Zone -->
     <div class="card border-danger mt-4">
-                <div class="card-header bg-danger text-white">
-                    <h6 class="mb-0">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Zona Bahaya
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h6 class="text-danger mb-2">Hapus Akun</h6>
-                            <p class="text-muted mb-3">
-                                Menghapus akun akan menghapus semua data terkait termasuk transaksi yang terkait dengan akun ini.
-                                Tindakan ini tidak dapat dibatalkan.
-                            </p>
-                            <div class="alert alert-warning">
-                                <i class="bi bi-exclamation-circle me-2"></i>
-                                <strong>Peringatan:</strong> Pastikan untuk mencadangkan data penting sebelum menghapus akun.
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                                <i class="bi bi-trash me-1"></i>Hapus Akun
-                            </button>
-                        </div>
-                    </div>
-                </div>
+      <div class="card-header bg-danger text-white">
+        <h6 class="mb-0">
+          <i class="bi bi-exclamation-triangle me-2"></i>Zona Bahaya
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8">
+            <h6 class="text-danger mb-2">Hapus Akun</h6>
+            <p class="text-muted mb-3">
+              Menghapus akun akan menghapus semua data terkait termasuk transaksi yang terkait dengan akun ini.
+              Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <div class="alert alert-warning">
+              <i class="bi bi-exclamation-circle me-2"></i>
+              <strong>Peringatan:</strong> Pastikan untuk mencadangkan data penting sebelum menghapus akun.
             </div>
+          </div>
+          <div class="col-md-4 text-end">
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+              <i class="bi bi-trash me-1"></i>Hapus Akun
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -130,6 +130,8 @@
     </div>
   </div>
 </div>
+
+@endsection
 
 @push('scripts')
 <script>
