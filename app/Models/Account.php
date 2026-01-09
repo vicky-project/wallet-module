@@ -3,8 +3,10 @@
 namespace Modules\Wallet\Models;
 
 use Brick\Money\Money;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Casts\MoneyCast;
 use Modules\Wallet\Enums\AccountType;
 use Modules\Wallet\Enums\TransactionType;
@@ -166,10 +168,21 @@ class Account extends Model
 	 */
 	public function getIncomeForPeriod($startDate, $endDate)
 	{
-		return $this->transactions()
-			->where("type", TransactionType::INCOME)
-			->whereBetween("transaction_date", [$startDate, $endDate])
-			->sum("amount");
+		$cacheKey = Helper::generateCacheKey("account_income_period", [
+			"start_date" => $startDate,
+			"end_date" => $endDate,
+		]);
+
+		return Cache::remember(
+			$cacheKey,
+			config("wallet.cache_ttl"),
+			function () use ($startDate, $endDate) {
+				return $this->transactions()
+					->where("type", TransactionType::INCOME)
+					->whereBetween("transaction_date", [$startDate, $endDate])
+					->sum("amount");
+			}
+		);
 	}
 
 	/**
@@ -177,10 +190,21 @@ class Account extends Model
 	 */
 	public function getExpenseForPeriod($startDate, $endDate)
 	{
-		return $this->transactions()
-			->where("type", TransactionType::EXPENSE)
-			->whereBetween("transaction_date", [$startDate, $endDate])
-			->sum("amount");
+		$cacheKey = Helper::generateCacheKey("account_expense_period", [
+			"start_date" => $startDate,
+			"end_date" => $endDate,
+		]);
+
+		return Cache::remember(
+			$cacheKey,
+			config("wallet.cache_ttl"),
+			function () use ($startDate, $endDate) {
+				return $this->transactions()
+					->where("type", TransactionType::EXPENSE)
+					->whereBetween("transaction_date", [$startDate, $endDate])
+					->sum("amount");
+			}
+		);
 	}
 
 	/**
