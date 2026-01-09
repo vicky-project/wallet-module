@@ -186,7 +186,6 @@ class AccountRepository extends BaseRepository
 		}
 
 		$netWorth = $assetBalance - abs($liabilityBalance);
-		dd($totalBalance, $assetBalance, $liabilityBalance, $netWorth);
 
 		return [
 			"total_accounts" => $accountCount,
@@ -206,8 +205,8 @@ class AccountRepository extends BaseRepository
 	public function getAccountTypeDistribution(User $user): Collection
 	{
 		return $this->model
-			->where("user_id", $user->id)
-			->where("is_active", true)
+			->forUser($user->id)
+			->active()
 			->select(
 				"type",
 				DB::raw("COUNT(*) as count"),

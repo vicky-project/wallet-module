@@ -28,9 +28,12 @@ class DashboardController extends BaseController
 		// Get accounts summary
 		$accountSummary = $this->accountService->getAccountSummary($user);
 
-		$accountTypeDistribution = $this->accountService->getAccountTypeDistribution(
-			$user
-		);
+		$accountTypeDistribution = $this->accountService
+			->getAccountTypeDistribution($user)
+			->map(
+				fn($item) => [...$item, ($item->total_balance = $item->total_balance)]
+			)
+			->dd();
 
 		// Get account analytics for current month
 		$currentMonth = date("m");
