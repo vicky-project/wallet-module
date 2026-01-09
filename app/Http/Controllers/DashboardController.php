@@ -31,7 +31,6 @@ class DashboardController extends BaseController
 		$accountTypeDistribution = $this->accountService->getAccountTypeDistribution(
 			$user
 		);
-		dd($accountTypeDistribution);
 
 		// Get account analytics for current month
 		$currentMonth = date("m");
