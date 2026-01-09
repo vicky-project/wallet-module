@@ -52,7 +52,6 @@ class AccountService
 		if (isset($data["initial_balance"]) && !is_null($data["initial_balance"])) {
 			$data["balance"] = $data["initial_balance"];
 		}
-		dd($data);
 
 		// Create account
 		return $this->repository->create($data);
