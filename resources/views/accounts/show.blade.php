@@ -1,228 +1,472 @@
 @extends('wallet::layouts.app')
 
-@section('title', 'Detail Akun - ' . $account->name . ' - ' . config('app.name'))
+@section('title', $account->name . ' - Detail Akun')
 
-@use('Modules\Wallet\Helpers\Helper')
-@use('Modules\Wallet\Enums\TransactionType')
+@push('styles')
+<style>
+    .account-header-card {
+        border-left: 4px solid {{ $account->color }};
+        background: linear-gradient(135deg, {{ $account->color }}20, transparent);
+    }
+    
+    .account-detail-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto;
+    }
+    
+    .balance-badge {
+        font-size: 1.1rem;
+        padding: 8px 16px;
+        border-radius: 12px;
+    }
+    
+    .detail-card {
+        height: 100%;
+        transition: transform 0.2s;
+    }
+    
+    .detail-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 12px 20px;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #6c757d;
+    }
+    
+    .info-value {
+        font-weight: 500;
+    }
+    
+    .action-buttons {
+        position: sticky;
+        bottom: 20px;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    body[data-bs-theme="dark"] .action-buttons {
+        background: rgba(33, 37, 41, 0.95);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        
+        .action-buttons {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+@endpush
 
 @section('content')
 @include('wallet::partials.fab')
-<div class="d-flex justify-content-between align-items-center mb-4 text-end">
-  <div class="d-flex justify-content-between align-items-center me-auto gap-2">
-    <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-      <i class="bi bi-arrow-left"></i>
-    </a>
-    <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-primary">
-      <i class="bi bi-pencil"></i>
-    </a>
-  </div>
-  <div>
-    <h1 class="page-title mb-2">
-      <i class="bi bi-bank me-2"></i>Detail Akun
-    </h1>
-    <p class="text-muted mb-0">Informasi lengkap dan transaksi akun "{{ $account->name }}"</p>
+<!-- Account Header -->
+<div class="row mb-4">
+  <div class="col">
+    <div class="card account-header-card">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <div class="d-flex align-items-center">
+              <div class="account-detail-icon me-4" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+                <i class="{{ $account->icon }}"></i>
+              </div>
+              <div>
+                <h1 class="mb-2">{{ $account->name }}</h1>
+                <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                  <span class="badge bg-secondary">{{ $account->type->label() }}</span>
+                  @if($account->is_default)
+                    <span class="badge bg-warning">
+                      <i class="bi bi-star-fill me-1"></i> Default
+                    </span>
+                  @endif
+                  @if($account->is_active)
+                    <span class="badge bg-success">
+                      <i class="bi bi-check-circle me-1"></i> Aktif
+                    </span>
+                  @else
+                    <span class="badge bg-danger">
+                      <i class="bi bi-x-circle me-1"></i> Nonaktif
+                    </span>
+                  @endif
+                  <span class="badge bg-info">{{ $account->currency }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <div class="balance-badge d-inline-block bg-light border p-3 rounded-3">
+              <div class="text-muted small">Saldo Saat Ini</div>
+              <div class="h3 mb-0 currency">{{ $account->balance->getMinorAmount()->toInt() }}</div>
+              <div class="small text-muted mt-1">
+                <i class="bi bi-calendar me-1"></i>Per {{ now()->translatedFormat('d F Y') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Account Overview -->
-<div class="row">
-  <!-- Account Details -->
-  <div class="col-lg-4 col-md-4 mb-3">
-    <div class="card mb-4">
+<!-- Stats Cards -->
+<div class="row mb-4">
+  <div class="col-md-3 mb-3">
+    <div class="card detail-card border-start border-success border-4">
       <div class="card-body">
-        <div class="d-flex align-items-center mb-4">
-          @php $accountTypeMap = Helper::accountTypeMap($account->type->value) @endphp
-          <div class="account-icon-large me-3" style="width: 70px; height: 70px; background: {{ $accountTypeMap['color'] ?? '#4361ee' }}; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
-            <i class="bi {{ $accountTypeMap['icon'] }} fs-3"></i>
+        <div class="d-flex align-items-center">
+          <div class="me-3">
+            <div class="rounded-circle bg-success bg-opacity-10 p-3 text-success">
+              <i class="bi bi-arrow-down-circle fs-4"></i>
+            </div>
           </div>
           <div>
-            <h4 class="mb-1">{{ $account->name }}</h4>
-            <span class="badge bg-primary">{{ $account->type_label }}</span>
+            <h6 class="text-muted mb-1">Pemasukan</h6>
+            <h4 class="mb-0 currency">{{ $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth())->getMinorAmount()->toInt() }}</h4>
+            <small class="text-muted">Bulan ini</small>
           </div>
-        </div>
-
-        <div class="account-details">
-          <div class="mb-3">
-            <h6 class="text-muted mb-1">Saldo Saat Ini</h6>
-            <h2 class="text-success">{{ $account->formatted_balance }}</h2>
-          </div>
-
-          @if($account->bank_name)
-          <div class="mb-3">
-            <h6 class="text-muted mb-1">Bank</h6>
-            <p class="mb-0">{{ $account->bank_name }}</p>
-          </div>
-          @endif
-
-          @if($account->account_number)
-          <div class="mb-3">
-            <h6 class="text-muted mb-1">Nomor Rekening</h6>
-            <p class="mb-0">{{ $account->account_number }}</p>
-          </div>
-          @endif
-
-          @if($account->description)
-          <div class="mb-3">
-            <h6 class="text-muted mb-1">Deskripsi</h6>
-            <p class="mb-0">{{ $account->description }}</p>
-          </div>
-          @endif
-
-          <div class="row mb-3">
-            <div class="col-6">
-              <h6 class="text-muted mb-1">Status</h6>
-              @if($account->is_default)
-              <span class="badge bg-success">Default</span>
-              @else
-              <span class="badge bg-secondary">Non Default</span>
-              @endif
-            </div>
-            <div class="col-6">
-              <h6 class="text-muted mb-1">Mata Uang</h6>
-              <p class="mb-0">{{ $account->currency }}</p>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <small class="text-muted">
-              <i class="bi bi-calendar me-1"></i>
-              Dibuat: {{ $account->created_at->format('d M Y') }}
-            </small>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="card">
-      <div class="card-header">
-        <h6 class="mb-0">Aksi Cepat</h6>
-      </div>
-      <div class="card-body">
-        <div class="d-grid gap-2">
-          <a href="{{ route('apps.transactions.create', ['account_id' => $account->id]) }}" class="btn btn-outline-primary">
-            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
-          </a>
         </div>
       </div>
     </div>
   </div>
+        
+  <div class="col-md-3 mb-3">
+    <div class="card detail-card border-start border-danger border-4">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="me-3">
+            <div class="rounded-circle bg-danger bg-opacity-10 p-3 text-danger">
+              <i class="bi bi-arrow-up-circle fs-4"></i>
+            </div>
+          </div>
+          <div>
+            <h6 class="text-muted mb-1">Pengeluaran</h6>
+            <h4 class="mb-0 currency">{{ $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth())->getMinorAmount()->toInt() }}</h4>
+            <small class="text-muted">Bulan ini</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+  <div class="col-md-3 mb-3">
+    <div class="card detail-card border-start border-info border-4">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="me-3">
+            <div class="rounded-circle bg-info bg-opacity-10 p-3 text-info">
+              <i class="bi bi-arrow-left-right fs-4"></i>
+            </div>
+          </div>
+          <div>
+            <h6 class="text-muted mb-1">Aliran Bersih</h6>
+            @php
+              $income = $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth());
+              $expense = $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth());
+              $netFlow = $income->minus($expense);
+            @endphp
+            <h4 class="mb-0 currency {{ $netFlow->getMinorAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }}">
+              {{ $netFlow->getMinorAmount()->toInt() }}
+            </h4>
+            <small class="text-muted">Bulan ini</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+  <div class="col-md-3 mb-3">
+    <div class="card detail-card border-start border-primary border-4">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="me-3">
+            <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+              <i class="bi bi-clock-history fs-4"></i>
+            </div>
+          </div>
+          <div>
+            <h6 class="text-muted mb-1">Total Transaksi</h6>
+            <h4 class="mb-0">{{ $account->transactions_count ?? 0 }}</h4>
+            <small class="text-muted">Semua waktu</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- Transactions -->
-  <div class="col-lg-8 col-md-8 mb-3">
-    <!-- Balance History -->
+<div class="row">
+  <!-- Account Details -->
+  <div class="col-lg-8 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-info-circle me-2"></i>Detail Informasi
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="info-grid mb-4">
+          <div class="info-label">Saldo Awal</div>
+          <div class="info-value currency">{{ $account->initial_balance->getMinorAmount()->toInt() }}</div>
+                        
+          <div class="info-label">Mata Uang</div>
+          <div class="info-value">
+            <span class="badge bg-info">{{ $account->currency }}</span>
+          </div>
+                        
+          @if($account->account_number)
+            <div class="info-label">Nomor Akun</div>
+            <div class="info-value">
+              <code>{{ $account->account_number }}</code>
+            </div>
+          @endif
+                        
+          @if($account->bank_name)
+            <div class="info-label">Nama Bank</div>
+            <div class="info-value">{{ $account->bank_name }}</div>
+          @endif
+                        
+          <div class="info-label">Status</div>
+          <div class="info-value">
+            @if($account->is_active)
+              <span class="badge bg-success">
+                <i class="bi bi-check-circle me-1"></i> Aktif
+              </span>
+            @else
+              <span class="badge bg-danger">
+                <i class="bi bi-x-circle me-1"></i> Nonaktif
+              </span>
+            @endif
+          </div>
+                        
+          <div class="info-label">Default Akun</div>
+          <div class="info-value">
+            @if($account->is_default)
+              <span class="badge bg-warning">
+                <i class="bi bi-star-fill me-1"></i> Ya
+              </span>
+            @else
+              <span class="badge bg-secondary">Tidak</span>
+            @endif
+          </div>
+                        
+          <div class="info-label">Tanggal Dibuat</div>
+          <div class="info-value">
+            {{ $account->created_at->translatedFormat('d F Y H:i') }}
+          </div>
+                        
+          <div class="info-label">Terakhir Diubah</div>
+          <div class="info-value">
+            {{ $account->updated_at->translatedFormat('d F Y H:i') }}
+          </div>
+        </div>
+                    
+        @if($account->notes)
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">Catatan</h6>
+            <div class="card bg-light">
+              <div class="card-body">
+                <p class="mb-0">{{ $account->notes }}</p>
+              </div>
+            </div>
+          </div>
+        @endif
+                    
+        <!-- Quick Actions -->
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
+            <i class="bi bi-arrow-left-right me-1"></i>Transfer Dana
+          </button>
+          <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#adjustBalanceModal">
+            <i class="bi bi-sliders me-1"></i>Adjust Saldo
+          </button>
+          <a href="{{ route('apps.accounts.recalculate-balance', $account) }}" class="btn btn-outline-info" onclick="return confirm('Hitung ulang saldo berdasarkan transaksi?')">
+            <i class="bi bi-arrow-clockwise me-1"></i>Hitung Ulang
+          </a>
+          @if(!$account->is_default)
+            <a href="{{ route('apps.accounts.set-default', $account) }}" class="btn btn-outline-warning" onclick="return confirm('Set sebagai akun default?')">
+              <i class="bi bi-star me-1"></i>Set Default
+            </a>
+          @endif
+        </div>
+      </div>
+    </div>
+  </div>
+        
+  <!-- Recent Transactions & Quick Stats -->
+  <div class="col-lg-4 mb-4">
+    <!-- Account Type Info -->
     <div class="card mb-4">
       <div class="card-header">
-        <h6 class="mb-0">Statistik Transaksi</h6>
+        <h6 class="mb-0">
+          <i class="bi bi-tag me-2"></i>Informasi Tipe Akun
+        </h6>
       </div>
       <div class="card-body">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <div class="card bg-light">
-              <div class="card-body text-center">
-                <h6 class="text-muted mb-2">Total Transaksi</h6>
-                <h3 class="mb-0 text-secondary">{{ $account->transactions->count() }}</h3>
-              </div>
-            </div>
+        <div class="d-flex align-items-center mb-3">
+          <div class="account-icon me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+            <i class="{{ $account->icon }}"></i>
           </div>
-          <div class="col-md-4 mb-3">
-            <div class="card bg-light">
-              <div class="card-body text-center">
-                <h6 class="text-muted mb-2">Total Pemasukan</h6>
-                <h3 class="mb-0 text-success">
-                  Rp {{ number_format($incomeTotal, 0, ',', '.') }}
-                </h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card bg-light">
-              <div class="card-body text-center">
-                <h6 class="text-muted mb-2">Total Pengeluaran</h6>
-                <h3 class="mb-0 text-danger">
-                  Rp {{ number_format($expenseTotal, 0, ',', '.') }}
-                </h3>
-              </div>
-            </div>
+          <div>
+            <h5 class="mb-1">{{ $account->type->label() }}</h5>
+            <p class="text-muted small mb-0">
+              @php
+                $typeDescriptions = [
+                  'cash' => 'Akun tunai fisik untuk transaksi sehari-hari',
+                  'bank' => 'Akun bank tradisional dengan nomor rekening',
+                  'ewallet' => 'Dompet digital seperti OVO, GoPay, Dana',
+                  'credit_card' => 'Kartu kredit dengan limit tertentu',
+                  'investment' => 'Akun investasi seperti saham, reksadana',
+                  'savings' => 'Akun tabungan dengan bunga',
+                  'loan' => 'Pinjaman atau hutang',
+                  'other' => 'Jenis akun lainnya'
+                ];
+              @endphp
+              {{ $typeDescriptions[$account->type->value] ?? 'Tidak ada deskripsi' }}
+            </p>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Recent Transactions -->
+            
+    <!-- Account Metadata -->
     <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0">Transaksi Terbaru</h6>
-        <a href="{{ route('apps.transactions.index', ['account_id' => $account->id]) }}" class="btn btn-sm btn-outline-primary">
-          Lihat Semua
-        </a>
+      <div class="card-header">
+        <h6 class="mb-0">
+          <i class="bi bi-gear me-2"></i>Metadata Akun
+        </h6>
       </div>
       <div class="card-body">
-        @if($account->transactions->count() > 0)
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Kategori</th>
-                <th>Deskripsi</th>
-                <th>Jumlah</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($account->transactions()->latest()->take(10)->get() as $transaction)
-                <tr>
-                  <td>{{ $transaction->transaction_date->format('d M Y') }}</td>
-                  <td>
-                    <span class="badge bg-light text-dark">
-                      <i class="bi {{ $transaction->category->icon_class ?? 'bi-tag' }} me-1"></i>
-                      {{ $transaction->category->name ?? 'Tanpa Kategori' }}
-                    </span>
-                  </td>
-                  <td>
-                    <a href="{{ route('apps.transactions.show', $transaction) }}">
-                      {{ Str::limit($transaction->description ?? $transaction->title, 30) }}
-                    </a>
-                  </td>
-                  <td class="{{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
-                    Rp {{ number_format($transaction->amount->getAmount()->toInt(), 0, ',', '.') }}
-                  </td>
-                  <td>
-                    @if($transaction->is_verified)
-                    <span class="badge bg-success">Verified</span>
-                    @else
-                    <span class="badge bg-secondary">Unverified</span>
-                    @endif
-                  </td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
+        <div class="stats-grid">
+          <div class="text-center">
+            <div class="rounded-circle bg-light p-3 mb-2">
+              <i class="bi bi-palette text-primary fs-4"></i>
+            </div>
+            <div class="small text-muted">Warna</div>
+            <div class="fw-semibold">
+              <input type="color" value="{{ $account->color }}" disabled style="width: 30px; height: 30px; border: none; background: none;">
+            </div>
+          </div>
+                        
+          <div class="text-center">
+            <div class="rounded-circle bg-light p-3 mb-2">
+              <i class="bi bi-image text-success fs-4"></i>
+            </div>
+            <div class="small text-muted">Ikon</div>
+            <div class="fw-semibold">
+              <i class="{{ $account->icon }} fs-5"></i>
+            </div>
+          </div>
+                        
+          <div class="text-center">
+            <div class="rounded-circle bg-light p-3 mb-2">
+              <i class="bi bi-clock text-warning fs-4"></i>
+            </div>
+            <div class="small text-muted">Usia Akun</div>
+            <div class="fw-semibold">
+              {{ $account->created_at->diffInDays(now()) }} hari
+            </div>
+          </div>
+                        
+          <div class="text-center">
+            <div class="rounded-circle bg-light p-3 mb-2">
+              <i class="bi bi-activity text-danger fs-4"></i>
+            </div>
+            <div class="small text-muted">Status</div>
+            <div class="fw-semibold">
+              @if($account->is_active)
+                <span class="badge bg-success">Aktif</span>
+              @else
+                <span class="badge bg-danger">Nonaktif</span>
+              @endif
+            </div>
+          </div>
         </div>
-        @else
-        <div class="text-center py-4">
-          <i class="bi bi-receipt display-4 text-muted mb-3"></i>
-          <p class="text-muted">Belum ada transaksi untuk akun ini</p>
-          <a href="{{ route('apps.transactions.create', ['account_id' => $account->id]) }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi Pertama
-          </a>
-        </div>
-        @endif
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Action Buttons (Mobile) -->
+<div class="action-buttons d-lg-none">
+  <div class="d-flex justify-content-around">
+    <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-warning">
+      <i class="bi bi-pencil"></i> Edit
+    </a>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
+      <i class="bi bi-arrow-left-right"></i> Transfer
+    </button>
+    <a href="{{ route('apps.accounts.index') }}" class="btn btn-secondary">
+      <i class="bi bi-list-ul"></i> Semua
+    </a>
   </div>
 </div>
 @endsection
 
-@push('styles')
-<style>
-.account-icon-large {
-    transition: transform 0.3s;
-}
-
-.account-icon-large:hover {
-    transform: scale(1.1);
-}
-</style>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format currency
+        document.querySelectorAll('.currency').forEach(element => {
+            const value = parseFloat(element.textContent.replace(/[^0-9.-]+/g,""));
+            if (!isNaN(value)) {
+                element.textContent = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(value / 100);
+            }
+        });
+        
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Transfer modal form handling
+        const transferForm = document.getElementById('transferForm');
+        if (transferForm) {
+            transferForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+                submitBtn.disabled = true;
+            });
+        }
+    });
+</script>
 @endpush
