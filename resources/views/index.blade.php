@@ -555,7 +555,7 @@
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                }).format(value / 100);
+                }).format(value);
             }
         });
         
