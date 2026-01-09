@@ -232,8 +232,14 @@ class AccountService
 		$analytics = [];
 
 		foreach ($accounts as $account) {
-			$income = $account->getIncomeForPeriod($startDate, $endDate);
-			$expense = $account->getExpenseForPeriod($startDate, $endDate);
+			$income = $this->repository->toMoney(
+				$account->getIncomeForPeriod($startDate, $endDate),
+				$account->currency
+			);
+			$expense = $this->repository->toMoney(
+				$account->getExpenseForPeriod($startDate, $endDate),
+				$account->currency
+			);
 			$netFlow = $account->getNetFlowForPeriod($startDate, $endDate);
 
 			$analytics[] = [
