@@ -131,7 +131,7 @@
             </div>
           </div>
           <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <div class="balance-badge d-inline-block bg-light border p-3 rounded-3">
+            <div class="balance-badge d-inline-block border p-3 rounded-3">
               <div class="text-muted small">Saldo Saat Ini</div>
               <div class="h3 mb-0 currency">{{ $account->balance->getMinorAmount()->toInt() }}</div>
               <div class="small text-muted mt-1">
