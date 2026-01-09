@@ -548,7 +548,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Format currency for all elements with .currency class
         document.querySelectorAll('.currency').forEach(element => {
-            const value = textContent;
+            const value = element.textContent;
             if (!isNaN(value)) {
                 // Divide by 100 because we store in minor units (cents)
                 element.textContent = new Intl.NumberFormat('id-ID', {
