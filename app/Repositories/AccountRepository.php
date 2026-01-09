@@ -213,11 +213,7 @@ class AccountRepository extends BaseRepository
 				DB::raw("SUM(balance) as total_balance")
 			)
 			->groupBy("type")
-			->get()
-			->map(function (Account $account) {
-				$account->total_balance = $this->toMoney($account->total_balance);
-			})
-			->dd();
+			->get();
 	}
 
 	/**
