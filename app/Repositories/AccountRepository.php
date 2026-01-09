@@ -214,7 +214,10 @@ class AccountRepository extends BaseRepository
 			)
 			->groupBy("type")
 			->get()
-			->map(fn(Account $account) => dd($account));
+			->map(function (Account $account) {
+				$account->total_balance = $this->toMoney($account->total_balance);
+			})
+			->dd();
 	}
 
 	/**
