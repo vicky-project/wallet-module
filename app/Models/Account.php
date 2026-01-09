@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Models;
 
+use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Wallet\Casts\MoneyCast;
@@ -187,7 +188,10 @@ class Account extends Model
 	 */
 	public function getNetFlowForPeriod($startDate, $endDate)
 	{
-		$income = $this->getIncomeForPeriod($startDate, $endDate);
+		$income = Money::ofMinor(
+			$this->getIncomeForPeriod($startDate, $endDate),
+			$this->currency
+		);
 		$expense = $this->getExpenseForPeriod($startDate, $endDate);
 		return $income->minus($expense);
 	}

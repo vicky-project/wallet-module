@@ -20,6 +20,10 @@ Route::middleware(["auth"])
 			AccountController::class,
 			"toggleDefault",
 		])->name("accounts.set-default");
+		Route::post("accounts/{account}/recalculate", [
+			AccountController::class,
+			"",
+		])->name("accounts.recalculate");
 		Route::resource("accounts", AccountController::class);
 
 		// Transaction Routes

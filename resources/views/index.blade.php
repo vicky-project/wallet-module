@@ -421,7 +421,7 @@
                             </div>
                             <h5 class="mb-3">Belum ada data kinerja</h5>
                             <p class="text-muted mb-4">Mulai dengan menambahkan transaksi ke akun Anda.</p>
-                            <a href="{{ route('apps.accounts.index') }}" class="btn btn-primary">
+                            <a href="{{ route('apps.accounts.create') }}" class="btn btn-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Tambah Akun
                             </a>
                         </div>

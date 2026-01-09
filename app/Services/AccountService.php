@@ -48,6 +48,11 @@ class AccountService
 			$this->ensureSingleDefaultAccount($user);
 		}
 
+		// Update balance if initial_balance is not empty
+		if (isset($data["initial_balance"]) && !is_null($data["initial_balance"])) {
+			$data["balance"] = $data["initial_balance"];
+		}
+
 		// Create account
 		return $this->repository->create($data);
 	}
