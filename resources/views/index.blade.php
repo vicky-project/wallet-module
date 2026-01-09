@@ -405,11 +405,11 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="text-end currency">{{ $analytic['account']->balance->getMinorAmount()->toInt() }}</td>
-                                            <td class="text-end text-success currency">{{ $analytic['income']->getMinorAmount()->toInt() }}</td>
-                                            <td class="text-end text-danger currency">{{ $analytic['expense']->getMinorAmount()->toInt() }}</td>
-                                            <td class="text-end {{ $analytic['net_flow']->getMinorAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }} currency">
-                                                {{ $analytic['net_flow']->getMinorAmount()->toInt() }}
+                                            <td class="text-end currency">{{ $analytic['account']->balance->getAmount()->toInt() }}</td>
+                                            <td class="text-end text-success currency">{{ $analytic['income']->getAmount()->toInt() }}</td>
+                                            <td class="text-end text-danger currency">{{ $analytic['expense']->getAmount()->toInt() }}</td>
+                                            <td class="text-end {{ $analytic['net_flow']->getAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }} currency">
+                                                {{ $analytic['net_flow']->getAmount()->toInt() }}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -548,7 +548,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Format currency for all elements with .currency class
         document.querySelectorAll('.currency').forEach(element => {
-            const value = parseFloat(element.textContent.replace(/[^0-9.-]+/g,""));
+            const value = textContent;
             if (!isNaN(value)) {
                 // Divide by 100 because we store in minor units (cents)
                 element.textContent = new Intl.NumberFormat('id-ID', {
@@ -565,9 +565,9 @@
         // Prepare data for chart
         const monthlyTrends = @json($monthlyTrends);
         const labels = monthlyTrends.map(trend => trend.month);
-        const incomeData = monthlyTrends.map(trend => trend.income / 100);
-        const expenseData = monthlyTrends.map(trend => trend.expense / 100);
-        const netFlowData = monthlyTrends.map(trend => trend.net_flow / 100);
+        const incomeData = monthlyTrends.map(trend => trend.income);
+        const expenseData = monthlyTrends.map(trend => trend.expense);
+        const netFlowData = monthlyTrends.map(trend => trend.net_flow);
         
         // Create chart
         const monthlyTrendsChart = new Chart(monthlyTrendsCtx, {
@@ -653,7 +653,7 @@
         const distributionLabels = accountTypeDistribution.map(item => {
             return item.type && item.type.label ? item.type.label : item.type;
         });
-        const distributionData = accountTypeDistribution.map(item => item.total_balance / 100);
+        const distributionData = accountTypeDistribution.map(item => item.total_balance);
         const distributionColors = accountTypeDistribution.map(item => getAccountTypeColor(item.type));
         
         // Create chart
@@ -802,7 +802,7 @@
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                }).format(data.account_summary.total_balance / 100);
+                }).format(data.account_summary.total_balance);
             }
             
             // Update income
@@ -812,7 +812,7 @@
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                }).format(data.total_income / 100);
+                }).format(data.total_income);
             }
             
             // Update expense
@@ -822,7 +822,7 @@
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                }).format(data.total_expense / 100);
+                }).format(data.total_expense);
             }
             
             // Update net cash flow
@@ -832,7 +832,7 @@
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                }).format(data.net_cash_flow / 100);
+                }).format(data.net_cash_flow);
                 
                 // Update indicator
                 const indicator = cashFlowEl.closest('.card-body').querySelector('.change-indicator');
@@ -853,9 +853,9 @@
             // Update monthly trends chart
             if (data.monthly_trends) {
                 monthlyTrendsChart.data.labels = data.monthly_trends.map(trend => trend.month);
-                monthlyTrendsChart.data.datasets[0].data = data.monthly_trends.map(trend => trend.income / 100);
-                monthlyTrendsChart.data.datasets[1].data = data.monthly_trends.map(trend => trend.expense / 100);
-                monthlyTrendsChart.data.datasets[2].data = data.monthly_trends.map(trend => trend.net_flow / 100);
+                monthlyTrendsChart.data.datasets[0].data = data.monthly_trends.map(trend => trend.income);
+                monthlyTrendsChart.data.datasets[1].data = data.monthly_trends.map(trend => trend.expense);
+                monthlyTrendsChart.data.datasets[2].data = data.monthly_trends.map(trend => trend.net_flow);
                 monthlyTrendsChart.update();
             }
         }
