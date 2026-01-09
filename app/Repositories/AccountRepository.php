@@ -28,7 +28,7 @@ class AccountRepository extends BaseRepository
 			array_merge(["user_id" => $user->id], $filters)
 		);
 
-		return Cache::remeber(
+		return Cache::remember(
 			$cachekey,
 			config("wallet.cache_ttl"),
 			function () use ($user, $filters) {
