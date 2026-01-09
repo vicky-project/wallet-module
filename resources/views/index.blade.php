@@ -726,7 +726,7 @@
         if (recalculateBtn) {
             recalculateBtn.addEventListener('click', function() {
                 if (confirm('Apakah Anda yakin ingin menghitung ulang semua saldo akun?')) {
-                    fetch('{{ route("api.apps.accounts.recalculate") }}', {
+                    fetch('{{ secure_url(config("app.url") . "/api/apps/recalculate") }}', {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
