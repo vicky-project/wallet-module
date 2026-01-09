@@ -82,31 +82,9 @@ class AccountController extends BaseController
 	{
 		try {
 			// Get recent transactions
-			$transactions = $this->accountRepository->getRecentTransactions($account);
+			$this->service->validateAccount($account, $request->user());
 
-			// Calculate totals
-			$incomeTotal = $account
-				->transactions()
-				->where("type", TransactionType::INCOME)
-				->sum("amount");
-			$expenseTotal = $account
-				->transactions()
-				->where("type", TransactionType::EXPENSE)
-				->sum("amount");
-
-			// Get balance history
-			$balanceHistory = $this->accountRepository->getBalanceHistory($account);
-
-			return view(
-				"wallet::accounts.show",
-				compact(
-					"account",
-					"transactions",
-					"incomeTotal",
-					"expenseTotal",
-					"balanceHistory"
-				)
-			);
+			return view("wallet::accounts.show", compact("account"));
 		} catch (\Exception $e) {
 			logger()->error("Error showing account.", [
 				"message" => $e->getMessage(),
