@@ -2,6 +2,8 @@
 
 @section('title', $account->name . ' - Detail Akun')
 
+@use('Brick\Money\Money')
+
 @push('styles')
 <style>
     .account-header-card {
@@ -156,7 +158,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Pemasukan</h6>
-            <h4 class="mb-0 currency">{{ $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth())->getMinorAmount()->toInt() }}</h4>
+            <h4 class="mb-0 currency">{{ $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth()) }}</h4>
             <small class="text-muted">Bulan ini</small>
           </div>
         </div>
@@ -175,7 +177,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Pengeluaran</h6>
-            <h4 class="mb-0 currency">{{ $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth())->getMinorAmount()->toInt() }}</h4>
+            <h4 class="mb-0 currency">{{ $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth()) }}</h4>
             <small class="text-muted">Bulan ini</small>
           </div>
         </div>
@@ -197,10 +199,10 @@
             @php
               $income = $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth());
               $expense = $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth());
-              $netFlow = $income->minus($expense);
+              $netFlow = Money::of($income - $expense, $account->currency);
             @endphp
-            <h4 class="mb-0 currency {{ $netFlow->getMinorAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }}">
-              {{ $netFlow->getMinorAmount()->toInt() }}
+            <h4 class="mb-0 currency {{ $netFlow->getAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }}">
+              {{ $netFlow->getAmount()->toInt() }}
             </h4>
             <small class="text-muted">Bulan ini</small>
           </div>
@@ -241,7 +243,7 @@
       <div class="card-body">
         <div class="info-grid mb-4">
           <div class="info-label">Saldo Awal</div>
-          <div class="info-value currency">{{ $account->initial_balance->getMinorAmount()->toInt() }}</div>
+          <div class="info-value currency">{{ $account->initial_balance->getAmount()->toInt() }}</div>
                         
           <div class="info-label">Mata Uang</div>
           <div class="info-value">
