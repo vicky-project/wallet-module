@@ -2,6 +2,8 @@
 
 @section('title', 'Dashboard Keuangan')
 
+@use('Modules\Wallet\Helpers\Helper')
+
 @push('styles')
 <style>
     .stat-card {
@@ -345,7 +347,7 @@
                                     @endphp
                                     <div class="progress-bar" 
                                          role="progressbar" 
-                                         style="width: {{ $percentage }}%; background-color: {{ $this->getAccountTypeColor($distribution->type) }};"
+                                         style="width: {{ $percentage }}%; background-color: {{ Helper::accountTypeMap($distribution->type)['color'] }};"
                                          aria-valuenow="{{ $percentage }}" 
                                          aria-valuemin="0" 
                                          aria-valuemax="100"></div>
