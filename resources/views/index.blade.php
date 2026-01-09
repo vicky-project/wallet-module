@@ -337,7 +337,7 @@
                             @foreach($accountTypeDistribution as $distribution)
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="text-muted">{{ $distribution->type->label() ?? $distribution->type }}</span>
-                                    <span class="fw-semibold currency">{{ Helper::toMoney($distribution->total_balance, $distribution->currency) ?? 0 }}</span>
+                                    <span class="fw-semibold currency">{{ Helper::toMoney($distribution->total_balance, $distribution->currency)->getAmount()->toInt() ?? 0 }}</span>
                                 </div>
                                 <div class="progress mb-3" style="height: 6px;">
                                     @php
