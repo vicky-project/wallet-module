@@ -10,5 +10,5 @@ Route::prefix("apps")
 		Route::post("recalculate", [
 			AccountController::class,
 			"recalculateBalance",
-		])->name("recalculate");
+		])->name("accounts.recalculate");
 	});
