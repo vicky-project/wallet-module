@@ -347,7 +347,7 @@
                                     @endphp
                                     <div class="progress-bar" 
                                          role="progressbar" 
-                                         style="width: {{ $percentage }}%; background-color: {{ Helper::accountTypeMap($distribution->type)['color'] }};"
+                                         style="width: {{ $percentage }}%; background-color: {{ Helper::accountTypeMap($distribution->type->value)['color'] }};"
                                          aria-valuenow="{{ $percentage }}" 
                                          aria-valuemin="0" 
                                          aria-valuemax="100"></div>
