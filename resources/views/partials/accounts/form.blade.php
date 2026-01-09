@@ -128,7 +128,7 @@
       <div class="card border-0 bg-light">
         <div class="card-body">
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1" @checked(old('is_default', $account->is_defaultb?? false))>
+            <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1" @checked(old('is_default', $account->is_default ?? false))>
             <label class="form-check-label fw-semibold" for="is_default">
               <i class="bi bi-star text-warning me-2"></i>Jadikan Akun Default
             </label>

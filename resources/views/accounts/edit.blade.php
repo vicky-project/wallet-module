@@ -9,11 +9,11 @@
   <div class="col">
     <div class="d-flex justify-content-between align-items-center text-end">
       <div class="d-flex gap-2 me-auto">
-        <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
-          <i class="bi bi-eye me-1"></i>Lihat
-        </a>
         <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
           <i class="bi bi-arrow-left me-1"></i>Kembali
+        </a>
+        <a href="{{ route('apps.accounts.show', $account) }}" class="btn btn-outline-secondary">
+          <i class="bi bi-eye me-1"></i>Lihat
         </a>
       </div>
       <div>
