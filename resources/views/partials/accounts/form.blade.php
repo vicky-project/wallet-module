@@ -111,7 +111,7 @@
   <!-- Status Settings -->
   <div class="row">
     <div class="col-md-6 mb-3">
-      <div class="card border-0 bg-light">
+      <div class="card border-0 bg-secondary">
         <div class="card-body">
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $account->is_active ?? true))>
@@ -125,7 +125,7 @@
     </div>
 
     <div class="col-md-6 mb-3">
-      <div class="card border-0 bg-light">
+      <div class="card border-0 bg-secondary">
         <div class="card-body">
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="is_default" name="is_default" value="1" @checked(old('is_default', $account->is_default ?? false))>
