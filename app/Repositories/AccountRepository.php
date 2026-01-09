@@ -186,6 +186,7 @@ class AccountRepository extends BaseRepository
 		}
 
 		$netWorth = $assetBalance - abs($liabilityBalance);
+		dd($totalBalance, $assetBalance, $liabilityBalance, $netWorth);
 
 		return [
 			"total_accounts" => $accountCount,
