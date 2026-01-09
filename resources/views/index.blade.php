@@ -342,7 +342,7 @@
                                 <div class="progress mb-3" style="height: 6px;">
                                     @php
                                         $percentage = $accountSummary['total_balance'] > 0 
-                                            ? round(($distribution->total_balance / $accountSummary['total_balance']) * 100, 2) 
+                                            ? round(($distribution->total_balance / $accountSummary['total_balance']), 2) 
                                             : 0;
                                     @endphp
                                     <div class="progress-bar" 
