@@ -213,8 +213,7 @@ class AccountRepository extends BaseRepository
 				DB::raw("COUNT(*) as count"),
 				DB::raw("SUM(balance) as total_balance")
 			)
-			->groupBy("type")
-			->groupBy("currency")
+			->groupBy(["type", "currency"])
 			->get();
 	}
 
