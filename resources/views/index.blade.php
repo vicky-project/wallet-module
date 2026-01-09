@@ -490,7 +490,7 @@
                                     <small class="text-muted">{{ $account->type->label() }}</small>
                                 </div>
                                 <div class="text-end">
-                                    <div class="currency">{{ $account->balance->getMinorAmount()->toInt() }}</div>
+                                    <div class="currency">{{ $account->balance->getAmount()->toInt() }}</div>
                                     @if($account->is_default)
                                         <small class="text-primary"><i class="bi bi-star-fill"></i> Default</small>
                                     @endif
