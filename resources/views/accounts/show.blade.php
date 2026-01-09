@@ -133,7 +133,7 @@
           <div class="col-md-4 text-md-end mt-3 mt-md-0">
             <div class="balance-badge d-inline-block border p-3 rounded-3">
               <div class="text-muted small">Saldo Saat Ini</div>
-              <div class="h3 mb-0 currency">{{ $account->balance->getMinorAmount()->toInt() }}</div>
+              <div class="h3 mb-0 currency">{{ $account->balance->getAmount()->toInt() }}</div>
               <div class="small text-muted mt-1">
                 <i class="bi bi-calendar me-1"></i>Per {{ now()->translatedFormat('d F Y') }}
               </div>
