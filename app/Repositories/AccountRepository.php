@@ -209,6 +209,7 @@ class AccountRepository extends BaseRepository
 			->active()
 			->select(
 				"type",
+				"currency",
 				DB::raw("COUNT(*) as count"),
 				DB::raw("SUM(balance) as total_balance")
 			)

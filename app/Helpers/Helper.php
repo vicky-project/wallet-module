@@ -1,10 +1,22 @@
 <?php
 namespace Modules\Wallet\Helpers;
 
+use Brick\Money\Money;
 use Modules\Wallet\Enums\CategoryType;
 
 class Helper
 {
+	public static function toMoney(
+		string|int $money,
+		string $currency = "IDR",
+		bool $isInt = false
+	): Money {
+		$currency = $currency ?? config("wallet.default_currency", "USD");
+		return $isInt
+			? Money::of($money, $currency)
+			: Money::ofMinor($money, $currency);
+	}
+
 	public static function formatMoney(int|string|float $money)
 	{
 		if (!is_int($money)) {
