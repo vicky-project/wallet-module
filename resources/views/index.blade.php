@@ -513,35 +513,35 @@
 
 <!-- Reports Modal -->
 <div class="modal fade" id="reportsModal" tabindex="-1" aria-labelledby="reportsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportsModalLabel">
-                    <i class="bi bi-file-text me-2"></i>Generate Laporan
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="bi bi-cash-stack me-2"></i>Laporan Saldo Akun
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="bi bi-arrow-left-right me-2"></i>Laporan Arus Kas
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="bi bi-pie-chart me-2"></i>Laporan Kategori
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="bi bi-calendar me-2"></i>Laporan Bulanan
-                    </a>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reportsModalLabel">
+          <i class="bi bi-file-text me-2"></i>Generate Laporan
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="bi bi-cash-stack me-2"></i>Laporan Saldo Akun
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="bi bi-arrow-left-right me-2"></i>Laporan Arus Kas
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="bi bi-pie-chart me-2"></i>Laporan Kategori
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="bi bi-calendar me-2"></i>Laporan Bulanan
+          </a>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
