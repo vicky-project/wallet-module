@@ -799,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 previewCategoryName.textContent = name;
                 
                 // Get suggested amount for category
-                fetch(`{{ route('api.apps.budgets.suggested-amount', '') }}/${this.value}`)
+                fetch(`{{ secure_url(config('app.url')) }}/api/apps/budgets/suggested-amount/${this.value}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.suggested_amount) {
