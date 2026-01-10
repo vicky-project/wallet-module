@@ -3,6 +3,7 @@
 @section('title', 'Kelola Kategori')
 
 @use('Modules\Wallet\Enums\CategoryType')
+@usu('Modules\Wallet\Helpers\Helper')
 
 @push('styles')
 <style>
@@ -598,7 +599,7 @@
                 </td>
                 <td>
                   <div class="budget-display">
-                    {{ format_currency($category->monthly_total ?? 0) }}
+                    {{ Helper::toMoney($category->monthly_total ?? 0) }}
                   </div>
                   <div class="budget-usage text-muted">
                     <small>
