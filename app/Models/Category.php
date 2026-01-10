@@ -204,12 +204,18 @@ class Category extends Model
 
 	public function getFormattedExpenseTotal($month = null, $year = null)
 	{
+		$month = $month ?? date("m");
+		$year = $year ?? date("Y");
+
 		return "Rp " .
 			number_format($this->getExpenseTotal($month, $year), 0, ",", ".");
 	}
 
 	public function getFormattedIncomeTotal($month = null, $year = null)
 	{
+		$month = $month ?? date("m");
+		$year = $year ?? date("Y");
+
 		return "Rp " .
 			number_format($this->getIncomeTotal($month, $year), 0, ",", ".");
 	}
