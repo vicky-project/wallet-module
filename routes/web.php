@@ -72,5 +72,9 @@ Route::middleware(["auth"])
 		Route::post("categories/import", [CategoryController::class, ""])->name(
 			"categories.import"
 		);
+		Route::delete("categories/bulk-delete", [
+			CategoryController::class,
+			"",
+		])->name("categories.bulk-delete");
 		Route::resource("budgets", BudgetController::class);
 	});
