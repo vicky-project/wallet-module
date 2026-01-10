@@ -592,7 +592,7 @@
                     <div class="text-muted">
                       <i class="bi bi-dash-circle"></i> Tidak ada budget
                     </div>
-                    @if($category->budgetable())
+                    @if($category->is_budgetable)
                     <a href="{{ route('apps.budgets.create', ['category_id' => $category->id]) }}" class="btn btn-outline-primary btn-sm mt-1">
                       <i class="bi bi-plus-circle"></i> Buat Budget
                     </a>
