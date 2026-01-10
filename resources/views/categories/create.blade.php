@@ -4,33 +4,32 @@
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-lg-10 col-xl-8">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">
-                        <i class="bi bi-{{ isset($category) ? 'pencil-square' : 'plus-circle' }} me-2"></i>
-                        {{ isset($category) ? 'Edit Kategori' : 'Tambah Kategori Baru' }}
-                    </h4>
-                    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Kembali
-                    </a>
-                </div>
-            </div>
+  <div class="col-lg-10 col-xl-8">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center text-end">
+          <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Kembali
+          </a>
+          <h4 class="mb-0 ms-auto">
+            <i class="bi bi-{{ isset($category) ? 'pencil-square' : 'plus-circle' }} me-2"></i>
+            {{ isset($category) ? 'Edit Kategori' : 'Tambah Kategori Baru' }}
+          </h4>
+        </div>
+      </div>
             
-            <div class="card-body">
-                <form action="{{ isset($category) ? route('apps.categories.update', $category) : route('apps.categories.store') }}" 
-                      method="POST" id="categoryForm">
-                    @csrf
-                    @if(isset($category))
-                        @method('PUT')
-                    @endif
+      <div class="card-body">
+        <form action="{{ isset($category) ? route('apps.categories.update', $category) : route('apps.categories.store') }}" method="POST" id="categoryForm">
+          @csrf
+          @if(isset($category))
+            @method('PUT')
+          @endif
                     
-                    <div class="row">
-                        <!-- Left Column: Form Inputs -->
-                        <div class="col-md-8">
-                            <!-- Type Selection -->
-                            <div class="form-section">
+          <div class="row">
+            <!-- Left Column: Form Inputs -->
+            <div class="col-md-8">
+              <!-- Type Selection -->
+              <div class="form-section">
                                 <div class="form-section-title">
                                     <i class="bi bi-tag"></i>
                                     Tipe Kategori
@@ -62,8 +61,8 @@
                                 </p>
                             </div>
                             
-                            <!-- Basic Information -->
-                            <div class="form-section">
+              <!-- Basic Information -->
+              <div class="form-section">
                                 <div class="form-section-title">
                                     <i class="bi bi-card-text"></i>
                                     Informasi Dasar
@@ -125,44 +124,36 @@
                                 @endif
                             </div>
                             
-                            <!-- Icon Selection -->
-                            <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="bi bi-emoji-smile"></i>
-                                    Ikon Kategori
-                                </div>
+              <!-- Icon Selection -->
+              <div class="form-section">
+                <div class="form-section-title">
+                  <i class="bi bi-emoji-smile"></i>
+                  Ikon Kategori
+                </div>
                                 
-                                <div class="mb-3">
-                                    <label class="form-label">Pilih Ikon</label>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div id="iconPreview" 
-                                             class="icon-preview me-3" 
-                                             style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                                            <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}" id="previewIcon"></i>
-                                        </div>
-                                        <div>
-                                            <input type="text" 
-                                                   class="form-control @error('icon') is-invalid @enderror" 
-                                                   id="icon" 
-                                                   name="icon" 
-                                                   value="{{ old('icon', $category->icon ?? 'tag') }}" 
-                                                   placeholder="Nama ikon FontAwesome">
-                                            @error('icon')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                            <div class="form-text">
-                                                Masukkan nama ikon FontAwesome (contoh: cart, home, food) atau pilih dari daftar.
-                                            </div>
-                                        </div>
-                                    </div>
+                <div class="mb-3">
+                  <label class="form-label">Pilih Ikon</label>
+                  <div class="d-flex align-items-center mb-3">
+                    <div id="iconPreview" class="icon-preview me-3" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
+                      <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}" id="previewIcon"></i>
+                    </div>
+                    <div>
+                      <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', $category->icon ?? 'tag') }}" placeholder="Nama ikon FontAwesome">
+                      @error('icon')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                      <div class="form-text">
+                        Masukkan nama ikon FontAwesome (contoh: cart, home, food) atau pilih dari daftar.
+                      </div>
+                    </div>
+                  </div>
                                     
-                                    <!-- Icon Grid -->
-                                    <div class="mb-3">
-                                        <div class="row g-2" id="iconGrid">
-                                            @php
-                                                // Default icons based on category type
-                                                $expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
-                                                $incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
+                  <!-- Icon Grid -->
+                  <div class="mb-3">
+                    <div class="row g-2" id="iconGrid">
+                                        @php
+                    // Default icons based on category $expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
+                                            $incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
                                                 
                                                 $currentType = isset($category) ? $category->type : (request('type') ?: 'expense');
                                                 $icons = $currentType == 'expense' ? $expenseIcons : $incomeIcons;
@@ -186,166 +177,150 @@
                                     <!-- Custom Icon Button -->
                                     <button type="button" class="btn btn-outline-primary btn-sm" id="showMoreIcons">
                                         <i class="bi bi-three-dots me-1"></i>Tampilkan lebih banyak ikon
-                                    </button>
-                                </div>
-                            </div>
+                  </button>
+                </div>
+              </div>
                             
-                            <!-- Status Settings -->
-                            <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="bi bi-gear"></i>
-                                    Pengaturan
-                                </div>
-                                
-                                <div class="row">
-                                    <!-- Status -->
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" 
-                                                   type="checkbox" 
-                                                   id="is_active" 
-                                                   name="is_active" 
-                                                   value="1" 
-                                                   {{ old('is_active', isset($category) ? $category->is_active : true) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_active">
-                                                <strong>Aktif</strong>
-                                            </label>
-                                        </div>
-                                        <div class="form-text">
-                                            Kategori nonaktif tidak akan muncul di daftar pilihan transaksi.
-                                        </div>
-                                    </div>
+              <!-- Status Settings -->
+              <div class="form-section">
+                <div class="form-section-title">
+                  <i class="bi bi-gear"></i>
+                  Pengaturan
+                </div>
+                <div class="row">
+                  <!-- Status -->
+                  <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', isset($category) ? $category->is_active : true) ? 'checked' : '' }}>
+                      <label class="form-check-label" for="is_active">
+                        <strong>Aktif</strong>
+                      </label>
+                    </div>
+                    <div class="form-text">
+                      Kategori nonaktif tidak akan muncul di daftar pilihan transaksi.
+                    </div>
+                  </div>
                                     
-                                    <!-- Budgetable (Only for expense) -->
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" 
-                                                   type="checkbox" 
-                                                   id="is_budgetable" 
-                                                   name="is_budgetable" 
-                                                   value="1" 
-                                                   {{ old('is_budgetable', isset($category) ? $category->is_budgetable : false) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_budgetable">
-                                                <strong>Dapat di-budget</strong>
-                                            </label>
-                                        </div>
-                                        <div class="form-text">
-                                            Izinkan pembuatan budget untuk kategori ini (hanya pengeluaran).
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                  <!-- Budgetable (Only for expense) -->
+                  <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" {{ old('is_budgetable', isset($category) ? $category->is_budgetable : false) ? 'checked' : '' }}>
+                      <label class="form-check-label" for="is_budgetable">
+                        <strong>Dapat di-budget</strong>
+                      </label>
+                    </div>
+                    <div class="form-text">
+                      Izinkan pembuatan budget untuk kategori ini (hanya pengeluaran).
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
                         
-                        <!-- Right Column: Preview -->
-                        <div class="col-md-4">
-                            <div class="sticky-top" style="top: 20px;">
-                                <div class="preview-card">
-                                    <h5 class="text-center mb-3">Pratinjau Kategori</h5>
+            <!-- Right Column: Preview -->
+            <div class="col-md-4">
+              <div class="sticky-top" style="top: 20px;">
+                <div class="preview-card">
+                  <h5 class="text-center mb-3">Pratinjau Kategori</h5>
                                     
-                                    <!-- Preview Icon -->
-                                    <div id="previewIconLarge" 
-                                         class="preview-icon" 
-                                         style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                                        <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}"></i>
-                                    </div>
+                  <!-- Preview Icon -->
+                  <div id="previewIconLarge" class="preview-icon" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
+                    <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}"></i>
+                  </div>
                                     
-                                    <!-- Preview Details -->
-                                    <div class="text-center mb-3">
-                                        <h4 id="previewName">{{ old('name', $category->name ?? 'Nama Kategori') }}</h4>
-                                        <div class="mb-2">
-                                            <span id="previewTypeBadge" 
-                                                  class="badge {{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'bg-success' : 'bg-danger' }}">
-                                                <i class="bi bi-{{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'arrow-down-left' : 'arrow-up-right' }} me-1"></i>
-                                                <span id="previewTypeText">
-                                                    {{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'Pemasukan' : 'Pengeluaran' }}
-                                                </span>
-                                            </span>
-                                        </div>
-                                        <p class="text-muted mb-0" id="previewDescription">
-                                            {{ old('description', $category->description ?? 'Deskripsi akan muncul di sini...') ?: 'Deskripsi akan muncul di sini...' }}
-                                        </p>
-                                    </div>
+                  <!-- Preview Details -->
+                  <div class="text-center mb-3">
+                    <h4 id="previewName">{{ old('name', $category->name ?? 'Nama Kategori') }}</h4>
+                    <div class="mb-2">
+                      <span id="previewTypeBadge" class="badge {{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'bg-success' : 'bg-danger' }}">
+                        <i class="bi bi-{{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'arrow-down-left' : 'arrow-up-right' }} me-1"></i>
+                        <span id="previewTypeText">{{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'Pemasukan' : 'Pengeluaran' }}</span>
+                      </span>
+                    </div>
+                    <p class="text-muted mb-0" id="previewDescription">
+                      {{ old('description', $category->description ?? 'Deskripsi akan muncul di sini...') ?: 'Deskripsi akan muncul di sini...' }}
+                    </p>
+                  </div>
                                     
-                                    <hr>
+                  <hr>
                                     
-                                    <!-- Status Preview -->
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Status:</span>
-                                        <span>
-                                            <span id="previewStatus" class="badge bg-success">
-                                                <i class="bi bi-check-circle me-1"></i>Aktif
-                                            </span>
-                                        </span>
-                                    </div>
+                  <!-- Status Preview -->
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Status:</span>
+                    <span>
+                      <span id="previewStatus" class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>Aktif
+                      </span>
+                    </span>
+                  </div>
                                     
-                                    <div class="d-flex justify-content-between">
-                                        <span>Budgetable:</span>
-                                        <span>
-                                            <span id="previewBudgetable" class="badge bg-secondary">
-                                                <i class="bi bi-x-circle me-1"></i>Tidak
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Budgetable:</span>
+                    <span>
+                      <span id="previewBudgetable" class="badge bg-secondary">
+                        <i class="bi bi-x-circle me-1"></i>Tidak
+                      </span>
+                    </span>
+                  </div>
+                </div>
                                 
-                                <!-- Form Actions -->
-                                <div class="d-grid gap-2 mt-3">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="bi bi-{{ isset($category) ? 'check-circle' : 'plus-circle' }} me-2"></i>
-                                        {{ isset($category) ? 'Update Kategori' : 'Simpan Kategori' }}
-                                    </button>
-                                    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-circle me-2"></i>Batal
-                                    </a>
-                                </div>
+                <!-- Form Actions -->
+                <div class="d-grid gap-2 mt-3">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-{{ isset($category) ? 'check-circle' : 'plus-circle' }} me-2"></i>
+                    {{ isset($category) ? 'Update Kategori' : 'Simpan Kategori' }}
+                  </button>
+                  <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-2"></i>Batal
+                  </a>
+                </div>
                                 
-                                <!-- Quick Tips -->
-                                <div class="alert alert-info mt-3">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0">
-                                            <i class="bi bi-lightbulb"></i>
-                                        </div>
-                                        <div class="flex-grow-1 ms-2">
-                                            <small>
-                                                <strong>Tips:</strong><br>
+                <!-- Quick Tips -->
+                <div class="alert alert-info mt-3">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0">
+                      <i class="bi bi-lightbulb"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2">
+                      <small>
+                        <strong>Tips:</strong><br>
                                                 • Gunakan nama yang jelas dan deskriptif<br>
                                                 • Pilih ikon yang mudah dikenali<br>
                                                 • Atur budget untuk kategori pengeluaran penting
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                      </small>
                     </div>
-                </form>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- More Icons Modal -->
 <div class="modal fade" id="iconsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Pilih Ikon</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="iconSearch" placeholder="Cari ikon...">
-                </div>
-                <div class="row g-2" id="allIcons">
-                    <!-- Icons will be loaded here -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pilih Ikon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <input type="text" class="form-control" id="iconSearch" placeholder="Cari ikon...">
         </div>
+        <div class="row g-2" id="allIcons">
+          <!-- Icons will be loaded here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
