@@ -16,15 +16,28 @@ class Budget extends Model
 	protected $fillable = [
 		"user_id",
 		"category_id",
+		"name",
+		"period_type",
+		"period_value",
+		"year",
+		"start_date",
+		"end_date",
 		"amount",
 		"spent", // Ini akan diupdate dari transaksi expense pada kategori ini
+		"rollover_unused",
+		"rollover_limit",
 		"is_active", // Status aktif/tidak aktif
+		"settings",
 	];
 
 	protected $casts = [
 		"amount" => MoneyCast::class,
 		"spent" => MoneyCast::class,
 		"is_active" => "boolean",
+		"start_date" => "date",
+		"end_date" => "date",
+		"rollover_unused" => "boolean",
+		"settings" => "json",
 		"created_at" => "datetime",
 		"updated_at" => "datetime",
 		"deleted_at" => "datetime",

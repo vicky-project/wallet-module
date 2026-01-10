@@ -20,8 +20,6 @@ class Category extends Model
 		"name",
 		"type",
 		"icon",
-		"start_date",
-		"end_date",
 		"description",
 		"is_budgetable",
 		"is_active",
@@ -31,8 +29,6 @@ class Category extends Model
 		"type" => CategoryType::class,
 		"is_active" => "boolean",
 		"is_budgetable" => "boolean",
-		"start_date" => "date",
-		"end_date" => "date",
 		"created_at" => "datetime",
 		"updated_at" => "datetime",
 		"deleted_at" => "datetime",
@@ -148,30 +144,28 @@ class Category extends Model
 	/**
 	 * Scope for active budgets
 	 */
-	public function hasActiveBudget($month = null, $year = null)
+	public function hasCurrentBudget($month = null, $year = null): ?Budget
 	{
-		$month = $month ?? date("m");
-		$year = $year ?? date("Y");
+		$currentDate = now();
 
 		return $this->budgets()
-			->where("month", $month)
-			->where("year", $year)
 			->active()
+			->where("start_date", "<=", $currentDate)
+			->where("end_date", ">=", $currentDate)
 			->exists();
 	}
 
 	/**
 	 * get for active budget
 	 */
-	public function getActiveBudget($month = null, $year = null)
+	public function getCurrentBudget($month = null, $year = null)
 	{
-		$month = $month ?? date("m");
-		$year = $year ?? date("Y");
+		$currentDate = now();
 
 		return $this->budgets()
-			->where("month", $month)
-			->where("year", $year)
 			->active()
+			->where("start_date", "<=", $currentDate)
+			->where("end_date", ">=", $currentDate)
 			->first();
 	}
 
@@ -228,26 +222,6 @@ class Category extends Model
 	public function getTypeColorAttribute()
 	{
 		return $this->type === CategoryType::INCOME ? "success" : "danger";
-	}
-
-	public function getBudgetStatusAttribute()
-	{
-		if ($this->type !== CategoryType::EXPENSE) {
-			return null;
-		}
-
-		$budget = $this->getActiveBudget();
-
-		if (!$budget) {
-			return "no_budget";
-		}
-
-		return $budget->status;
-	}
-
-	public function getBudgetStatusColorAttribute()
-	{
-		return $this->getActiveBudget()->status_color;
 	}
 
 	/**

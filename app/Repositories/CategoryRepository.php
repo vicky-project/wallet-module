@@ -6,10 +6,13 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Modules\Wallet\Models\Category;
+use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Enums\PeriodType;
 use Illuminate\Database\Eloquent\Builder;
 
 class CategoryRepository extends BaseRepository
@@ -18,7 +21,7 @@ class CategoryRepository extends BaseRepository
 
 	public function __construct(Category $model)
 	{
-		$this->model = $model;
+		parent::__construct($model);
 	}
 
 	/**
@@ -139,7 +142,7 @@ class CategoryRepository extends BaseRepository
 			function () use ($user, $type) {
 				return Category::where("user_id", $user->id)
 					->where("type", $type)
-					->where("is_active", true)
+					->active()
 					->orderBy("name")
 					->get();
 			}
@@ -148,6 +151,7 @@ class CategoryRepository extends BaseRepository
 
 	/**
 	 * Get categories with monthly totals (optimized with single query)
+	 * Sekarang menggunakan period_type = monthly
 	 */
 	public function getWithMonthlyTotals(
 		User $user,
@@ -156,6 +160,10 @@ class CategoryRepository extends BaseRepository
 	): Collection {
 		$month = $month ?? date("m");
 		$year = $year ?? date("Y");
+
+		// Dapatkan start_date dan end_date untuk bulan tersebut
+		$startDate = Carbon::create($year, $month, 1)->startOfMonth();
+		$endDate = Carbon::create($year, $month, 1)->endOfMonth();
 
 		$cacheKey = Helper::generateCacheKey("categories_monthly_totals", [
 			"user_id" => $user->id,
@@ -166,7 +174,7 @@ class CategoryRepository extends BaseRepository
 		return Cache::remember(
 			$cacheKey,
 			config("wallet.cache_ttl"),
-			function () use ($user, $month, $year) {
+			function () use ($user, $month, $year, $startDate, $endDate) {
 				// Single query dengan subquery untuk monthly totals
 				return Category::where("user_id", $user->id)
 					->where("type", CategoryType::EXPENSE)
@@ -181,12 +189,27 @@ class CategoryRepository extends BaseRepository
 							->whereYear("transaction_date", $year),
 					])
 					->get()
-					->map(function ($category) use ($month, $year) {
+					->map(function ($category) use (
+						$user,
+						$month,
+						$year,
+						$startDate,
+						$endDate
+					) {
 						$monthlyTotal = $category->monthly_total;
 						$category->monthly_total = $monthlyTotal;
 
 						// Get active budget for the period
-						$activeBudget = $category->getActiveBudget($month, $year);
+						$activeBudget = $this->getActiveBudgetForPeriod(
+							$category,
+							$user->id,
+							PeriodType::MONTHLY,
+							$month,
+							$year,
+							$startDate,
+							$endDate
+						);
+
 						if ($activeBudget) {
 							$category->budget_usage =
 								$activeBudget->amount > 0
@@ -194,9 +217,11 @@ class CategoryRepository extends BaseRepository
 									: 0;
 							$category->has_budget_exceeded =
 								$monthlyTotal > $activeBudget->amount;
+							$category->budget_amount = $activeBudget->amount;
 						} else {
 							$category->budget_usage = 0;
 							$category->has_budget_exceeded = false;
+							$category->budget_amount = 0;
 						}
 
 						return $category;
@@ -285,8 +310,14 @@ class CategoryRepository extends BaseRepository
 				$total = $stats->total_amount ?? 0;
 				$count = $stats->transaction_count ?? 0;
 
-				// Get current active budget
-				$activeBudget = $category->getActiveBudget();
+				// Get current active budget berdasarkan tanggal
+				$currentDate = now();
+				$activeBudget = $this->getActiveBudgetForDate(
+					$category,
+					$category->user_id,
+					$currentDate
+				);
+
 				$budgetUsage =
 					$activeBudget && $activeBudget->amount > 0
 						? ($total / $activeBudget->amount) * 100
@@ -303,12 +334,10 @@ class CategoryRepository extends BaseRepository
 					"budget_exceeded" => $activeBudget && $total > $activeBudget->amount,
 					"average_transaction" => $count > 0 ? $total / $count : 0,
 					"monthly_total" => $monthlyTotal,
-					"budget_usage_percentage" => $activeBudget
-						? $activeBudget->percentage
-						: 0,
-					"formatted_budget_limit" => $activeBudget
-						? $activeBudget->formatted_amount
-						: "Rp 0",
+					"budget_amount" => $activeBudget ? $activeBudget->amount : 0,
+					"formatted_budget_amount" => $activeBudget
+						? Helper::formatMoney($activeBudget->amount)
+						: Helper::formatMoney(0),
 				];
 			}
 		);
@@ -366,9 +395,16 @@ class CategoryRepository extends BaseRepository
 					$query->withCount("transactions")->withSum("transactions", "amount");
 				}
 
-				return $query->get()->map(function ($category) {
+				return $query->get()->map(function ($category) use ($user) {
 					$total = $category->transactions_sum_amount ?? 0;
-					$activeBudget = $category->getActiveBudget();
+
+					// Get active budget for current date
+					$currentDate = now();
+					$activeBudget = $this->getActiveBudgetForDate(
+						$category,
+						$user->id,
+						$currentDate
+					);
 
 					return [
 						"category" => $category,
@@ -380,12 +416,10 @@ class CategoryRepository extends BaseRepository
 								: null,
 						"budget_exceeded" =>
 							$activeBudget && $total > $activeBudget->amount,
-						"budget_usage_percentage" => $activeBudget
-							? $activeBudget->percentage
-							: 0,
-						"formatted_budget_limit" => $activeBudget
-							? $activeBudget->formatted_amount
-							: "Rp 0",
+						"budget_amount" => $activeBudget ? $activeBudget->amount : 0,
+						"formatted_budget_amount" => $activeBudget
+							? Helper::formatMoney($activeBudget->amount)
+							: Helper::formatMoney(0),
 					];
 				});
 			}
@@ -432,20 +466,21 @@ class CategoryRepository extends BaseRepository
 					->first();
 
 				// Hitung kategori dengan budget aktif bulan ini
-				$currentMonth = date("m");
-				$currentYear = date("Y");
+				$currentDate = now();
+				$startOfMonth = $currentDate->copy()->startOfMonth();
+				$endOfMonth = $currentDate->copy()->endOfMonth();
 
 				$categoriesWithBudget = Category::where("user_id", $user->id)
 					->expense()
 					->active()
 					->whereHas("budgets", function ($query) use (
-						$currentMonth,
-						$currentYear
+						$startOfMonth,
+						$endOfMonth
 					) {
 						$query
-							->where("month", $currentMonth)
-							->where("year", $currentYear)
-							->where("is_active", true);
+							->where("is_active", true)
+							->where("start_date", "<=", $endOfMonth)
+							->where("end_date", ">=", $startOfMonth);
 					})
 					->count();
 
@@ -456,14 +491,14 @@ class CategoryRepository extends BaseRepository
 						->expense()
 						->active()
 						->whereHas("budgets", function ($query) use (
-							$currentMonth,
-							$currentYear
+							$startOfMonth,
+							$endOfMonth
 						) {
 							$query
-								->where("month", $currentMonth)
-								->where("year", $currentYear)
 								->where("is_active", true)
-								->whereRaw("budgets.spent > budgets.amount");
+								->where("start_date", "<=", $endOfMonth)
+								->where("end_date", ">=", $startOfMonth)
+								->whereColumn("spent", ">", "amount");
 						})
 						->count();
 				}
@@ -485,75 +520,92 @@ class CategoryRepository extends BaseRepository
 	 */
 	public function getBudgetWarnings(User $user, int $threshold = 80): Collection
 	{
-		$currentMonth = date("m");
-		$currentYear = date("Y");
+		$currentDate = now();
+		$startOfMonth = $currentDate->copy()->startOfMonth();
+		$endOfMonth = $currentDate->copy()->endOfMonth();
 
 		$cacheKey = Helper::generateCacheKey("budget_warnings", [
 			"user_id" => $user->id,
-			"current_month" => $currentMonth,
-			"current_year" => $currentYear,
+			"current_date" => $currentDate->format("Y-m-d"),
 			"threshold" => $threshold,
 		]);
 
 		return Cache::remember(
 			$cacheKey,
 			config("wallet.cache_ttl") / 2,
-			function () use ($user, $currentMonth, $currentYear, $threshold) {
+			function () use (
+				$user,
+				$currentDate,
+				$startOfMonth,
+				$endOfMonth,
+				$threshold
+			) {
 				// Single query dengan subquery untuk monthly total dan budget
 				$categories = Category::where("user_id", $user->id)
 					->expense()
 					->active()
 					->whereHas("budgets", function ($query) use (
-						$currentMonth,
-						$currentYear
+						$startOfMonth,
+						$endOfMonth
 					) {
 						$query
-							->where("month", $currentMonth)
-							->where("year", $currentYear)
-							->where("is_active", true);
+							->where("is_active", true)
+							->where("start_date", "<=", $endOfMonth)
+							->where("end_date", ">=", $startOfMonth);
 					})
 					->with([
-						"budgets" => function ($query) use ($currentMonth, $currentYear) {
+						"budgets" => function ($query) use ($startOfMonth, $endOfMonth) {
 							$query
-								->where("month", $currentMonth)
-								->where("year", $currentYear);
+								->where("is_active", true)
+								->where("start_date", "<=", $endOfMonth)
+								->where("end_date", ">=", $startOfMonth);
 						},
 					])
 					->get();
 
 				// Tambahkan monthly total dan filter berdasarkan threshold
 				return $categories
-					->map(function ($category) use ($currentMonth, $currentYear) {
-						$budget = $category->budgets->first();
-						$monthlyTotal = $category->getExpenseTotal(
-							$currentMonth,
-							$currentYear
+					->map(function ($category) use ($currentDate) {
+						// Dapatkan budget aktif untuk tanggal sekarang
+						$budget = $this->getActiveBudgetForDate(
+							$category,
+							$category->user_id,
+							$currentDate
 						);
+
+						if (!$budget) {
+							return null;
+						}
+
+						// Hitung total expense untuk periode budget
+						$total = $category
+							->transactions()
+							->where("type", TransactionType::EXPENSE)
+							->whereBetween("transaction_date", [
+								$budget->start_date,
+								$budget->end_date,
+							])
+							->sum("amount");
+
 						$usage =
-							$budget && $budget->amount->getAmount()->toInt() > 0
-								? ($monthlyTotal / $budget->amount->getAmount()->toInt()) * 100
+							$budget && $budget->amount > 0
+								? ($total / $budget->amount) * 100
 								: 0;
 
 						return [
 							"category" => $category,
+							"budget" => $budget,
 							"usage_percentage" => $usage,
-							"monthly_total" => $this->formatMoney(
-								$this->fromDatabaseAmount($monthlyTotal)
-							),
-							"budget_limit" => $budget
-								? $budget->amount->getAmount()->toInt()
-								: 0,
-							"formatted_budget_limit" => $budget
-								? $budget->formatted_amount
-								: "Rp 0",
-							"is_exceeded" =>
-								$budget &&
-								$this->toDatabaseAmount(
-									$this->fromDatabaseAmount($monthlyTotal)
-								) > $budget->amount->getAmount()->toInt(),
+							"total_spent" => $total,
+							"formatted_spent" => Helper::formatMoney($total),
+							"formatted_budget_amount" => Helper::formatMoney($budget->amount),
+							"is_exceeded" => $total > $budget->amount,
 						];
 					})
-					->filter(fn($item) => $item["usage_percentage"] >= $threshold);
+					->filter(
+						fn($item) => $item && $item["usage_percentage"] >= $threshold
+					)
+					->values();
 			}
 		);
 	}
@@ -595,6 +647,10 @@ class CategoryRepository extends BaseRepository
 		$month = $month ?? date("m");
 		$year = $year ?? date("Y");
 
+		// Buat tanggal untuk bulan tersebut
+		$startDate = Carbon::create($year, $month, 1)->startOfMonth();
+		$endDate = Carbon::create($year, $month, 1)->endOfMonth();
+
 		$cacheKey = Helper::generateCacheKey("unbudgeted_categories", [
 			"user_id" => $user->id,
 			"month" => $month,
@@ -604,15 +660,18 @@ class CategoryRepository extends BaseRepository
 		return Cache::remember(
 			$cacheKey,
 			config("wallet.cache_ttl"),
-			function () use ($user, $month, $year) {
+			function () use ($user, $startDate, $endDate) {
 				return Category::expense()
 					->forUser($user->id)
 					->active()
-					->whereDoesntHave("budgets", function ($query) use ($month, $year) {
+					->whereDoesntHave("budgets", function ($query) use (
+						$startDate,
+						$endDate
+					) {
 						$query
-							->where("month", $month)
-							->where("year", $year)
-							->where("is_active", true);
+							->where("is_active", true)
+							->where("start_date", "<=", $endDate)
+							->where("end_date", ">=", $startDate);
 					})
 					->get();
 			}
@@ -649,6 +708,52 @@ class CategoryRepository extends BaseRepository
 				return $query->get();
 			}
 		);
+	}
+
+	/**
+	 * Get active budget untuk periode tertentu
+	 */
+	private function getActiveBudgetForPeriod(
+		Category $category,
+		int $userId,
+		string $periodType,
+		int $periodValue,
+		int $year,
+		?Carbon $startDate = null,
+		?Carbon $endDate = null
+	): ?Budget {
+		$query = $category
+			->budgets()
+			->where("user_id", $userId)
+			->where("period_type", $periodType)
+			->where("period_value", $periodValue)
+			->where("year", $year)
+			->where("is_active", true);
+
+		if ($startDate && $endDate) {
+			$query
+				->where("start_date", "<=", $endDate)
+				->where("end_date", ">=", $startDate);
+		}
+
+		return $query->first();
+	}
+
+	/**
+	 * Get active budget untuk tanggal tertentu
+	 */
+	private function getActiveBudgetForDate(
+		Category $category,
+		int $userId,
+		Carbon $date
+	): ?Budget {
+		return $category
+			->budgets()
+			->where("user_id", $userId)
+			->where("is_active", true)
+			->where("start_date", "<=", $date)
+			->where("end_date", ">=", $date)
+			->first();
 	}
 
 	/**
@@ -743,5 +848,102 @@ class CategoryRepository extends BaseRepository
 				];
 			}
 		);
+	}
+
+	/**
+	 * Get categories with current budget information
+	 */
+	public function getCategoriesWithCurrentBudget(User $user): Collection
+	{
+		$currentDate = now();
+
+		return Category::where("user_id", $user->id)
+			->expense()
+			->active()
+			->with([
+				"budgets" => function ($query) use ($currentDate) {
+					$query
+						->where("is_active", true)
+						->where("start_date", "<=", $currentDate)
+						->where("end_date", ">=", $currentDate);
+				},
+			])
+			->get()
+			->map(function ($category) use ($currentDate) {
+				$budget = $category->budgets->first();
+				$category->current_budget = $budget;
+
+				if ($budget) {
+					// Hitung total pengeluaran dalam periode budget
+					$spent = $category
+						->transactions()
+						->where("type", TransactionType::EXPENSE)
+						->whereBetween("transaction_date", [
+							$budget->start_date,
+							$budget->end_date,
+						])
+						->sum("amount");
+
+					$category->current_spent = $spent;
+					$category->budget_remaining = max(0, $budget->amount - $spent);
+					$category->budget_usage_percentage =
+						$budget->amount > 0
+							? min(100, ($spent / $budget->amount) * 100)
+							: 0;
+				}
+
+				return $category;
+			});
+	}
+
+	/**
+	 * Get category budget summary for a specific period
+	 */
+	public function getCategoryBudgetSummary(
+		User $user,
+		string $periodType,
+		int $periodValue,
+		int $year
+	): Collection {
+		return Category::where("user_id", $user->id)
+			->expense()
+			->active()
+			->with([
+				"budgets" => function ($query) use ($periodType, $periodValue, $year) {
+					$query
+						->where("period_type", $periodType)
+						->where("period_value", $periodValue)
+						->where("year", $year)
+						->where("is_active", true);
+				},
+			])
+			->get()
+			->filter(fn($category) => $category->budgets->isNotEmpty())
+			->map(function ($category) use ($periodType, $periodValue, $year) {
+				$budget = $category->budgets->first();
+
+				// Hitung total pengeluaran untuk periode ini
+				$spent = $category
+					->transactions()
+					->where("type", TransactionType::EXPENSE)
+					->when($budget, function ($query) use ($budget) {
+						return $query->whereBetween("transaction_date", [
+							$budget->start_date,
+							$budget->end_date,
+						]);
+					})
+					->sum("amount");
+
+				return [
+					"category" => $category,
+					"budget" => $budget,
+					"spent" => $spent,
+					"remaining" => $budget ? max(0, $budget->amount - $spent) : 0,
+					"usage_percentage" =>
+						$budget && $budget->amount > 0
+							? min(100, ($spent / $budget->amount) * 100)
+							: 0,
+				];
+			});
 	}
 }
