@@ -5,6 +5,7 @@
 @use('Modules\Wallet\Enums\CategoryType')
 
 @section('content')
+@include('wallet::partials.fab')
 <div class="row justify-content-center">
   <div class="col-lg-10 col-xl-8">
     <div class="card">
