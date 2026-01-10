@@ -1,11 +1,10 @@
-<!-- resources/views/wallet/categories/index.blade.php -->
 @extends('wallet::layouts.app')
 
 @section('content')
 @include('wallet::partials.fab')
     <!-- Stats Cards -->
     <div class="row mb-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-md-6 mb-3">
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Total Kategori</h5>
@@ -13,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-md-6 mb-3">
             <div class="card bg-success text-white mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Kategori Aktif</h5>
@@ -21,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-md-6 mb-3">
             <div class="card bg-info text-white mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Pemasukan</h5>
@@ -29,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-3 col-md-6 mb-3">
             <div class="card bg-warning text-white mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Pengeluaran</h5>
