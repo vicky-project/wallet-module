@@ -5,6 +5,7 @@ namespace Modules\Wallet\Models;
 use Modules\Wallet\Casts\MoneyCast;
 use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Enums\TransactionType;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +21,7 @@ class Category extends Model
 		"name",
 		"type",
 		"icon",
+		"slug",
 		"description",
 		"is_budgetable",
 		"is_active",
@@ -70,12 +72,19 @@ class Category extends Model
 			}
 
 			$category->is_budgetable = $category->type === CategoryType::EXPENSE;
+			$category->slug = self::generateSlug($category->name, $category->user_id);
 		});
 
 		static::updating(function ($category) {
 			if ($category->type === CategoryType::INCOME) {
 				$category->is_budgetable = false;
 			}
+
+			$category->slug = self::generateSlug(
+				$category->name,
+				$category->user_id,
+				$category->id
+			);
 		});
 	}
 
@@ -250,5 +259,31 @@ class Category extends Model
 	public static function getDefaultIcon($name, $type)
 	{
 		return self::DEFAULT_ICONS[$type][$name] ?? "bi-bag";
+	}
+
+	public static function generateSlug(
+		string $name,
+		int $userId,
+		?int $exceptId = null
+	): string {
+		$slug = Str::slug($name);
+		$originalSlug = $slug;
+		$counter = 1;
+
+		while (true) {
+			$query = self::where("user_id", $userId)->where("slug", $slug);
+
+			if ($exceptId) {
+				$query->where("id", "!=", $exceptId);
+			}
+
+			if (!$query->exists()) {
+				break;
+			}
+
+			$slug = $originalSlug . "-" . $counter++;
+		}
+
+		return $slug;
 	}
 }
