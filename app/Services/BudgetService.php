@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Services;
 
 use App\Models\User;
+use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Repositories\BudgetRepository;
