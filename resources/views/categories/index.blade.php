@@ -446,7 +446,7 @@
       <span class="badge bg-secondary ms-2">{{ $categories->total() }}</span>
     </h5>
     <div class="d-flex align-items-center">
-      <div class="input-group me-2" style="width: 200px;">
+      <div class="input-group me-2" style="width: 150px;">
         <span class="input-group-text"><i class="bi bi-list-check"></i></span>
         <select class="form-select" id="bulkAction">
           <option value="">Bulk Action</option>
