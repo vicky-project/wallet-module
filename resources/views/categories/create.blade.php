@@ -38,13 +38,13 @@
                   Tipe Kategori
                 </div>
                 <div class="d-flex type-switch mb-4">
-                  <div class="type-option expense {{ (!isset($category) && request('type') == CategoryType::EXPENSE) || (isset($category) && $category->type == CategoryType::EXPENSE) ? 'active' : '' }}" data-type="expense">
+                  <div class="type-option expense {{ (!isset($category) && request('type') == CategoryType::EXPENSE->value) || (isset($category) && $category->type == CategoryType::EXPENSE) ? 'active' : '' }}" data-type="expense">
                     <i class="bi bi-arrow-up-right"></i>
-                    <span>Income</span>
-                  </div>
-                  <div class="type-option income {{ (!isset($category) && request('type') == CategoryType::INCOME) || (isset($category) && $category->type == CategoryType::INCOME) ? 'active' : '' }}" data-type="income">
-                    <i class="bi bi-arrow-down-left"></i>
                     <span>Expense</span>
+                  </div>
+                  <div class="type-option income {{ (!isset($category) && request('type') == CategoryType::INCOME->value) || (isset($category) && $category->type == CategoryType::INCOME) ? 'active' : '' }}" data-type="income">
+                    <i class="bi bi-arrow-down-left"></i>
+                    <span>Income</span>
                   </div>
                 </div>
                 <input type="hidden" name="type" id="categoryType" value="{{ isset($category) ? $category->type : (request('type') ?: CategoryType::EXPENSE->value) }}">
