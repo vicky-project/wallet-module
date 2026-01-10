@@ -59,22 +59,11 @@ class CategoryController extends Controller
 		try {
 			$category = $this->categoryService->createCategory($request->validated());
 
-			return response()->json(
-				[
-					"success" => true,
-					"message" => "Category created successfully",
-					"category" => $category,
-				],
-				201
-			);
+			return redirect()
+				->route("apps.categories.index")
+				->with("success", "Category created successfully");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				400
-			);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 

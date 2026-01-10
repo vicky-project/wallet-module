@@ -79,7 +79,10 @@ class CategoryService
 		return $query
 			->with([
 				"budgets" => function ($query) {
-					$query->where("month", date("m"))->where("year", date("Y"));
+					$query
+						->where("start_date", "<=", now())
+						->where("end_date", ">=", now())
+						->where("year", date("Y"));
 				},
 			])
 			->orderBy("type")
