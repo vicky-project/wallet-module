@@ -30,8 +30,8 @@ class AccountResource extends JsonResource
 			"created_at" => $this->created_at->format("Y-m-d H:i:s"),
 			"updated_at" => $this->updated_at->format("Y-m-d H:i:s"),
 			"links" => [
-				"self" => route("api.accounts.show", $this->id),
-				"transactions" => route("api.transactions.index", [
+				"self" => route("apps.accounts.show", $this->id),
+				"transactions" => route("apps.transactions.index", [
 					"account_id" => $this->id,
 				]),
 			],
