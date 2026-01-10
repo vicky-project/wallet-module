@@ -127,8 +127,12 @@ class CategoryRepository extends BaseRepository
 	/**
 	 * Get categories by type (cached)
 	 */
-	public function getByType(string $type, User $user): Collection
+	public function getByType(string|CategoryType $type, User $user): Collection
 	{
+		if ($type instanceof CategoryType) {
+			$type = $type->value;
+		}
+
 		$cacheKey = Helper::generateCacheKey("user_categories_by_type", [
 			"user_id" => $user->id,
 			"type" => $type,
