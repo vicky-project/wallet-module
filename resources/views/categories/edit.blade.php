@@ -2,6 +2,9 @@
 
 @section('title', 'Edit Kategori')
 
+@use('Modules\Wallet\Enums\CategoryType')
+@use('Modules\Wallet\Helpers\Helper')
+
 @push('styles')
 <style>
     .category-type-card {
@@ -195,489 +198,478 @@
 @endpush
 
 @section('content')
-    <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="page-title mb-2">
-                <i class="bi bi-pencil-square me-2"></i>Edit Kategori
-            </h2>
-        </div>
-        <div class="col-auto">
-            <div class="btn-group">
-                <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-outline-info">
-                    <i class="bi bi-eye me-1"></i>Detail
-                </a>
-                <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Kembali
-                </a>
-            </div>
-        </div>
+<!-- Page Header -->
+<div class="row mb-4">
+  <div class="col">
+    <h2 class="page-title mb-2">
+      <i class="bi bi-pencil-square me-2"></i>Edit Kategori
+    </h2>
+  </div>
+  <div class="col-auto">
+    <div class="btn-group">
+      <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-outline-info">
+        <i class="bi bi-eye me-1"></i>Detail
+      </a>
+      <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Kembali
+      </a>
     </div>
+  </div>
+</div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Statistics Cards -->
-            @if($category->type === 'expense')
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="stat-card budget">
-                        <div class="stat-value">
-                            {{ format_currency($category->current_budget->amount ?? 0) }}
-                        </div>
-                        <div class="stat-label">Budget Bulan Ini</div>
-                        <small class="text-muted">
-                            @if($category->current_budget)
-                                Sampai {{ \Carbon\Carbon::parse($category->current_budget->end_date)->format('d M') }}
-                            @else
-                                Tidak ada budget
-                            @endif
-                        </small>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card transactions">
-                        <div class="stat-value">
-                            {{ $category->transactions_count ?? 0 }}
-                        </div>
-                        <div class="stat-label">Total Transaksi</div>
-                        <small class="text-muted">
-                            {{ format_currency($category->transactions_sum_amount ?? 0) }} total
-                        </small>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    @php
-                        $usageClass = '';
-                        if ($category->has_budget_exceeded ?? false) {
-                            $usageClass = 'danger';
-                        } elseif (($category->budget_usage_percentage ?? 0) >= 80) {
-                            $usageClass = 'warning';
-                        } else {
-                            $usageClass = '';
-                        }
-                    @endphp
-                    <div class="stat-card usage {{ $usageClass }}">
-                        <div class="stat-value">
-                            {{ number_format($category->budget_usage_percentage ?? 0, 1) }}%
-                        </div>
-                        <div class="stat-label">Penggunaan Budget</div>
-                        <small class="text-muted">
-                            {{ format_currency($category->current_spent ?? 0) }} terpakai
-                        </small>
-                    </div>
-                </div>
+<div class="row">
+  <div class="col-lg-8">
+    <!-- Statistics Cards -->
+    @if($category->type === CategoryType::EXPENSE)
+      <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+          <div class="stat-card budget">
+            <div class="stat-value">
+              {{ Helper::formatMoney(Helper::toMoney($category->current_budget->amount ?? 0)->getAmount()->toInt()) }}
             </div>
-            @endif
+            <div class="stat-label">Budget Bulan Ini</div>
+            <small class="text-muted">
+              @if($category->current_budget)
+              Sampai {{ \Carbon\Carbon::parse($category->current_budget->end_date)->format('d M') }}
+              @else
+              Tidak ada budget
+              @endif
+            </small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stat-card transactions">
+            <div class="stat-value">
+              {{ $category->transactions_count ?? 0 }}
+            </div>
+            <div class="stat-label">Total Transaksi</div>
+            <small class="text-muted">
+              {{ Helper::toMoney($category->transactions_sum_amount ?? 0)->getAmount()->toInt() }} total
+            </small>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          @php
+            $usageClass = '';
+            if ($category->has_budget_exceeded ?? false) {
+              $usageClass = 'danger';
+            } elseif (($category->budget_usage_percentage ?? 0) >= 80) {
+              $usageClass = 'warning';
+            } else {
+              $usageClass = '';
+            }
+          @endphp
+          <div class="stat-card usage {{ $usageClass }}">
+            <div class="stat-value">
+              {{ number_format($category->budget_usage_percentage ?? 0, 1) }}%
+            </div>
+            <div class="stat-label">Penggunaan Budget</div>
+            <small class="text-muted">
+              {{ Helper::toMoney($category->current_spent ?? 0)->getAmount()->toInt() }} terpakai
+            </small>
+          </div>
+        </div>
+      </div>
+    @endif
 
-            <!-- Main Form -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-pencil-square me-2"></i>Form Edit Kategori
-                    </h5>
+    <!-- Main Form -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-pencil-square me-2"></i>Form Edit Kategori
+        </h5>
+      </div>
+      <div class="card-body">
+        <form action="{{ route('apps.categories.update', $category) }}" method="POST" id="editCategoryForm">
+          @csrf
+          @method('PUT')
+
+          <!-- Basic Information -->
+          <div class="form-section">
+            <h6 class="form-section-title {{ $category->type === CategoryType::INCOME ? 'income' : 'expense' }}">
+              Informasi Kategori {{ $category->type === CategoryType::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
+            </h6>
+
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label for="name" class="form-label">
+                  <i class="bi bi-tag me-1"></i>Nama Kategori
+                  <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Contoh: Makanan, Transportasi, Gaji" value="{{ old('name', $category->name) }}" required>
+                <div class="form-text">
+                  Berikan nama yang jelas dan mudah diingat.
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('apps.categories.update', $category) }}" method="POST" id="editCategoryForm">
-                        @csrf
-                        @method('PUT')
-                        
-                        <!-- Basic Information -->
-                        <div class="form-section">
-                            <h6 class="form-section-title {{ $category->type === 'income' ? 'income' : 'expense' }}">
-                                Informasi Kategori {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
-                            </h6>
+                @error('name')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <div class="col-md-4">
+                <label for="slug" class="form-label">
+                  <i class="bi bi-link me-1"></i>Slug URL
+                </label>
+                <input type="text" class="form-control" id="slug" name="slug" placeholder="otomatis-terisi" value="{{ $category->slug }}" readonly disabled>
+                <div class="form-text">
+                  URL-friendly identifier (opsional).
+                </div>
+                @error('slug')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <div class="col-12">
+                <label for="description" class="form-label">
+                  <i class="bi bi-text-paragraph me-1"></i>Deskripsi
+                </label>
+                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Deskripsi singkat tentang kategori ini...">{{ old('description', $category->description) }}</textarea>
+                <div class="form-text">
+                  Deskripsi opsional untuk memberikan detail tambahan.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Icon Selection -->
+          <div class="form-section">
+            <h6 class="form-section-title">Ikon Kategori</h6>
+            <p class="text-muted mb-3">Pilih ikon yang mewakili kategori Anda, atau masukkan kustom FontAwesome.</p>
                             
-                            <div class="row g-3">
-                                <div class="col-md-8">
-                                    <label for="name" class="form-label">
-                                        <i class="bi bi-tag me-1"></i>Nama Kategori
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" class="form-control" id="name" name="name" 
-                                           placeholder="Contoh: Makanan, Transportasi, Gaji" 
-                                           value="{{ old('name', $category->name) }}" required>
-                                    <div class="form-text">
-                                        Berikan nama yang jelas dan mudah diingat.
-                                    </div>
-                                    @error('name')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">Pilih Ikon</label>
+                <div class="icon-grid" id="iconGrid">
+                  <!-- Icons will be populated by JavaScript -->
+                </div>
+                <div class="form-text mt-2">
+                  Klik ikon untuk memilih. Ikon default akan disesuaikan berdasarkan nama kategori.
+                </div>
+              </div>
                                 
-                                <div class="col-md-4">
-                                    <label for="slug" class="form-label">
-                                        <i class="bi bi-link me-1"></i>Slug URL
-                                    </label>
-                                    <input type="text" class="form-control" id="slug" name="slug" 
-                                           placeholder="otomatis-terisi" 
-                                           value="{{ old('slug', $category->slug) }}">
-                                    <div class="form-text">
-                                        URL-friendly identifier (opsional).
-                                    </div>
-                                    @error('slug')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                
-                                <div class="col-12">
-                                    <label for="description" class="form-label">
-                                        <i class="bi bi-text-paragraph me-1"></i>Deskripsi
-                                    </label>
-                                    <textarea class="form-control" id="description" name="description" 
-                                              rows="3" placeholder="Deskripsi singkat tentang kategori ini...">{{ old('description', $category->description) }}</textarea>
-                                    <div class="form-text">
-                                        Deskripsi opsional untuk memberikan detail tambahan.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Icon Selection -->
-                        <div class="form-section">
-                            <h6 class="form-section-title">Ikon Kategori</h6>
-                            <p class="text-muted mb-3">Pilih ikon yang mewakili kategori Anda, atau masukkan kustom FontAwesome.</p>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-8">
-                                    <label class="form-label">Pilih Ikon</label>
-                                    <div class="icon-grid" id="iconGrid">
-                                        <!-- Icons will be populated by JavaScript -->
-                                    </div>
-                                    <div class="form-text mt-2">
-                                        Klik ikon untuk memilih. Ikon default akan disesuaikan berdasarkan nama kategori.
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <label for="icon" class="form-label">Ikon Kustom</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i id="iconPreview" class="bi bi-{{ $category->icon }}"></i></span>
-                                        <input type="text" class="form-control" id="icon" name="icon" 
-                                               placeholder="bi-tag" 
-                                               value="{{ old('icon', $category->icon) }}">
-                                    </div>
-                                    <div class="form-text">
-                                        Nama ikon FontAwesome tanpa prefix "bi-".
-                                    </div>
-                                    @error('icon')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+              <div class="col-md-4">
+                <label for="icon" class="form-label">Ikon Kustom</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i id="iconPreview" class="bi bi-{{ $category->icon }}"></i></span>
+                  <input type="text" class="form-control" id="icon" name="icon" placeholder="bi-tag" value="{{ old('icon', $category->icon) }}">
+                </div>
+                <div class="form-text">
+                  Nama ikon FontAwesome tanpa prefix "bi-".
+                </div>
+                @error('icon')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
                                     
-                                    <!-- Preview -->
-                                    <div class="mt-3">
-                                        <label class="form-label">Pratinjau</label>
-                                        <div class="d-flex align-items-center">
-                                            <div class="icon-preview" id="dynamicIconPreview">
-                                                <i id="previewIcon" class="bi bi-{{ $category->icon }}"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-semibold" id="previewName">{{ $category->name }}</div>
-                                                <div class="text-muted small" id="previewType">
-                                                    {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Additional Settings -->
-                        <div class="form-section">
-                            <h6 class="form-section-title">Pengaturan Tambahan</h6>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" 
-                                            {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_active">
-                                            <i class="bi bi-toggle-on me-1"></i>Kategori Aktif
-                                        </label>
-                                        <div class="form-text">
-                                            Nonaktifkan untuk menyembunyikan kategori dari daftar.
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1"
-                                            {{ old('is_budgetable', $category->is_budgetable) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_budgetable">
-                                            <i class="bi bi-cash-coin me-1"></i>Dapat Diberi Budget
-                                        </label>
-                                        <div class="form-text">
-                                            Izinkan pengaturan budget untuk kategori ini.
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                @if($category->type === 'expense' && $category->current_budget)
-                                <div class="col-12 mt-3">
-                                    <div class="alert alert-info">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <i class="bi bi-info-circle"></i>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="alert-heading">Budget Aktif</h6>
-                                                <p class="mb-0">
-                                                    Kategori ini memiliki budget aktif sebesar 
-                                                    <strong>{{ format_currency($category->current_budget->amount) }}</strong> 
-                                                    hingga {{ \Carbon\Carbon::parse($category->current_budget->end_date)->format('d M Y') }}.
-                                                </p>
-                                                <div class="mt-2">
-                                                    <a href="{{ route('wallet.budgets.edit', $category->current_budget) }}" class="btn btn-outline-info btn-sm">
-                                                        <i class="bi bi-pencil me-1"></i>Edit Budget
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <!-- Danger Zone -->
-                        <div class="form-section border-danger">
-                            <h6 class="form-section-title text-danger">
-                                <i class="bi bi-exclamation-triangle me-1"></i>Zona Berbahaya
-                            </h6>
-                            
-                            <div class="alert alert-danger">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="bi bi-exclamation-octagon"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="alert-heading">Hapus Kategori</h6>
-                                        <p class="mb-2">
-                                            Menghapus kategori akan menghapus semua data terkait termasuk transaksi dan budget.
-                                            <strong class="d-block mt-1">Aksi ini tidak dapat dibatalkan!</strong>
-                                        </p>
-                                        @if($category->transactions_count > 0)
-                                        <div class="alert alert-warning mb-2">
-                                            <i class="bi bi-exclamation-triangle me-1"></i>
-                                            Kategori ini memiliki {{ $category->transactions_count }} transaksi.
-                                            Anda tidak dapat menghapus kategori yang memiliki transaksi.
-                                        </div>
-                                        @endif
-                                        <div class="mt-3">
-                                            @if($category->transactions_count === 0)
-                                            <button type="button" class="btn btn-danger" id="deleteCategoryBtn">
-                                                <i class="bi bi-trash me-1"></i>Hapus Kategori
-                                            </button>
-                                            @else
-                                            <button type="button" class="btn btn-danger" disabled>
-                                                <i class="bi bi-trash me-1"></i>Hapus Kategori
-                                            </button>
-                                            <small class="text-muted ms-2">(Tidak tersedia karena ada transaksi)</small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Form Actions -->
-                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                            <div>
-                                <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-x-circle me-1"></i>Batal
-                                </a>
-                            </div>
-                            <div>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">
-                                    <i class="bi bi-check-circle me-1"></i>Update Kategori
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                <!-- Preview -->
+                <div class="mt-3">
+                  <label class="form-label">Pratinjau</label>
+                  <div class="d-flex align-items-center">
+                    <div class="icon-preview" id="dynamicIconPreview">
+                      <i id="previewIcon" class="bi bi-{{ $category->icon }}"></i>
+                    </div>
+                    <div>
+                      <div class="fw-semibold" id="previewName">{{ $category->name }}</div>
+                      <div class="text-muted small" id="previewType">
+                        {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
-        
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-            <!-- Category Info -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle me-2"></i>Informasi Kategori
-                    </h5>
+          </div>
+
+          <!-- Additional Settings -->
+          <div class="form-section">
+            <h6 class="form-section-title">Pengaturan Tambahan</h6>
+                            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $category->is_active))>
+                  <label class="form-check-label" for="is_active">
+                    <i class="bi bi-toggle-on me-1"></i>Kategori Aktif
+                  </label>
+                  <div class="form-text">
+                    Nonaktifkan untuk menyembunyikan kategori dari daftar.
+                  </div>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="icon-preview" style="width: 60px; height: 60px; font-size: 1.75rem;">
-                            <i class="bi bi-{{ $category->icon }}"></i>
+              </div>
+                                
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" @checked(old('is_budgetable', $category->is_budgetable))>
+                  <label class="form-check-label" for="is_budgetable">
+                    <i class="bi bi-cash-coin me-1"></i>Dapat Diberi Budget
+                  </label>
+                  <div class="form-text">
+                    Izinkan pengaturan budget untuk kategori ini.
+                  </div>
+                </div>
+              </div>
+
+              @if($category->type === CategoryType::EXPENSE && $category->current_budget)
+                <div class="col-12 mt-3">
+                  <div class="alert alert-info">
+                    <div class="d-flex">
+                      <div class="flex-shrink-0">
+                        <i class="bi bi-info-circle"></i>
+                      </div>
+                      <div class="flex-grow-1 ms-3">
+                        <h6 class="alert-heading">Budget Aktif</h6>
+                        <p class="mb-0">
+                          Kategori ini memiliki budget aktif sebesar 
+                          <strong>{{ Helper::formatMoney(Helper::toMoney($category->current_budget->amount)->getAmount()->toInt()) }}</strong> 
+                          hingga {{ \Carbon\Carbon::parse($category->current_budget->end_date)->format('d M Y') }}.
+                        </p>
+                        <div class="mt-2">
+                          <a href="{{ route('wallet.budgets.edit', $category->current_budget) }}" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-pencil me-1"></i>Edit Budget
+                          </a>
                         </div>
-                        <div class="ms-3">
-                            <h5 class="mb-1">{{ $category->name }}</h5>
-                            <div class="d-flex align-items-center">
-                                @if($category->type === 'income')
-                                    <span class="badge bg-success me-2">Pemasukan</span>
-                                @else
-                                    <span class="badge bg-danger me-2">Pengeluaran</span>
-                                @endif
-                                @if($category->is_active)
-                                    <span class="badge bg-success">Aktif</span>
-                                @else
-                                    <span class="badge bg-secondary">Nonaktif</span>
-                                @endif
-                            </div>
-                        </div>
+                      </div>
                     </div>
-                    
-                    @if($category->description)
-                    <div class="mb-3">
-                        <h6 class="fw-semibold">Deskripsi:</h6>
-                        <p class="text-muted mb-0">{{ $category->description }}</p>
+                  </div>
+                </div>
+              @endif
+            </div>
+          </div>
+
+          <!-- Danger Zone -->
+          <div class="form-section border-danger">
+            <h6 class="form-section-title text-danger">
+              <i class="bi bi-exclamation-triangle me-1"></i>Zona Berbahaya
+            </h6>
+                            
+            <div class="alert alert-danger">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <i class="bi bi-exclamation-octagon"></i>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="alert-heading">Hapus Kategori</h6>
+                  <p class="mb-2">
+                    Menghapus kategori akan menghapus semua data terkait termasuk transaksi dan budget.
+                    <strong class="d-block mt-1">Aksi ini tidak dapat dibatalkan!</strong>
+                  </p>
+                  @if($category->transactions_count > 0)
+                    <div class="alert alert-warning mb-2">
+                      <i class="bi bi-exclamation-triangle me-1"></i>
+                      Kategori ini memiliki {{ $category->transactions_count }} transaksi.
+                      Anda tidak dapat menghapus kategori yang memiliki transaksi.
                     </div>
+                  @endif
+                  <div class="mt-3">
+                    @if($category->transactions_count === 0)
+                      <button type="button" class="btn btn-danger" id="deleteCategoryBtn">
+                        <i class="bi bi-trash me-1"></i>Hapus Kategori
+                      </button>
+                    @else
+                      <button type="button" class="btn btn-danger" disabled>
+                        <i class="bi bi-trash me-1"></i>Hapus Kategori
+                      </button>
+                      <small class="text-muted ms-2">(Tidak tersedia karena ada transaksi)</small>
                     @endif
-                    
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="text-center p-2 bg-light rounded">
-                                <div class="fw-semibold">Dibuat</div>
-                                <small class="text-muted">{{ $category->created_at->format('d M Y') }}</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-center p-2 bg-light rounded">
-                                <div class="fw-semibold">Diupdate</div>
-                                <small class="text-muted">{{ $category->updated_at->format('d M Y') }}</small>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
-            
-            <!-- Recent Transactions -->
-            @if($category->transactions_count > 0)
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-clock-history me-2"></i>Transaksi Terbaru
-                    </h5>
-                    <a href="{{ route('apps.transactions.index', ['category_id' => $category->id]) }}" class="btn btn-sm btn-outline-primary">
-                        Lihat Semua
-                    </a>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        @forelse($category->recentTransactions as $transaction)
-                        <div class="list-group-item px-0">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fw-semibold">{{ $transaction->description ?: 'Tanpa deskripsi' }}</div>
-                                    <small class="text-muted">{{ $transaction->transaction_date->format('d M') }}</small>
-                                </div>
-                                <div class="text-end">
-                                    <div class="fw-semibold {{ $category->type === 'income' ? 'text-success' : 'text-danger' }}">
-                                        {{ $category->type === 'income' ? '+' : '-' }}{{ format_currency($transaction->amount) }}
-                                    </div>
-                                    <small class="text-muted">{{ $transaction->account->name ?? '-' }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="text-center py-3 text-muted">
-                            <i class="bi bi-receipt display-6"></i>
-                            <p class="mt-2 mb-0">Belum ada transaksi</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+            <div>
+              <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Batal
+              </a>
             </div>
-            @endif
-            
-            <!-- Quick Actions -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-lightning me-2"></i>Aksi Cepat
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-success">
-                            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
-                        </a>
-                        
-                        @if($category->type === 'expense')
-                        <a href="{{ route('apps.budgets.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
-                            <i class="bi bi-cash-coin me-2"></i>Buat Budget
-                        </a>
-                        @endif
-                    </div>
-                </div>
+            <div>
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="bi bi-check-circle me-1"></i>Update Kategori
+              </button>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+        
+  <!-- Sidebar -->
+  <div class="col-lg-4">
+    <!-- Category Info -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-info-circle me-2"></i>Informasi Kategori
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="icon-preview" style="width: 60px; height: 60px; font-size: 1.75rem;">
+            <i class="bi {{ $category->icon }}"></i>
+          </div>
+          <div class="ms-3">
+            <h5 class="mb-1">{{ $category->name }}</h5>
+            <div class="d-flex align-items-center">
+              @if($category->type === CategoryType::INCOME)
+                <span class="badge bg-success me-2">Pemasukan</span>
+              @else
+                <span class="badge bg-danger me-2">Pengeluaran</span>
+              @endif
+              @if($category->is_active)
+                <span class="badge bg-success">Aktif</span>
+              @else
+                <span class="badge bg-secondary">Nonaktif</span>
+              @endif
+            </div>
+          </div>
+        </div>
+                    
+        @if($category->description)
+          <div class="mb-3">
+            <h6 class="fw-semibold">Deskripsi:</h6>
+            <p class="text-muted mb-0">{{ $category->description }}</p>
+          </div>
+        @endif
+                    
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="text-center p-2 bg-light rounded">
+              <div class="fw-semibold">Dibuat</div>
+              <small class="text-muted">{{ $category->created_at->format('d M Y') }}</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-center p-2 bg-light rounded">
+              <div class="fw-semibold">Diupdate</div>
+              <small class="text-muted">{{ $category->updated_at->format('d M Y') }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    @if($category->transactions_count > 0)
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-clock-history me-2"></i>Transaksi Terbaru
+          </h5>
+          <a href="{{ route('apps.transactions.index', ['category_id' => $category->id]) }}" class="btn btn-sm btn-outline-primary">
+            Lihat Semua
+          </a>
+        </div>
+        <div class="card-body">
+          <div class="list-group list-group-flush">
+            @forelse($category->recentTransactions as $transaction)
+              <div class="list-group-item px-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="fw-semibold">{{ $transaction->description ?: 'Tanpa deskripsi' }}</div>
+                    <small class="text-muted">{{ $transaction->transaction_date->format('d M') }}</small>
+                  </div>
+                  <div class="text-end">
+                    <div class="fw-semibold {{ $category->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
+                      {{ $category->type === CategoryType::INCOME ? '+' : '-' }}{{ Helper::formatMoney(Helper::toMoney($transaction->amount)->getAmount()->toInt()) }}
+                    </div>
+                    <small class="text-muted">{{ $transaction->account->name ?? '-' }}</small>
+                  </div>
+                </div>
+              </div>
+            @empty
+              <div class="text-center py-3 text-muted">
+                <i class="bi bi-receipt display-6"></i>
+                <p class="mt-2 mb-0">Belum ada transaksi</p>
+              </div>
+            @endforelse
+          </div>
+        </div>
+      </div>
+    @endif
+
+    <!-- Quick Actions -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-lightning me-2"></i>Aksi Cepat
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+          </a>
+
+          @if($category->type === 'expense')
+            <a href="{{ route('apps.budgets.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
+              <i class="bi bi-cash-coin me-2"></i>Buat Budget
+            </a>
+          @endif
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-danger">
-                <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Penghapusan
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mb-4">
-                    <div class="icon-preview mx-auto bg-danger bg-opacity-10 text-danger" 
-                         style="width: 80px; height: 80px; font-size: 2rem;">
-                        <i class="bi bi-exclamation-triangle"></i>
-                    </div>
-                </div>
-                
-                <h5 class="text-center mb-3">Hapus Kategori "{{ $category->name }}"?</h5>
-                
-                <div class="alert alert-danger">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0">
-                            <i class="bi bi-exclamation-octagon"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <p class="mb-0">
-                                <strong>Perhatian:</strong> Aksi ini akan menghapus:
-                            </p>
-                            <ul class="mb-0 mt-2">
-                                <li>Kategori "{{ $category->name }}"</li>
-                                @if($category->budgets_count > 0)
-                                <li>{{ $category->budgets_count }} budget terkait</li>
-                                @endif
-                            </ul>
-                            <p class="mb-0 mt-2">
-                                <strong class="text-danger">Aksi ini tidak dapat dibatalkan!</strong>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-check mt-3">
-                    <input class="form-check-input" type="checkbox" id="confirmDelete">
-                    <label class="form-check-label" for="confirmDelete">
-                        Saya mengerti dan ingin melanjutkan penghapusan
-                    </label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form method="POST" action="{{ route('apps.categories.destroy', $category) }}" id="deleteForm">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
-                        <i class="bi bi-trash me-1"></i>Hapus Permanen
-                    </button>
-                </form>
-            </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-danger">
+        <h5 class="modal-title text-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Penghapusan
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <div class="icon-preview mx-auto bg-danger bg-opacity-10 text-danger" style="width: 80px; height: 80px; font-size: 2rem;">
+            <i class="bi bi-exclamation-triangle"></i>
+          </div>
         </div>
+
+        <h5 class="text-center mb-3">Hapus Kategori "{{ $category->name }}"?</h5>
+        <div class="alert alert-danger">
+          <div class="d-flex">
+            <div class="flex-shrink-0">
+              <i class="bi bi-exclamation-octagon"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <p class="mb-0">
+                <strong>Perhatian:</strong> Aksi ini akan menghapus:
+              </p>
+              <ul class="mb-0 mt-2">
+                <li>Kategori "{{ $category->name }}"</li>
+                @if($category->budgets_count > 0)
+                  <li>{{ $category->budgets_count }} budget terkait</li>
+                @endif
+              </ul>
+              <p class="mb-0 mt-2">
+                <strong class="text-danger">Aksi ini tidak dapat dibatalkan!</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-check mt-3">
+          <input class="form-check-input" type="checkbox" id="confirmDelete">
+          <label class="form-check-label" for="confirmDelete">
+            Saya mengerti dan ingin melanjutkan penghapusan
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form method="POST" action="{{ route('apps.categories.destroy', $category) }}" id="deleteForm">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+            <i class="bi bi-trash me-1"></i>Hapus Permanen
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
