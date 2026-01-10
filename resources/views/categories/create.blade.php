@@ -59,70 +59,55 @@
                                         @endif
                                     </small>
                                 </p>
-                            </div>
+              </div>
                             
               <!-- Basic Information -->
               <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="bi bi-card-text"></i>
-                                    Informasi Dasar
-                                </div>
+                <div class="form-section-title">
+                  <i class="bi bi-card-text"></i>
+                  Informasi Dasar
+                </div>
                                 
-                                <!-- Name -->
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">
-                                        Nama Kategori <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control @error('name') is-invalid @enderror" 
-                                           id="name" 
-                                           name="name" 
-                                           value="{{ old('name', $category->name ?? '') }}" 
-                                           placeholder="Contoh: Makanan, Transportasi, Gaji" 
-                                           required>
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <div class="form-text">
-                                        Berikan nama yang jelas dan deskriptif untuk kategori ini.
-                                    </div>
-                                </div>
+                <!-- Name -->
+                <div class="mb-3">
+                  <label for="name" class="form-label">
+                    Nama Kategori <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $category->name ?? '') }}" placeholder="Contoh: Makanan, Transportasi, Gaji" required>
+                  @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                  <div class="form-text">
+                    Berikan nama yang jelas dan deskriptif untuk kategori ini.
+                  </div>
+                </div>
                                 
-                                <!-- Description -->
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Deskripsi (Opsional)</label>
-                                    <textarea class="form-control @error('description') is-invalid @enderror" 
-                                              id="description" 
-                                              name="description" 
-                                              rows="3" 
-                                              placeholder="Tambahkan deskripsi untuk kategori ini...">{{ old('description', $category->description ?? '') }}</textarea>
-                                    @error('description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <div class="form-text">
-                                        Deskripsi membantu mengingat tujuan kategori ini.
-                                    </div>
-                                </div>
+                <!-- Description -->
+                <div class="mb-3">
+                  <label for="description" class="form-label">Deskripsi (Opsional)</label>
+                  <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" placeholder="Tambahkan deskripsi untuk kategori ini...">{{ old('description', $category->description ?? '') }}</textarea>
+                  @error('description')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                  <div class="form-text">
+                    Deskripsi membantu mengingat tujuan kategori ini.
+                  </div>
+                </div>
                                 
-                                <!-- Slug (Auto-generated) -->
-                                @if(isset($category))
-                                <div class="mb-3">
-                                    <label for="slug" class="form-label">Slug</label>
-                                    <input type="text" 
-                                           class="form-control @error('slug') is-invalid @enderror" 
-                                           id="slug" 
-                                           name="slug" 
-                                           value="{{ old('slug', $category->slug ?? '') }}" 
-                                           placeholder="slug-otomatis">
-                                    @error('slug')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <div class="form-text">
-                                        Identifier unik untuk kategori. Biarkan kosong untuk generate otomatis.
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
+                <!-- Slug (Auto-generated) -->
+                @if(isset($category))
+                  <div class="mb-3">
+                    <label for="slug" class="form-label">Slug</label>
+                    <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug', $category->slug ?? '') }}" placeholder="slug-otomatis">
+                    @error('slug')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="form-text">
+                      Identifier unik untuk kategori. Biarkan kosong untuk generate otomatis.
+                    </div>
+                  </div>
+                @endif
+              </div>
                             
               <!-- Icon Selection -->
               <div class="form-section">
@@ -131,54 +116,7 @@
                   Ikon Kategori
                 </div>
                                 
-                <div class="mb-3">
-                  <label class="form-label">Pilih Ikon</label>
-                  <div class="d-flex align-items-center mb-3">
-                    <div id="iconPreview" class="icon-preview me-3" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                      <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}" id="previewIcon"></i>
-                    </div>
-                    <div>
-                      <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', $category->icon ?? 'tag') }}" placeholder="Nama ikon FontAwesome">
-                      @error('icon')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                      @enderror
-                      <div class="form-text">
-                        Masukkan nama ikon FontAwesome (contoh: cart, home, food) atau pilih dari daftar.
-                      </div>
-                    </div>
-                  </div>
-                                    
-                  <!-- Icon Grid -->
-                  <div class="mb-3">
-                    <div class="row g-2" id="iconGrid">
-                                        @php
-                    // Default icons based on category 
-                    $expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
-                    $incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
-                    $currentType = isset($category) ? $category->type : (request('type') ?: 'expense');
-                                                $icons = $currentType == 'expense' ? $expenseIcons : $incomeIcons;
-                                            @endphp
-                                            
-                                            @foreach($icons as $icon)
-                                            <div class="col-2 col-sm-1">
-                                                <div class="icon-selector text-center p-2 rounded border" 
-                                                     data-icon="{{ $icon }}"
-                                                     onclick="selectIcon('{{ $icon }}')">
-                                                    <i class="bi bi-{{ $icon }} fs-5"></i>
-                                                    <div class="mt-1">
-                                                        <small class="text-muted">{{ $icon }}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Custom Icon Button -->
-                                    <button type="button" class="btn btn-outline-primary btn-sm" id="showMoreIcons">
-                                        <i class="bi bi-three-dots me-1"></i>Tampilkan lebih banyak ikon
-                  </button>
-                </div>
+                @include('wallet::partials.categories.icon')
               </div>
                             
               <!-- Status Settings -->
