@@ -261,7 +261,7 @@
     <div class="card-body">
       <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
       <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
-      <form action="{{ route('aps.categories.index') }}" method="GET" id="filterForm">
+      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
         <div class="row g-3">
           <!-- Type Filter -->
           <div class="col-md-4">
