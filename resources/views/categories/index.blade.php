@@ -195,7 +195,7 @@
 <div class="row mb-4">
   <div class="col">
     <h2 class="page-title mb-2">
-      <i class="bi bi-tags me-2"></i>Kelola Kategori
+      <i class="bi bi-tags me-2"></i>Categories
     </h2>
     <p class="text-muted mb-0">Kelola semua kategori transaksi Anda. Atur budget, pantau pengeluaran, dan organisasi keuangan.</p>
   </div>

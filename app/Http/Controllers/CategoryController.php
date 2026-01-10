@@ -46,6 +46,11 @@ class CategoryController extends Controller
 		]);
 	}
 
+	public function create(Request $request)
+	{
+		return view("wallet::categories.create");
+	}
+
 	/**
 	 * Store a newly created category
 	 */
@@ -71,6 +76,11 @@ class CategoryController extends Controller
 				400
 			);
 		}
+	}
+
+	public function edit(Request $request, Category $category)
+	{
+		return view("wallet::categories.edit", compact("category"));
 	}
 
 	/**
@@ -205,6 +215,10 @@ class CategoryController extends Controller
 				400
 			);
 		}
+	}
+
+	public function bulkDelete(Request $request)
+	{
 	}
 
 	/**
