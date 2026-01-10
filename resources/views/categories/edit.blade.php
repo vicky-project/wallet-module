@@ -679,45 +679,6 @@
         </div>
     </div>
 </div>
-
-<!-- Duplicate Modal -->
-<div class="modal fade" id="duplicateModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('apps.categories.duplicate', $category) }}" method="POST">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">Duplikat Kategori</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="duplicate_name" class="form-label">Nama Kategori Baru</label>
-                        <input type="text" class="form-control" id="duplicate_name" name="name" 
-                               value="{{ $category->name }} (Salinan)" required>
-                        <div class="form-text">
-                            Berikan nama untuk kategori duplikat.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="duplicate_budgets" name="duplicate_budgets">
-                            <label class="form-check-label" for="duplicate_budgets">
-                                Salin juga budget yang aktif
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-files me-1"></i>Duplikat
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
