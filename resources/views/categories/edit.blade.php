@@ -292,7 +292,7 @@
             </h6>
 
             <div class="row g-3">
-              <div class="col-md-8">
+              <div class="col-md-4">
                 <label for="name" class="form-label">
                   <i class="bi bi-tag me-1"></i>Nama Kategori
                   <span class="text-danger">*</span>
@@ -302,6 +302,21 @@
                   Berikan nama yang jelas dan mudah diingat.
                 </div>
                 @error('name')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+              </div>
+              
+              <div class="col-md-4">
+                <label for="type" class="form-label">
+                  <i class="bi bi-tag me-1"></i>Type
+                  <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" id="type" name="type" required>
+                  @foreach(CategoryType::cases() as $type)
+                  <option value="{{ $type->value }}" @selected(old('type', $category->type) == $type)>{{ $type->name }}</option>
+                  @endforeach
+                </select>
+                @error('type')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
               </div>
