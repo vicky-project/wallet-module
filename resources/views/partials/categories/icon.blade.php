@@ -1,4 +1,4 @@
-@use('Wallet\Modules\Helpers\Helper')
+@use('Modules\Wallet\Helpers\Helper')
 
 <div class="mb-3">
   <label for="icon" class="form-label">Icon Kategori</label>
