@@ -67,6 +67,11 @@ class CategoryController extends Controller
 		}
 	}
 
+	public function show(Request $request, Category $category)
+	{
+		return view("wallet::categories.show", compact("category"));
+	}
+
 	public function edit(Request $request, Category $category)
 	{
 		return view("wallet::categories.edit", compact("category"));
