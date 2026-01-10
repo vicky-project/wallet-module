@@ -299,7 +299,7 @@
         
         // Icon input live update
         document.addEventListener('iconSelected', function(e) {
-          updateIconPreview(e.detail.iconClass || 'tag');
+          updateIconPreview(e.detail.iconClass || 'bi-tag');
         });
         
         // Status checkbox live update

@@ -198,6 +198,7 @@
 @endpush
 
 @section('content')
+@include('wallet::partials.fab')
 <!-- Page Header -->
 <div class="row mb-4">
   <div class="col">
@@ -333,49 +334,9 @@
           <!-- Icon Selection -->
           <div class="form-section">
             <h6 class="form-section-title">Ikon Kategori</h6>
-            <p class="text-muted mb-3">Pilih ikon yang mewakili kategori Anda, atau masukkan kustom FontAwesome.</p>
+            <p class="text-muted mb-3">Pilih ikon yang mewakili kategori Anda.</p>
                             
-            <div class="row g-3">
-              <div class="col-md-8">
-                <label class="form-label">Pilih Ikon</label>
-                <div class="icon-grid" id="iconGrid">
-                  <!-- Icons will be populated by JavaScript -->
-                </div>
-                <div class="form-text mt-2">
-                  Klik ikon untuk memilih. Ikon default akan disesuaikan berdasarkan nama kategori.
-                </div>
-              </div>
-                                
-              <div class="col-md-4">
-                <label for="icon" class="form-label">Ikon Kustom</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i id="iconPreview" class="bi bi-{{ $category->icon }}"></i></span>
-                  <input type="text" class="form-control" id="icon" name="icon" placeholder="bi-tag" value="{{ old('icon', $category->icon) }}">
-                </div>
-                <div class="form-text">
-                  Nama ikon FontAwesome tanpa prefix "bi-".
-                </div>
-                @error('icon')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-                                    
-                <!-- Preview -->
-                <div class="mt-3">
-                  <label class="form-label">Pratinjau</label>
-                  <div class="d-flex align-items-center">
-                    <div class="icon-preview" id="dynamicIconPreview">
-                      <i id="previewIcon" class="bi bi-{{ $category->icon }}"></i>
-                    </div>
-                    <div>
-                      <div class="fw-semibold" id="previewName">{{ $category->name }}</div>
-                      <div class="text-muted small" id="previewType">
-                        {{ $category->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            @include('wallet::partials.categories.icon')
           </div>
 
           <!-- Additional Settings -->
@@ -533,13 +494,13 @@
                     
         <div class="row g-2">
           <div class="col-6">
-            <div class="text-center p-2 bg-light rounded">
+            <div class="text-center p-2 bg-secondary rounded">
               <div class="fw-semibold">Dibuat</div>
               <small class="text-muted">{{ $category->created_at->format('d M Y') }}</small>
             </div>
           </div>
           <div class="col-6">
-            <div class="text-center p-2 bg-light rounded">
+            <div class="text-center p-2 bg-secondary rounded">
               <div class="fw-semibold">Diupdate</div>
               <small class="text-muted">{{ $category->updated_at->format('d M Y') }}</small>
             </div>
@@ -676,86 +637,16 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Available icons for selection
-        const expenseIcons = [
-            'cart', 'bag', 'cup-straw', 'egg-fried', 'basket', 'cash', 'credit-card',
-            'car-front', 'bus-front', 'fuel-pump', 'house', 'lightbulb', 'water',
-            'phone', 'wifi', 'tv', 'laptop', 'book', 'hospital', 'capsule',
-            'shirt', 'shoe-prints', 'scissors', 'gift', 'balloon', 'cake', 'music-note-beamed'
-        ];
-        
-        const incomeIcons = [
-            'cash-stack', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet',
-            'briefcase', 'person-workspace', 'award', 'trophy', 'gem', 'star',
-            'building', 'house-check', 'key', 'box-seam', 'truck', 'shop'
-        ];
-        
-        // Current state
-        let currentType = '{{ $category->type }}';
-        let selectedIcon = '{{ $category->icon }}';
-        
         // Initialize
-        populateIconGrid();
         setupEventListeners();
         
-        function populateIconGrid() {
-            const grid = document.getElementById('iconGrid');
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            
-            const icons = currentType === 'income' ? incomeIcons : expenseIcons;
-            
-            icons.forEach(icon => {
-                const iconItem = document.createElement('div');
-                iconItem.className = 'icon-item';
-                iconItem.innerHTML = `<i class="bi bi-${icon}"></i>`;
-                iconItem.dataset.icon = icon;
-                
-                if (icon === selectedIcon) {
-                    iconItem.classList.add('selected');
-                }
-                
-                iconItem.addEventListener('click', function() {
-                    // Remove selected from all items
-                    document.querySelectorAll('.icon-item').forEach(item => {
-                        item.classList.remove('selected');
-                    });
-                    
-                    // Add selected to clicked item
-                    this.classList.add('selected');
-                    selectedIcon = this.dataset.icon;
-                    
-                    // Update icon input and preview
-                    document.getElementById('icon').value = selectedIcon;
-                    updateIconPreview();
-                });
-                
-                grid.appendChild(iconItem);
-            });
-        }
-        
-        function updateIconPreview() {
-            const iconElement = document.getElementById('iconPreview');
-            const previewIcon = document.getElementById('previewIcon');
-            
-            if (iconElement && previewIcon) {
-                iconElement.className = `bi bi-${selectedIcon}`;
-                previewIcon.className = `bi bi-${selectedIcon}`;
-            }
+        function updateIconPreview(iconName) {
+          const previewIcon = document.getElementById('previewIcon');
+          const iconClass = iconName.startsWith('bi-') ? iconName : `bi-${iconName}`;
+            previewIcon.className = `bi ${iconClass}`;
         }
         
         function setupEventListeners() {
-            // Icon input change
-            const iconInput = document.getElementById('icon');
-            if (iconInput) {
-                iconInput.addEventListener('input', function() {
-                    selectedIcon = this.value || 'tag';
-                    updateIconPreview();
-                    updateIconSelection();
-                });
-            }
-            
             // Name input change for preview
             const nameInput = document.getElementById('name');
             if (nameInput) {
@@ -806,17 +697,11 @@
             }
         }
         
-        function updateIconSelection() {
-            document.querySelectorAll('.icon-item').forEach(item => {
-                item.classList.remove('selected');
-                if (item.dataset.icon === selectedIcon) {
-                    item.classList.add('selected');
-                }
-            });
-        }
-        
         // Initialize icon preview
-        updateIconPreview();
+        // Icon input live update
+        document.addEventListener('iconSelected', function(e) {
+          updateIconPreview(e.detail.iconClass || 'bi-tag');
+        });
         
         // Toast notification function
         function showToast(type, title, message) {
