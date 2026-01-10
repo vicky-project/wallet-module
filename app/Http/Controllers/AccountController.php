@@ -215,11 +215,16 @@ class AccountController extends BaseController
 			$this->service->validateAccount($account, $request->user());
 			$this->service->recalculateBalance($account);
 
-			return response()->json([
+			return back()->with(
+				"success",
+				"Account balance recalculated successfully"
+			);
+
+			/* return response()->json([
 				"success" => true,
 				"message" => "Account balance recalculated successfully",
 				"data" => new AccountResource($account->fresh()),
-			]);
+			]); */
 		} catch (\Exception $e) {
 			return response()->json(
 				[
