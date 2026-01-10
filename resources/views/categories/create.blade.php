@@ -1,409 +1,348 @@
 @extends('wallet::layouts.app')
 
-@section('title', $type === 'income' ? 'Tambah Kategori Pemasukan' : 'Tambah Kategori Pengeluaran')
-
-@push('styles')
-<style>
-    .form-card {
-        border-radius: 12px;
-        overflow: hidden;
-        border: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .form-header {
-        background: linear-gradient(135deg, {{ $type === 'income' ? 'var(--bs-success)' : 'var(--bs-danger)' }} 0%, {{ $type === 'income' ? '#0d6c3e' : '#a71d2a' }} 100%);
-        color: white;
-        padding: 2rem;
-    }
-    
-    .form-header-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 16px;
-        background-color: rgba(255, 255, 255, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .icon-preview {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
-        color: var(--bs-primary);
-        transition: all 0.3s ease;
-    }
-    
-    .icon-preview:hover {
-        transform: scale(1.05);
-    }
-    
-    .icon-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        gap: 10px;
-        max-height: 200px;
-        overflow-y: auto;
-        padding: 10px;
-        border: 1px solid var(--bs-border-color);
-        border-radius: 8px;
-    }
-    
-    .icon-item {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 1.2rem;
-    }
-    
-    .icon-item:hover {
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
-        transform: scale(1.1);
-    }
-    
-    .icon-item.selected {
-        background-color: var(--bs-primary);
-        color: white;
-        box-shadow: 0 4px 8px rgba(var(--bs-primary-rgb), 0.3);
-    }
-    
-    .switch-card {
-        border-left: 4px solid;
-        transition: all 0.3s;
-    }
-    
-    .switch-card.active {
-        border-left-color: var(--bs-success);
-        background-color: rgba(var(--bs-success-rgb), 0.05);
-    }
-    
-    .switch-card.inactive {
-        border-left-color: var(--bs-secondary);
-        background-color: rgba(var(--bs-secondary-rgb), 0.05);
-    }
-    
-    .type-card {
-        cursor: pointer;
-        transition: all 0.3s;
-        border: 2px solid transparent;
-    }
-    
-    .type-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    .type-card.selected {
-        border-color: {{ $type === 'income' ? 'var(--bs-success)' : 'var(--bs-danger)' }};
-        background-color: {{ $type === 'income' ? 'rgba(var(--bs-success-rgb), 0.05)' : 'rgba(var(--bs-danger-rgb), 0.05)' }};
-    }
-    
-    .form-section {
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--bs-border-color);
-    }
-    
-    .form-section-title {
-        font-weight: 600;
-        color: var(--bs-primary);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    /* Dark mode adjustments */
-    body[data-bs-theme="dark"] .form-card {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    
-    body[data-bs-theme="dark"] .icon-grid {
-        border-color: #495057;
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-</style>
-@endpush
+@section('title', isset($category) ? 'Edit Kategori' : 'Tambah Kategori')
 
 @section('content')
 <div class="row justify-content-center">
-  <div class="col-lg-8">
-    <div class="card form-card">
-      <div class="form-header">
-                <div class="d-flex align-items-center">
-                    <div class="form-header-icon">
-                        <i class="bi bi-{{ $type === 'income' ? 'arrow-down-left' : 'arrow-up-right' }}"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h2 class="mb-1">
-                            {{ $type === 'income' ? 'Tambah Kategori Pemasukan' : 'Tambah Kategori Pengeluaran' }}
-                        </h2>
-                        <p class="mb-0 opacity-75">
-                            {{ $type === 'income' ? 'Kategori untuk mencatat sumber pendapatan dan pemasukan' : 'Kategori untuk mengelompokkan pengeluaran dan belanja' }}
-                        </p>
-                    </div>
+    <div class="col-lg-10 col-xl-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-{{ isset($category) ? 'pencil-square' : 'plus-circle' }} me-2"></i>
+                        {{ isset($category) ? 'Edit Kategori' : 'Tambah Kategori Baru' }}
+                    </h4>
+                    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali
+                    </a>
                 </div>
-      </div>
+            </div>
             
-      <div class="card-body p-4">
-        <form method="POST" action="{{ route('wallet.categories.store') }}" id="categoryForm">
-          @csrf
+            <div class="card-body">
+                <form action="{{ isset($category) ? route('apps.categories.update', $category) : route('apps.categories.store') }}" 
+                      method="POST" id="categoryForm">
+                    @csrf
+                    @if(isset($category))
+                        @method('PUT')
+                    @endif
                     
-          <input type="hidden" name="type" id="categoryType" value="{{ $type }}">
-                    
-          <!-- Type Selection (Quick Switch) -->
-          <div class="form-section">
-            <h5 class="form-section-title">
-              <i class="bi bi-diagram-3"></i> Tipe Kategori
-            </h5>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="card type-card {{ $type === 'expense' ? 'selected' : '' }}" onclick="selectType('expense')">
-                  <div class="card-body text-center py-4">
-                    <div class="mb-3">
-                      <div class="icon-preview mx-auto" style="background-color: rgba(var(--bs-danger-rgb), 0.1); color: var(--bs-danger);">
-                        <i class="bi bi-arrow-up-right"></i>
-                      </div>
-                    </div>
-                    <h5 class="card-title mb-2">Pengeluaran</h5>
-                    <p class="card-text text-muted small mb-0">
-                      Untuk mencatat pengeluaran, belanja, dan biaya
-                    </p>
-                    <div class="mt-3">
-                      <span class="badge bg-danger">Debit</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="card type-card {{ $type === 'income' ? 'selected' : '' }}" onclick="selectType('income')">
-                    <div class="card-body text-center py-4">
-                      <div class="mb-3">
-                        <div class="icon-preview mx-auto" style="background-color: rgba(var(--bs-success-rgb), 0.1); color: var(--bs-success);">
-                          <i class="bi bi-arrow-down-left"></i>
-                        </div>
-                      </div>
-                      <h5 class="card-title mb-2">Pemasukan</h5>
-                      <p class="card-text text-muted small mb-0">
-                        Untuk mencatat pendapatan, penghasilan, dan pemasukan
-                      </p>
-                      <div class="mt-3">
-                        <span class="badge bg-success">Kredit</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-                    
-            <!-- Basic Information -->
-            <div class="form-section">
-              <h5 class="form-section-title">
-                <i class="bi bi-info-circle"></i> Informasi Dasar
-              </h5>
-              <div class="row">
-                <div class="col-md-8">
-                  <div class="mb-3">
-                    <label for="name" class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Contoh: {{ $type === 'income' ? 'Gaji Bulanan' : 'Belanja Bulanan' }}" required>
-                    <div class="form-text">
-                      Berikan nama yang jelas dan mudah diingat untuk kategori ini
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="form-label">Ikon</label>
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-preview me-3" id="iconPreview">
-                                            <i class="bi bi-tag"></i>
-                                        </div>
-                                        <input type="hidden" id="icon" name="icon" value="tag">
-                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#iconModal">
-                                            <i class="bi bi-palette"></i> Pilih Ikon
-                                        </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                        
-              <div class="mb-3">
-                <label for="description" class="form-label">Deskripsi (Opsional)</label>
-                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Tambahkan deskripsi untuk kategori ini...">{{ old('description') }}</textarea>
-                <div class="form-text">
-                  Deskripsi membantu memahami tujuan kategori ini
-                </div>
-              </div>
-            </div>
-                    
-            <!-- Additional Settings -->
-            <div class="form-section">
-              <h5 class="form-section-title">
-                <i class="bi bi-gear"></i> Pengaturan Tambahan
-              </h5>
-                        
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="card switch-card {{ old('is_active', true) ? 'active' : 'inactive' }}" onclick="toggleActive()" style="cursor: pointer;">
-                    <div class="card-body">
-                      <div class="d-flex align-items-center">
-                        <div class="me-3">
-                          <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {{ old('is_active', true) ? 'checked' : '' }}>
-                          </div>
-                        </div>
-                        <div>
-                          <h6 class="mb-1">Status Aktif</h6>
-                          <p class="text-muted mb-0 small">
-                            Kategori {{ old('is_active', true) ? 'aktif' : 'tidak aktif' }} untuk transaksi baru
-                          </p>
-                        </div>
-                        <div class="ms-auto">
-                          <span class="badge bg-{{ old('is_active', true) ? 'success' : 'secondary' }}">
-                            {{ old('is_active', true) ? 'Aktif' : 'Nonaktif' }}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    <div class="row">
+                        <!-- Left Column: Form Inputs -->
+                        <div class="col-md-8">
+                            <!-- Type Selection -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="bi bi-tag"></i>
+                                    Tipe Kategori
+                                </div>
+                                <div class="d-flex type-switch mb-4">
+                                    <div class="type-option expense {{ (!isset($category) && request('type') == 'expense') || (isset($category) && $category->type == 'expense') ? 'active' : '' }}" 
+                                         data-type="expense">
+                                        <i class="bi bi-arrow-up-right"></i>
+                                        <span>Pengeluaran</span>
+                                    </div>
+                                    <div class="type-option income {{ (!isset($category) && request('type') == 'income') || (isset($category) && $category->type == 'income') ? 'active' : '' }}" 
+                                         data-type="income">
+                                        <i class="bi bi-arrow-down-left"></i>
+                                        <span>Pemasukan</span>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="type" id="categoryType" 
+                                       value="{{ isset($category) ? $category->type : (request('type') ?: 'expense') }}">
+                                <p class="text-muted mb-0">
+                                    <small>
+                                        @if(isset($category) && $category->type == 'expense')
+                                            <i class="bi bi-info-circle me-1"></i>Kategori pengeluaran digunakan untuk mencatat pengeluaran dan dapat memiliki budget.
+                                        @elseif(isset($category) && $category->type == 'income')
+                                            <i class="bi bi-info-circle me-1"></i>Kategori pemasukan digunakan untuk mencatat pendapatan.
+                                        @else
+                                            <i class="bi bi-info-circle me-1"></i>Pilih tipe kategori sesuai dengan penggunaannya.
+                                        @endif
+                                    </small>
+                                </p>
+                            </div>
                             
-                <div class="col-md-6">
-                  <div class="card switch-card {{ old('is_budgetable', false) ? 'active' : 'inactive' }}" onclick="toggleBudgetable()" style="cursor: pointer;">
-                    <div class="card-body">
-                      <div class="d-flex align-items-center">
-                        <div class="me-3">
-                          <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" {{ old('is_budgetable', false) ? 'checked' : '' }}>
-                          </div>
+                            <!-- Basic Information -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="bi bi-card-text"></i>
+                                    Informasi Dasar
+                                </div>
+                                
+                                <!-- Name -->
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        Nama Kategori <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control @error('name') is-invalid @enderror" 
+                                           id="name" 
+                                           name="name" 
+                                           value="{{ old('name', $category->name ?? '') }}" 
+                                           placeholder="Contoh: Makanan, Transportasi, Gaji" 
+                                           required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        Berikan nama yang jelas dan deskriptif untuk kategori ini.
+                                    </div>
+                                </div>
+                                
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Deskripsi (Opsional)</label>
+                                    <textarea class="form-control @error('description') is-invalid @enderror" 
+                                              id="description" 
+                                              name="description" 
+                                              rows="3" 
+                                              placeholder="Tambahkan deskripsi untuk kategori ini...">{{ old('description', $category->description ?? '') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        Deskripsi membantu mengingat tujuan kategori ini.
+                                    </div>
+                                </div>
+                                
+                                <!-- Slug (Auto-generated) -->
+                                @if(isset($category))
+                                <div class="mb-3">
+                                    <label for="slug" class="form-label">Slug</label>
+                                    <input type="text" 
+                                           class="form-control @error('slug') is-invalid @enderror" 
+                                           id="slug" 
+                                           name="slug" 
+                                           value="{{ old('slug', $category->slug ?? '') }}" 
+                                           placeholder="slug-otomatis">
+                                    @error('slug')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        Identifier unik untuk kategori. Biarkan kosong untuk generate otomatis.
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            
+                            <!-- Icon Selection -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="bi bi-emoji-smile"></i>
+                                    Ikon Kategori
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Pilih Ikon</label>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div id="iconPreview" 
+                                             class="icon-preview me-3" 
+                                             style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
+                                            <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}" id="previewIcon"></i>
+                                        </div>
+                                        <div>
+                                            <input type="text" 
+                                                   class="form-control @error('icon') is-invalid @enderror" 
+                                                   id="icon" 
+                                                   name="icon" 
+                                                   value="{{ old('icon', $category->icon ?? 'tag') }}" 
+                                                   placeholder="Nama ikon FontAwesome">
+                                            @error('icon')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">
+                                                Masukkan nama ikon FontAwesome (contoh: cart, home, food) atau pilih dari daftar.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Icon Grid -->
+                                    <div class="mb-3">
+                                        <div class="row g-2" id="iconGrid">
+                                            @php
+                                                // Default icons based on category type
+                                                $expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
+                                                $incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
+                                                
+                                                $currentType = isset($category) ? $category->type : (request('type') ?: 'expense');
+                                                $icons = $currentType == 'expense' ? $expenseIcons : $incomeIcons;
+                                            @endphp
+                                            
+                                            @foreach($icons as $icon)
+                                            <div class="col-2 col-sm-1">
+                                                <div class="icon-selector text-center p-2 rounded border" 
+                                                     data-icon="{{ $icon }}"
+                                                     onclick="selectIcon('{{ $icon }}')">
+                                                    <i class="bi bi-{{ $icon }} fs-5"></i>
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">{{ $icon }}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Custom Icon Button -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="showMoreIcons">
+                                        <i class="bi bi-three-dots me-1"></i>Tampilkan lebih banyak ikon
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Status Settings -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="bi bi-gear"></i>
+                                    Pengaturan
+                                </div>
+                                
+                                <div class="row">
+                                    <!-- Status -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   id="is_active" 
+                                                   name="is_active" 
+                                                   value="1" 
+                                                   {{ old('is_active', isset($category) ? $category->is_active : true) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="is_active">
+                                                <strong>Aktif</strong>
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Kategori nonaktif tidak akan muncul di daftar pilihan transaksi.
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Budgetable (Only for expense) -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   id="is_budgetable" 
+                                                   name="is_budgetable" 
+                                                   value="1" 
+                                                   {{ old('is_budgetable', isset($category) ? $category->is_budgetable : false) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="is_budgetable">
+                                                <strong>Dapat di-budget</strong>
+                                            </label>
+                                        </div>
+                                        <div class="form-text">
+                                            Izinkan pembuatan budget untuk kategori ini (hanya pengeluaran).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                          <h6 class="mb-1">Dapat Dibudgetkan</h6>
-                          <p class="text-muted mb-0 small">{{ old('is_budgetable', false) ? 'Bisa' : 'Tidak bisa' }} menambahkan budget untuk kategori ini
-                          </p>
-                        </div>
-                        <div class="ms-auto">
-                          <span class="badge bg-{{ old('is_budgetable', false) ? 'primary' : 'secondary' }}">{{ old('is_budgetable', false) ? 'Ya' : 'Tidak' }}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
                         
-              @if($type === 'expense')
-                <div class="row mt-3">
-                  <div class="col-12">
-                    <div class="alert alert-info">
-                      <div class="d-flex">
-                        <div class="me-3">
-                          <i class="bi bi-info-circle fs-4"></i>
+                        <!-- Right Column: Preview -->
+                        <div class="col-md-4">
+                            <div class="sticky-top" style="top: 20px;">
+                                <div class="preview-card">
+                                    <h5 class="text-center mb-3">Pratinjau Kategori</h5>
+                                    
+                                    <!-- Preview Icon -->
+                                    <div id="previewIconLarge" 
+                                         class="preview-icon" 
+                                         style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
+                                        <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}"></i>
+                                    </div>
+                                    
+                                    <!-- Preview Details -->
+                                    <div class="text-center mb-3">
+                                        <h4 id="previewName">{{ old('name', $category->name ?? 'Nama Kategori') }}</h4>
+                                        <div class="mb-2">
+                                            <span id="previewTypeBadge" 
+                                                  class="badge {{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'bg-success' : 'bg-danger' }}">
+                                                <i class="bi bi-{{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'arrow-down-left' : 'arrow-up-right' }} me-1"></i>
+                                                <span id="previewTypeText">
+                                                    {{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'Pemasukan' : 'Pengeluaran' }}
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <p class="text-muted mb-0" id="previewDescription">
+                                            {{ old('description', $category->description ?? 'Deskripsi akan muncul di sini...') ?: 'Deskripsi akan muncul di sini...' }}
+                                        </p>
+                                    </div>
+                                    
+                                    <hr>
+                                    
+                                    <!-- Status Preview -->
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Status:</span>
+                                        <span>
+                                            <span id="previewStatus" class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Aktif
+                                            </span>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between">
+                                        <span>Budgetable:</span>
+                                        <span>
+                                            <span id="previewBudgetable" class="badge bg-secondary">
+                                                <i class="bi bi-x-circle me-1"></i>Tidak
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Form Actions -->
+                                <div class="d-grid gap-2 mt-3">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-{{ isset($category) ? 'check-circle' : 'plus-circle' }} me-2"></i>
+                                        {{ isset($category) ? 'Update Kategori' : 'Simpan Kategori' }}
+                                    </button>
+                                    <a href="{{ route('wallet.categories.index') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-circle me-2"></i>Batal
+                                    </a>
+                                </div>
+                                
+                                <!-- Quick Tips -->
+                                <div class="alert alert-info mt-3">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="bi bi-lightbulb"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <small>
+                                                <strong>Tips:</strong><br>
+                                                • Gunakan nama yang jelas dan deskriptif<br>
+                                                • Pilih ikon yang mudah dikenali<br>
+                                                • Atur budget untuk kategori pengeluaran penting
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                          <h6 class="alert-heading">Kategori Pengeluaran</h6>
-                          <p class="mb-0 small">
-                            Kategori pengeluaran dapat diberikan budget bulanan untuk membantu mengontrol pengeluaran. Aktifkan "Dapat Dibudgetkan" untuk menambahkan budget.
-                          </p>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              @endif
+                </form>
             </div>
-                    
-            <!-- Form Actions -->
-            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-              <div>
-                <a href="{{ route('wallet.categories.index') }}" class="btn btn-outline-secondary">
-                  <i class="bi bi-arrow-left me-1"></i> Kembali
-                </a>
-              </div>
-              <div>
-                <button type="reset" class="btn btn-outline-danger me-2">
-                  <i class="bi bi-arrow-clockwise me-1"></i> Reset
-                </button>
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-save me-1"></i> Simpan Kategori
-                </button>
-              </div>
-            </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 
-<!-- Icon Selection Modal -->
-<div class="modal fade" id="iconModal" tabindex="-1">
+<!-- More Icons Modal -->
+<div class="modal fade" id="iconsModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-palette me-2"></i> Pilih Ikon Kategori
-                </h5>
+                <h5 class="modal-title">Pilih Ikon</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
                     <input type="text" class="form-control" id="iconSearch" placeholder="Cari ikon...">
                 </div>
-                <div class="icon-grid" id="iconGrid">
-                    @php
-                        $categoryIcons = [
-                            // Expense Icons
-                            'cart', 'bag', 'cart-check', 'cart-plus', 'basket', 'basket2', 'basket3',
-                            'cash', 'coin', 'credit-card', 'credit-card-2-front', 'currency-exchange',
-                            'car-front', 'bus-front', 'train-front', 'airplane', 'fuel-pump',
-                            'house', 'house-door', 'building', 'shop', 'hospital', 'bank',
-                            'cup-hot', 'cup-straw', 'egg-fried', 'egg', 'utensils',
-                            'phone', 'laptop', 'tv', 'headphones', 'camera',
-                            'film', 'music-player', 'controller', 'dice-5',
-                            'book', 'journal', 'newspaper', 'pencil', 'scissors',
-                            'heart', 'heart-pulse', 'capsule', 'bandaid',
-                            'tshirt', 'hat-cap', 'shoe-prints',
-                            
-                            // Income Icons
-                            'cash-stack', 'piggy-bank', 'bank2', 'wallet', 'wallet2',
-                            'graph-up', 'graph-up-arrow', 'arrow-up-right-circle',
-                            'briefcase', 'briefcase-fill', 'person-workspace',
-                            'building-check', 'building-up', 'house-check',
-                            'gift', 'gift-fill', 'box-seam', 'box',
-                            'arrow-repeat', 'arrow-left-right', 'arrow-down-up',
-                            'hand-thumbs-up', 'hand-thumbs-up-fill',
-                            'award', 'trophy', 'medal',
-                            'lightbulb', 'lightbulb-fill', 'magic',
-                            'code', 'code-slash', 'terminal',
-                            'palette', 'palette2', 'brush',
-                            'mic', 'mic-fill', 'mic-mute',
-                            'camera-video', 'camera-video-fill'
-                        ];
-                    @endphp
-                    
-                    @foreach($categoryIcons as $icon)
-                        <div class="icon-item" data-icon="{{ $icon }}" onclick="selectIcon('{{ $icon }}')">
-                            <i class="bi bi-{{ $icon }}"></i>
-                        </div>
-                    @endforeach
+                <div class="row g-2" id="allIcons">
+                    <!-- Icons will be loaded here -->
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Pilih Ikon</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -413,185 +352,461 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Set form title based on type
-        const type = '{{ $type }}';
-        updateFormHeader(type);
+        // Elements
+        const categoryTypeInput = document.getElementById('categoryType');
+        const typeOptions = document.querySelectorAll('.type-option');
+        const nameInput = document.getElementById('name');
+        const descriptionInput = document.getElementById('description');
+        const iconInput = document.getElementById('icon');
+        const isActiveCheckbox = document.getElementById('is_active');
+        const isBudgetableCheckbox = document.getElementById('is_budgetable');
         
-        // Type selection
-        window.selectType = function(selectedType) {
-            document.querySelectorAll('.type-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            document.querySelector(`.type-card.${selectedType === 'expense' ? 'selected' : ''}`).classList.add('selected');
-            
-            document.getElementById('categoryType').value = selectedType;
-            updateFormHeader(selectedType);
-            
-            // Update placeholder based on type
-            const nameInput = document.getElementById('name');
-            nameInput.placeholder = selectedType === 'income' 
-                ? 'Contoh: Gaji Bulanan, Bonus, Penjualan' 
-                : 'Contoh: Belanja Bulanan, Transportasi, Makan';
-        };
-        
-        function updateFormHeader(type) {
-            const header = document.querySelector('.form-header');
-            const icon = document.querySelector('.form-header-icon i');
-            const title = document.querySelector('.form-header h2');
-            const subtitle = document.querySelector('.form-header p');
-            
-            if (type === 'income') {
-                header.style.background = 'linear-gradient(135deg, var(--bs-success) 0%, #0d6c3e 100%)';
-                icon.className = 'bi bi-arrow-down-left';
-                title.textContent = 'Tambah Kategori Pemasukan';
-                subtitle.textContent = 'Kategori untuk mencatat sumber pendapatan dan pemasukan';
-            } else {
-                header.style.background = 'linear-gradient(135deg, var(--bs-danger) 0%, #a71d2a 100%)';
-                icon.className = 'bi bi-arrow-up-right';
-                title.textContent = 'Tambah Kategori Pengeluaran';
-                subtitle.textContent = 'Kategori untuk mengelompokkan pengeluaran dan belanja';
-            }
-        }
+        // Preview elements
+        const previewIcon = document.getElementById('previewIcon');
+        const previewIconLarge = document.getElementById('previewIconLarge');
+        const previewName = document.getElementById('previewName');
+        const previewDescription = document.getElementById('previewDescription');
+        const previewTypeBadge = document.getElementById('previewTypeBadge');
+        const previewTypeText = document.getElementById('previewTypeText');
+        const previewStatus = document.getElementById('previewStatus');
+        const previewBudgetable = document.getElementById('previewBudgetable');
         
         // Icon selection
-        let selectedIcon = 'tag';
+        const iconGrid = document.getElementById('iconGrid');
+        const showMoreIconsBtn = document.getElementById('showMoreIcons');
+        const iconsModal = new bootstrap.Modal(document.getElementById('iconsModal'));
         
-        window.selectIcon = function(icon) {
-            selectedIcon = icon;
-            
-            // Update preview
-            const preview = document.getElementById('iconPreview');
-            preview.innerHTML = `<i class="bi bi-${icon}"></i>`;
-            
-            // Update hidden input
-            document.getElementById('icon').value = icon;
-            
-            // Update selected state in grid
-            document.querySelectorAll('.icon-item').forEach(item => {
-                item.classList.remove('selected');
-                if (item.dataset.icon === icon) {
-                    item.classList.add('selected');
+        // Type selection
+        typeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const selectedType = this.dataset.type;
+                
+                // Update active class
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update hidden input
+                categoryTypeInput.value = selectedType;
+                
+                // Update preview
+                updateTypePreview(selectedType);
+                
+                // Update icon grid based on type
+                updateIconGrid(selectedType);
+                
+                // Disable budgetable for income
+                if (selectedType === 'income') {
+                    isBudgetableCheckbox.checked = false;
+                    isBudgetableCheckbox.disabled = true;
+                    updateBudgetablePreview(false);
+                } else {
+                    isBudgetableCheckbox.disabled = false;
                 }
             });
-        };
+        });
         
-        // Icon search functionality
+        // Name input live update
+        nameInput.addEventListener('input', function() {
+            previewName.textContent = this.value || 'Nama Kategori';
+        });
+        
+        // Description input live update
+        descriptionInput.addEventListener('input', function() {
+            previewDescription.textContent = this.value || 'Deskripsi akan muncul di sini...';
+        });
+        
+        // Icon input live update
+        iconInput.addEventListener('input', function() {
+            updateIconPreview(this.value || 'tag');
+        });
+        
+        // Status checkbox live update
+        isActiveCheckbox.addEventListener('change', function() {
+            updateStatusPreview(this.checked);
+        });
+        
+        // Budgetable checkbox live update
+        isBudgetableCheckbox.addEventListener('change', function() {
+            updateBudgetablePreview(this.checked);
+        });
+        
+        // Show more icons modal
+        if (showMoreIconsBtn) {
+            showMoreIconsBtn.addEventListener('click', function() {
+                loadAllIcons();
+                iconsModal.show();
+            });
+        }
+        
+        // Icon search in modal
         const iconSearch = document.getElementById('iconSearch');
         if (iconSearch) {
             iconSearch.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const iconItems = document.querySelectorAll('.icon-item');
-                
-                iconItems.forEach(item => {
-                    const iconName = item.dataset.icon.toLowerCase();
-                    if (iconName.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+                searchIcons(this.value);
             });
         }
         
-        // Toggle active status
-        window.toggleActive = function() {
-            const checkbox = document.getElementById('is_active');
-            const card = checkbox.closest('.switch-card');
-            const badge = card.querySelector('.badge');
+        // Initialize previews
+        function initializePreviews() {
+            const currentType = categoryTypeInput.value;
+            updateTypePreview(currentType);
+            updateIconPreview(iconInput.value || 'tag');
+            updateStatusPreview(isActiveCheckbox.checked);
+            updateBudgetablePreview(isBudgetableCheckbox.checked);
             
-            checkbox.checked = !checkbox.checked;
-            
-            if (checkbox.checked) {
-                card.classList.remove('inactive');
-                card.classList.add('active');
-                badge.className = 'badge bg-success';
-                badge.textContent = 'Aktif';
-                card.querySelector('.text-muted').textContent = 'Kategori aktif untuk transaksi baru';
-            } else {
-                card.classList.remove('active');
-                card.classList.add('inactive');
-                badge.className = 'badge bg-secondary';
-                badge.textContent = 'Nonaktif';
-                card.querySelector('.text-muted').textContent = 'Kategori tidak aktif untuk transaksi baru';
+            // Disable budgetable for income
+            if (currentType === 'income') {
+                isBudgetableCheckbox.disabled = true;
             }
-        };
+        }
         
-        // Toggle budgetable
-        window.toggleBudgetable = function() {
-            const checkbox = document.getElementById('is_budgetable');
-            const card = checkbox.closest('.switch-card');
-            const badge = card.querySelector('.badge');
-            
-            checkbox.checked = !checkbox.checked;
-            
-            if (checkbox.checked) {
-                card.classList.remove('inactive');
-                card.classList.add('active');
-                badge.className = 'badge bg-primary';
-                badge.textContent = 'Ya';
-                card.querySelector('.text-muted').textContent = 'Bisa menambahkan budget untuk kategori ini';
+        // Update type preview
+        function updateTypePreview(type) {
+            if (type === 'income') {
+                previewTypeBadge.className = 'badge bg-success';
+                previewTypeBadge.innerHTML = '<i class="bi bi-arrow-down-left me-1"></i>Pemasukan';
+                previewTypeText.textContent = 'Pemasukan';
             } else {
-                card.classList.remove('active');
-                card.classList.add('inactive');
-                badge.className = 'badge bg-secondary';
-                badge.textContent = 'Tidak';
-                card.querySelector('.text-muted').textContent = 'Tidak bisa menambahkan budget untuk kategori ini';
+                previewTypeBadge.className = 'badge bg-danger';
+                previewTypeBadge.innerHTML = '<i class="bi bi-arrow-up-right me-1"></i>Pengeluaran';
+                previewTypeText.textContent = 'Pengeluaran';
             }
-        };
+        }
+        
+        // Update icon preview
+        function updateIconPreview(iconName) {
+            const iconClass = iconName.startsWith('bi-') ? iconName : `bi-${iconName}`;
+            previewIcon.className = `bi ${iconClass}`;
+            previewIconLarge.innerHTML = `<i class="bi ${iconClass}"></i>`;
+        }
+        
+        // Update status preview
+        function updateStatusPreview(isActive) {
+            if (isActive) {
+                previewStatus.className = 'badge bg-success';
+                previewStatus.innerHTML = '<i class="bi bi-check-circle me-1"></i>Aktif';
+            } else {
+                previewStatus.className = 'badge bg-danger';
+                previewStatus.innerHTML = '<i class="bi bi-x-circle me-1"></i>Nonaktif';
+            }
+        }
+        
+        // Update budgetable preview
+        function updateBudgetablePreview(isBudgetable) {
+            if (isBudgetable) {
+                previewBudgetable.className = 'badge bg-primary';
+                previewBudgetable.innerHTML = '<i class="bi bi-check-circle me-1"></i>Ya';
+            } else {
+                previewBudgetable.className = 'badge bg-secondary';
+                previewBudgetable.innerHTML = '<i class="bi bi-x-circle me-1"></i>Tidak';
+            }
+        }
+        
+        // Update icon grid based on type
+        function updateIconGrid(type) {
+            const expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
+            const incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
+            
+            const icons = type === 'expense' ? expenseIcons : incomeIcons;
+            
+            iconGrid.innerHTML = '';
+            icons.forEach(icon => {
+                const col = document.createElement('div');
+                col.className = 'col-2 col-sm-1';
+                col.innerHTML = `
+                    <div class="icon-selector text-center p-2 rounded border" 
+                         data-icon="${icon}"
+                         onclick="selectIcon('${icon}')">
+                        <i class="bi bi-${icon} fs-5"></i>
+                        <div class="mt-1">
+                            <small class="text-muted">${icon}</small>
+                        </div>
+                    </div>
+                `;
+                iconGrid.appendChild(col);
+            });
+        }
+        
+        // Load all icons for modal
+        function loadAllIcons() {
+            const allIconsContainer = document.getElementById('allIcons');
+            allIconsContainer.innerHTML = '<div class="col-12 text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            
+            // Common FontAwesome icons (simulated)
+            const commonIcons = [
+                'tag', 'cart', 'bag', 'basket', 'shop', 'store', 'car', 'bus', 'train', 'plane',
+                'house', 'building', 'home', 'bank', 'credit-card', 'cash', 'coin', 'wallet',
+                'cup', 'utensils', 'food', 'drink', 'film', 'music-note', 'tv', 'gamepad',
+                'book', 'pencil', 'laptop', 'phone', 'wifi', 'lightbulb', 'gear', 'tools',
+                'heart', 'star', 'gift', 'balloon', 'calendar', 'clock', 'envelope', 'phone',
+                'person', 'people', 'person-circle', 'person-plus', 'graph-up', 'graph-down',
+                'arrow-up-right', 'arrow-down-left', 'plus-circle', 'minus-circle', 'check-circle',
+                'x-circle', 'info-circle', 'question-circle', 'exclamation-circle', 'shield',
+                'lock', 'unlock', 'key', 'bell', 'megaphone', 'chat', 'chat-left', 'chat-right'
+            ];
+            
+            setTimeout(() => {
+                allIconsContainer.innerHTML = '';
+                commonIcons.forEach(icon => {
+                    const col = document.createElement('div');
+                    col.className = 'col-2 col-sm-1 mb-2';
+                    col.innerHTML = `
+                        <div class="icon-selector text-center p-2 rounded border" 
+                             data-icon="${icon}"
+                             onclick="selectIconFromModal('${icon}')">
+                            <i class="bi bi-${icon} fs-5"></i>
+                        </div>
+                    `;
+                    allIconsContainer.appendChild(col);
+                });
+            }, 500);
+        }
+        
+        // Search icons in modal
+        function searchIcons(query) {
+            const allIcons = document.querySelectorAll('#allIcons .icon-selector');
+            const searchTerm = query.toLowerCase();
+            
+            allIcons.forEach(icon => {
+                const iconName = icon.dataset.icon;
+                if (iconName.includes(searchTerm) || searchTerm === '') {
+                    icon.parentElement.style.display = 'block';
+                } else {
+                    icon.parentElement.style.display = 'none';
+                }
+            });
+        }
         
         // Form validation
         const form = document.getElementById('categoryForm');
-        form.addEventListener('submit', function(e) {
-            const name = document.getElementById('name').value.trim();
-            
-            if (!name) {
-                e.preventDefault();
-                showToast('warning', 'Nama Kategori', 'Nama kategori wajib diisi');
-                document.getElementById('name').focus();
-                return;
-            }
-            
-            // Show loading
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
-            submitBtn.disabled = true;
-        });
-        
-        // Toast notification
-        function showToast(type, title, message) {
-            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
-            const toastId = 'toast-' + Date.now();
-            
-            const toastHTML = `
-                <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            <strong>${title}:</strong> ${message}
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                    </div>
-                </div>
-            `;
-            
-            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
-            
-            const toastElement = document.getElementById(toastId);
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
-            
-            toastElement.addEventListener('hidden.bs.toast', function() {
-                this.remove();
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Clear previous errors
+                document.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+                
+                // Validate name
+                if (!nameInput.value.trim()) {
+                    e.preventDefault();
+                    nameInput.classList.add('is-invalid');
+                    nameInput.focus();
+                    
+                    // Show toast error
+                    showToast('danger', 'Error', 'Nama kategori wajib diisi');
+                    return false;
+                }
+                
+                // Validate icon
+                if (!iconInput.value.trim()) {
+                    iconInput.value = 'tag';
+                }
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
+                submitBtn.disabled = true;
+                
+                // Allow form submission
+                return true;
             });
         }
         
-        function createToastContainer() {
-            const container = document.createElement('div');
-            container.id = 'toastContainer';
-            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            document.body.appendChild(container);
-            return container;
-        }
+        // Initialize
+        initializePreviews();
     });
+    
+    // Global function to select icon from main grid
+    function selectIcon(iconName) {
+        const iconInput = document.getElementById('icon');
+        iconInput.value = iconName;
+        
+        // Update preview
+        const previewIcon = document.getElementById('previewIcon');
+        const previewIconLarge = document.getElementById('previewIconLarge');
+        previewIcon.className = `bi bi-${iconName}`;
+        previewIconLarge.innerHTML = `<i class="bi bi-${iconName}"></i>`;
+        
+        // Update selection
+        document.querySelectorAll('.icon-selector').forEach(selector => {
+            selector.classList.remove('selected');
+            if (selector.dataset.icon === iconName) {
+                selector.classList.add('selected');
+            }
+        });
+    }
+    
+    // Global function to select icon from modal
+    function selectIconFromModal(iconName) {
+        selectIcon(iconName);
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('iconsModal'));
+        if (modal) {
+            modal.hide();
+        }
+    }
+    
+    // Toast notification function
+    function showToast(type, title, message) {
+        const toastContainer = document.createElement('div');
+        toastContainer.innerHTML = `
+            <div class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}:</strong> ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(toastContainer);
+        
+        const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+        toast.show();
+        
+        toastContainer.querySelector('.toast').addEventListener('hidden.bs.toast', function () {
+            toastContainer.remove();
+        });
+    }
 </script>
+@endpush
+
+@push('styles')
+<style>
+    /* Custom styling for category form */
+    .icon-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        transition: all 0.3s ease;
+    }
+    
+    .icon-preview:hover {
+        transform: scale(1.05);
+    }
+    
+    .icon-selector {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .icon-selector:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .icon-selector.selected {
+        border: 2px solid var(--bs-primary);
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    
+    .type-switch {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+    }
+    
+    .type-option {
+        padding: 12px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .type-option.active {
+        background-color: var(--bs-primary);
+        color: white;
+        border-color: var(--bs-primary);
+    }
+    
+    .type-option.expense {
+        border-right: 1px solid #dee2e6;
+    }
+    
+    .type-option.active.expense {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    
+    .type-option.active.income {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    
+    .form-section {
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .preview-card {
+        border-radius: 12px;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 1px solid #dee2e6;
+    }
+    
+    .preview-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 1rem;
+    }
+    
+    /* Dark theme adjustments */
+    body[data-bs-theme="dark"] .form-section {
+        border-color: #495057;
+        background-color: rgba(33, 37, 41, 0.5);
+    }
+    
+    body[data-bs-theme="dark"] .preview-card {
+        background: linear-gradient(135deg, #2d3338 0%, #212529 100%);
+        border-color: #495057;
+    }
+    
+    body[data-bs-theme="dark"] .type-switch {
+        border-color: #495057;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .icon-preview {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+        }
+        
+        .preview-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+        }
+    }
+</style>
 @endpush
