@@ -316,9 +316,12 @@
           <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#adjustBalanceModal">
             <i class="bi bi-sliders me-1"></i>Adjust Saldo
           </button>
-          <a href="{{ route('apps.accounts.recalculate', $account) }}" class="btn btn-outline-info" onclick="return confirm('Hitung ulang saldo berdasarkan transaksi?')">
-            <i class="bi bi-arrow-clockwise me-1"></i>Hitung Ulang
-          </a>
+          <form method="POST" action="{{ route('apps.accounts.recalculate', $account) }}">
+            @csrf
+            <button type="submit" class="btn btn-outline-info" onclick="return confirm('Hitung ulang saldo berdasarkan transaksi?')">
+              <i class="bi bi-arrow-clockwise me-1"></i>Hitung Ulang
+            </button>
+          </form>
           @if(!$account->is_default)
             <a href="{{ route('apps.accounts.set-default', $account) }}" class="btn btn-outline-warning" onclick="return confirm('Set sebagai akun default?')">
               <i class="bi bi-star me-1"></i>Set Default
