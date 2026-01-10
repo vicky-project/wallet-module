@@ -41,7 +41,7 @@
     <!-- Budget Warnings Alert -->
     @if($budgetWarnings->count() > 0)
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <h5><i class="fas fa-exclamation-triangle"></i> Peringatan Budget!</h5>
+        <h5><i class="bi bi-exclamation-triangle"></i> Peringatan Budget!</h5>
         <p>{{ $budgetWarnings->count() }} kategori telah melebihi atau mendekati limit budget.</p>
         <ul class="mb-0">
             @foreach($budgetWarnings->take(3) as $warning)
@@ -57,16 +57,16 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Daftar Kategori</h5>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
-                <i class="fas fa-plus"></i> Tambah Kategori
+                <i class="bi bi-plus"></i> Create
             </button>
         </div>
         <div class="card-body">
             <!-- Search and Filter -->
             <div class="row mb-3">
-                <div class="col-md-4">
+                <div class="col-md-4 mb-2">
                     <input type="text" class="form-control" placeholder="Cari kategori..." id="searchInput">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mb-2">
                     <select class="form-control" id="typeFilter">
                         <option value="">Semua Tipe</option>
                         <option value="income">Pemasukan</option>
