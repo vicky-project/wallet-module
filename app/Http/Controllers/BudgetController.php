@@ -2,243 +2,365 @@
 
 namespace Modules\Wallet\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Modules\Core\Http\Controllers\BaseController;
+use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Budget;
-use Modules\Wallet\Models\Category;
-use Modules\Wallet\Enums\CategoryType;
-use Modules\Wallet\Repositories\BudgetRepository;
+use Modules\Wallet\Services\BudgetService;
 use Modules\Wallet\Http\Requests\BudgetRequest;
 
-class BudgetController extends BaseController
+class BudgetController extends Controller
 {
-	protected $budgetRepository;
+	/**
+	 * @var BudgetService
+	 */
+	protected $budgetService;
 
-	public function __construct(BudgetRepository $budgetRepository)
+	/**
+	 * @param BudgetService $budgetService
+	 */
+	public function __construct(BudgetService $budgetService)
 	{
-		$this->budgetRepository = $budgetRepository;
+		$this->budgetService = $budgetService;
 	}
 
 	/**
-	 * Display a listing of budgets.
+	 * Display a listing of budgets
 	 */
 	public function index(Request $request)
 	{
-		$user = auth()->user();
+		$filters = $request->only([
+			"category_id",
+			"period_type",
+			"year",
+			"is_active",
+			"search",
+		]);
+		$data = $this->budgetService->getIndexData($filters);
 
-		$month = $request->get("month", Carbon::now()->month);
-		$year = $request->get("year", Carbon::now()->year);
-		$categoryId = $request->get("category_id");
-
-		$filters = [
-			"month" => $month,
-			"year" => $year,
-		];
-
-		if ($categoryId) {
-			$filters["category_id"] = $categoryId;
-		}
-
-		// Get all data in single repository call
-		$data = $this->budgetRepository->getUserBudgetsWithSummary($user, $filters);
-
-		// Get categories for filter
-		$categories = Category::where(function ($query) use ($user) {
-			$query->where("user_id", $user->id)->orWhereNull("user_id");
-		})
-			->where("type", CategoryType::EXPENSE)
+		// Get additional data for filters
+		$categories = \Modules\Wallet\Models\Category::where(
+			"user_id",
+			auth()->id()
+		)
+			->where("type", "expense")
+			->orderBy("name")
 			->get();
+
+		$periodTypes = \Modules\Wallet\Enums\PeriodType::cases();
 
 		return view(
 			"wallet::budgets.index",
-			array_merge($data, compact("categories", "month", "year", "categoryId"))
+			array_merge($data, [
+				"categories" => $categories,
+				"periodTypes" => $periodTypes,
+			])
 		);
 	}
 
 	/**
-	 * Show the form for creating a new budget.
+	 * Show the form for creating a new budget
 	 */
 	public function create()
 	{
-		$user = auth()->user();
-
-		// Get expense categories
-		$categories = Category::expense()
-			->forUser($user->id)
-			->get();
-
-		$currentMonth = Carbon::now()->month;
-		$currentYear = Carbon::now()->year;
-
-		$suggestions = $this->budgetRepository->getBudgetSuggestions(
-			$user,
-			$currentMonth,
-			$currentYear
-		);
-
-		return view(
-			"wallet::budgets.create",
-			compact("categories", "currentMonth", "currentYear", "suggestions")
-		);
+		$data = $this->budgetService->getCreateData();
+		return view("wallet::budgets.create", $data);
 	}
 
 	/**
-	 * Store a newly created budget.
+	 * Store a newly created budget
 	 */
 	public function store(BudgetRequest $request)
 	{
-		$user = auth()->user();
-		$data = $request->validated();
+		try {
+			$budget = $this->budgetService->createBudget($request->validated());
 
-		$category = Category::find($data["category_id"]);
-		if (!$category || $category->type !== CategoryType::EXPENSE) {
+			return redirect()
+				->route("wallet.budgets.show", $budget)
+				->with("success", "Budget berhasil dibuat");
+		} catch (\Exception $e) {
 			return back()
 				->withInput()
-				->withErrors("Budget only can used by expense category.");
-		}
-
-		// Check if budget already exists for this category and period
-		$exists = $this->budgetRepository->existsForCategory(
-			$user,
-			$data["category_id"],
-			$data["month"],
-			$data["year"]
-		);
-
-		if ($exists) {
-			return redirect()
-				->back()
-				->withInput()
-				->with(
-					"error",
-					"Anggaran untuk kategori ini pada periode tersebut sudah ada."
-				);
-		}
-
-		try {
-			$budget = $this->budgetRepository->createBudget($data, $user);
-
-			return redirect()
-				->route("apps.budgets.index")
-				->with("success", "Anggaran berhasil dibuat.");
-		} catch (\Exception $e) {
-			return redirect()
-				->back()
-				->withInput()
-				->withErrors("Gagal membuat anggaran: " . $e->getMessage());
+				->with("error", $e->getMessage());
 		}
 	}
 
 	/**
-	 * Show the form for editing the specified budget.
+	 * Display the specified budget
+	 */
+	public function show(Budget $budget)
+	{
+		// Authorization check
+		if ($budget->user_id !== auth()->id()) {
+			abort(403);
+		}
+
+		// Load relationships
+		$budget->load(["category", "accounts", "user"]);
+
+		// Get transactions for this budget period
+		$transactions = $budget->category
+			->transactions()
+			->where("type", "expense")
+			->whereBetween("transaction_date", [
+				$budget->start_date,
+				$budget->end_date,
+			])
+			->with("account")
+			->orderBy("transaction_date", "desc")
+			->paginate(20);
+
+		// Get budget statistics
+		$stats = [
+			"total_transactions" => $transactions->total(),
+			"average_transaction" => $transactions->avg("amount") ?? 0,
+			"largest_transaction" => $transactions->max("amount") ?? 0,
+			"transactions_today" => $budget->category
+				->transactions()
+				->where("type", "expense")
+				->whereDate("transaction_date", today())
+				->whereBetween("transaction_date", [
+					$budget->start_date,
+					$budget->end_date,
+				])
+				->count(),
+		];
+
+		return view(
+			"wallet::budgets.show",
+			compact("budget", "transactions", "stats")
+		);
+	}
+
+	/**
+	 * Show the form for editing the specified budget
 	 */
 	public function edit(Budget $budget)
 	{
-		$user = auth()->user();
-		$budget->load("category");
-
 		// Authorization check
-		if ($budget->user_id != $user->id) {
-			abort(403, "Unauthorized action.");
+		if ($budget->user_id !== auth()->id()) {
+			abort(403);
 		}
 
-		// Get expense categories
-		$categories = Category::where("user_id", $user->id)
-			->orWhereNull("user_id")
-			->where("type", CategoryType::EXPENSE)
-			->get();
+		$data = $this->budgetService->getCreateData();
+		$data["budget"] = $budget;
+		$data["selectedAccounts"] = $budget->accounts->pluck("id")->toArray();
 
-		return view("wallet::budgets.edit", compact("budget", "categories"));
+		return view("wallet::budgets.edit", $data);
 	}
 
 	/**
-	 * Update the specified budget.
+	 * Update the specified budget
 	 */
 	public function update(BudgetRequest $request, Budget $budget)
 	{
-		$user = auth()->user();
+		try {
+			$budget = $this->budgetService->updateBudget(
+				$budget,
+				$request->validated()
+			);
 
-		// Authorization check
-		if ($budget->user_id != $user->id) {
-			abort(403, "Unauthorized action.");
-		}
-
-		$data = $request->validated();
-
-		// Check if budget already exists for this category and period (excluding current)
-		$exists = Budget::where("user_id", $user->id)
-			->where("category_id", $data["category_id"])
-			->where("month", $data["month"])
-			->where("year", $data["year"])
-			->where("id", "!=", $budget->id)
-			->exists();
-
-		if ($exists) {
+			return redirect()
+				->route("wallet.budgets.show", $budget)
+				->with("success", "Budget berhasil diperbarui");
+		} catch (\Exception $e) {
 			return back()
 				->withInput()
-				->withErrors(
-					"Anggaran untuk kategori ini pada periode tersebut sudah ada."
-				);
-		}
-
-		try {
-			$this->budgetRepository->updateBudget($budget->id, $data);
-
-			return redirect()
-				->route("apps.budgets.index")
-				->with("success", "Anggaran berhasil diperbarui.");
-		} catch (\Exception $e) {
-			return redirect()
-				->back()
-				->withInput()
-				->withErrors("Gagal memperbarui anggaran: " . $e->getMessage());
+				->with("error", $e->getMessage());
 		}
 	}
 
 	/**
-	 * Remove the specified budget.
+	 * Remove the specified budget
 	 */
 	public function destroy(Budget $budget)
 	{
-		$user = auth()->user();
-
-		// Authorization check
-		if ($budget->user_id != $user->id) {
-			abort(403, "Unauthorized action.");
-		}
-
 		try {
-			$this->budgetRepository->delete($budget->id);
+			$this->budgetService->deleteBudget($budget);
 
 			return redirect()
-				->route("apps.budgets.index")
-				->with("success", "Anggaran berhasil dihapus.");
+				->route("wallet.budgets.index")
+				->with("success", "Budget berhasil dihapus");
 		} catch (\Exception $e) {
-			return redirect()
-				->back()
-				->withErrors("Gagal menghapus anggaran: " . $e->getMessage());
+			return back()->with("error", $e->getMessage());
 		}
 	}
 
 	/**
-	 * Update spent amounts for current month
+	 * Calculate period dates
 	 */
-	public function updateSpent()
+	public function calculateDates(Request $request)
 	{
-		$user = auth()->user();
+		$request->validate([
+			"period_type" => "required|string",
+			"period_value" => "required|integer",
+			"year" => "required|integer",
+		]);
 
+		$dates = $this->budgetService->calculatePeriodDates(
+			$request->period_type,
+			$request->period_value,
+			$request->year
+		);
+
+		return response()->json([
+			"success" => true,
+			"dates" => [
+				"start_date" => $dates["start_date"]->format("Y-m-d"),
+				"end_date" => $dates["end_date"]->format("Y-m-d"),
+			],
+		]);
+	}
+
+	/**
+	 * Get suggested amount for category
+	 */
+	public function suggestedAmount($categoryId)
+	{
+		$amount = $this->budgetService->getSuggestedAmount($categoryId);
+
+		return response()->json([
+			"suggested_amount" => $amount,
+		]);
+	}
+
+	/**
+	 * Toggle budget status
+	 */
+	public function toggleStatus(Budget $budget)
+	{
 		try {
-			$this->budgetRepository->updateAllBudgetsSpent($user);
+			$budget = $this->budgetService->toggleStatus($budget);
+
+			return response()->json([
+				"success" => true,
+				"message" => "Status budget berhasil diubah",
+				"budget" => $budget,
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				400
+			);
+		}
+	}
+
+	/**
+	 * Create next period budget
+	 */
+	public function createNextPeriod(Budget $budget)
+	{
+		try {
+			$nextBudget = $this->budgetService->createNextPeriodBudget($budget);
+
+			return redirect()
+				->route("wallet.budgets.show", $nextBudget)
+				->with("success", "Budget periode berikutnya berhasil dibuat");
+		} catch (\Exception $e) {
+			return back()->with("error", $e->getMessage());
+		}
+	}
+
+	/**
+	 * Update all spent amounts
+	 */
+	public function updateSpentAmounts()
+	{
+		try {
+			$this->budgetService->updateAllSpentAmounts();
 
 			return back()->with(
 				"success",
-				"Jumlah terpakai anggaran berhasil diperbarui."
+				"Jumlah terpakai semua budget berhasil diperbarui"
 			);
 		} catch (\Exception $e) {
-			return redirect()
-				->back()
-				->withErrors("Gagal memperbarui jumlah terpakai: " . $e->getMessage());
+			return back()->with("error", $e->getMessage());
 		}
+	}
+
+	/**
+	 * Bulk update budgets
+	 */
+	public function bulkUpdate(Request $request)
+	{
+		$request->validate([
+			"budget_ids" => "required|array",
+			"budget_ids.*" => "exists:budgets,id,user_id," . auth()->id(),
+			"action" => "required|in:activate,deactivate,delete",
+		]);
+
+		try {
+			$count = 0;
+
+			switch ($request->action) {
+				case "activate":
+				case "deactivate":
+					$count = $this->budgetService->bulkUpdate($request->budget_ids, [
+						"is_active" => $request->action === "activate",
+					]);
+					break;
+
+				case "delete":
+					Budget::whereIn("id", $request->budget_ids)
+						->where("user_id", auth()->id())
+						->delete();
+					$count = count($request->budget_ids);
+					break;
+			}
+
+			return response()->json([
+				"success" => true,
+				"message" => "{$count} budget berhasil diperbarui",
+			]);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				400
+			);
+		}
+	}
+
+	/**
+	 * Dashboard summary
+	 */
+	public function dashboardSummary()
+	{
+		$summary = $this->budgetService->getDashboardSummary();
+
+		return response()->json($summary);
+	}
+
+	/**
+	 * Get budgets for category
+	 */
+	public function byCategory($categoryId)
+	{
+		$category = \Modules\Wallet\Models\Category::where(
+			"user_id",
+			auth()->id()
+		)->findOrFail($categoryId);
+
+		$budgets = $this->budgetService->getBudgetsForCategory($category);
+
+		return response()->json([
+			"budgets" => $budgets,
+		]);
+	}
+
+	/**
+	 * Get expiring budgets
+	 */
+	public function expiring()
+	{
+		$budgets = $this->budgetService->getExpiringBudgets(7);
+
+		return response()->json([
+			"budgets" => $budgets,
+		]);
 	}
 }
