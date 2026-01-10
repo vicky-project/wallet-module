@@ -298,8 +298,8 @@
         });
         
         // Icon input live update
-        iconInput.addEventListener('input', function() {
-            updateIconPreview(this.value || 'tag');
+        document.addEventListener('iconSelected', function(e) {
+          updateIconPreview(e.detail.iconClass || 'tag');
         });
         
         // Status checkbox live update
@@ -368,56 +368,6 @@
             }
         }
         
-        // Load all icons for modal
-        function loadAllIcons() {
-            const allIconsContainer = document.getElementById('allIcons');
-            allIconsContainer.innerHTML = '<div class="col-12 text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
-            
-            // Common FontAwesome icons (simulated)
-            const commonIcons = [
-                'tag', 'cart', 'bag', 'basket', 'shop', 'store', 'car', 'bus', 'train', 'plane',
-                'house', 'building', 'home', 'bank', 'credit-card', 'cash', 'coin', 'wallet',
-                'cup', 'utensils', 'food', 'drink', 'film', 'music-note', 'tv', 'gamepad',
-                'book', 'pencil', 'laptop', 'phone', 'wifi', 'lightbulb', 'gear', 'tools',
-                'heart', 'star', 'gift', 'balloon', 'calendar', 'clock', 'envelope', 'phone',
-                'person', 'people', 'person-circle', 'person-plus', 'graph-up', 'graph-down',
-                'arrow-up-right', 'arrow-down-left', 'plus-circle', 'minus-circle', 'check-circle',
-                'x-circle', 'info-circle', 'question-circle', 'exclamation-circle', 'shield',
-                'lock', 'unlock', 'key', 'bell', 'megaphone', 'chat', 'chat-left', 'chat-right'
-            ];
-            
-            setTimeout(() => {
-                allIconsContainer.innerHTML = '';
-                commonIcons.forEach(icon => {
-                    const col = document.createElement('div');
-                    col.className = 'col-2 col-sm-1 mb-2';
-                    col.innerHTML = `
-                        <div class="icon-selector text-center p-2 rounded border" 
-                             data-icon="${icon}"
-                             onclick="selectIconFromModal('${icon}')">
-                            <i class="bi bi-${icon} fs-5"></i>
-                        </div>
-                    `;
-                    allIconsContainer.appendChild(col);
-                });
-            }, 500);
-        }
-        
-        // Search icons in modal
-        function searchIcons(query) {
-            const allIcons = document.querySelectorAll('#allIcons .icon-selector');
-            const searchTerm = query.toLowerCase();
-            
-            allIcons.forEach(icon => {
-                const iconName = icon.dataset.icon;
-                if (iconName.includes(searchTerm) || searchTerm === '') {
-                    icon.parentElement.style.display = 'block';
-                } else {
-                    icon.parentElement.style.display = 'none';
-                }
-            });
-        }
-        
         // Form validation
         const form = document.getElementById('categoryForm');
         if (form) {
@@ -458,37 +408,7 @@
         initializePreviews();
     });
     
-    // Global function to select icon from main grid
-    function selectIcon(iconName) {
-        const iconInput = document.getElementById('icon');
-        iconInput.value = iconName;
-        
-        // Update preview
-        const previewIcon = document.getElementById('previewIcon');
-        const previewIconLarge = document.getElementById('previewIconLarge');
-        previewIcon.className = `bi bi-${iconName}`;
-        previewIconLarge.innerHTML = `<i class="bi bi-${iconName}"></i>`;
-        
-        // Update selection
-        document.querySelectorAll('.icon-selector').forEach(selector => {
-            selector.classList.remove('selected');
-            if (selector.dataset.icon === iconName) {
-                selector.classList.add('selected');
-            }
-        });
-    }
-    
-    // Global function to select icon from modal
-    function selectIconFromModal(iconName) {
-        selectIcon(iconName);
-        
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('iconsModal'));
-        if (modal) {
-            modal.hide();
-        }
-    }
-    
+
     // Toast notification function
     function showToast(type, title, message) {
         const toastContainer = document.createElement('div');

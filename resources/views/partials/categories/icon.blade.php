@@ -45,8 +45,22 @@ document.addEventListener('DOMContentLoaded', function() {
             preview.className = `bi ${iconClass}`;
             input.value = iconClass;
             
+            const iconSelectedEvent = new CustomEvent('iconSelected', {
+              detail: {
+                iconClass: iconClass,
+                element: preview,
+                inputValue: input.value
+              },
+              bubbles : true
+            });
+            
+            document.dispatchEvent(iconSelectedEvent);
+            
             // Close dropdown
-            bootstrap.Dropdown.getInstance(document.getElementById('iconPickerButton')).hide();
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('iconPickerButton'));
+            if(dropdown) {
+              dropdown.hide();
+            }
         });
     });
 });
