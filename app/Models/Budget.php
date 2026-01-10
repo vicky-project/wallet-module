@@ -2,12 +2,15 @@
 
 namespace Modules\Wallet\Models;
 
-use Modules\Wallet\Casts\MoneyCast;
-use Modules\Wallet\Enums\CategoryType;
-use Modules\Wallet\Enums\TransactionType;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\Wallet\Enums\PeriodType;
+use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Casts\MoneyCast;
+use Brick\Money\Money;
+use Brick\Money\Currency;
 
 class Budget extends Model
 {
@@ -23,65 +26,103 @@ class Budget extends Model
 		"start_date",
 		"end_date",
 		"amount",
-		"spent", // Ini akan diupdate dari transaksi expense pada kategori ini
+		"spent",
 		"rollover_unused",
 		"rollover_limit",
-		"is_active", // Status aktif/tidak aktif
+		"is_active",
 		"settings",
 	];
 
 	protected $casts = [
-		"amount" => MoneyCast::class,
-		"spent" => MoneyCast::class,
-		"is_active" => "boolean",
 		"start_date" => "date",
 		"end_date" => "date",
+		"amount" => MoneyCast::class,
+		"spent" => MoneyCast::class,
 		"rollover_unused" => "boolean",
-		"settings" => "json",
-		"created_at" => "datetime",
-		"updated_at" => "datetime",
-		"deleted_at" => "datetime",
+		"is_active" => "boolean",
+		"settings" => "array",
 	];
 
-	// Array of month names
-	const MONTH_NAMES = [
-		1 => "Januari",
-		2 => "Februari",
-		3 => "Maret",
-		4 => "April",
-		5 => "Mei",
-		6 => "Juni",
-		7 => "Juli",
-		8 => "Agustus",
-		9 => "September",
-		10 => "Oktober",
-		11 => "November",
-		12 => "Desember",
+	protected $appends = [
+		"remaining",
+		"usage_percentage",
+		"formatted_amount",
+		"formatted_spent",
+		"formatted_remaining",
+		"period_label",
+		"is_over_budget",
+		"days_left",
+		"daily_budget",
 	];
 
 	/**
-	 * Relationship with User
+	 * Relationship with user
 	 */
-	public function user()
+	public function user(): BelongsTo
 	{
 		return $this->belongsTo(config("auth.providers.users.model"));
 	}
 
 	/**
-	 * Relationship with Category (hanya kategori expense)
+	 * Relationship with category
 	 */
-	public function category()
+	public function category(): BelongsTo
 	{
-		return $this->belongsTo(Category::class)->where(
-			"type",
-			CategoryType::EXPENSE
-		);
+		return $this->belongsTo(Category::class);
 	}
 
 	/**
-	 * Calculate remaining amount
+	 * Relationship with accounts (many-to-many)
 	 */
-	public function getRemainingAttribute()
+	public function accounts(): BelongsToMany
+	{
+		return $this->belongsToMany(
+			Account::class,
+			"budget_accounts"
+		)->withTimestamps();
+	}
+
+	/**
+	 * Scope active budgets
+	 */
+	public function scopeActive($query)
+	{
+		return $query->where("is_active", true);
+	}
+
+	/**
+	 * Scope for current user
+	 */
+	public function scopeForUser($query, $userId)
+	{
+		return $query->where("user_id", $userId);
+	}
+
+	/**
+	 * Scope for current period
+	 */
+	public function scopeCurrentPeriod($query)
+	{
+		return $query
+			->where("start_date", "<=", now())
+			->where("end_date", ">=", now());
+	}
+
+	/**
+	 * Scope for specific period
+	 */
+	public function scopeForPeriod($query, $periodType, $periodValue, $year)
+	{
+		return $query
+			->where("period_type", $periodType)
+			->where("period_value", $periodValue)
+			->where("year", $year);
+	}
+
+	/**
+	 * Get remaining amount
+	 */
+	public function getRemainingAttribute(): int
 	{
 		return max(
 			0,
@@ -90,190 +131,241 @@ class Budget extends Model
 	}
 
 	/**
-	 * Calculate percentage spent - INI YANG DIPERBAIKI
-	 * Persentase dihitung dari spent/amount
+	 * Get usage percentage
 	 */
-	public function getPercentageAttribute()
+	public function getUsagePercentageAttribute(): float
 	{
 		$amount = $this->amount->getAmount()->toInt();
 		$spent = $this->spent->getAmount()->toInt();
 
-		if ($amount == 0) {
+		if ($amount === 0) {
 			return 0;
 		}
 
-		return min(100, round(($spent / $amount) * 100, 2));
+		return min(100, ($spent / $amount) * 100);
 	}
 
 	/**
 	 * Get formatted amount
 	 */
-	public function getFormattedAmountAttribute()
+	public function getFormattedAmountAttribute(): string
 	{
-		return "Rp " .
-			number_format($this->amount->getAmount()->toInt(), 0, ",", ".");
+		return $this->formatMoney($this->amount->getAmount()->toInt());
 	}
 
 	/**
-	 * Get formatted spent amount
+	 * Get formatted spent
 	 */
-	public function getFormattedSpentAttribute()
+	public function getFormattedSpentAttribute(): string
 	{
-		return "Rp " .
-			number_format($this->spent->getAmount()->toInt(), 0, ",", ".");
+		return $this->formatMoney($this->spent->getAmount()->toInt());
 	}
 
 	/**
-	 * Get formatted remaining amount
+	 * Get formatted remaining
 	 */
-	public function getFormattedRemainingAttribute()
+	public function getFormattedRemainingAttribute(): string
 	{
-		return "Rp " . number_format($this->remaining, 0, ",", ".");
+		return $this->formatMoney($this->remaining);
 	}
 
 	/**
-	 * Get month name
+	 * Get period label
 	 */
-	public function getMonthNameAttribute()
+	public function getPeriodLabelAttribute(): string
 	{
-		return self::MONTH_NAMES[$this->month] ?? "Bulan Tidak Diketahui";
+		switch ($this->period_type) {
+			case PeriodType::MONTHLY:
+				$monthName = \DateTime::createFromFormat(
+					"!m",
+					$this->period_value
+				)->format("F");
+				return "{$monthName} {$this->year}";
+
+			case PeriodType::WEEKLY:
+				return "Week {$this->period_value}, {$this->year}";
+
+			case PeriodType::YEARLY:
+				return "Year {$this->year}";
+
+			case PeriodType::QUARTERLY:
+				$quarter = ceil($this->period_value / 3);
+				return "Q{$quarter} {$this->year}";
+
+			case PeriodType::BIWEEKLY:
+				return "Bi-weekly {$this->period_value}, {$this->year}";
+
+			default:
+				return "{$this->start_date->format("d M Y")} - {$this->end_date->format(
+					"d M Y"
+				)}";
+		}
 	}
 
 	/**
-	 * Get budget period (e.g., "Januari 2024")
+	 * Check if over budget
 	 */
-	public function getPeriodAttribute()
-	{
-		return $this->month_name . " " . $this->year;
-	}
-
-	/**
-	 * Check if budget is exceeded
-	 */
-	public function getIsExceededAttribute()
+	public function getIsOverBudgetAttribute(): bool
 	{
 		return $this->spent->getAmount()->toInt() >
 			$this->amount->getAmount()->toInt();
 	}
 
 	/**
-	 * Get budget status
+	 * Get days left in budget period
 	 */
-	public function getStatusAttribute()
+	public function getDaysLeftAttribute(): int
 	{
-		$percentage = $this->percentage;
-
-		if ($percentage >= 100) {
-			return "exceeded";
-		} elseif ($percentage >= 80) {
-			return "warning";
-		} elseif ($percentage >= 50) {
-			return "moderate";
-		} else {
-			return "good";
+		$now = now();
+		if ($now > $this->end_date) {
+			return 0;
 		}
+
+		return $now->diffInDays($this->end_date) + 1;
 	}
 
 	/**
-	 * Get status color
+	 * Get daily budget recommendation
 	 */
-	public function getStatusColorAttribute()
+	public function getDailyBudgetAttribute(): float
 	{
-		return match ($this->status) {
-			"exceeded" => "danger",
-			"warning" => "warning",
-			"moderate" => "info",
-			"good" => "success",
-			default => "secondary",
-		};
+		if ($this->days_left <= 0) {
+			return 0;
+		}
+
+		return $this->remaining / $this->days_left;
 	}
 
 	/**
-	 * Scope for active budgets
+	 * Update spent amount from transactions
 	 */
-	public function scopeActive($query)
+	public function updateSpentAmount(): void
 	{
-		return $query->where("is_active", true);
-	}
+		$query = $this->category
+			->transactions()
+			->expense()
+			->whereBetween("transaction_date", [$this->start_date, $this->end_date]);
 
-	/**
-	 * Scope for current month budget
-	 */
-	public function scopeCurrentMonth($query)
-	{
-		return $query->where("month", date("m"))->where("year", date("Y"));
-	}
+		// If budget has specific accounts, filter by them
+		if ($this->accounts->isNotEmpty()) {
+			$query->whereIn("account_id", $this->accounts->pluck("id"));
+		}
 
-	/**
-	 * Scope for specific month and year
-	 */
-	public function scopeForPeriod($query, $month, $year)
-	{
-		return $query->where("month", $month)->where("year", $year);
-	}
-
-	/**
-	 * Update spent amount from transactions - INI YANG DIPERBAIKI
-	 * Hanya hitung dari transaksi expense pada kategori ini
-	 */
-	public function updateSpentAmount()
-	{
-		// HITUNG TOTAL PENGELUARAN PADA KATEGORI INI
-		$totalSpent = Transaction::where("user_id", $this->user_id)
-			->where("category_id", $this->category_id)
-			->where("type", TransactionType::EXPENSE) // HANYA TRANSAKSI EXPENSE
-			->whereMonth("transaction_date", $this->month)
-			->whereYear("transaction_date", $this->year)
-			->sum("amount");
-
-		// Update spent amount
-		$this->spent = $totalSpent;
+		$this->spent = $query->sum("amount");
 		$this->save();
-
-		return $this;
 	}
 
 	/**
-	 * Check if budget is for current period
+	 * Check if budget can rollover
 	 */
-	public function getIsCurrentAttribute()
+	public function canRollover(): bool
 	{
-		return $this->month == date("m") && $this->year == date("Y");
+		if (!$this->rollover_unused) {
+			return false;
+		}
+
+		if (
+			$this->rollover_limit !== null &&
+			$this->remaining > $this->rollover_limit
+		) {
+			return false;
+		}
+
+		return $this->remaining > 0;
 	}
 
 	/**
-	 * Calculate average daily budget
+	 * Get rollover amount
 	 */
-	public function getDailyBudgetAttribute()
+	public function getRolloverAmount(): int
 	{
-		$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
-		$remainingDays = $daysInMonth - date("j") + 1;
+		if (!$this->canRollover()) {
+			return 0;
+		}
 
-		return $this->remaining / max(1, $remainingDays);
+		if ($this->rollover_limit !== null) {
+			return min($this->remaining, $this->rollover_limit);
+		}
+
+		return $this->remaining;
 	}
 
 	/**
-	 * Get formatted daily budget
+	 * Format money helper
 	 */
-	public function getFormattedDailyBudgetAttribute()
+	private function formatMoney(int $amount): string
 	{
-		return "Rp " . number_format($this->daily_budget, 0, ",", ".");
+		// Assuming IDR currency, adjust as needed
+		$money = new Money($amount, new Currency("IDR"));
+
+		return "Rp " . number_format($money->getAmount()->toInt(), 0, ",", ".");
 	}
 
 	/**
-	 * Get budget progress data for charts
+	 * Check if date is within budget period
 	 */
-	public function getProgressDataAttribute()
+	public function isDateInPeriod(\DateTimeInterface $date): bool
 	{
-		$spent = $this->spent->getAmount()->toInt();
-		$amount = $this->amount->getAmount()->toInt();
-		$remaining = max(0, $amount - $spent);
+		$date = \Carbon\Carbon::parse($date);
+		return $date->between($this->start_date, $this->end_date);
+	}
 
-		return [
-			"spent" => $spent,
-			"remaining" => $remaining,
-			"amount" => $amount,
-			"percentage" => $this->percentage,
-		];
+	/**
+	 * Get next period budget
+	 */
+	public function getNextPeriod(): ?self
+	{
+		$nextDate = $this->end_date->copy()->addDay();
+
+		return self::where("user_id", $this->user_id)
+			->where("category_id", $this->category_id)
+			->where("start_date", "<=", $nextDate)
+			->where("end_date", ">=", $nextDate)
+			->where("is_active", true)
+			->first();
+	}
+
+	/**
+	 * Get previous period budget
+	 */
+	public function getPreviousPeriod(): ?self
+	{
+		$prevDate = $this->start_date->copy()->subDay();
+
+		return self::where("user_id", $this->user_id)
+			->where("category_id", $this->category_id)
+			->where("start_date", "<=", $prevDate)
+			->where("end_date", ">=", $prevDate)
+			->where("is_active", true)
+			->first();
+	}
+
+	/**
+	 * Get suggested next budget amount
+	 */
+	public function getSuggestedNextAmount(): int
+	{
+		$suggested = $this->amount;
+
+		// Adjust based on rollover
+		if ($this->rollover_unused) {
+			$suggested += $this->getRolloverAmount();
+		}
+
+		// Consider average spending
+		$previousBudgets = self::where("user_id", $this->user_id)
+			->where("category_id", $this->category_id)
+			->where("id", "!=", $this->id)
+			->where("end_date", "<", $this->start_date)
+			->orderBy("end_date", "desc")
+			->limit(3)
+			->get();
+
+		if ($previousBudgets->isNotEmpty()) {
+			$averageSpent = $previousBudgets->avg("spent");
+			$suggested = max($suggested, (int) round($averageSpent * 1.1)); // 10% buffer
+		}
+
+		return $suggested;
 	}
 }

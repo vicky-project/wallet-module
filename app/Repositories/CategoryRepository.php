@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoryRepository extends BaseRepository
 {
-	private const CACHE_DURATION = 3600; // 1 jam
-
 	public function __construct(Category $model)
 	{
 		parent::__construct($model);

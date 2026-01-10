@@ -1,7 +1,7 @@
 <?php
 namespace Modules\Wallet\Enums;
 
-enum BudgetPeriodType: string
+enum PeriodType: string
 {
     case MONTHLY = 'monthly';
     case WEEKLY = 'weekly';

@@ -99,7 +99,7 @@ class AccountRepository extends BaseRepository
 	{
 		return $this->model
 			->where("user_id", $user->id)
-			->where("is_default", true)
+			->default()
 			->first();
 	}
 
@@ -112,7 +112,7 @@ class AccountRepository extends BaseRepository
 			// Remove default from other accounts
 			$this->model
 				->where("user_id", $account->user_id)
-				->where("is_default", true)
+				->default()
 				->update(["is_default" => false]);
 
 			// Set this account as default
