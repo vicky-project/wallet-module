@@ -2,6 +2,8 @@
 
 @section('title', 'Buat Budget Baru')
 
+@use('Modules\Wallet\Enums\PeriodType')
+
 @push('styles')
 <style>
     .form-section {
@@ -245,27 +247,27 @@
                                     <div class="period-type-card" data-type="{{ $type }}">
                                         <div class="period-icon">
                                             @switch($type)
-                                                @case('monthly')
+                                                @case(PeriodType::MONTHLY)
                                                     <i class="bi bi-calendar-month"></i>
                                                     @break
-                                                @case('weekly')
+                                                @case(PeriodType::WEEKLY)
                                                     <i class="bi bi-calendar-week"></i>
                                                     @break
-                                                @case('biweekly')
+                                                @case(PeriodType::BIWEEKLY)
                                                     <i class="bi bi-calendar2-week"></i>
                                                     @break
-                                                @case('quarterly')
+                                                @case(PeriodType ::QUARTERLY)
                                                     <i class="bi bi-calendar3"></i>
                                                     @break
-                                                @case('yearly')
+                                                @case(PeriodType::YEARLY)
                                                     <i class="bi bi-calendar-range"></i>
                                                     @break
-                                                @case('custom')
+                                                @case(PeriodType::CUSTOM)
                                                     <i class="bi bi-calendar-event"></i>
                                                     @break
                                             @endswitch
                                         </div>
-                                        <div class="fw-semibold">{{ ucfirst($type) }}</div>
+                                        <div class="fw-semibold">{{ ucfirst($type->value) }}</div>
                                     </div>
                                 </div>
                             @endforeach
@@ -447,7 +449,7 @@
                                             <div class="flex-grow-1">
                                                 <div class="fw-semibold">{{ $account->name }}</div>
                                                 <div class="text-muted small">
-                                                    Saldo: {{ format_currency($account->balance->getMinorAmount()->toInt()) }}
+                                                    Saldo: {{ ($account->balance->getMinorAmount()->toInt()) }}
                                                 </div>
                                             </div>
                                             <div class="form-check">
