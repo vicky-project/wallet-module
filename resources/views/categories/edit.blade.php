@@ -611,10 +611,6 @@
                             <i class="bi bi-cash-coin me-2"></i>Buat Budget
                         </a>
                         @endif
-                        
-                        <button type="button" class="btn btn-outline-secondary" id="duplicateBtn">
-                            <i class="bi bi-files me-2"></i>Duplikat Kategori
-                        </button>
                     </div>
                 </div>
             </div>
@@ -841,15 +837,6 @@
             if (confirmCheckbox && confirmDeleteBtn) {
                 confirmCheckbox.addEventListener('change', function() {
                     confirmDeleteBtn.disabled = !this.checked;
-                });
-            }
-            
-            // Duplicate button
-            const duplicateBtn = document.getElementById('duplicateBtn');
-            if (duplicateBtn) {
-                duplicateBtn.addEventListener('click', function() {
-                    const modal = new bootstrap.Modal(document.getElementById('duplicateModal'));
-                    modal.show();
                 });
             }
             
