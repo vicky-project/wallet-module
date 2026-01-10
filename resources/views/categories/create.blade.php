@@ -2,6 +2,8 @@
 
 @section('title', isset($category) ? 'Edit Kategori' : 'Tambah Kategori')
 
+@use('Modules\Wallet\Enums\CategoryType')
+
 @section('content')
 <div class="row justify-content-center">
   <div class="col-lg-10 col-xl-8">
@@ -30,35 +32,32 @@
             <div class="col-md-8">
               <!-- Type Selection -->
               <div class="form-section">
-                                <div class="form-section-title">
-                                    <i class="bi bi-tag"></i>
-                                    Tipe Kategori
-                                </div>
-                                <div class="d-flex type-switch mb-4">
-                                    <div class="type-option expense {{ (!isset($category) && request('type') == 'expense') || (isset($category) && $category->type == 'expense') ? 'active' : '' }}" 
-                                         data-type="expense">
-                                        <i class="bi bi-arrow-up-right"></i>
-                                        <span>Pengeluaran</span>
-                                    </div>
-                                    <div class="type-option income {{ (!isset($category) && request('type') == 'income') || (isset($category) && $category->type == 'income') ? 'active' : '' }}" 
-                                         data-type="income">
-                                        <i class="bi bi-arrow-down-left"></i>
-                                        <span>Pemasukan</span>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="type" id="categoryType" 
-                                       value="{{ isset($category) ? $category->type : (request('type') ?: 'expense') }}">
-                                <p class="text-muted mb-0">
-                                    <small>
-                                        @if(isset($category) && $category->type == 'expense')
-                                            <i class="bi bi-info-circle me-1"></i>Kategori pengeluaran digunakan untuk mencatat pengeluaran dan dapat memiliki budget.
-                                        @elseif(isset($category) && $category->type == 'income')
-                                            <i class="bi bi-info-circle me-1"></i>Kategori pemasukan digunakan untuk mencatat pendapatan.
-                                        @else
-                                            <i class="bi bi-info-circle me-1"></i>Pilih tipe kategori sesuai dengan penggunaannya.
-                                        @endif
-                                    </small>
-                                </p>
+                <div class="form-section-title">
+                  <i class="bi bi-tag"></i>
+                  Tipe Kategori
+                </div>
+                <div class="d-flex type-switch mb-4">
+                  <div class="type-option expense {{ (!isset($category) && request('type') == CategoryType::EXPENSE) || (isset($category) && $category->type == CategoryType::EXPENSE) ? 'active' : '' }}" data-type="expense">
+                    <i class="bi bi-arrow-up-right"></i>
+                    <span>Income</span>
+                  </div>
+                  <div class="type-option income {{ (!isset($category) && request('type') == CategoryType::INCOME) || (isset($category) && $category->type == CategoryType::INCOME) ? 'active' : '' }}" data-type="income">
+                    <i class="bi bi-arrow-down-left"></i>
+                    <span>Expense</span>
+                  </div>
+                </div>
+                <input type="hidden" name="type" id="categoryType" value="{{ isset($category) ? $category->type : (request('type') ?: CategoryType::EXPENSE->value) }}">
+                <p class="text-muted mb-0">
+                  <small>
+                    @if(isset($category) && $category->type == CategoryType::EXPENSE)
+                      <i class="bi bi-info-circle me-1"></i>Kategori pengeluaran digunakan untuk mencatat pengeluaran dan dapat memiliki budget.
+                    @elseif(isset($category) && $category->type == CategoryType::INCOME)
+                      <i class="bi bi-info-circle me-1"></i>Kategori pemasukan digunakan untuk mencatat pendapatan.
+                    @else
+                      <i class="bi bi-info-circle me-1"></i>Pilih tipe kategori sesuai dengan penggunaannya.
+                    @endif
+                  </small>
+                </p>
               </div>
                             
               <!-- Basic Information -->
@@ -98,7 +97,7 @@
                 @if(isset($category))
                   <div class="mb-3">
                     <label for="slug" class="form-label">Slug</label>
-                    <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug', $category->slug ?? '') }}" placeholder="slug-otomatis">
+                    <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug', $category->slug ?? '') }}" placeholder="slug-otomatis" readonly>
                     @error('slug')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -129,7 +128,7 @@
                   <!-- Status -->
                   <div class="col-md-6 mb-3">
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', isset($category) ? $category->is_active : true) ? 'checked' : '' }}>
+                      <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', isset($category) ? $category->is_active : true))>
                       <label class="form-check-label" for="is_active">
                         <strong>Aktif</strong>
                       </label>
@@ -142,7 +141,7 @@
                   <!-- Budgetable (Only for expense) -->
                   <div class="col-md-6 mb-3">
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" {{ old('is_budgetable', isset($category) ? $category->is_budgetable : false) ? 'checked' : '' }}>
+                      <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" @checked(old('is_budgetable', isset($category) ? $category->is_budgetable : false))>
                       <label class="form-check-label" for="is_budgetable">
                         <strong>Dapat di-budget</strong>
                       </label>
@@ -170,9 +169,9 @@
                   <div class="text-center mb-3">
                     <h4 id="previewName">{{ old('name', $category->name ?? 'Nama Kategori') }}</h4>
                     <div class="mb-2">
-                      <span id="previewTypeBadge" class="badge {{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'bg-success' : 'bg-danger' }}">
-                        <i class="bi bi-{{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'arrow-down-left' : 'arrow-up-right' }} me-1"></i>
-                        <span id="previewTypeText">{{ (isset($category) && $category->type == 'income') || (!isset($category) && request('type') == 'income') ? 'Pemasukan' : 'Pengeluaran' }}</span>
+                      <span id="previewTypeBadge" class="badge {{ (isset($category) && $category->type == CategoryType::INCOME) || (!isset($category) && request('type') == CategoryType::INCOME->value) ? 'bg-success' : 'bg-danger' }}">
+                        <i class="bi bi-{{ (isset($category) && $category->type == CategoryType::INCOME) || (!isset($category) && request('type') == CategoryType::INCOME->value) ? 'arrow-down-left' : 'arrow-up-right' }} me-1"></i>
+                        <span id="previewTypeText">{{ (isset($category) && $category->type == CategoryType::INCOME) || (!isset($category) && request('type') == CategoryType::INCOME->value) ? 'Pemasukan' : 'Pengeluaran' }}</span>
                       </span>
                     </div>
                     <p class="text-muted mb-0" id="previewDescription">
@@ -237,29 +236,6 @@
     </div>
   </div>
 </div>
-
-<!-- More Icons Modal -->
-<div class="modal fade" id="iconsModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Pilih Ikon</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <input type="text" class="form-control" id="iconSearch" placeholder="Cari ikon...">
-        </div>
-        <div class="row g-2" id="allIcons">
-          <!-- Icons will be loaded here -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection
 
 @push('scripts')
@@ -275,7 +251,7 @@
         const isBudgetableCheckbox = document.getElementById('is_budgetable');
         
         // Preview elements
-        const previewIcon = document.getElementById('previewIcon');
+        const previewIcon = document.getElementById('selectedIconPreview');
         const previewIconLarge = document.getElementById('previewIconLarge');
         const previewName = document.getElementById('previewName');
         const previewDescription = document.getElementById('previewDescription');
@@ -283,11 +259,6 @@
         const previewTypeText = document.getElementById('previewTypeText');
         const previewStatus = document.getElementById('previewStatus');
         const previewBudgetable = document.getElementById('previewBudgetable');
-        
-        // Icon selection
-        const iconGrid = document.getElementById('iconGrid');
-        const showMoreIconsBtn = document.getElementById('showMoreIcons');
-        const iconsModal = new bootstrap.Modal(document.getElementById('iconsModal'));
         
         // Type selection
         typeOptions.forEach(option => {
@@ -304,11 +275,8 @@
                 // Update preview
                 updateTypePreview(selectedType);
                 
-                // Update icon grid based on type
-                updateIconGrid(selectedType);
-                
+                if (selectedType === {{ CategoryType::INCOME->value }}) {
                 // Disable budgetable for income
-                if (selectedType === 'income') {
                     isBudgetableCheckbox.checked = false;
                     isBudgetableCheckbox.disabled = true;
                     updateBudgetablePreview(false);
@@ -342,22 +310,6 @@
         isBudgetableCheckbox.addEventListener('change', function() {
             updateBudgetablePreview(this.checked);
         });
-        
-        // Show more icons modal
-        if (showMoreIconsBtn) {
-            showMoreIconsBtn.addEventListener('click', function() {
-                loadAllIcons();
-                iconsModal.show();
-            });
-        }
-        
-        // Icon search in modal
-        const iconSearch = document.getElementById('iconSearch');
-        if (iconSearch) {
-            iconSearch.addEventListener('input', function() {
-                searchIcons(this.value);
-            });
-        }
         
         // Initialize previews
         function initializePreviews() {
@@ -413,31 +365,6 @@
                 previewBudgetable.className = 'badge bg-secondary';
                 previewBudgetable.innerHTML = '<i class="bi bi-x-circle me-1"></i>Tidak';
             }
-        }
-        
-        // Update icon grid based on type
-        function updateIconGrid(type) {
-            const expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
-            const incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
-            
-            const icons = type === 'expense' ? expenseIcons : incomeIcons;
-            
-            iconGrid.innerHTML = '';
-            icons.forEach(icon => {
-                const col = document.createElement('div');
-                col.className = 'col-2 col-sm-1';
-                col.innerHTML = `
-                    <div class="icon-selector text-center p-2 rounded border" 
-                         data-icon="${icon}"
-                         onclick="selectIcon('${icon}')">
-                        <i class="bi bi-${icon} fs-5"></i>
-                        <div class="mt-1">
-                            <small class="text-muted">${icon}</small>
-                        </div>
-                    </div>
-                `;
-                iconGrid.appendChild(col);
-            });
         }
         
         // Load all icons for modal
