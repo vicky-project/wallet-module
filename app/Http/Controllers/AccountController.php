@@ -9,6 +9,7 @@ use Modules\Wallet\Services\AccountService;
 use Modules\Core\Http\Controllers\BaseController;
 use Modules\Wallet\Http\Requests\AccountRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Modules\Wallet\Http\Resources\AccountResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -210,7 +211,7 @@ class AccountController extends BaseController
 	public function recalculateBalance(
 		Request $request,
 		Account $account
-	): JsonResponse {
+	): JsonResponse|RedirectResponse {
 		try {
 			$this->service->validateAccount($account, $request->user());
 			$this->service->recalculateBalance($account);
