@@ -85,8 +85,8 @@
           <select class="form-select" id="period_type" name="period_type">
             <option value="">Semua Tipe</option>
             @foreach($periodTypes as $type)
-              <option value="{{ $type }}" {{ request('period_type') == $type ? 'selected' : '' }}>
-                {{ ucfirst($type) }}
+              <option value="{{ $type->value }}" {{ request('period_type') == $type->value ? 'selected' : '' }}>
+                {{ ucfirst($type->value) }}
               </option>
             @endforeach
           </select>
