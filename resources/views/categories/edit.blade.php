@@ -316,6 +316,9 @@
                   <option value="{{ $type->value }}" @selected(old('type', $category->type) == $type)>{{ $type->name }}</option>
                   @endforeach
                 </select>
+                <div class="form-text">
+                  Tipe kategori (Pemasukan atau Pengeluaran).
+                </div>
                 @error('type')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
