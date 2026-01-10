@@ -360,7 +360,7 @@
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" @checked(old('is_budgetable', $category->is_budgetable)) @disabled(!$category->is_budgetable)>
                   <label class="form-check-label" for="is_budgetable">
-                    <i class="bi bi-cash-coin me-1"></i>{{ $category->budgetable() ? 'Dapat' : 'Tidak dapat'}} Diberi Budget
+                    <i class="bi bi-cash-coin me-1"></i>{{ $category->is_budgetable ? 'Dapat' : 'Tidak dapat'}} Diberi Budget
                   </label>
                   <div class="form-text">
                     Izinkan pengaturan budget untuk kategori ini.
