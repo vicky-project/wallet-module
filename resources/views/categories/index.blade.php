@@ -586,15 +586,17 @@
                       </span>
                     </div>
                     <small class="text-muted d-block mt-1">
-                      Sisa: {{ format_currency($category->budget_remaining ?? 0) }}
+                      Sisa: {{ Helper::formatMoney(Helper::toMoney($category->budget_remaining ?? 0)->getAmount()->toInt()) }}
                     </small>
                   @else
                     <div class="text-muted">
                       <i class="bi bi-dash-circle"></i> Tidak ada budget
                     </div>
+                    @if($category->is_budgetable)
                     <a href="{{ route('apps.budgets.create', ['category_id' => $category->id]) }}" class="btn btn-outline-primary btn-sm mt-1">
                       <i class="bi bi-plus-circle"></i> Buat Budget
                     </a>
+                    @endif
                   @endif
                 </td>
                 <td>
