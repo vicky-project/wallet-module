@@ -449,7 +449,7 @@
       <div class="input-group me-2" style="width: 200px;">
         <span class="input-group-text"><i class="bi bi-list-check"></i></span>
         <select class="form-select" id="bulkAction">
-          <option value="">Aksi Massal</option>
+          <option value="">Bulk Action</option>
           <option value="activate">Aktifkan</option>
           <option value="deactivate">Nonaktifkan</option>
           <option value="delete">Hapus</option>
@@ -457,7 +457,7 @@
       </div>
       <div class="dropdown me-2">
         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-download me-1"></i>Ekspor
+          <i class="bi bi-download"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>CSV</a></li>
