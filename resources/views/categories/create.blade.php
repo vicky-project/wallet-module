@@ -152,10 +152,10 @@
                   <div class="mb-3">
                     <div class="row g-2" id="iconGrid">
                                         @php
-                    // Default icons based on category $expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
-                                            $incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
-                                                
-                                                $currentType = isset($category) ? $category->type : (request('type') ?: 'expense');
+                    // Default icons based on category 
+                    $expenseIcons = ['cart', 'car', 'house', 'credit-card', 'bag', 'cup', 'film', 'music-note', 'book', 'pencil'];
+                    $incomeIcons = ['cash', 'bank', 'piggy-bank', 'graph-up', 'coin', 'wallet', 'building', 'briefcase', 'award', 'gift'];
+                    $currentType = isset($category) ? $category->type : (request('type') ?: 'expense');
                                                 $icons = $currentType == 'expense' ? $expenseIcons : $incomeIcons;
                                             @endphp
                                             
