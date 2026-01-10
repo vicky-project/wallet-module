@@ -69,5 +69,8 @@ Route::middleware(["auth"])
 			BudgetController::class,
 			"toggleActive",
 		])->name("budgets.toggle-active");
+		Route::post("categories/import", [CategoryController::class, ""])->name(
+			"categories.import"
+		);
 		Route::resource("budgets", BudgetController::class);
 	});
