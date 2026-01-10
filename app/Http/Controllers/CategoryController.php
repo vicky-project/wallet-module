@@ -48,7 +48,7 @@ class CategoryController extends Controller
 
 	public function create(Request $request)
 	{
-		return view("wallet::categories.create");
+		return view("wallet::categories.create", compact("request"));
 	}
 
 	/**
