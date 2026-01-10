@@ -276,7 +276,7 @@
                 // Update preview
                 updateTypePreview(selectedType);
                 
-                if (selectedType === {{ CategoryType::INCOME->value }}) {
+                if (selectedType === '{{ CategoryType::INCOME->value }}') {
                 // Disable budgetable for income
                     isBudgetableCheckbox.checked = false;
                     isBudgetableCheckbox.disabled = true;
