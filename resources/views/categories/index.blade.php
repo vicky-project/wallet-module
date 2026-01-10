@@ -243,7 +243,7 @@ $(document).ready(function() {
         e.preventDefault();
         
         $.ajax({
-            url: '{{ route("wallet.categories.store") }}',
+            url: '{{ route("apps.categories.store") }}',
             method: 'POST',
             data: $(this).serialize(),
             success: function(response) {
@@ -315,7 +315,7 @@ $(document).ready(function() {
             var categoryId = $(this).data('id');
             
             $.ajax({
-                url: `/wallet/categories/${categoryId}`,
+                url: `{{ config('app.url') }}/apps/categories/${categoryId}`,
                 method: 'DELETE',
                 data: {_token: '{{ csrf_token() }}'},
                 success: function(response) {
@@ -351,7 +351,7 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url: '{{ route("wallet.categories.bulk-update") }}',
+            url: '{{ route("apps.categories.bulk-update") }}',
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',

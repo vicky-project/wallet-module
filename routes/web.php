@@ -50,6 +50,10 @@ Route::middleware(["auth"])
 			CategoryController::class,
 			"toggleStatus",
 		])->name("categories.toggle-status");
+		Route::post("categories/bulk-update", [
+			CategoryController::class,
+			"bulkUpdate",
+		])->name("categories.bulk-update");
 		Route::resource("categories", CategoryController::class);
 
 		// Budget Routes
