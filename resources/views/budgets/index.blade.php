@@ -25,7 +25,7 @@
 <div class="row mb-4">
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="quick-stat" style="border-left: 4px solid #0d6efd;">
-      <div class="stat-value">{{ format_currency($stats['total_amount'] ?? 0) }}</div>
+      <div class="stat-value">{{ Helper::formatMoney($stats['total_amount'] ?? 0) }}</div>
       <div class="stat-label">Total Budget Aktif</div>
       <small class="text-muted">{{ $stats['current'] ?? 0 }} budget aktif</small>
     </div>
@@ -33,7 +33,7 @@
   
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="quick-stat" style="border-left: 4px solid #28a745;">
-      <div class="stat-value">{{ format_currency($stats['total_spent'] ?? 0) }}</div>
+      <div class="stat-value">{{ Helper::formatMoney($stats['total_spent'] ?? 0) }}</div>
       <div class="stat-label">Total Terpakai</div>
       <small class="text-muted">{{ number_format($stats['overall_usage'] ?? 0, 1) }}% dari total</small>
     </div>
@@ -41,7 +41,7 @@
   
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="quick-stat" style="border-left: 4px solid #ffc107;">
-      <div class="stat-value">{{ format_currency($stats['total_remaining'] ?? 0) }}</div>
+      <div class="stat-value">{{ Helper::formatMoney($stats['total_remaining'] ?? 0) }}</div>
       <div class="stat-label">Total Sisa</div>
       <small class="text-muted">{{ $stats['days_in_month'] ?? 30 }} hari tersisa</small>
     </div>
