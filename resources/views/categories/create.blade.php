@@ -295,7 +295,7 @@
                                         <i class="bi bi-{{ isset($category) ? 'check-circle' : 'plus-circle' }} me-2"></i>
                                         {{ isset($category) ? 'Update Kategori' : 'Simpan Kategori' }}
                                     </button>
-                                    <a href="{{ route('wallet.categories.index') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
                                         <i class="bi bi-x-circle me-2"></i>Batal
                                     </a>
                                 </div>
