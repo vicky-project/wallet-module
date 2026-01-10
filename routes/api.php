@@ -11,4 +11,12 @@ Route::prefix("apps")
 			BudgetController::class,
 			"bulkUpdate",
 		])->name("budgets.bulk-update");
+		Route::post("budgets/calculate-dates", [
+			BudgetController::class,
+			"calculateDates",
+		])->name("budgets.calculate-dates");
+		Route::get("budgets/suggested-amount/{category}", [
+			BudgetController::class,
+			"suggestedAmount",
+		])->name("budgets.suggested-amount");
 	});
