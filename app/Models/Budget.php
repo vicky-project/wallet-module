@@ -14,7 +14,7 @@ use Brick\Money\Currency;
 
 class Budget extends Model
 {
-	use HasFactory, SoftDeletes;
+	use SoftDeletes;
 
 	protected $fillable = [
 		"user_id",
