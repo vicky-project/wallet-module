@@ -311,7 +311,7 @@
                 </label>
                 <input type="text" class="form-control" id="slug" name="slug" placeholder="otomatis-terisi" value="{{ $category->slug }}" readonly disabled>
                 <div class="form-text">
-                  URL-friendly identifier (opsional).
+                  URL-friendly identifier (Auto-generate).
                 </div>
                 @error('slug')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -397,9 +397,9 @@
                                 
               <div class="col-md-6">
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" @checked(old('is_budgetable', $category->is_budgetable))>
+                  <input class="form-check-input" type="checkbox" id="is_budgetable" name="is_budgetable" value="1" @checked(old('is_budgetable', $category->is_budgetable)) @disabled(!$category->budgetable())>
                   <label class="form-check-label" for="is_budgetable">
-                    <i class="bi bi-cash-coin me-1"></i>Dapat Diberi Budget
+                    <i class="bi bi-cash-coin me-1"></i>{{ $category->budgetable() ? 'Dapat' : 'Tidak dapat'}} Diberi Budget
                   </label>
                   <div class="form-text">
                     Izinkan pengaturan budget untuk kategori ini.
