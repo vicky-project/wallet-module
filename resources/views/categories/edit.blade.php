@@ -484,7 +484,7 @@
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                             <div>
-                                <a href="{{ route('wallet.categories.index') }}" class="btn btn-outline-secondary">
+                                <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-x-circle me-1"></i>Batal
                                 </a>
                             </div>
@@ -561,7 +561,7 @@
                     <h5 class="mb-0">
                         <i class="bi bi-clock-history me-2"></i>Transaksi Terbaru
                     </h5>
-                    <a href="{{ route('wallet.transactions.index', ['category_id' => $category->id]) }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('apps.transactions.index', ['category_id' => $category->id]) }}" class="btn btn-sm btn-outline-primary">
                         Lihat Semua
                     </a>
                 </div>
@@ -602,12 +602,12 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('wallet.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-success">
+                        <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-success">
                             <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
                         </a>
                         
                         @if($category->type === 'expense')
-                        <a href="{{ route('wallet.budgets.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
+                        <a href="{{ route('apps.budgets.create', ['category_id' => $category->id]) }}" class="btn btn-primary">
                             <i class="bi bi-cash-coin me-2"></i>Buat Budget
                         </a>
                         @endif
