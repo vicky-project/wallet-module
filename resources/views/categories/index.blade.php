@@ -262,6 +262,7 @@
       <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
       <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
       <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
+      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
         <div class="row g-3">
           <!-- Type Filter -->
           <div class="col-md-4">
@@ -331,7 +332,7 @@
               <button type="submit" class="btn btn-primary me-2">
                 <i class="bi bi-search me-1"></i>Terapkan Filter
               </button>
-              <a href="{{ route('wallet.categories.index') }}" class="btn btn-outline-secondary">
+              <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-clockwise me-1"></i>Reset
               </a>
             </div>
