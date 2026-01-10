@@ -2,6 +2,8 @@
 
 @section('title', 'Kelola Kategori')
 
+@use('Modules\Wallet\Enums\CategoryType')
+
 @push('styles')
 <style>
     /* Custom styling for categories page */
@@ -200,7 +202,7 @@
   <div class="col-auto">
     <div class="btn-group">
       <a href="{{ route('apps.categories.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-1"></i>Tambah
+        <i class="bi bi-plus-circle me-1"></i>Create
       </a>
       <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
         <span class="visually-hidden">Toggle Dropdown</span>
@@ -260,17 +262,15 @@
   <div class="collapse" id="filterCollapse">
     <div class="card-body">
       <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
-      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
-      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
-      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
         <div class="row g-3">
           <!-- Type Filter -->
           <div class="col-md-4">
             <label for="type" class="form-label">Tipe Kategori</label>
             <select class="form-select" id="type" name="type">
               <option value="">Semua Tipe</option>
-              <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Pengeluaran</option>
-              <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Pemasukan</option>
+              @foreach(CategoryType::cases() as $type)
+              <option value="{{ $type->value}}" @selected(request('type') == $type->value)>{{ $type->name }}</option>
+              @endforeach
             </select>
           </div>
 
@@ -440,12 +440,12 @@
 
 <!-- Categories List -->
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
+  <div class="card-header d-flex justify-content-between align-items-center text-end">
     <h5 class="mb-0">
       <i class="bi bi-list-ul me-2"></i>Daftar Kategori
       <span class="badge bg-secondary ms-2">{{ $categories->total() }}</span>
     </h5>
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center ms-auto">
       <div class="input-group me-2" style="width: 200px;">
         <span class="input-group-text"><i class="bi bi-list-check"></i></span>
         <select class="form-select" id="bulkAction">
