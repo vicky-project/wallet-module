@@ -440,12 +440,12 @@
 
 <!-- Categories List -->
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center text-end">
-    <h5 class="mb-0">
+  <div class="card-header d-flex justify-content-between align-items-center text-start">
+    <h5 class="mb-0 me-auto">
       <i class="bi bi-list-ul me-2"></i>Daftar Kategori
       <span class="badge bg-secondary ms-2">{{ $categories->total() }}</span>
     </h5>
-    <div class="d-flex align-items-center ms-auto">
+    <div class="d-flex align-items-center">
       <div class="input-group me-2" style="width: 200px;">
         <span class="input-group-text"><i class="bi bi-list-check"></i></span>
         <select class="form-select" id="bulkAction">
