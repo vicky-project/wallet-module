@@ -88,19 +88,11 @@ class CategoryController extends Controller
 				$request->validated()
 			);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Category updated successfully",
-				"category" => $updatedCategory,
-			]);
+			return redirect()
+				->route("app.categories.index")
+				->with("success", "Category updated successfully");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				400
-			);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -112,18 +104,9 @@ class CategoryController extends Controller
 		try {
 			$this->categoryService->deleteCategory($category);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Category deleted successfully",
-			]);
+			return back()->with("success", "Category deleted successfully");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				400
-			);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -135,19 +118,9 @@ class CategoryController extends Controller
 		try {
 			$updatedCategory = $this->categoryService->toggleStatus($category);
 
-			return response()->json([
-				"success" => true,
-				"message" => "Category status updated",
-				"category" => $updatedCategory,
-			]);
+			return back()->with("success", "Category status updated");
 		} catch (\Exception $e) {
-			return response()->json(
-				[
-					"success" => false,
-					"message" => $e->getMessage(),
-				],
-				400
-			);
+			return back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -196,10 +169,10 @@ class CategoryController extends Controller
 				$request->only(["is_active", "is_budgetable"])
 			);
 
-			return response()->json([
-				"success" => true,
-				"message" => "{$count} categories updated successfully",
-			]);
+			return back()->with(
+				"success",
+				"{$count} categories updated successfully"
+			);
 		} catch (\Exception $e) {
 			return response()->json(
 				[

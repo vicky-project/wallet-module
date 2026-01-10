@@ -308,7 +308,7 @@
               
               <div class="col-md-4">
                 <label for="type" class="form-label">
-                  <i class="bi bi-tag me-1"></i>Type
+                  <i class="bi bi-tag me-1"></i>Type Kategori
                   <span class="text-danger">*</span>
                 </label>
                 <select class="form-select" id="type" name="type" required>
