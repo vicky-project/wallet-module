@@ -3,7 +3,7 @@
 @section('title', 'Kelola Kategori')
 
 @use('Modules\Wallet\Enums\CategoryType')
-@usu('Modules\Wallet\Helpers\Helper')
+@use('Modules\Wallet\Helpers\Helper')
 
 @push('styles')
 <style>
