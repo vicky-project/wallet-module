@@ -541,7 +541,7 @@
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="category-icon me-3" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                      <i class="bi bi-{{ $category->icon ?? 'tag' }}"></i>
+                      <i class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
                     </div>
                     <div>
                       <strong class="d-block">{{ $category->name }}</strong>
@@ -557,7 +557,7 @@
                   </div>
                 </td>
                 <td>
-                  @if($category->type === 'income')
+                  @if($category->type === CategoryType::INCOME)
                     <span class="badge badge-income category-type-badge">
                       <i class="bi bi-arrow-down-left me-1"></i>Pemasukan
                     </span>
@@ -570,7 +570,7 @@
                 <td>
                   @if($hasBudget && $category->current_budget)
                     <div class="budget-display">
-                      {{ format_currency($category->current_spent ?? 0) }} / {{ format_currency($category->current_budget->amount) }}
+                      {{ Helper::toMoney($category->current_spent ?? 0)->getAmount()->toInt() }} / {{ Helper::toMoney($category->current_budget->amount)->getAmount()->toInt() }}
                     </div>
                     <div class="d-flex align-items-center">
                       <div class="progress progress-thin flex-grow-1 me-2">
@@ -599,7 +599,7 @@
                 </td>
                 <td>
                   <div class="budget-display">
-                    {{ Helper::toMoney($category->monthly_total ?? 0) }}
+                    {{ Helper::formatMoney(Helper::toMoney($category->monthly_total ?? 0)->getAmount()->toInt()) }}
                   </div>
                   <div class="budget-usage text-muted">
                     <small>
