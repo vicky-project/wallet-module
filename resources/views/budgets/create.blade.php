@@ -265,7 +265,7 @@
               @endfor
             </select>
           </div>
-                        
+
           <!-- Weekly -->
           <div class="col-md-6 period-config weekly d-none">
             <label for="period_value_weekly" class="form-label">Minggu Ke-</label>
@@ -277,11 +277,10 @@
               @endfor
             </select>
           </div>
-                        
+          
           <!-- Biweekly -->
           <div class="col-md-6 period-config biweekly d-none">
             <label for="period_value_biweekly" class="form-label">Periode 2 Mingguan Ke-</label>
-            <select class="form-select" id="period_value_biweekly" name="period_value">
             <select class="form-select" id="period_value_biweekly" name="period_value">
               @for($i = 1; $i <= 26; $i++)
                 <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
@@ -761,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (this.value) {
                 categoryPreview.classList.remove('d-none');
-                previewCategoryIcon.innerHTML = `<i class="bi bi-${icon}"></i>`;
+                previewCategoryIcon.innerHTML = `<i class="bi ${icon}"></i>`;
                 previewCategoryIcon.style.backgroundColor = `${color}20`;
                 previewCategoryIcon.style.color = color;
                 previewCategoryName.textContent = name;
