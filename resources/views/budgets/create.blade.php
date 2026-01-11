@@ -614,6 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add selected to clicked card
             card.classList.add('selected');
+            console.log(this.classList);
             
             // Update hidden input
             const periodType = this.dataset.type;
