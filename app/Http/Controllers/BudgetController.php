@@ -44,7 +44,7 @@ class BudgetController extends Controller
 			"user_id",
 			auth()->id()
 		)
-			->where("type", "expense")
+			->expense()
 			->orderBy("name")
 			->get();
 
