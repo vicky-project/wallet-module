@@ -187,7 +187,7 @@
               <option value="">Pilih Kategori</option>
               @foreach($categories as $category)
                 <option value="{{ $category->id }}" 
-                  {{ old('category_id', request('category_id')) == $category->id ? 'selected' : '' }} data-icon="{{ $category->icon }}" data-color="{{ $category->color ?? '#0d6efd' }}">
+                  {{ old('category_id', request('category_id')) == $category->id ? 'selected' : '' }} data-icon="{{ $category->icon }}" data-color="{{ $category->color ?? '#0d6efd' }}" data-description="{{ $category->description }}">
                   {{ $category->name }}
                 </option>
               @endforeach
@@ -758,29 +758,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function categoryPreviewSelection(categorySelect) {
       const selectedOption = categorySelect.options[categorySelect.selectedIndex];
-            const icon = selectedOption.dataset.icon;
-            const color = selectedOption.dataset.color;
-            const name = selectedOption.text;
+      const icon = selectedOption.dataset.icon;
+      const color = selectedOption.dataset.color;
+      const description = selectedOption.dataset.description;
+      const name = selectedOption.text;
             
-            if (categorySelect.value) {
-                categoryPreview.classList.remove('d-none');
-                previewCategoryIcon.innerHTML = `<i class="bi ${icon}"></i>`;
-                previewCategoryIcon.style.backgroundColor = `${color}20`;
-                previewCategoryIcon.style.color = color;
-                previewCategoryName.textContent = name;
+      if (categorySelect.value) {
+        categoryPreview.classList.remove('d-none');
+        previewCategoryIcon.innerHTML = `<i class="bi ${icon}"></i>`;
+        previewCategoryIcon.style.backgroundColor = `${color}20`;
+        previewCategoryIcon.style.color = color;
+        previewCategoryName.textContent = name;
+        previewCategoryDescription.textContent = description;
                 
-                // Get suggested amount for category
-                fetch(`{{ secure_url(config('app.url')) }}/api/apps/budgets/suggested-amount/${this.value}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.suggested_amount) {
-                            amountInput.value = data.suggested_amount;
-                            amountPreview.textContent = formatAmount(data.suggested_amount);
-                        }
-                    });
-            } else {
-                categoryPreview.classList.add('d-none');
+        // Get suggested amount for category
+        fetch(`{{ secure_url(config('app.url')) }}/api/apps/budgets/suggested-amount/${this.value}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.suggested_amount) {
+              amountInput.value = data.suggested_amount;
+              amountPreview.textContent = formatAmount(data.suggested_amount);
             }
+          });
+      } else {
+        categoryPreview.classList.add('d-none');
+      }
     }
     
     // Account selection
