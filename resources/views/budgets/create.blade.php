@@ -39,8 +39,8 @@
     }
     
     .period-type-card.selected {
-        border-color: var(--bs-success);
-        background-color: rgba(var(--bs-success-rgb), 0.1);
+        border-color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.1);
     }
     
     .period-icon {
