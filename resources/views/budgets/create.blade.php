@@ -500,7 +500,7 @@
             <i class="bi bi-x-circle me-1"></i>Batal
           </a>
         </div>
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between ms-auto">
           <button type="button" class="btn btn-outline-primary me-2" id="previewBtn">
             <i class="bi bi-eye me-1"></i>Pratinjau
           </button>
