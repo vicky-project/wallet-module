@@ -494,7 +494,7 @@
       </div>
 
       <!-- Form Actions -->
-      <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+      <div class="d-flex justify-content-between align-items-center mt-4 mb-2 pt-3 border-top">
         <div>
                         <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i>Batal
