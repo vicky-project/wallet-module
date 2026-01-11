@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
             periodTypeCards.forEach(c => c.classList.remove('selected'));
             
             // Add selected to clicked card
-            chard.classList.add('selected');
+            card.classList.add('selected');
             
             // Update hidden input
             const periodType = this.dataset.type;
