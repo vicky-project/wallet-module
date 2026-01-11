@@ -870,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            alert(data);
+            alert(JSON.stringify(data));
             
             // Show preview modal
             const modal = new bootstrap.Modal(document.getElementById('previewModal'));
