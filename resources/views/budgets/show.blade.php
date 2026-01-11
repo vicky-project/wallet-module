@@ -2,6 +2,8 @@
 
 @section('title', 'Detail Budget - ' . $budget->name ?: $budget->category->name)
 
+@use('Modules\Wallet\Helpers\Helper')
+
 @section('content')
 @include('wallet::partials.fab')
 <!-- Budget Header -->
@@ -19,7 +21,7 @@
                             <i class="bi bi-{{ $budget->category->icon }} me-1"></i>{{ $budget->category->name }}
                         </span>
                         <span class="period-badge me-2 mb-1">
-                            <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type) }}
+                            <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type->value) }}
                         </span>
                         <span class="period-badge me-2 mb-1">
                             <i class="bi bi-clock me-1"></i>{{ $budget->days_left }} hari lagi
@@ -43,21 +45,21 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between text-white-75">
-                    <small>{{ format_currency($budget->spent) }} terpakai</small>
-                    <small>{{ format_currency($budget->amount) }} total budget</small>
+                    <small>{{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }} terpakai</small>
+                    <small>{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }} total budget</small>
                 </div>
             </div>
         </div>
         
         <div class="col-md-4 text-center text-md-end position-relative z-1">
             <div class="mb-3">
-                <div class="display-5 fw-bold text-white">{{ format_currency($budget->remaining) }}</div>
+                <div class="display-5 fw-bold text-white">{{ Helper::formatMoney($budget->remaining) }}</div>
                 <div class="text-white-75">SISA BUDGET</div>
             </div>
             <div class="d-flex justify-content-center justify-content-md-end">
                 <div class="text-start">
                     <div class="text-white-75 small">Rata-rata per hari</div>
-                    <div class="text-white fw-semibold">{{ format_currency($budget->daily_budget) }}</div>
+                    <div class="text-white fw-semibold">{{ Helper::formatMoney($budget->daily_budget) }}</div>
                 </div>
             </div>
         </div>
