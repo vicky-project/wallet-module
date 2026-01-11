@@ -681,7 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!periodType || !periodValue || !year) return;
         
         // Make AJAX call to calculate dates
-        fetch(`{{ route('api.apps.budgets.calculate-dates') }}`, {
+        fetch(`{{ secure_url(config('app.url')) }}/api/apps/budgets/calculate-dates`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
