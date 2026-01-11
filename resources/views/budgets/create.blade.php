@@ -215,8 +215,8 @@
           <div class="col-12">
             <div class="category-preview d-none" id="categoryPreview">
               <div class="d-flex align-items-center p-3 text-bg-secondary rounded">
-                <div class="category-icon me-3" id="previewCategoryIcon">
-                  <i class="bi bi-tag bg-light"></i>
+                <div class="category-icon me-3 bg-light" id="previewCategoryIcon">
+                  <i class="bi bi-tag"></i>
                 </div>
                 <div>
                   <h6 class="mb-1" id="previewCategoryName">Pilih Kategori</h6>
