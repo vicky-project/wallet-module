@@ -406,7 +406,7 @@
                     </div>
                     
                     <div class="col-md-4 text-center mb-4">
-                        <div class="display-6 fw-bold text-success">{{ format_currency($stats['average_transaction']) }}</div>
+                        <div class="display-6 fw-bold text-success">{{ Helper::formatMoney($stats['average_transaction']) }}</div>
                         <div class="text-muted">Rata-rata Transaksi</div>
                         <small class="text-muted">per transaksi</small>
                     </div>
