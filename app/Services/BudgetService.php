@@ -47,6 +47,7 @@ class BudgetService
 		$user = auth()->user();
 		$stats = $this->budgetRepository->getBudgetStats($user);
 		$budgets = $this->budgetRepository->getPaginatedBudgets(15, $filters);
+		dd($budgets);
 
 		return [
 			"budgets" => $budgets,
