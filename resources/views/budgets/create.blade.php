@@ -240,30 +240,11 @@
           <div class="row g-3">
             @foreach($periodTypes as $type)
               <div class="col-md-4">
-                <div class="period-type-card" data-type="{{ $type }}">
+                <div class="period-type-card" data-type="{{ $type->value }}">
                   <div class="period-icon">
-                    @switch($type)
-                      @case(PeriodType::MONTHLY)
-                        <i class="bi bi-calendar-month"></i>
-                        @break
-                      @case(PeriodType::WEEKLY)
-                        <i class="bi bi-calendar-week"></i>
-                        @break
-                      @case(PeriodType::BIWEEKLY)
-                        <i class="bi bi-calendar2-week"></i>
-                        @break
-                      @case(PeriodType ::QUARTERLY)
-                        <i class="bi bi-calendar3"></i>
-                        @break
-                      @case(PeriodType::YEARLY)
-                        <i class="bi bi-calendar-range"></i>
-                        @break
-                      @case(PeriodType::CUSTOM)
-                        <i class="bi bi-calendar-event"></i>
-                        @break
-                    @endswitch
+                      <i class="bi {{ $type->icon() }}"></i>
                   </div>
-                  <div class="fw-semibold">{{ ucfirst($type->value) }}</div>
+                  <div class="fw-semibold">{{ ucfirst($type->label()) }}</div>
                 </div>
               </div>
             @endforeach

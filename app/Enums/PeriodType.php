@@ -21,4 +21,16 @@ enum PeriodType: string
 			self::CUSTOM => "Kustom",
 		};
 	}
+
+	public function icon(): string
+	{
+		return match ($this) {
+			self::MONTHLY => "bi-calendar-month",
+			self::WEEKLY => "bi-calendar-week",
+			self::BIWEEKLY => "bi-calendar2-week",
+			self::QUARTERLY => "bi-calendar3",
+			self::YEARLY => "bi-calendar-range",
+			self::CUSTOM => "bi-calendar-event",
+		};
+	}
 }
