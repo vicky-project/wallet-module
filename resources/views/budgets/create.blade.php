@@ -496,18 +496,18 @@
       <!-- Form Actions -->
       <div class="d-flex justify-content-between align-items-center mt-4 mb-2 pt-3 border-top">
         <div>
-                        <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-1"></i>Batal
-                        </a>
-                    </div>
-        <div>
-                        <button type="button" class="btn btn-outline-primary me-2" id="previewBtn">
-                            <i class="bi bi-eye me-1"></i>Pratinjau
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <i class="bi bi-check-circle me-1"></i>Simpan Budget
-                        </button>
-                    </div>
+          <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle me-1"></i>Batal
+          </a>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-primary me-2" id="previewBtn">
+            <i class="bi bi-eye me-1"></i>Pratinjau
+          </button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <i class="bi bi-check-circle me-1"></i>Simpan Budget
+          </button>
+        </div>
       </div>
     </form>
   </div>
