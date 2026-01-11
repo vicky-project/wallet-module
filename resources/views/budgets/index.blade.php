@@ -303,7 +303,7 @@
                 <td>
                   <div class="mb-2">
                     <div class="d-flex justify-content-between">
-                      <span class="fw-semibold">{{ Helper::formatMoney(Helper::toMoney($budget->spent)->getAmount()->toInt()) }}</span>
+                      <span class="fw-semibold">{{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }}</span>
                       <span class="text-muted">/ {{ format_currency($budget->amount) }}</span>
                     </div>
                     <div class="progress progress-budget mt-1">
