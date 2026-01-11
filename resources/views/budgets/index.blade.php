@@ -275,7 +275,7 @@
                         @if($budget->name)
                           {{ $budget->name }}
                         @else
-                          Budget {{ ucfirst($budget->period_type) }}
+                          Budget {{ ucfirst($budget->period_type->name) }}
                         @endif
                       </small>
                     </div>
