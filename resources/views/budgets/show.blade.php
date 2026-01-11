@@ -317,7 +317,7 @@
                         <i class="bi bi-files me-2"></i>Duplikat Budget
                     </button>
                     
-                    <a href="{{ route('apps.budgets.next-period', $budget) }}" 
+                    <a href="{{ route('apps.budgets.index', $budget) }}" 
                        class="btn btn-outline-info" 
                        onclick="return confirm('Buat budget untuk periode berikutnya?')">
                         <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
