@@ -292,17 +292,6 @@ class Budget extends Model
 	}
 
 	/**
-	 * Format money helper
-	 */
-	private function formatMoney(int $amount): string
-	{
-		// Assuming IDR currency, adjust as needed
-		$money = new Money($amount, new Currency("IDR"));
-
-		return "Rp " . number_format($money->getAmount()->toInt(), 0, ",", ".");
-	}
-
-	/**
 	 * Check if date is within budget period
 	 */
 	public function isDateInPeriod(\DateTimeInterface $date): bool
