@@ -39,8 +39,8 @@
     }
     
     .period-type-card.selected {
-        border-color: var(--bs-primary);
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        border-color: var(--bs-success);
+        background-color: rgba(var(--bs-success-rgb), 0.1);
     }
     
     .period-icon {
@@ -668,7 +668,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-            alert(data.dates.start_date)
                 document.getElementById('start_date').value = data.dates.start_date;
                 document.getElementById('end_date').value = data.dates.end_date;
                 updateDateRangeLabel(data.dates.start_date, data.dates.end_date);
