@@ -76,12 +76,12 @@ class BudgetController extends Controller
 			$budget = $this->budgetService->createBudget($request->validated());
 
 			return redirect()
-				->route("wallet.budgets.show", $budget)
+				->route("apps.budgets.show", $budget)
 				->with("success", "Budget berhasil dibuat");
 		} catch (\Exception $e) {
 			return back()
 				->withInput()
-				->with("error", $e->getMessage());
+				->withErrors($e->getMessage());
 		}
 	}
 
