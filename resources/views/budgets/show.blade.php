@@ -309,7 +309,7 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="{{ route('wallet.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
+                    <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
                         <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
                     </a>
                     
