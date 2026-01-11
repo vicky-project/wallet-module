@@ -172,111 +172,107 @@
     <form action="{{ route('apps.budgets.store') }}" method="POST" id="createBudgetForm">
       @csrf
                 
-                <!-- Basic Information -->
-                <div class="form-section">
-                    <h6 class="form-section-title">Informasi Dasar</h6>
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h6 class="form-section-title">Informasi Dasar</h6>
                     
-                    <div class="row g-3">
-                        <!-- Category Selection -->
-                        <div class="col-md-8">
-                            <label for="category_id" class="form-label">
-                                <i class="bi bi-tags me-1"></i>Kategori
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select" id="category_id" name="category_id" required>
-                                <option value="">Pilih Kategori</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" 
-                                            {{ old('category_id', request('category_id')) == $category->id ? 'selected' : '' }}
-                                            data-icon="{{ $category->icon }}"
-                                            data-color="{{ $category->color ?? '#0d6efd' }}">
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="form-text">
-                                Hanya kategori pengeluaran yang tersedia untuk budget.
-                            </div>
-                            @error('category_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
+        <div class="row g-3">
+          <!-- Category Selection -->
+          <div class="col-md-8">
+            <label for="category_id" class="form-label">
+              <i class="bi bi-tags me-1"></i>Kategori
+              <span class="text-danger">*</span>
+            </label>
+            <select class="form-select" id="category_id" name="category_id" required>
+              <option value="">Pilih Kategori</option>
+              @foreach($categories as $category)
+                <option value="{{ $category->id }}" 
+                  {{ old('category_id', request('category_id')) == $category->id ? 'selected' : '' }} data-icon="{{ $category->icon }}" data-color="{{ $category->color ?? '#0d6efd' }}">
+                  {{ $category->name }}
+                </option>
+              @endforeach
+            </select>
+            <div class="form-text">
+              Hanya kategori pengeluaran yang tersedia untuk budget.
+            </div>
+            @error('category_id')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+          </div>
                         
-                        <!-- Custom Name -->
-                        <div class="col-md-4">
-                            <label for="name" class="form-label">
-                                <i class="bi bi-pencil me-1"></i>Nama Budget (Opsional)
-                            </label>
-                            <input type="text" class="form-control" id="name" name="name" 
-                                   placeholder="Contoh: Budget Liburan" 
-                                   value="{{ old('name') }}">
-                            <div class="form-text">
-                                Kosongkan untuk menggunakan nama default.
-                            </div>
-                        </div>
+          <!-- Custom Name -->
+          <div class="col-md-4">
+            <label for="name" class="form-label">
+              <i class="bi bi-pencil me-1"></i>Nama Budget (Opsional)
+            </label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Contoh: Budget Liburan" value="{{ old('name') }}">
+              <div class="form-text">
+                Kosongkan untuk menggunakan nama default.
+              </div>
+            </div>
                         
-                        <!-- Category Preview -->
-                        <div class="col-12">
-                            <div class="category-preview d-none" id="categoryPreview">
-                                <div class="d-flex align-items-center p-3 bg-light rounded">
-                                    <div class="category-icon me-3" id="previewCategoryIcon">
-                                        <i class="bi bi-tag"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1" id="previewCategoryName">Pilih Kategori</h6>
-                                        <small class="text-muted" id="previewCategoryDescription">
-                                            Deskripsi akan muncul di sini
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+          <!-- Category Preview -->
+          <div class="col-12">
+            <div class="category-preview d-none" id="categoryPreview">
+              <div class="d-flex align-items-center p-3 bg-light rounded">
+                <div class="category-icon me-3" id="previewCategoryIcon">
+                  <i class="bi bi-tag"></i>
                 </div>
+                <div>
+                  <h6 class="mb-1" id="previewCategoryName">Pilih Kategori</h6>
+                  <small class="text-muted" id="previewCategoryDescription">
+                    Deskripsi akan muncul di sini
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
                 
-                <!-- Period Configuration -->
-                <div class="form-section">
-                    <h6 class="form-section-title">Konfigurasi Periode</h6>
+      <!-- Period Configuration -->
+      <div class="form-section">
+        <h6 class="form-section-title">Konfigurasi Periode</h6>
                     
-                    <!-- Period Type Selection -->
-                    <div class="mb-4">
-                        <label class="form-label mb-3">Tipe Periode</label>
-                        <div class="row g-3">
-                            @foreach($periodTypes as $type)
-                                <div class="col-md-4">
-                                    <div class="period-type-card" data-type="{{ $type }}">
-                                        <div class="period-icon">
-                                            @switch($type)
-                                                @case(PeriodType::MONTHLY)
-                                                    <i class="bi bi-calendar-month"></i>
-                                                    @break
-                                                @case(PeriodType::WEEKLY)
-                                                    <i class="bi bi-calendar-week"></i>
-                                                    @break
-                                                @case(PeriodType::BIWEEKLY)
-                                                    <i class="bi bi-calendar2-week"></i>
-                                                    @break
-                                                @case(PeriodType ::QUARTERLY)
-                                                    <i class="bi bi-calendar3"></i>
-                                                    @break
-                                                @case(PeriodType::YEARLY)
-                                                    <i class="bi bi-calendar-range"></i>
-                                                    @break
-                                                @case(PeriodType::CUSTOM)
-                                                    <i class="bi bi-calendar-event"></i>
-                                                    @break
-                                            @endswitch
-                                        </div>
-                                        <div class="fw-semibold">{{ ucfirst($type->value) }}</div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <input type="hidden" name="period_type" id="period_type" value="{{ old('period_type', $defaultPeriodType) }}">
-                    </div>
+        <!-- Period Type Selection -->
+        <div class="mb-4">
+          <label class="form-label mb-3">Tipe Periode</label>
+          <div class="row g-3">
+            @foreach($periodTypes as $type)
+              <div class="col-md-4">
+                <div class="period-type-card" data-type="{{ $type }}">
+                  <div class="period-icon">
+                    @switch($type)
+                      @case(PeriodType::MONTHLY)
+                        <i class="bi bi-calendar-month"></i>
+                        @break
+                      @case(PeriodType::WEEKLY)
+                        <i class="bi bi-calendar-week"></i>
+                        @break
+                      @case(PeriodType::BIWEEKLY)
+                        <i class="bi bi-calendar2-week"></i>
+                        @break
+                      @case(PeriodType ::QUARTERLY)
+                        <i class="bi bi-calendar3"></i>
+                        @break
+                      @case(PeriodType::YEARLY)
+                        <i class="bi bi-calendar-range"></i>
+                        @break
+                      @case(PeriodType::CUSTOM)
+                        <i class="bi bi-calendar-event"></i>
+                        @break
+                    @endswitch
+                  </div>
+                  <div class="fw-semibold">{{ ucfirst($type->value) }}</div>
+                </div>
+              </div>
+            @endforeach
+          </div>
+          <input type="hidden" name="period_type" id="period_type" value="{{ old('period_type', $defaultPeriodType) }}">
+        </div>
                     
-                    <!-- Period Value and Year -->
-                    <div class="row g-3" id="periodConfig">
+        <!-- Period Value and Year -->
+        <div class="row g-3" id="periodConfig">
                         <!-- Monthly -->
                         <div class="col-md-6 period-config monthly">
                             <label for="period_value_monthly" class="form-label">Bulan</label>
@@ -353,8 +349,8 @@
                         </div>
                     </div>
                     
-                    <!-- Date Range Display -->
-                    <div class="date-range-display">
+        <!-- Date Range Display -->
+        <div class="date-range-display">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-2">
@@ -377,10 +373,10 @@
                             </small>
                         </div>
                     </div>
-                </div>
+      </div>
                 
-                <!-- Amount Configuration -->
-                <div class="form-section">
+      <!-- Amount Configuration -->
+      <div class="form-section">
                     <h6 class="form-section-title">Jumlah Budget</h6>
                     
                     <div class="row g-3">
@@ -422,8 +418,8 @@
                     </div>
                 </div>
                 
-                <!-- Account Selection -->
-                <div class="form-section">
+      <!-- Account Selection -->
+      <div class="form-section">
                     <h6 class="form-section-title">Akun Terkait</h6>
                     <p class="text-muted mb-3">Pilih akun yang akan dipantau dalam budget ini. Kosongkan untuk memantau semua akun.</p>
                     
@@ -475,8 +471,8 @@
                     </div>
                 </div>
                 
-                <!-- Advanced Settings -->
-                <div class="form-section">
+      <!-- Advanced Settings -->
+      <div class="form-section">
                     <h6 class="form-section-title">Pengaturan Lanjutan</h6>
                     
                     <div class="row g-3">
@@ -526,8 +522,8 @@
                     </div>
                 </div>
                 
-                <!-- Form Actions -->
-                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+      <!-- Form Actions -->
+      <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                     <div>
                         <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i>Batal
@@ -549,12 +545,12 @@
   <div class="col-lg-4">
     <div class="card sticky-top" style="top: 20px;">
       <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle me-2"></i>Panduan Budget
-                    </h5>
-                </div>
-        <div class="card-body">
-                    <div class="mb-4">
+        <h5 class="mb-0">
+          <i class="bi bi-info-circle me-2"></i>Panduan Budget
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
                         <h6 class="fw-semibold">
                             <i class="bi bi-lightbulb text-warning me-2"></i>Tips Budgeting
                         </h6>
@@ -578,7 +574,7 @@
                         </ul>
                     </div>
                     
-                    <div class="mb-4">
+        <div class="mb-4">
                         <h6 class="fw-semibold">
                             <i class="bi bi-calculator text-primary me-2"></i>Kalkulator Budget Harian
                         </h6>
@@ -593,7 +589,7 @@
                         </div>
                     </div>
                     
-                    <div>
+        <div>
                         <h6 class="fw-semibold">
                             <i class="bi bi-exclamation-triangle text-danger me-2"></i>Perhatian
                         </h6>
@@ -601,30 +597,30 @@
                             Pastikan tanggal mulai dan selesai sudah benar. Budget tidak dapat diubah setelah periode berakhir.
                         </p>
                     </div>
-                </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Preview Modal -->
 <div class="modal fade" id="previewModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Pratinjau Budget</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Preview content will be populated by JavaScript -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary" id="saveFromPreview">
-                    <i class="bi bi-check-circle me-1"></i>Simpan Budget
-                </button>
-            </div>
-        </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pratinjau Budget</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Preview content will be populated by JavaScript -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-primary" id="saveFromPreview">
+          <i class="bi bi-check-circle me-1"></i>Simpan Budget
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
