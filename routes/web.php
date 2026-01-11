@@ -65,10 +65,10 @@ Route::middleware(["auth"])
 			BudgetController::class,
 			"createFromSuggestions",
 		])->name("budgets.create-from-suggestions");
-		Route::get("budgets/toggle-active", [
+		Route::post("budgets/{budget}/toggle-status", [
 			BudgetController::class,
-			"toggleActive",
-		])->name("budgets.toggle-active");
+			"toggleStatus",
+		])->name("budgets.toggle-status");
 		Route::post("categories/import", [CategoryController::class, ""])->name(
 			"categories.import"
 		);
