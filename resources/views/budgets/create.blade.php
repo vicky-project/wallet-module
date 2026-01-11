@@ -744,6 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    
     // Category selection
     const categorySelect = document.getElementById('category_id');
     const categoryPreview = document.getElementById('categoryPreview');
@@ -752,8 +753,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewCategoryDescription = document.getElementById('previewCategoryDescription');
     
     if (categorySelect) {
-        categorySelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
+        categorySelect.addEventListener('change', categoryPreviewSelection);
+    }
+    
+    function categoryPreviewSelection(categorySelect) {
+      const selectedOption = this.options[this.selectedIndex];
             const icon = selectedOption.dataset.icon;
             const color = selectedOption.dataset.color;
             const name = selectedOption.text;
@@ -777,7 +781,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 categoryPreview.classList.add('d-none');
             }
-        });
     }
     
     // Account selection
