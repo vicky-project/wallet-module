@@ -330,7 +330,7 @@
         </div>
                     
         <!-- Date Range Display -->
-        <div class="date-range-display">
+        <div class="date-range-display text-bg-light">
           <div class="row">
             <div class="col-md-6">
               <div class="mb-2">
