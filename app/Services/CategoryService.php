@@ -94,7 +94,7 @@ class CategoryService
 					$monthlyTotal = $category->getExpenseTotal();
 					$category->monthly_total = $monthlyTotal;
 
-					$activeBudget = $category->getActiveBudget();
+					$activeBudget = $category->getCurrentBudget();
 					if ($activeBudget) {
 						$category->budget_usage_percentage =
 							$activeBudget->amount > 0

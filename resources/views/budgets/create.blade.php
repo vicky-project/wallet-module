@@ -610,14 +610,10 @@ document.addEventListener('DOMContentLoaded', function() {
     periodTypeCards.forEach(card => {
         card.addEventListener('click', function() {
             // Remove selected from all cards
-            periodTypeCards.forEach(c => {
-              c.classList.remove('selected');
-              c.removeAttribute('selected');
-            });
+            periodTypeCards.forEach(c => c.classList.remove('selected'));
             
             // Add selected to clicked card
             card.classList.add('selected');
-            this.setAttribute('selected', true);
             
             // Update hidden input
             const periodType = this.dataset.type;
