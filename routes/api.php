@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use Modules\Wallet\Http\Controller\BudgetController;
+use Modules\Wallet\Http\Controllers\BudgetController;
 
 Route::prefix("apps")
 	->name("apps.")
