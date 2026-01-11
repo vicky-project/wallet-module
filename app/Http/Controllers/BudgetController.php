@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Services\BudgetService;
+use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Http\Requests\BudgetRequest;
 use Modules\Wallet\Http\Requests\CalculateDatesBudgetRequest;
 
@@ -101,7 +102,7 @@ class BudgetController extends Controller
 		// Get transactions for this budget period
 		$transactions = $budget->category
 			->transactions()
-			->where("type", "expense")
+			->expense()
 			->whereBetween("transaction_date", [
 				$budget->start_date,
 				$budget->end_date,
@@ -117,7 +118,7 @@ class BudgetController extends Controller
 			"largest_transaction" => $transactions->max("amount") ?? 0,
 			"transactions_today" => $budget->category
 				->transactions()
-				->where("type", "expense")
+				->expense()
 				->whereDate("transaction_date", today())
 				->whereBetween("transaction_date", [
 					$budget->start_date,

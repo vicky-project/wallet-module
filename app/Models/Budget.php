@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Modules\Wallet\Enums\PeriodType;
 use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Casts\MoneyCast;
+use Modules\Wallet\Helpers\Helper;
 use Brick\Money\Money;
 use Brick\Money\Currency;
 
@@ -151,7 +152,7 @@ class Budget extends Model
 	 */
 	public function getFormattedAmountAttribute(): string
 	{
-		return $this->formatMoney($this->amount->getAmount()->toInt());
+		return Helper::formatMoney($this->amount->getAmount()->toInt());
 	}
 
 	/**
@@ -159,7 +160,7 @@ class Budget extends Model
 	 */
 	public function getFormattedSpentAttribute(): string
 	{
-		return $this->formatMoney($this->spent->getAmount()->toInt());
+		return Helper::formatMoney($this->spent->getAmount()->toInt());
 	}
 
 	/**
@@ -167,7 +168,7 @@ class Budget extends Model
 	 */
 	public function getFormattedRemainingAttribute(): string
 	{
-		return $this->formatMoney($this->remaining);
+		return Helper::formatMoney($this->remaining);
 	}
 
 	/**
