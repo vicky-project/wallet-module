@@ -89,7 +89,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('apps.budgets.next-period', $budget) }}" 
+                        <a class="dropdown-item" href="{{ route('apps.budgets.index', $budget) }}" 
                            onclick="return confirm('Buat budget untuk periode berikutnya?')">
                             <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
                         </a>
