@@ -919,6 +919,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Calculate initial dates
     calculateDates();
+    categoryPreviewSelection(categorySelect);
 });
 </script>
 @endpush
