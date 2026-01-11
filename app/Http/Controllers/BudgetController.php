@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Services\BudgetService;
 use Modules\Wallet\Http\Requests\BudgetRequest;
+use Modules\Wallet\Http\Requests\CalculateDatesBudgetRequest;
 
 class BudgetController extends Controller
 {
@@ -188,18 +189,14 @@ class BudgetController extends Controller
 	/**
 	 * Calculate period dates
 	 */
-	public function calculateDates(Request $request)
+	public function calculateDates(CalculateDatesBudgetRequest $request)
 	{
-		$request->validate([
-			"period_type" => "required|string",
-			"period_value" => "required|integer",
-			"year" => "required|integer",
-		]);
+		$data = $request->validated();
 
 		$dates = $this->budgetService->calculatePeriodDates(
-			$request->period_type,
-			$request->period_value,
-			$request->year
+			$data["period_type"],
+			$data["period_value"],
+			$data["year"]
 		);
 
 		return response()->json([
