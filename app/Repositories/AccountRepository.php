@@ -197,7 +197,6 @@ class AccountRepository extends BaseRepository
 
 			$totalBalance += $balance;
 		}
-		dd($totalBalance);
 
 		$netWorth = $assetBalance - abs($liabilityBalance);
 
