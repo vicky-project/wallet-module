@@ -38,6 +38,7 @@ class Budget extends Model
 		"end_date" => "date",
 		"amount" => MoneyCast::class,
 		"spent" => MoneyCast::class,
+		"period_type" => PeriodType::class,
 		"rollover_unused" => "boolean",
 		"is_active" => "boolean",
 		"settings" => "array",

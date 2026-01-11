@@ -267,7 +267,7 @@
                   <div class="d-flex align-items-center">
                     <div class="budget-icon me-3" 
                          style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                      <i class="bi bi-{{ $budget->category->icon ?? 'tag' }}"></i>
+                      <i class="bi {{ $budget->category->icon ?? 'bi-tag' }}"></i>
                     </div>
                     <div>
                       <strong class="d-block">{{ $budget->category->name }}</strong>
@@ -286,7 +286,7 @@
                     <div class="d-flex flex-wrap gap-1">
                       @foreach($budget->accounts->take(2) as $account)
                         <span class="accounts-badge" title="{{ $account->name }}">
-                          <i class="bi bi-{{ $account->icon ?? 'wallet' }} me-1"></i>
+                          <i class="bi {{ $account->icon ?? 'bi-wallet' }} me-1"></i>
                           {{ Str::limit($account->name, 10) }}
                         </span>
                       @endforeach
@@ -313,7 +313,7 @@
                     </div>
                   </div>
                   <div class="d-flex justify-content-between">
-                    <small class="text-muted">Sisa: {{ Helper::toMoney($budget->remaining)->getAmount()->toInt() }}</small>
+                    <small class="text-muted">Sisa: {{ Helper::formatMoney($budget->remaining) }}</small>
                     <small class="fw-semibold {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
                       {{ number_format($budget->usage_percentage, 1) }}%
                     </small>
