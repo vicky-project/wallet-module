@@ -129,7 +129,7 @@
 <div class="row mb-4">
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card">
-            <div class="stat-value">{{ format_currency($budget->amount) }}</div>
+            <div class="stat-value">{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }}</div>
             <div class="stat-label">TOTAL BUDGET</div>
             <div class="mt-3">
                 <small class="text-muted">
@@ -143,7 +143,7 @@
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card">
             <div class="stat-value {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
-                {{ format_currency($budget->spent) }}
+                {{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }}
             </div>
             <div class="stat-label">TOTAL TERPAKAI</div>
             <div class="mt-3">
@@ -161,7 +161,7 @@
     
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card">
-            <div class="stat-value text-info">{{ format_currency($budget->remaining) }}</div>
+            <div class="stat-value text-info">{{ Helper::formatMoney($budget->remaining) }}</div>
             <div class="stat-label">SISA BUDGET</div>
             <div class="mt-3">
                 <small class="text-muted">
@@ -174,7 +174,7 @@
     
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card">
-            <div class="stat-value text-warning">{{ format_currency($budget->daily_budget) }}</div>
+            <div class="stat-value text-warning">{{ Helper::formatMoney($budget->daily_budget) }}</div>
             <div class="stat-label">RATA-RATA HARIAN</div>
             <div class="mt-3">
                 <small class="text-muted">
@@ -220,7 +220,7 @@
                     <tr>
                         <th>Tipe Periode</th>
                         <td>
-                            <span class="badge bg-primary">{{ ucfirst($budget->period_type) }}</span>
+                            <span class="badge bg-primary">{{ ucfirst($budget->period_type->name) }}</span>
                         </td>
                     </tr>
                     <tr>
@@ -240,7 +240,7 @@
                                 <span class="badge bg-info">AKTIF</span>
                                 @if($budget->rollover_limit)
                                     <small class="text-muted d-block">
-                                        Limit: {{ format_currency($budget->rollover_limit) }}
+                                        Limit: {{ Helper::formatMoney($budget->rollover_limit) }}
                                     </small>
                                 @endif
                             @else
@@ -280,7 +280,7 @@
                                     <div class="flex-grow-1">
                                         <div class="fw-semibold">{{ $account->name }}</div>
                                         <div class="text-muted small">
-                                            Saldo: {{ format_currency($account->balance->getMinorAmount()->toInt()) }}
+                                            Saldo: {{ Helper::formatMoney($account->balance->getMinorAmount()->toInt()) }}
                                         </div>
                                     </div>
                                     <span class="badge bg-light text-dark">
@@ -358,7 +358,7 @@
                                     </div>
                                     <div class="text-end">
                                         <div class="fw-semibold {{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
-                                            {{ $transaction->type === 'income' ? '+' : '-' }}{{ format_currency($transaction->amount) }}
+                                            {{ $transaction->type === 'income' ? '+' : '-' }}{{ Helper::formatMoney($transaction->amount->getAmount()->toInt()) }}
                                         </div>
                                         <div class="text-muted small">
                                             via {{ $transaction->payment_method }}
@@ -412,7 +412,7 @@
                     </div>
                     
                     <div class="col-md-4 text-center mb-4">
-                        <div class="display-6 fw-bold text-danger">{{ format_currency($stats['largest_transaction']) }}</div>
+                        <div class="display-6 fw-bold text-danger">{{ Helper::formatMoney($stats['largest_transaction']) }}</div>
                         <div class="text-muted">Transaksi Terbesar</div>
                         <small class="text-muted">single transaction</small>
                     </div>
