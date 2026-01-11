@@ -214,7 +214,7 @@
           <!-- Category Preview -->
           <div class="col-12">
             <div class="category-preview d-none" id="categoryPreview">
-              <div class="d-flex align-items-center p-3 bg-light rounded">
+              <div class="d-flex align-items-center p-3 bg-warning rounded">
                 <div class="category-icon me-3" id="previewCategoryIcon">
                   <i class="bi bi-tag"></i>
                 </div>
