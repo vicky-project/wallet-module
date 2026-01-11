@@ -40,7 +40,7 @@
     
     .period-type-card.selected {
         border-color: #0d6efd;
-        background-color: rgba(130, 110, 253, 0.1);
+        background-color: rgba(13, 110, 253, 0.1);
     }
     
     .period-icon {
@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function() {
             periodTypeCards.forEach(c => c.classList.remove('selected'));
             
             // Add selected to clicked card
-            this.classList.add('selected');
+            chard.classList.add('selected');
             
             // Update hidden input
             const periodType = this.dataset.type;
