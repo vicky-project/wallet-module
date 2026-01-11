@@ -769,7 +769,10 @@ document.addEventListener('DOMContentLoaded', function() {
         previewCategoryIcon.style.backgroundColor = `${color}20`;
         previewCategoryIcon.style.color = color;
         previewCategoryName.textContent = name;
-        previewCategoryDescription.textContent = description;
+        
+        if(description) {
+          previewCategoryDescription.textContent = description;
+        }
                 
         // Get suggested amount for category
         fetch(`{{ secure_url(config('app.url')) }}/api/apps/budgets/suggested-amount/${this.value}`)
