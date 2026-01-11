@@ -315,7 +315,7 @@
                         <i class="bi bi-files me-2"></i>Duplikat Budget
                     </button>
                     
-                    <a href="{{ route('wallet.budgets.next-period', $budget) }}" 
+                    <a href="{{ route('apps.budgets.next-period', $budget) }}" 
                        class="btn btn-outline-info" 
                        onclick="return confirm('Buat budget untuk periode berikutnya?')">
                         <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
@@ -334,7 +334,7 @@
                     <i class="bi bi-receipt me-2"></i>Transaksi Terbaru
                     <span class="badge bg-secondary ms-2">{{ $transactions->total() }}</span>
                 </h5>
-                <a href="{{ route('wallet.transactions.index', ['budget_id' => $budget->id]) }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ route('apps.transactions.index', ['budget_id' => $budget->id]) }}" class="btn btn-sm btn-outline-primary">
                     Lihat Semua
                 </a>
             </div>
@@ -380,7 +380,7 @@
                         </div>
                         <h5 class="mb-3">Belum ada transaksi</h5>
                         <p class="text-muted mb-4">Mulai dengan menambahkan transaksi untuk budget ini.</p>
-                        <a href="{{ route('wallet.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-primary">
+                        <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi Pertama
                         </a>
                     </div>
@@ -432,7 +432,7 @@
 <div class="modal fade" id="duplicateModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('wallet.budgets.duplicate', $budget) }}" method="POST">
+            <form action="{{ route('apps.budgets.duplicate', $budget) }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Duplikat Budget</h5>
@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memperbarui...';
             this.disabled = true;
             
-            fetch('{{ route("wallet.budgets.update-spent") }}', {
+            fetch('{{ route("apps.budgets.update-spent") }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
