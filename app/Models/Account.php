@@ -73,6 +73,14 @@ class Account extends Model
 					->update(["is_default" => false]);
 			}
 		});
+
+		static::created(function ($account) {
+			Cache::flush();
+		});
+
+		static::updated(function ($account) {
+			Cache::flush();
+		});
 	}
 
 	/**

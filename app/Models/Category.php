@@ -6,6 +6,7 @@ use Modules\Wallet\Casts\MoneyCast;
 use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Enums\TransactionType;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -85,6 +86,14 @@ class Category extends Model
 				$category->user_id,
 				$category->id
 			);
+		});
+
+		static::created(function ($category) {
+			Cache::flush();
+		});
+
+		static::updated(function ($category) {
+			Cache::flush();
 		});
 	}
 
