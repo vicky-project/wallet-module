@@ -434,7 +434,7 @@
 <div class="modal fade" id="duplicateModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('apps.budgets.duplicate', $budget) }}" method="POST">
+            <form action="{{ route('apps.budgets.store', $budget) }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Duplikat Budget</h5>
