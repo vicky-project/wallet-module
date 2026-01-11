@@ -171,11 +171,11 @@
   <div class="col-lg-8">
     <form action="{{ route('apps.budgets.store') }}" method="POST" id="createBudgetForm">
       @csrf
-                
+
       <!-- Basic Information -->
       <div class="form-section">
         <h6 class="form-section-title">Informasi Dasar</h6>
-                    
+
         <div class="row g-3">
           <!-- Category Selection -->
           <div class="col-md-8">
@@ -199,7 +199,7 @@
               <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
           </div>
-                        
+
           <!-- Custom Name -->
           <div class="col-md-4">
             <label for="name" class="form-label">
@@ -210,7 +210,7 @@
                 Kosongkan untuk menggunakan nama default.
               </div>
             </div>
-                        
+
           <!-- Category Preview -->
           <div class="col-12">
             <div class="category-preview d-none" id="categoryPreview">
@@ -229,7 +229,7 @@
           </div>
         </div>
       </div>
-                
+
       <!-- Period Configuration -->
       <div class="form-section">
         <h6 class="form-section-title">Konfigurasi Periode</h6>
@@ -254,209 +254,200 @@
                     
         <!-- Period Value and Year -->
         <div class="row g-3" id="periodConfig">
-                        <!-- Monthly -->
-                        <div class="col-md-6 period-config monthly">
-                            <label for="period_value_monthly" class="form-label">Bulan</label>
-                            <select class="form-select" id="period_value_monthly" name="period_value">
-                                @for($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" {{ old('period_value', $defaultPeriodValue) == $i ? 'selected' : '' }}>
-                                        {{ DateTime::createFromFormat('!m', $i)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
+          <!-- Monthly -->
+          <div class="col-md-6 period-config monthly">
+            <label for="period_value_monthly" class="form-label">Bulan</label>
+            <select class="form-select" id="period_value_monthly" name="period_value">
+              @for($i = 1; $i <= 12; $i++)
+                <option value="{{ $i }}" {{ old('period_value', $defaultPeriodValue) == $i ? 'selected' : '' }}>
+                  {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                </option>
+              @endfor
+            </select>
+          </div>
                         
-                        <!-- Weekly -->
-                        <div class="col-md-6 period-config weekly d-none">
-                            <label for="period_value_weekly" class="form-label">Minggu Ke-</label>
-                            <select class="form-select" id="period_value_weekly" name="period_value">
-                                @for($i = 1; $i <= 52; $i++)
-                                    <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
-                                        Minggu {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
+          <!-- Weekly -->
+          <div class="col-md-6 period-config weekly d-none">
+            <label for="period_value_weekly" class="form-label">Minggu Ke-</label>
+            <select class="form-select" id="period_value_weekly" name="period_value">
+              @for($i = 1; $i <= 52; $i++)
+                <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
+                  Minggu {{ $i }}
+                </option>
+              @endfor
+            </select>
+          </div>
                         
-                        <!-- Biweekly -->
-                        <div class="col-md-6 period-config biweekly d-none">
-                            <label for="period_value_biweekly" class="form-label">Periode 2 Mingguan Ke-</label>
-                            <select class="form-select" id="period_value_biweekly" name="period_value">
-                                @for($i = 1; $i <= 26; $i++)
-                                    <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
-                                        Periode {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
+          <!-- Biweekly -->
+          <div class="col-md-6 period-config biweekly d-none">
+            <label for="period_value_biweekly" class="form-label">Periode 2 Mingguan Ke-</label>
+            <select class="form-select" id="period_value_biweekly" name="period_value">
+            <select class="form-select" id="period_value_biweekly" name="period_value">
+              @for($i = 1; $i <= 26; $i++)
+                <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
+                  Periode {{ $i }}
+                </option>
+              @endfor
+            </select>
+          </div>
                         
-                        <!-- Quarterly -->
-                        <div class="col-md-6 period-config quarterly d-none">
-                            <label for="period_value_quarterly" class="form-label">Kuartal</label>
-                            <select class="form-select" id="period_value_quarterly" name="period_value">
-                                @for($i = 1; $i <= 4; $i++)
-                                    <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
-                                        Q{{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
+          <!-- Quarterly -->
+          <div class="col-md-6 period-config quarterly d-none">
+            <label for="period_value_quarterly" class="form-label">Kuartal</label>
+            <select class="form-select" id="period_value_quarterly" name="period_value">
+              @for($i = 1; $i <= 4; $i++)
+                <option value="{{ $i }}" {{ old('period_value') == $i ? 'selected' : '' }}>
+                  Q{{ $i }}
+                </option>
+              @endfor
+            </select>
+          </div>
                         
-                        <!-- Yearly -->
-                        <div class="col-md-6 period-config yearly d-none">
-                            <label for="period_value_yearly" class="form-label">Tahun</label>
-                            <input type="hidden" name="period_value" id="period_value_yearly" value="1">
-                            <input type="text" class="form-control" value="Tahunan" disabled>
-                        </div>
+          <!-- Yearly -->
+          <div class="col-md-6 period-config yearly d-none">
+            <label for="period_value_yearly" class="form-label">Tahun</label>
+            <input type="hidden" name="period_value" id="period_value_yearly" value="1">
+            <input type="text" class="form-control" value="Tahunan" disabled>
+          </div>
                         
-                        <!-- Custom -->
-                        <div class="col-md-6 period-config custom d-none">
-                            <label for="period_value_custom" class="form-label">Periode Kustom</label>
-                            <input type="number" class="form-control" id="period_value_custom" name="period_value" 
-                                   min="1" value="{{ old('period_value', 1) }}">
-                            <div class="form-text">Nomor periode kustom</div>
-                        </div>
+          <!-- Custom -->
+          <div class="col-md-6 period-config custom d-none">
+            <label for="period_value_custom" class="form-label">Periode Kustom</label>
+            <input type="number" class="form-control" id="period_value_custom" name="period_value" min="1" value="{{ old('period_value', 1) }}">
+            <div class="form-text">Nomor periode kustom</div>
+          </div>
                         
-                        <!-- Year -->
-                        <div class="col-md-6">
-                            <label for="year" class="form-label">Tahun</label>
-                            <select class="form-select" id="year" name="year" required>
-                                @for($i = date('Y') - 2; $i <= date('Y') + 2; $i++)
-                                    <option value="{{ $i }}" {{ old('year', $defaultYear) == $i ? 'selected' : '' }}>
-                                        {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
+          <!-- Year -->
+          <div class="col-md-6">
+            <label for="year" class="form-label">Tahun</label>
+            <select class="form-select" id="year" name="year" required>
+              @for($i = date('Y') - 2; $i <= date('Y') + 2; $i++)
+                <option value="{{ $i }}" {{ old('year', $defaultYear) == $i ? 'selected' : '' }}>
+                  {{ $i }}
+                </option>
+              @endfor
+            </select>
+          </div>
+        </div>
                     
         <!-- Date Range Display -->
         <div class="date-range-display">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label class="form-label">Tanggal Mulai</label>
-                                    <input type="date" class="form-control" id="start_date" name="start_date" 
-                                           value="{{ old('start_date') }}" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label class="form-label">Tanggal Selesai</label>
-                                    <input type="date" class="form-control" id="end_date" name="end_date" 
-                                           value="{{ old('end_date') }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-2">
-                            <small class="text-muted" id="dateRangeLabel">
-                                Periode: -
-                            </small>
-                        </div>
-                    </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-2">
+                <label class="form-label">Tanggal Mulai</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') }}" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-2">
+                <label class="form-label">Tanggal Selesai</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') }}" required>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-2">
+            <small class="text-muted" id="dateRangeLabel">
+              Periode: -
+            </small>
+          </div>
+        </div>
       </div>
-                
+
       <!-- Amount Configuration -->
       <div class="form-section">
-                    <h6 class="form-section-title">Jumlah Budget</h6>
+        <h6 class="form-section-title">Jumlah Budget</h6>
                     
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <label for="amount" class="form-label">
-                                <i class="bi bi-currency-exchange me-1"></i>Jumlah Budget
-                                <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="number" class="form-control" id="amount" name="amount" 
-                                       placeholder="1000000" min="1000" step="1000"
-                                       value="{{ old('amount') }}" required>
-                            </div>
-                            <div class="form-text">
-                                Minimum budget: Rp 1.000
-                            </div>
-                            @error('amount')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label for="amount" class="form-label">
+              <i class="bi bi-currency-exchange me-1"></i>Jumlah Budget
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">Rp</span>
+              <input type="number" class="form-control" id="amount" name="amount" placeholder="1000000" min="1000" step="1000" value="{{ old('amount') }}" required>
+            </div>
+            <div class="form-text">
+              Minimum budget: Rp 1.000
+            </div>
+            @error('amount')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
                             
-                            <!-- Suggested Amounts -->
-                            <div class="mt-3" id="suggestedAmountsContainer">
-                                <label class="form-label">Jumlah yang Disarankan:</label>
-                                <div class="suggested-amounts">
-                                    <div class="suggested-amount" data-amount="500000">500K</div>
-                                    <div class="suggested-amount" data-amount="1000000">1 Jt</div>
-                                    <div class="suggested-amount" data-amount="2000000">2 Jt</div>
-                                    <div class="suggested-amount" data-amount="5000000">5 Jt</div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Suggested Amounts -->
+            <div class="mt-3" id="suggestedAmountsContainer">
+              <label class="form-label">Jumlah yang Disarankan:</label>
+              <div class="suggested-amounts">
+                <div class="suggested-amount" data-amount="500000">500K</div>
+                <div class="suggested-amount" data-amount="1000000">1 Jt</div>
+                <div class="suggested-amount" data-amount="2000000">2 Jt</div>
+                <div class="suggested-amount" data-amount="5000000">5 Jt</div>
+              </div>
+            </div>
+          </div>
                         
-                        <div class="col-md-4">
-                            <div class="amount-preview" id="amountPreview">
-                                Rp 0
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+          <div class="col-md-4">
+            <div class="amount-preview" id="amountPreview">
+              Rp 0
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Account Selection -->
       <div class="form-section">
-                    <h6 class="form-section-title">Akun Terkait</h6>
-                    <p class="text-muted mb-3">Pilih akun yang akan dipantau dalam budget ini. Kosongkan untuk memantau semua akun.</p>
+        <h6 class="form-section-title">Akun Terkait</h6>
+        <p class="text-muted mb-3">Pilih akun yang akan dipantau dalam budget ini. Kosongkan untuk memantau semua akun.</p>
                     
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="selectAllAccounts">
-                                    <label class="form-check-label" for="selectAllAccounts">
-                                        Pilih Semua Akun
-                                    </label>
-                                </div>
-                            </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="selectAllAccounts">
+                <label class="form-check-label" for="selectAllAccounts">
+                  Pilih Semua Akun
+                </label>
+              </div>
+            </div>
                             
-                            <div class="accounts-list" id="accountsList">
-                                @foreach($accounts as $account)
-                                    <div class="account-select-item" data-id="{{ $account->id }}">
-                                        <div class="d-flex align-items-center">
-                                            <div class="account-icon-small me-3" 
-                                                 style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                                                <i class="bi bi-{{ $account->icon }}"></i>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <div class="fw-semibold">{{ $account->name }}</div>
-                                                <div class="text-muted small">
-                                                    Saldo: {{ ($account->balance->getMinorAmount()->toInt()) }}
-                                                </div>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input account-checkbox" 
-                                                       type="checkbox" 
-                                                       name="accounts[]" 
-                                                       value="{{ $account->id }}"
-                                                       id="account_{{ $account->id }}">
-                                                <label class="form-check-label" for="account_{{ $account->id }}"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            
-                            <div class="mt-3">
-                                <small class="text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Jika tidak ada akun yang dipilih, budget akan memantau semua akun.
-                                </small>
-                            </div>
-                        </div>
+            <div class="accounts-list" id="accountsList">
+              @foreach($accounts as $account)
+                <div class="account-select-item" data-id="{{ $account->id }}">
+                  <div class="d-flex align-items-center">
+                    <div class="account-icon-small me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+                      <i class="bi bi-{{ $account->icon }}"></i>
                     </div>
+                    <div class="flex-grow-1">
+                      <div class="fw-semibold">{{ $account->name }}</div>
+                      <div class="text-muted small">
+                        Saldo: {{ ($account->balance->getMinorAmount()->toInt()) }}
+                      </div>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input account-checkbox" type="checkbox" name="accounts[]" value="{{ $account->id }}" id="account_{{ $account->id }}">
+                      <label class="form-check-label" for="account_{{ $account->id }}"></label>
+                    </div>
+                  </div>
                 </div>
-                
+              @endforeach
+            </div>
+                            
+            <div class="mt-3">
+              <small class="text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Jika tidak ada akun yang dipilih, budget akan memantau semua akun.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Advanced Settings -->
       <div class="form-section">
-                    <h6 class="form-section-title">Pengaturan Lanjutan</h6>
-                    
-                    <div class="row g-3">
+        <h6 class="form-section-title">Pengaturan Lanjutan</h6>
+
+        <div class="row g-3">
                         <!-- Rollover Settings -->
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -501,16 +492,16 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                
+      </div>
+
       <!-- Form Actions -->
       <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                    <div>
+        <div>
                         <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i>Batal
                         </a>
                     </div>
-                    <div>
+        <div>
                         <button type="button" class="btn btn-outline-primary me-2" id="previewBtn">
                             <i class="bi bi-eye me-1"></i>Pratinjau
                         </button>
@@ -518,10 +509,10 @@
                             <i class="bi bi-check-circle me-1"></i>Simpan Budget
                         </button>
                     </div>
-                </div>
+      </div>
     </form>
   </div>
-        
+
   <!-- Sidebar -->
   <div class="col-lg-4">
     <div class="card sticky-top" style="top: 20px;">
@@ -532,52 +523,52 @@
       </div>
       <div class="card-body">
         <div class="mb-4">
-                        <h6 class="fw-semibold">
-                            <i class="bi bi-lightbulb text-warning me-2"></i>Tips Budgeting
-                        </h6>
-                        <ul class="list-unstyled ps-3">
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle text-success me-2"></i>
-                                <small>Mulai dari kategori penting terlebih dahulu</small>
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle text-success me-2"></i>
-                                <small>Gunakan data pengeluaran sebelumnya sebagai acuan</small>
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle text-success me-2"></i>
-                                <small>Review budget secara berkala</small>
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle text-success me-2"></i>
-                                <small>Aktifkan notifikasi untuk peringatan budget</small>
-                            </li>
-                        </ul>
-                    </div>
-                    
+          <h6 class="fw-semibold">
+            <i class="bi bi-lightbulb text-warning me-2"></i>Tips Budgeting
+          </h6>
+          <ul class="list-unstyled ps-3">
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              <small>Mulai dari kategori penting terlebih dahulu</small>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              <small>Gunakan data pengeluaran sebelumnya sebagai acuan</small>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              <small>Review budget secara berkala</small>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              <small>Aktifkan notifikasi untuk peringatan budget</small>
+            </li>
+          </ul>
+        </div>
+
         <div class="mb-4">
-                        <h6 class="fw-semibold">
-                            <i class="bi bi-calculator text-primary me-2"></i>Kalkulator Budget Harian
-                        </h6>
-                        <div class="input-group mb-2">
-                            <input type="number" class="form-control" id="dailyCalculator" placeholder="Jumlah budget">
-                            <button class="btn btn-outline-primary" type="button" id="calculateDaily">
-                                Hitung
-                            </button>
-                        </div>
-                        <div id="dailyResult" class="d-none">
-                            <small class="text-muted">Rata-rata per hari: <span id="dailyAmount">Rp 0</span></small>
-                        </div>
-                    </div>
-                    
+          <h6 class="fw-semibold">
+            <i class="bi bi-calculator text-primary me-2"></i>Kalkulator Budget Harian
+          </h6>
+          <div class="input-group mb-2">
+            <input type="number" class="form-control" id="dailyCalculator" placeholder="Jumlah budget">
+            <button class="btn btn-outline-primary" type="button" id="calculateDaily">
+              Hitung
+            </button>
+          </div>
+          <div id="dailyResult" class="d-none">
+            <small class="text-muted">Rata-rata per hari: <span id="dailyAmount">Rp 0</span></small>
+          </div>
+        </div>
+
         <div>
-                        <h6 class="fw-semibold">
-                            <i class="bi bi-exclamation-triangle text-danger me-2"></i>Perhatian
-                        </h6>
-                        <p class="small text-muted">
-                            Pastikan tanggal mulai dan selesai sudah benar. Budget tidak dapat diubah setelah periode berakhir.
-                        </p>
-                    </div>
+          <h6 class="fw-semibold">
+            <i class="bi bi-exclamation-triangle text-danger me-2"></i>Perhatian
+          </h6>
+          <p class="small text-muted">
+            Pastikan tanggal mulai dan selesai sudah benar. Budget tidak dapat diubah setelah periode berakhir.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -677,6 +668,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+            alert(data.dates.start_date)
                 document.getElementById('start_date').value = data.dates.start_date;
                 document.getElementById('end_date').value = data.dates.end_date;
                 updateDateRangeLabel(data.dates.start_date, data.dates.end_date);
