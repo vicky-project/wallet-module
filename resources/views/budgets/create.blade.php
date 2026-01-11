@@ -40,7 +40,7 @@
     
     .period-type-card.selected {
         border-color: #0d6efd;
-        background-color: rgba(13, 110, 253, 0.1);
+        background-color: rgba(130, 110, 253, 0.1);
     }
     
     .period-icon {
