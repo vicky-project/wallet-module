@@ -865,6 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Preview button
     const previewBtn = document.getElementById('previewBtn');
+    const previewModal = document.getElementById('previewModal');
     if (previewBtn) {
         previewBtn.addEventListener('click', function() {
             // Collect form data and show preview
@@ -878,10 +879,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            alert(JSON.stringify(data));
+            generatePreviewModal(data);
             
             // Show preview modal
-            const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+            const modal = new bootstrap.Modal(previewModal);
             modal.show();
         });
     }
@@ -925,6 +926,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calculate initial dates
     calculateDates();
     categoryPreviewSelection(categorySelect);
+    
+    function generatePreviewModal(data) {
+      const modalBody = previewModal.querySelector('.modal-body');
+      modalBody.innerHTML = `<div class="row">
+        <div class="col-md-4">
+          <div class="text-center mb-4"></div>
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-6"></div>
+            <div class="col-6"></div>
+          </div>
+        </div>
+      </div>`;
+    }
 });
 </script>
 @endpush
