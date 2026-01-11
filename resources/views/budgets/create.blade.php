@@ -215,7 +215,7 @@
           <div class="col-12">
             <div class="category-preview d-none" id="categoryPreview">
               <div class="d-flex align-items-center p-3 text-bg-secondary rounded">
-                <div class="category-icon me-3 bg-light" id="previewCategoryIcon">
+                <div class="category-icon me-3 bg-light p-5 rounded" id="previewCategoryIcon">
                   <i class="bi bi-tag"></i>
                 </div>
                 <div>
