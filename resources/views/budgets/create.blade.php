@@ -757,12 +757,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function categoryPreviewSelection(categorySelect) {
-      const selectedOption = this.options[this.selectedIndex];
+      const selectedOption = categorySelect.options[categorySelect.selectedIndex];
             const icon = selectedOption.dataset.icon;
             const color = selectedOption.dataset.color;
             const name = selectedOption.text;
             
-            if (this.value) {
+            if (categorySelect.value) {
                 categoryPreview.classList.remove('d-none');
                 previewCategoryIcon.innerHTML = `<i class="bi ${icon}"></i>`;
                 previewCategoryIcon.style.backgroundColor = `${color}20`;
