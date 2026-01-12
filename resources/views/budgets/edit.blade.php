@@ -704,6 +704,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Format currency function
     function formatCurrency(amount) {
+    console.log(amount)
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
             currency: 'IDR',
