@@ -98,6 +98,7 @@ class BudgetController extends Controller
 
 		// Load relationships
 		$budget->load(["category", "accounts", "user"]);
+		dd($budget);
 
 		// Get transactions for this budget period
 		$transactions = $budget->category
