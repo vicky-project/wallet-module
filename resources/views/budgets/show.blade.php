@@ -277,7 +277,7 @@
                   <div class="flex-grow-1">
                     <div class="fw-semibold">{{ $account->name }}</div>
                     <div class="text-muted small">
-                      Saldo: @($account->balance->getMinorAmount()->toInt())
+                      Saldo: @money($account->balance->getMinorAmount()->toInt())
                     </div>
                   </div>
                   <span class="badge bg-light text-dark">
@@ -353,8 +353,7 @@
                   </div>
                   <div class="text-end">
                     <div class="fw-semibold {{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
-                      {{ $transaction->type === TransactionType::INCOME ? '+' : '-' }}
-                      @money($transaction->amount->getMinorAmount()->toInt())
+                      {{ $transaction->type === TransactionType::INCOME ? '+' : '-' }}@money($transaction->amount->getMinorAmount()->toInt())
                     </div>
                     <div class="text-muted small">
                       via {{ $transaction->payment_method }}
