@@ -2,6 +2,8 @@
 
 @section('title', 'Edit Budget - ' . $budget->name ?: $budget->category->name)
 
+@use('Modules\Wallet\Enums\PeriodType')
+
 @section('content')
 @include('wallet::partials.fab')
 <!-- Page Header -->
@@ -75,10 +77,11 @@
                             <label class="form-label">
                                 <i class="bi bi-tags me-1"></i>Kategori
                             </label>
-                            <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <div class="d-flex align-items-center p-2 bg-secondary rounded">
                                 <div class="account-icon-small me-3" 
                                      style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                                    <i class="bi bi-{{ $budget->category->icon }}"></i>
+                                    <i class="bi {{ $budget->category->icon }}"></i>
+                                    <i class="bi {{ $budget->category->icon }}"></i>
                                 </div>
                                 <div>
                                     <div class="fw-semibold">{{ $budget->category->name }}</div>
@@ -114,41 +117,22 @@
                             @foreach($periodTypes as $type)
                                 <div class="col-md-4">
                                     <div class="period-type-card {{ old('period_type', $budget->period_type) == $type ? 'selected' : '' }}" 
-                                         data-type="{{ $type }}">
+                                         data-type="{{ $type ->value}}">
                                         <div class="period-icon">
-                                            @switch($type)
-                                                @case('monthly')
-                                                    <i class="bi bi-calendar-month"></i>
-                                                    @break
-                                                @case('weekly')
-                                                    <i class="bi bi-calendar-week"></i>
-                                                    @break
-                                                @case('biweekly')
-                                                    <i class="bi bi-calendar2-week"></i>
-                                                    @break
-                                                @case('quarterly')
-                                                    <i class="bi bi-calendar3"></i>
-                                                    @break
-                                                @case('yearly')
-                                                    <i class="bi bi-calendar-range"></i>
-                                                    @break
-                                                @case('custom')
-                                                    <i class="bi bi-calendar-event"></i>
-                                                    @break
-                                            @endswitch
+                                          <i class="bi {{ $type->icon() }}"></i>
                                         </div>
                                         <div class="fw-semibold">{{ ucfirst($type->label()) }}</div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-                        <input type="hidden" name="period_type" id="period_type" value="{{ old('period_type', $budget->period_type) }}">
+                        <input type="hidden" name="period_type" id="period_type" value="{{ old('period_type', $budget->period_type->value) }}">
                     </div>
                     
                     <!-- Period Value and Year -->
                     <div class="row g-3" id="periodConfig">
                         <!-- Monthly -->
-                        <div class="col-md-6 period-config monthly {{ $budget->period_type != 'monthly' ? 'd-none' : '' }}">
+                        <div class="col-md-6 period-config monthly {{ $budget->period_type != PeriodType::MONTHLY ? 'd-none' : '' }}">
                             <label for="period_value_monthly" class="form-label">Bulan</label>
                             <select class="form-select" id="period_value_monthly" name="period_value">
                                 @for($i = 1; $i <= 12; $i++)
@@ -160,7 +144,7 @@
                         </div>
                         
                         <!-- Weekly -->
-                        <div class="col-md-6 period-config weekly {{ $budget->period_type != 'weekly' ? 'd-none' : '' }}">
+                        <div class="col-md-6 period-config weekly {{ $budget->period_type != PeriodType::WEEKLY ? 'd-none' : '' }}">
                             <label for="period_value_weekly" class="form-label">Minggu Ke-</label>
                             <select class="form-select" id="period_value_weekly" name="period_value">
                                 @for($i = 1; $i <= 52; $i++)
@@ -172,7 +156,7 @@
                         </div>
                         
                         <!-- Biweekly -->
-                        <div class="col-md-6 period-config biweekly {{ $budget->period_type != 'biweekly' ? 'd-none' : '' }}">
+                        <div class="col-md-6 period-config biweekly {{ $budget->period_type != PeriodType::BIWEEKLY ? 'd-none' : '' }}">
                             <label for="period_value_biweekly" class="form-label">Periode 2 Mingguan Ke-</label>
                             <select class="form-select" id="period_value_biweekly" name="period_value">
                                 @for($i = 1; $i <= 26; $i++)
@@ -184,7 +168,7 @@
                         </div>
                         
                         <!-- Quarterly -->
-                        <div class="col-md-6 period-config quarterly {{ $budget->period_type != 'quarterly' ? 'd-none' : '' }}">
+                        <div class="col-md-6 period-config quarterly {{ $budget->period_type != PeriodType::QUARTERLY ? 'd-none' : '' }}">
                             <label for="period_value_quarterly" class="form-label">Kuartal</label>
                             <select class="form-select" id="period_value_quarterly" name="period_value">
                                 @for($i = 1; $i <= 4; $i++)
@@ -196,14 +180,14 @@
                         </div>
                         
                         <!-- Yearly -->
-                        <div class="col-md-6 period-config yearly {{ $budget->period_type != 'yearly' ? 'd-none' : '' }}">
+                        <div class="col-md-6 period-config yearly {{ $budget->period_type != PeriodType::YEARLY ? 'd-none' : '' }}">
                             <label for="period_value_yearly" class="form-label">Tahun</label>
                             <input type="hidden" name="period_value" id="period_value_yearly" value="1">
                             <input type="text" class="form-control" value="Tahunan" disabled>
                         </div>
                         
                         <!-- Custom -->
-                        <div class="col-md-6 period-config custom {{ $budget->period_type != 'custom' ? 'd-none' : '' }}">
+                        <div class="col-md-6 period-config custom {{ $budget->period_type != PeriodType::CUSTOM ? 'd-none' : '' }}">
                             <label for="period_value_custom" class="form-label">Periode Kustom</label>
                             <input type="number" class="form-control" id="period_value_custom" name="period_value" 
                                    min="1" value="{{ old('period_value', $budget->period_value) }}">
@@ -274,7 +258,7 @@
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
                                 <input type="number" class="form-control" id="amount" name="amount" 
-                                       placeholder="1000000" min="1000" step="1000"
+                                       placeholder="1000000" min="1000"
                                        value="{{ old('amount', $budget->amount) }}" required>
                             </div>
                             <div class="form-text">
