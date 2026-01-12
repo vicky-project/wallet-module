@@ -112,14 +112,13 @@
           <div class="row g-3">
             @foreach($periodTypes as $type)
               <div class="col-md-4">
-                                    <div class="period-type-card {{ old('period_type', $budget->period_type) == $type ? 'selected' : '' }}" 
-                                         data-type="{{ $type ->value}}">
-                                        <div class="period-icon">
-                                          <i class="bi {{ $type->icon() }}"></i>
-                                        </div>
-                                        <div class="fw-semibold">{{ ucfirst($type->label()) }}</div>
-                                    </div>
-                                </div>
+                <div class="period-type-card {{ old('period_type', $budget->period_type->value) == $type->value ? 'selected' : '' }}" data-type="{{ $type->value}}">
+                  <div class="period-icon">
+                    <i class="bi {{ $type->icon() }}"></i>
+                  </div>
+                  <div class="fw-semibold">{{ ucfirst($type->label()) }}</div>
+                </div>
+              </div>
             @endforeach
           </div>
           <input type="hidden" name="period_type" id="period_type" value="{{ old('period_type', $budget->period_type->value) }}">
