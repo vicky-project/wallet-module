@@ -278,7 +278,7 @@
                                        value="{{ old('amount', $budget->amount) }}" required>
                             </div>
                             <div class="form-text">
-                                Saat ini: @money($budget->amount) • Minimum: Rp 1.000
+                                Saat ini: @money($budget->amount->getMinorAmount()->toInt()) • Minimum: Rp 1.000
                             </div>
                             @error('amount')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -317,11 +317,11 @@
                         
                         <div class="col-md-4">
                             <div class="amount-preview" id="amountPreview">
-                                @money(old('amount', $budget->amount))
+                                @money(old('amount', $budget->amount->getMinorAmount()->toInt()))
                             </div>
                             <div class="text-center mt-2">
-                                <small class="text-muted d-block">Terpakai: @money($budget->spent)</small>
-                                <small class="text-muted">Sisa: @money($budget->remaining)</small>
+                                <small class="text-muted d-block">Terpakai: @money($budget->spent->getMinorAmount()->toInt())</small>
+                                <small class="text-muted">Sisa: @money($budget->remaining * 100)</small>
                             </div>
                         </div>
                     </div>
