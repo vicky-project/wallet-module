@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="d-flex justify-content-between text-white-75">
-          <small>{{ Number::currency($budget->spent->getAmount()->toInt(), in: config('wallet.drfault_currency')) }} terpakai</small>
+          <small>{{ Number::currency($budget->spent->getAmount()->toInt(), in: config('wallet.default_currency', 'IDR')) }} terpakai</small>
           <small>{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }} total budget</small>
         </div>
       </div>
