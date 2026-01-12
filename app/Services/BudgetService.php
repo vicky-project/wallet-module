@@ -94,13 +94,8 @@ class BudgetService
 	/**
 	 * Create a new budget
 	 */
-	public function createBudget(array $data): Budget
+	public function createBudget(User $user, array $data): Budget
 	{
-		$user = auth()->user();
-
-		// Validate data
-		$this->validateBudgetData($data, $user);
-
 		try {
 			return $this->budgetRepository->createBudget($data, $user);
 		} catch (\Exception $e) {
@@ -180,43 +175,6 @@ class BudgetService
 		$this->budgetRepository->invalidateUserBudgetCache($user->id);
 
 		return $budget;
-	}
-
-	/**
-	 * Validate budget data
-	 */
-	private function validateBudgetData(
-		array $data,
-		User $user,
-		?int $exceptId = null
-	): void {
-		$rules = [
-			"category_id" => [
-				"required",
-				"exists:categories,id,user_id," . $user->id . ",type,expense",
-			],
-			"name" => ["nullable", "string", "max:100"],
-			"period_type" => [
-				"required",
-				"in:" . implode(",", array_column(PeriodType::cases(), "value")),
-			],
-			"period_value" => ["required", "integer", "min:1"],
-			"year" => ["required", "integer", "min:2000", "max:2100"],
-			"start_date" => ["required", "date"],
-			"end_date" => ["required", "date", "after_or_equal:start_date"],
-			"amount" => ["required", "integer", "min:1000"],
-			"rollover_unused" => ["boolean"],
-			"rollover_limit" => ["nullable", "integer", "min:0"],
-			"is_active" => ["boolean"],
-			"accounts" => ["array"],
-			"accounts.*" => ["exists:accounts,id,user_id," . $user->id],
-		];
-
-		$validator = validator($data, $rules);
-
-		if ($validator->fails()) {
-			throw ValidationException::withMessages($validator->errors()->toArray());
-		}
 	}
 
 	/**

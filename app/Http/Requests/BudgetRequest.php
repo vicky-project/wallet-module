@@ -5,6 +5,7 @@ namespace Modules\Wallet\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Modules\Wallet\Enums\PeriodType;
+use Modules\Wallet\Enums\CategoryType;
 
 class BudgetRequest extends FormRequest
 {
@@ -24,7 +25,9 @@ class BudgetRequest extends FormRequest
 				Rule::exists("categories", "id")->where(function ($query) use (
 					$userId
 				) {
-					$query->where("user_id", $userId)->where("type", "expense");
+					$query
+						->where("user_id", $userId)
+						->where("type", CategoryType::EXPENSE);
 				}),
 			],
 			"name" => ["nullable", "string", "max:100"],
@@ -33,7 +36,7 @@ class BudgetRequest extends FormRequest
 			"year" => ["required", "integer", "min:2000", "max:2100"],
 			"start_date" => ["required", "date"],
 			"end_date" => ["required", "date", "after_or_equal:start_date"],
-			"amount" => ["required", "integer", "min:1000"],
+			"amount" => ["required", "integer"],
 			"rollover_unused" => ["boolean"],
 			"rollover_limit" => ["nullable", "integer", "min:0"],
 			"is_active" => ["boolean"],

@@ -73,8 +73,12 @@ class BudgetController extends Controller
 	 */
 	public function store(BudgetRequest $request)
 	{
+		$user = $request->user();
 		try {
-			$budget = $this->budgetService->createBudget($request->validated());
+			$budget = $this->budgetService->createBudget(
+				$user,
+				$request->validated()
+			);
 
 			return redirect()
 				->route("apps.budgets.show", $budget)

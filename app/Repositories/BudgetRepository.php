@@ -175,7 +175,7 @@ class BudgetRepository extends BaseRepository
 			DB::commit();
 
 			// Invalidate cache
-			$this->invalidateUserBudgetCache($user->id);
+			Cache::flush();
 
 			return $budget->load(["category", "accounts"]);
 		} catch (\Exception $e) {
@@ -204,7 +204,7 @@ class BudgetRepository extends BaseRepository
 			DB::commit();
 
 			// Invalidate cache
-			$this->invalidateUserBudgetCache($budget->user_id);
+			Cache::flush();
 
 			return $budget->fresh()->load(["category", "accounts"]);
 		} catch (\Exception $e) {
@@ -219,7 +219,7 @@ class BudgetRepository extends BaseRepository
 	public function deleteBudget(Budget $budget): bool
 	{
 		// Invalidate cache
-		$this->invalidateUserBudgetCache($budget->user_id);
+		Cache::flush();
 
 		return $budget->delete();
 	}
@@ -447,7 +447,7 @@ class BudgetRepository extends BaseRepository
 		}
 
 		// Invalidate cache
-		$this->invalidateUserBudgetCache($user->id);
+		Cache::flush();
 	}
 
 	/**
@@ -581,46 +581,6 @@ class BudgetRepository extends BaseRepository
 					"start_date" => $nextDate->startOfMonth(),
 					"end_date" => $nextDate->endOfMonth(),
 				];
-		}
-	}
-
-	/**
-	 * Invalidate user budget cache
-	 */
-	private function invalidateUserBudgetCache(int $userId): void
-	{
-		$patterns = [
-			Helper::generateCacheKey("user_budgets", ["user_id" => $userId, "*"]),
-			Helper::generateCacheKey("current_budgets", ["user_id" => $userId]),
-			Helper::generateCacheKey("budget_stats", ["user_id" => $userId]),
-			Helper::generateCacheKey("budgets_by_category", [
-				"user_id" => $userId,
-				"*",
-			]),
-		];
-
-		foreach ($patterns as $pattern) {
-			$this->clearCacheByPattern($pattern);
-		}
-	}
-
-	/**
-	 * Clear cache by pattern
-	 */
-	private function clearCacheByPattern(string $pattern): void
-	{
-		if (method_exists(Cache::store(), "tags")) {
-			Cache::tags(["budgets"])->flush();
-		} else {
-			$prefix = config("cache.prefix");
-			$pattern = str_replace("*", ".*", $pattern);
-
-			$keys = Cache::getStore()->getKeys();
-			foreach ($keys as $key) {
-				if (preg_match("/{$pattern}/", $key)) {
-					Cache::forget($key);
-				}
-			}
 		}
 	}
 }

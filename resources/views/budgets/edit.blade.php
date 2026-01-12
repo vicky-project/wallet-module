@@ -77,7 +77,7 @@
             <label class="form-label">
               <i class="bi bi-tags me-1"></i>Kategori
             </label>
-            <div class="d-flex align-items-center p-2 bg-secondary rounded">
+            <div class="d-flex align-items-center p-2 text-bg-secondary rounded">
               <div class="account-icon-small me-3" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
                 <i class="bi {{ $budget->category->icon }}"></i>
               </div>
