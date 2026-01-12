@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Then add specific edit functionality:
     
     // Initialize with current period type selected
-    const currentPeriodType = '{{ $budget->period_type }}';
+    const currentPeriodType = '{{ $budget->period_type->value }}';
     const periodTypeCards = document.querySelectorAll('.period-type-card');
     
     periodTypeCards.forEach(card => {
@@ -693,6 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update amount input
             const amount = this.dataset.amount;
+            console.log(amount)
             amountInput.value = amount;
             
             // Update preview
