@@ -714,6 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update amount preview on input
     if (amountInput && amountPreview) {
         amountInput.addEventListener('input', function() {
+        console.log(this.value)
             amountPreview.textContent = formatCurrency(this.value);
             
             // Remove selected from suggested amounts
