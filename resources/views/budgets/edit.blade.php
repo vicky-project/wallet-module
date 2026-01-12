@@ -450,7 +450,7 @@
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <h6 class="alert-heading mb-1">Perbarui Jumlah Terpakai</h6>
-                                        <p class="mb-0">Jumlah terpakai saat ini: @money($budget->spent)</p>
+                                        <p class="mb-0">Jumlah terpakai saat ini: @money($budget->spent->getMinorAmount()->toInt())</p>
                                         <div class="mt-2">
                                             <a href="{{ route('apps.budgets.update-spent') }}" 
                                                class="btn btn-sm btn-outline-warning"
