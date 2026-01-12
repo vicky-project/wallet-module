@@ -24,12 +24,12 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <div class="stat-label">BUDGET SAAT INI</div>
-                    <div class="stat-value">@money($budget->amount)</div>
+                    <div class="stat-value">@money($budget->amount->getMinorAmount()->toInt())</div>
                 </div>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-1">
-                        <small>Terpakai: @money($budget->spent)</small>
-                        <small>Sisa: @money($budget->remaining)</small>
+                        <small>Terpakai: @money($budget->spent->getMinorAmount()->toInt())</small>
+                        <small>Sisa: @money($budget->remaining * 100)</small>
                     </div>
                     <div class="progress progress-edit">
                         <div class="progress-bar 
