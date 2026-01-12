@@ -291,9 +291,9 @@
                                     @php
                                         $currentAmount = $budget->amount;
                                         $adjustments = [
-                                            round($currentAmount->multipliedBy(0.9)), // -10%
-                                            round($currentAmount->multipliedBy(1.1)), // +10%
-                                            round($currentAmount->multipliedBy(1.2)),
+                                            round($currentAmount->multipliedBy(0.9)->getMinorAmount()->toInt()), // -10%
+                                            round($currentAmount->multipliedBy(1.1)->getMinorAmount()->toInt()), // +10%
+                                            round($currentAmount->multipliedBy(1.2)->getMinorAmount()->toInt()),
                                             $budget->remaining > 0 ? $currentAmount->minus($budget->remaining, \Brick\Math\RoundingMode::DOWN) : $currentAmount // Remove remaining
                                         ];
                                     @endphp
