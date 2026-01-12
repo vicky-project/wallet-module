@@ -60,7 +60,7 @@
       <div class="d-flex justify-content-center justify-content-md-end">
         <div class="text-start">
           <div class="text-white-75 small">Rata-rata per hari</div>
-          <div class="text-white fw-semibold">{{ Helper::formatMoney($budget->daily_budget) }}</div>
+          <div class="text-white fw-semibold">@money($budget->daily_budget * 100)</div>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@
 <div class="row mb-4">
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="stat-card">
-      <div class="stat-value">{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }}</div>
+      <div class="stat-value">@money($budget->amount->getMinorAmount()->toInt())</div>
       <div class="stat-label">TOTAL BUDGET</div>
       <div class="mt-3">
         <small class="text-muted">
@@ -142,7 +142,7 @@
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="stat-card">
       <div class="stat-value {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
-        {{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }}
+        @money($budget->spent->getMinorAmount()->toInt())
       </div>
       <div class="stat-label">TOTAL TERPAKAI</div>
       <div class="mt-3">
@@ -160,7 +160,7 @@
     
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="stat-card">
-      <div class="stat-value text-info">{{ Helper::formatMoney($budget->remaining) }}</div>
+      <div class="stat-value text-info">@money($budget->remaining * 100)</div>
       <div class="stat-label">SISA BUDGET</div>
       <div class="mt-3">
         <small class="text-muted">
@@ -173,7 +173,7 @@
     
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="stat-card">
-      <div class="stat-value text-warning">{{ Helper::formatMoney($budget->daily_budget) }}</div>
+      <div class="stat-value text-warning">@money($budget->daily_budget * 100)</div>
       <div class="stat-label">RATA-RATA HARIAN</div>
       <div class="mt-3">
         <small class="text-muted">

@@ -228,6 +228,15 @@ return new class extends Migration {
 
 			$table->unique(["transaction_id", "tag_id"]);
 		});
+
+		Schema::create("wallet_settings", function () {
+			$table->id();
+			$table
+				->foreignId("user_id")
+				->constrained()
+				->onDelete("cascade");
+			$table->string("default_currency");
+		});
 	}
 
 	public function down()
