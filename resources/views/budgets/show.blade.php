@@ -3,444 +3,439 @@
 @section('title', 'Detail Budget - ' . $budget->name ?: $budget->category->name)
 
 @use('Modules\Wallet\Helpers\Helper')
+@use('Illuminate\Support\Number')
 
 @section('content')
 @include('wallet::partials.fab')
 <!-- Budget Header -->
 <div class="budget-header">
-    <div class="row align-items-center">
-        <div class="col-md-8 position-relative z-1">
-            <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                    <i class="bi bi-cash-coin display-4 opacity-75"></i>
-                </div>
-                <div>
-                    <h1 class="h2 mb-1">{{ $budget->name ?: $budget->category->name }}</h1>
-                    <div class="d-flex align-items-center flex-wrap">
-                        <span class="period-badge me-2 mb-1">
-                            <i class="bi bi-{{ $budget->category->icon }} me-1"></i>{{ $budget->category->name }}
-                        </span>
-                        <span class="period-badge me-2 mb-1">
-                            <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type->value) }}
-                        </span>
-                        <span class="period-badge me-2 mb-1">
-                            <i class="bi bi-clock me-1"></i>{{ $budget->days_left }} hari lagi
-                        </span>
-                    </div>
-                </div>
-            </div>
+  <div class="row align-items-center">
+    <div class="col-md-8 position-relative z-1">
+      <div class="d-flex align-items-center mb-3">
+        <div class="me-3">
+          <i class="bi bi-cash-coin display-4 opacity-75"></i>
+        </div>
+        <div>
+          <h1 class="h2 mb-1">{{ $budget->name ?: $budget->category->name }}</h1>
+          <div class="d-flex align-items-center flex-wrap">
+            <span class="period-badge me-2 mb-1">
+              <i class="bi bi-{{ $budget->category->icon }} me-1"></i>{{ $budget->category->name }}
+            </span>
+            <span class="period-badge me-2 mb-1">
+              <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type->value) }}
+            </span>
+            <span class="period-badge me-2 mb-1">
+              <i class="bi bi-clock me-1"></i>{{ $budget->days_left }} hari lagi
+            </span>
+          </div>
+        </div>
+      </div>
             
-            <!-- Progress Bar -->
-            <div class="mt-4">
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-white-75">Progress Penggunaan</span>
-                    <span class="text-white fw-semibold">{{ number_format($budget->usage_percentage, 1) }}%</span>
-                </div>
-                <div class="progress progress-budget-lg mb-2">
-                    <div class="progress-bar 
-                        @if($budget->is_over_budget) bg-danger
-                        @elseif($budget->usage_percentage >= 80) bg-warning
-                        @else bg-success @endif" 
-                        style="width: {{ min($budget->usage_percentage, 100) }}%">
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between text-white-75">
-                    <small>{{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }} terpakai</small>
-                    <small>{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }} total budget</small>
-                </div>
-            </div>
+      <!-- Progress Bar -->
+      <div class="mt-4">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-white-75">Progress Penggunaan</span>
+          <span class="text-white fw-semibold">{{ number_format($budget->usage_percentage, 1) }}%</span>
         </div>
-        
-        <div class="col-md-4 text-center text-md-end position-relative z-1">
-            <div class="mb-3">
-                <div class="display-5 fw-bold text-white">{{ Helper::formatMoney($budget->remaining) }}</div>
-                <div class="text-white-75">SISA BUDGET</div>
-            </div>
-            <div class="d-flex justify-content-center justify-content-md-end">
-                <div class="text-start">
-                    <div class="text-white-75 small">Rata-rata per hari</div>
-                    <div class="text-white fw-semibold">{{ Helper::formatMoney($budget->daily_budget) }}</div>
-                </div>
-            </div>
+        <div class="progress progress-budget-lg mb-2">
+          <div class="progress-bar 
+            @if($budget->is_over_budget) bg-danger
+            @elseif($budget->usage_percentage >= 80) bg-warning
+            @else bg-success @endif" 
+            style="width: {{ min($budget->usage_percentage, 100) }}%">
+          </div>
         </div>
+        <div class="d-flex justify-content-between text-white-75">
+          <small>{{ Number::currency($budget->spent->getAmount()->toInt()) }} terpakai</small>
+          <small>{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }} total budget</small>
+        </div>
+      </div>
     </div>
+        
+    <div class="col-md-4 text-center text-md-end position-relative z-1">
+      <div class="mb-3">
+        <div class="display-5 fw-bold text-white">{{ Helper::formatMoney($budget->remaining) }}</div>
+        <div class="text-white-75">SISA BUDGET</div>
+      </div>
+      <div class="d-flex justify-content-center justify-content-md-end">
+        <div class="text-start">
+          <div class="text-white-75 small">Rata-rata per hari</div>
+          <div class="text-white fw-semibold">{{ Helper::formatMoney($budget->daily_budget) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Action Buttons -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Kembali
-                </a>
-            </div>
-            <div class="btn-group">
-                <a href="{{ route('apps.budgets.edit', $budget) }}" class="btn btn-warning">
-                    <i class="bi bi-pencil me-1"></i>Edit
-                </a>
-                <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
-                    <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a class="dropdown-item" href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}">
-                            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ route('apps.budgets.index', $budget) }}" 
-                           onclick="return confirm('Buat budget untuk periode berikutnya?')">
-                            <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#duplicateModal">
-                            <i class="bi bi-files me-2"></i>Duplikat Budget
-                        </a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <form method="POST" action="{{ route('apps.budgets.toggle-status', $budget) }}" class="d-inline">
-                            @csrf
-                            <button type="submit" class="dropdown-item">
-                                <i class="bi bi-toggle-{{ $budget->is_active ? 'off' : 'on' }} me-2"></i>
-                                {{ $budget->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                            </button>
-                        </form>
-                    </li>
-                    <li>
-                        <form method="POST" action="{{ route('apps.budgets.destroy', $budget) }}" 
-                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus budget ini?')" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="dropdown-item text-danger">
-                                <i class="bi bi-trash me-2"></i>Hapus
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <div class="col-12">
+  </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Kembali
+        </a>
+      </div>
+      <div class="btn-group">
+        <a href="{{ route('apps.budgets.edit', $budget) }}" class="btn btn-warning">
+          <i class="bi bi-pencil me-1"></i>Edit
+        </a>
+        <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+          <span class="visually-hidden">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}">
+              <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ route('apps.budgets.index', $budget) }}" onclick="return confirm('Buat budget untuk periode berikutnya?')">
+              <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#duplicateModal">
+              <i class="bi bi-files me-2"></i>Duplikat Budget
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form method="POST" action="{{ route('apps.budgets.toggle-status', $budget) }}" class="d-inline">
+              @csrf
+              <button type="submit" class="dropdown-item">
+                <i class="bi bi-toggle-{{ $budget->is_active ? 'off' : 'on' }} me-2"></i>
+                {{ $budget->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+              </button>
+            </form>
+          </li>
+          <li>
+            <form method="POST" action="{{ route('apps.budgets.destroy', $budget) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus budget ini?')" class="d-inline">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="bi bi-trash me-2"></i>Hapus
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
     </div>
 </div>
 
 <!-- Stats Cards -->
 <div class="row mb-4">
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
-            <div class="stat-value">{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }}</div>
-            <div class="stat-label">TOTAL BUDGET</div>
-            <div class="mt-3">
-                <small class="text-muted">
-                    <i class="bi bi-calendar-range me-1"></i>
-                    {{ $budget->start_date->format('d M') }} - {{ $budget->end_date->format('d M Y') }}
-                </small>
-            </div>
-        </div>
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="stat-card">
+      <div class="stat-value">{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }}</div>
+      <div class="stat-label">TOTAL BUDGET</div>
+      <div class="mt-3">
+        <small class="text-muted">
+          <i class="bi bi-calendar-range me-1"></i>
+          {{ $budget->start_date->format('d M') }} - {{ $budget->end_date->format('d M Y') }}
+        </small>
+      </div>
     </div>
+  </div>
     
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
-            <div class="stat-value {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
-                {{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }}
-            </div>
-            <div class="stat-label">TOTAL TERPAKAI</div>
-            <div class="mt-3">
-                <div class="d-flex align-items-center">
-                    <span class="usage-indicator 
-                        @if($budget->is_over_budget) usage-high
-                        @elseif($budget->usage_percentage >= 80) usage-medium
-                        @else usage-low @endif">
-                    </span>
-                    <small class="text-muted">{{ number_format($budget->usage_percentage, 1) }}% dari budget</small>
-                </div>
-            </div>
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="stat-card">
+      <div class="stat-value {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
+        {{ Helper::formatMoney($budget->spent->getAmount()->toInt()) }}
+      </div>
+      <div class="stat-label">TOTAL TERPAKAI</div>
+      <div class="mt-3">
+        <div class="d-flex align-items-center">
+          <span class="usage-indicator 
+            @if($budget->is_over_budget) usage-high
+            @elseif($budget->usage_percentage >= 80) usage-medium
+            @else usage-low @endif">
+          </span>
+          <small class="text-muted">{{ number_format($budget->usage_percentage, 1) }}% dari budget</small>
         </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
-            <div class="stat-value text-info">{{ Helper::formatMoney($budget->remaining) }}</div>
-            <div class="stat-label">SISA BUDGET</div>
-            <div class="mt-3">
-                <small class="text-muted">
-                    <i class="bi bi-calendar-day me-1"></i>
-                    {{ $budget->days_left }} hari tersisa
-                </small>
-            </div>
-        </div>
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="stat-card">
+      <div class="stat-value text-info">{{ Helper::formatMoney($budget->remaining) }}</div>
+      <div class="stat-label">SISA BUDGET</div>
+      <div class="mt-3">
+        <small class="text-muted">
+          <i class="bi bi-calendar-day me-1"></i>
+          {{ $budget->days_left }} hari tersisa
+        </small>
+      </div>
     </div>
+  </div>
     
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
-            <div class="stat-value text-warning">{{ Helper::formatMoney($budget->daily_budget) }}</div>
-            <div class="stat-label">RATA-RATA HARIAN</div>
-            <div class="mt-3">
-                <small class="text-muted">
-                    <i class="bi bi-graph-up me-1"></i>
-                    Rekomendasi harian
-                </small>
-            </div>
-        </div>
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="stat-card">
+      <div class="stat-value text-warning">{{ Helper::formatMoney($budget->daily_budget) }}</div>
+      <div class="stat-label">RATA-RATA HARIAN</div>
+      <div class="mt-3">
+        <small class="text-muted">
+          <i class="bi bi-graph-up me-1"></i>
+          Rekomendasi harian
+        </small>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="row">
-    <!-- Left Column: Details & Accounts -->
-    <div class="col-lg-4">
-        <!-- Details Card -->
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="bi bi-info-circle me-2"></i>Detail Budget
-                </h5>
-                <span class="badge bg-{{ $budget->is_active ? 'success' : 'secondary' }}">
-                    {{ $budget->is_active ? 'AKTIF' : 'NONAKTIF' }}
-                </span>
-            </div>
-            <div class="card-body">
-                <table class="table table-sm">
-                    <tr>
-                        <th width="120">Kategori</th>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div class="account-icon-small me-2" 
-                                     style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                                    <i class="bi bi-{{ $budget->category->icon }}"></i>
-                                </div>
-                                {{ $budget->category->name }}
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Nama Budget</th>
-                        <td>{{ $budget->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tipe Periode</th>
-                        <td>
-                            <span class="badge bg-primary">{{ ucfirst($budget->period_type->name) }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Periode</th>
-                        <td>
-                            {{ $budget->period_label }}
-                            <br>
-                            <small class="text-muted">
-                                {{ $budget->start_date->format('d M Y') }} - {{ $budget->end_date->format('d M Y') }}
-                            </small>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Status Rollover</th>
-                        <td>
-                            @if($budget->rollover_unused)
-                                <span class="badge bg-info">AKTIF</span>
-                                @if($budget->rollover_limit)
-                                    <small class="text-muted d-block">
-                                        Limit: {{ Helper::formatMoney($budget->rollover_limit) }}
-                                    </small>
-                                @endif
-                            @else
-                                <span class="badge bg-secondary">NONAKTIF</span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Dibuat</th>
-                        <td>{{ $budget->created_at->format('d M Y H:i') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Diupdate</th>
-                        <td>{{ $budget->updated_at->format('d M Y H:i') }}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Accounts Card -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-wallet me-2"></i>Akun Terkait
-                </h5>
-            </div>
-            <div class="card-body">
-                @if($budget->accounts->count() > 0)
-                    <div class="list-group list-group-flush">
-                        @foreach($budget->accounts as $account)
-                            <div class="list-group-item px-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="account-icon-small me-3" 
-                                         style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                                        <i class="bi bi-{{ $account->icon }}"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="fw-semibold">{{ $account->name }}</div>
-                                        <div class="text-muted small">
-                                            Saldo: {{ Helper::formatMoney($account->balance->getMinorAmount()->toInt()) }}
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-light text-dark">
-                                        {{ $account->type->label() }}
-                                    </span>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-3 text-muted">
-                        <i class="bi bi-wallet display-6 opacity-50"></i>
-                        <p class="mt-2 mb-0">Semua Akun</p>
-                        <small>Budget memantau semua akun</small>
-                    </div>
-                @endif
-            </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="card mt-4">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-lightning me-2"></i>Aksi Cepat
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
-                        <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
-                    </a>
-                    
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
-                        <i class="bi bi-files me-2"></i>Duplikat Budget
-                    </button>
-                    
-                    <a href="{{ route('apps.budgets.index', $budget) }}" 
-                       class="btn btn-outline-info" 
-                       onclick="return confirm('Buat budget untuk periode berikutnya?')">
-                        <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
-                    </a>
+  <!-- Left Column: Details & Accounts -->
+  <div class="col-lg-4">
+    <!-- Details Card -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-info-circle me-2"></i>Detail Budget
+        </h5>
+        <span class="badge bg-{{ $budget->is_active ? 'success' : 'secondary' }}">
+          {{ $budget->is_active ? 'AKTIF' : 'NONAKTIF' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <tr>
+            <th width="120">Kategori</th>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="account-icon-small me-2" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
+                  <i class="bi bi-{{ $budget->category->icon }}"></i>
                 </div>
-            </div>
-        </div>
+                {{ $budget->category->name }}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>Nama Budget</th>
+            <td>{{ $budget->name ?? '-' }}</td>
+          </tr>
+          <tr>
+            <th>Tipe Periode</th>
+            <td>
+              <span class="badge bg-primary">{{ ucfirst($budget->period_type->name) }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>Periode</th>
+            <td>
+              {{ $budget->period_label }}
+              <br>
+              <small class="text-muted">
+                {{ $budget->start_date->format('d M Y') }} - {{ $budget->end_date->format('d M Y') }}
+              </small>
+            </td>
+          </tr>
+          <tr>
+            <th>Status Rollover</th>
+            <td>
+              @if($budget->rollover_unused)
+                <span class="badge bg-info">AKTIF</span>
+                @if($budget->rollover_limit)
+                  <small class="text-muted d-block">
+                    Limit: {{ Helper::formatMoney($budget->rollover_limit) }}
+                  </small>
+                @endif
+              @else
+                <span class="badge bg-secondary">NONAKTIF</span>
+              @endif
+            </td>
+          </tr>
+          <tr>
+            <th>Dibuat</th>
+            <td>{{ $budget->created_at->format('d M Y H:i') }}</td>
+          </tr>
+          <tr>
+            <th>Diupdate</th>
+            <td>{{ $budget->updated_at->format('d M Y H:i') }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
+        
+    <!-- Accounts Card -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-wallet me-2"></i>Akun Terkait
+        </h5>
+      </div>
+      <div class="card-body">
+        @if($budget->accounts->count() > 0)
+          <div class="list-group list-group-flush">
+            @foreach($budget->accounts as $account)
+              <div class="list-group-item px-0">
+                <div class="d-flex align-items-center">
+                  <div class="account-icon-small me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
+                    <i class="bi bi-{{ $account->icon }}"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ $account->name }}</div>
+                    <div class="text-muted small">
+                      Saldo: {{ Helper::formatMoney($account->balance->getMinorAmount()->toInt()) }}
+                    </div>
+                  </div>
+                  <span class="badge bg-light text-dark">
+                    {{ $account->type->label() }}
+                  </span>
+                </div>
+              </div>
+            @endforeach
+          </div>
+        @else
+          <div class="text-center py-3 text-muted">
+            <i class="bi bi-wallet display-6 opacity-50"></i>
+            <p class="mt-2 mb-0">Semua Akun</p>
+            <small>Budget memantau semua akun</small>
+          </div>
+        @endif
+      </div>
+    </div>
+        
+    <!-- Quick Actions -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-lightning me-2"></i>Aksi Cepat
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+          </a>
+                    
+          <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
+            <i class="bi bi-files me-2"></i>Duplikat Budget
+          </button>
+                    
+          <a href="{{ route('apps.budgets.index', $budget) }}" class="btn btn-outline-info" onclick="return confirm('Buat budget untuk periode berikutnya?')">
+            <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
     
-    <!-- Right Column: Transactions & Statistics -->
-    <div class="col-lg-8">
-        <!-- Recent Transactions -->
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="bi bi-receipt me-2"></i>Transaksi Terbaru
-                    <span class="badge bg-secondary ms-2">{{ $transactions->total() }}</span>
-                </h5>
-                <a href="{{ route('apps.transactions.index', ['budget_id' => $budget->id]) }}" class="btn btn-sm btn-outline-primary">
-                    Lihat Semua
-                </a>
-            </div>
-            <div class="card-body">
-                @if($transactions->count() > 0)
-                    <div class="transaction-timeline">
-                        @foreach($transactions as $transaction)
-                            <div class="transaction-item {{ $transaction->type === 'income' ? 'income' : 'expense' }}">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="fw-semibold">{{ $transaction->description ?: 'Tanpa deskripsi' }}</div>
-                                        <div class="text-muted small">
-                                            <i class="bi bi-calendar me-1"></i>
-                                            {{ $transaction->transaction_date->format('d M Y') }}
-                                            •
-                                            <i class="bi bi-wallet me-1"></i>
-                                            {{ $transaction->account->name }}
-                                        </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-semibold {{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
-                                            {{ $transaction->type === 'income' ? '+' : '-' }}{{ Helper::formatMoney($transaction->amount->getAmount()->toInt()) }}
-                                        </div>
-                                        <div class="text-muted small">
-                                            via {{ $transaction->payment_method }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+  <!-- Right Column: Transactions & Statistics -->
+  <div class="col-lg-8">
+    <!-- Recent Transactions -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-receipt me-2"></i>Transaksi Terbaru
+          <span class="badge bg-secondary ms-2">{{ $transactions->total() }}</span>
+        </h5>
+        <a href="{{ route('apps.transactions.index', ['budget_id' => $budget->id]) }}" class="btn btn-sm btn-outline-primary">
+          Lihat Semua
+        </a>
+      </div>
+      <div class="card-body">
+        @if($transactions->count() > 0)
+          <div class="transaction-timeline">
+            @foreach($transactions as $transaction)
+              <div class="transaction-item {{ $transaction->type === 'income' ? 'income' : 'expense' }}">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="fw-semibold">{{ $transaction->description ?: 'Tanpa deskripsi' }}</div>
+                    <div class="text-muted small">
+                      <i class="bi bi-calendar me-1"></i>
+                      {{ $transaction->transaction_date->format('d M Y') }}
+                      •
+                      <i class="bi bi-wallet me-1"></i>
+                      {{ $transaction->account->name }}
                     </div>
-                    
-                    <!-- Pagination -->
-                    @if($transactions->hasPages())
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $transactions->links() }}
-                        </div>
-                    @endif
-                @else
-                    <div class="text-center py-5">
-                        <div class="mb-4">
-                            <i class="bi bi-receipt display-1 text-muted"></i>
-                        </div>
-                        <h5 class="mb-3">Belum ada transaksi</h5>
-                        <p class="text-muted mb-4">Mulai dengan menambahkan transaksi untuk budget ini.</p>
-                        <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi Pertama
-                        </a>
+                  </div>
+                  <div class="text-end">
+                    <div class="fw-semibold {{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
+                      {{ $transaction->type === 'income' ? '+' : '-' }}{{ Helper::formatMoney($transaction->amount->getAmount()->toInt()) }}
                     </div>
-                @endif
-            </div>
-        </div>
-        
-        <!-- Statistics Card -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-graph-up me-2"></i>Statistik Budget
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 text-center mb-4">
-                        <div class="display-6 fw-bold text-primary">{{ $stats['total_transactions'] }}</div>
-                        <div class="text-muted">Total Transaksi</div>
-                        <small class="text-muted">{{ $stats['transactions_today'] }} hari ini</small>
+                    <div class="text-muted small">
+                      via {{ $transaction->payment_method }}
                     </div>
-                    
-                    <div class="col-md-4 text-center mb-4">
-                        <div class="display-6 fw-bold text-success">{{ Helper::formatMoney($stats['average_transaction']) }}</div>
-                        <div class="text-muted">Rata-rata Transaksi</div>
-                        <small class="text-muted">per transaksi</small>
-                    </div>
-                    
-                    <div class="col-md-4 text-center mb-4">
-                        <div class="display-6 fw-bold text-danger">{{ Helper::formatMoney($stats['largest_transaction']) }}</div>
-                        <div class="text-muted">Transaksi Terbesar</div>
-                        <small class="text-muted">single transaction</small>
-                    </div>
+                  </div>
                 </div>
-                
-                <!-- Daily Usage Chart -->
-                <div class="mt-4">
-                    <h6 class="fw-semibold mb-3">Penggunaan Harian</h6>
-                    <div class="chart-container">
-                        <canvas id="dailyUsageChart"></canvas>
-                    </div>
-                </div>
+              </div>
+            @endforeach
+          </div>
+                    
+          <!-- Pagination -->
+          @if($transactions->hasPages())
+            <div class="d-flex justify-content-center mt-4">
+              {{ $transactions->links() }}
             </div>
-        </div>
+          @endif
+        @else
+          <div class="text-center py-5">
+            <div class="mb-4">
+              <i class="bi bi-receipt display-1 text-muted"></i>
+            </div>
+            <h5 class="mb-3">Belum ada transaksi</h5>
+            <p class="text-muted mb-4">Mulai dengan menambahkan transaksi untuk budget ini.</p>
+            <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-primary">
+              <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi Pertama
+            </a>
+          </div>
+        @endif
+      </div>
     </div>
+        
+    <!-- Statistics Card -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-graph-up me-2"></i>Statistik Budget
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 text-center mb-4">
+            <div class="display-6 fw-bold text-primary">{{ $stats['total_transactions'] }}</div>
+            <div class="text-muted">Total Transaksi</div>
+            <small class="text-muted">{{ $stats['transactions_today'] }} hari ini</small>
+          </div>
+                    
+          <div class="col-md-4 text-center mb-4">
+            <div class="display-6 fw-bold text-success">{{ Helper::formatMoney($stats['average_transaction']) }}</div>
+            <div class="text-muted">Rata-rata Transaksi</div>
+            <small class="text-muted">per transaksi</small>
+          </div>
+                    
+          <div class="col-md-4 text-center mb-4">
+            <div class="display-6 fw-bold text-danger">{{ Helper::formatMoney($stats['largest_transaction']) }}</div>
+            <div class="text-muted">Transaksi Terbesar</div>
+            <small class="text-muted">single transaction</small>
+          </div>
+        </div>
+                
+        <!-- Daily Usage Chart -->
+        <div class="mt-4">
+          <h6 class="fw-semibold mb-3">Penggunaan Harian</h6>
+          <div class="chart-container">
+            <canvas id="dailyUsageChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Duplicate Modal -->
 <div class="modal fade" id="duplicateModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('apps.budgets.store', $budget) }}" method="POST">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">Duplikat Budget</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ route('apps.budgets.store', $budget) }}" method="POST">
+        @csrf
+        <div class="modal-header">
+          <h5 class="modal-title">Duplikat Budget</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
                     <div class="mb-3">
                         <label for="duplicate_name" class="form-label">Nama Budget Baru</label>
                         <input type="text" class="form-control" id="duplicate_name" name="name" 
@@ -466,15 +461,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-files me-1"></i>Duplikat
-                    </button>
-                </div>
-            </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-files me-1"></i>Duplikat
+          </button>
         </div>
+      </form>
     </div>
+  </div>
 </div>
 @endsection
 
