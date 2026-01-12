@@ -353,7 +353,8 @@
                   </div>
                   <div class="text-end">
                     <div class="fw-semibold {{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
-                      {{ $transaction->type === TransactionType::INCOME ? '+' : '-' }}@money($transaction->amount->getMinorAmount()->toInt())
+                      {{ $transaction->type === TransactionType::INCOME ? '+' : '-' }}
+                      @money($transaction->amount->getMinorAmount()->toInt())
                     </div>
                     <div class="text-muted small">
                       via {{ $transaction->payment_method }}
