@@ -80,5 +80,9 @@ Route::middleware(["auth"])
 			BudgetController::class,
 			"",
 		])->name("budgets.duplicate");
+		Route::post("budgets/{budget}/reset-spent", [
+			BudgetController::class,
+			"",
+		])->name("budgets.reset-spent");
 		Route::resource("budgets", BudgetController::class);
 	});
