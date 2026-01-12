@@ -529,21 +529,21 @@
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Budget:</span>
-                                    <span class="fw-semibold">@money($budget->amount)</span>
+                                    <span class="fw-semibold">@money($budget->amount->getMinorAmount()->toInt())</span>
                                 </div>
                             </div>
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Terpakai:</span>
                                     <span class="fw-semibold {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
-                                        @money($budget->spent)
+                                        @money($budget->spent->getMinorAmount()->toInt())
                                     </span>
                                 </div>
                             </div>
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Sisa:</span>
-                                    <span class="fw-semibold">@money($budget->remaining)</span>
+                                    <span class="fw-semibold">@money($budget->remaining * 100)</span>
                                 </div>
                             </div>
                             <div class="list-group-item px-0">
