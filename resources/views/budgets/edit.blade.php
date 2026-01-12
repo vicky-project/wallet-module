@@ -291,10 +291,10 @@
                                     @php
                                         $currentAmount = $budget->amount;
                                         $adjustments = [
-                                            round($currentAmount * 0.9), // -10%
-                                            round($currentAmount * 1.1), // +10%
-                                            round($currentAmount * 1.2), // +20%
-                                            $budget->remaining > 0 ? $currentAmount - $budget->remaining : $currentAmount // Remove remaining
+                                            round($currentAmount->multipliedBy(0.9)), // -10%
+                                            round($currentAmount->multipliedBy(1.1)), // +10%
+                                            round($currentAmount->multipliedBy(1.2)),
+                                            $budget->remaining > 0 ? $currentAmount->minus($budget->remaining, \Brick\Math\RoundingMode::DOWN) : $currentAmount // Remove remaining
                                         ];
                                     @endphp
                                     <div class="suggested-amount" data-amount="{{ $adjustments[0] }}">
