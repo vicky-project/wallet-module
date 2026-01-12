@@ -2,7 +2,7 @@
 
 @section('title', 'Detail Budget - ' . $budget->name ?: $budget->category->name)
 
-@use('Modules\Wallet\Helpers\Helper')
+@use('Modules\Wallet\Enums\TransactionType')
 @use('Illuminate\Support\Number')
 
 @section('content')
@@ -277,7 +277,7 @@
                   <div class="flex-grow-1">
                     <div class="fw-semibold">{{ $account->name }}</div>
                     <div class="text-muted small">
-                      Saldo: {{ Helper::formatMoney($account->balance->getMinorAmount()->toInt()) }}
+                      Saldo: @($account->balance->getMinorAmount()->toInt())
                     </div>
                   </div>
                   <span class="badge bg-light text-dark">
@@ -339,7 +339,7 @@
         @if($transactions->count() > 0)
           <div class="transaction-timeline">
             @foreach($transactions as $transaction)
-              <div class="transaction-item {{ $transaction->type === 'income' ? 'income' : 'expense' }}">
+              <div class="transaction-item {{ $transaction->type === TransactionType::INCOME ? 'income' : 'expense' }}">
                 <div class="d-flex justify-content-between align-items-start">
                   <div>
                     <div class="fw-semibold">{{ $transaction->description ?: 'Tanpa deskripsi' }}</div>
@@ -352,8 +352,8 @@
                     </div>
                   </div>
                   <div class="text-end">
-                    <div class="fw-semibold {{ $transaction->type === 'income' ? 'text-success' : 'text-danger' }}">
-                      {{ $transaction->type === 'income' ? '+' : '-' }}{{ Helper::formatMoney($transaction->amount->getAmount()->toInt()) }}
+                    <div class="fw-semibold {{ $transaction->type === TransactionType::INCOME ? 'text-success' : 'text-danger' }}">
+                      {{ $transaction->type === TransactionType::INCOME ? '+' : '-' }}@money($transaction->amount->getMinorAmount()->toInt())
                     </div>
                     <div class="text-muted small">
                       via {{ $transaction->payment_method }}
@@ -401,13 +401,13 @@
           </div>
                     
           <div class="col-md-4 text-center mb-4">
-            <div class="display-6 fw-bold text-success">{{ Helper::formatMoney($stats['average_transaction']) }}</div>
+            <div class="display-6 fw-bold text-success">@money($stats['average_transaction'])</div>
             <div class="text-muted">Rata-rata Transaksi</div>
             <small class="text-muted">per transaksi</small>
           </div>
                     
           <div class="col-md-4 text-center mb-4">
-            <div class="display-6 fw-bold text-danger">{{ Helper::formatMoney($stats['largest_transaction']) }}</div>
+            <div class="display-6 fw-bold text-danger">@money($stats['largest_transaction'])</div>
             <div class="text-muted">Transaksi Terbesar</div>
             <small class="text-muted">single transaction</small>
           </div>
