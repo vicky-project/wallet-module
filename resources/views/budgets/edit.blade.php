@@ -648,7 +648,7 @@
                                 <strong>Perhatian:</strong> Aksi ini akan:
                             </p>
                             <ul class="mb-0 mt-2">
-                                <li>Reset jumlah terpakai dari {{ format_currency($budget->spent) }} menjadi 0</li>
+                                <li>Reset jumlah terpakai dari @money($budget->spent->getMinorAmount()->toInt()) menjadi 0</li>
                                 <li>Tidak mempengaruhi transaksi yang sudah ada</li>
                                 <li>Hanya mempengaruhi perhitungan budget</li>
                             </ul>
