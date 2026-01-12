@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="d-flex justify-content-between text-white-75">
-          <small>{{ Number::currency($budget->spent->getAmount()->toInt(), in: 'id-ID') }} terpakai</small>
+          <small>@money($budget->spent->getAmount()->toInt()) terpakai</small>
           <small>{{ Helper::formatMoney($budget->amount->getAmount()->toInt()) }} total budget</small>
         </div>
       </div>
