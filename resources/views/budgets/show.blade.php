@@ -187,7 +187,7 @@
 
 <div class="row">
   <!-- Left Column: Details & Accounts -->
-  <div class="col-lg-4">
+  <div class="col-md-4 mb-3">
     <!-- Details Card -->
     <div class="card mb-4">
       <div class="card-header d-flex justify-content-between align-items-center">
@@ -205,7 +205,7 @@
             <td>
               <div class="d-flex align-items-center">
                 <div class="account-icon-small me-2" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                  <i class="bi bi-{{ $budget->category->icon }}"></i>
+                  <i class="bi {{ $budget->category->icon }}"></i>
                 </div>
                 {{ $budget->category->name }}
               </div>
@@ -238,7 +238,7 @@
                 <span class="badge bg-info">AKTIF</span>
                 @if($budget->rollover_limit)
                   <small class="text-muted d-block">
-                    Limit: {{ Helper::formatMoney($budget->rollover_limit) }}
+                    Limit: @money($budget->rollover_limit)
                   </small>
                 @endif
               @else
@@ -323,7 +323,7 @@
   </div>
     
   <!-- Right Column: Transactions & Statistics -->
-  <div class="col-lg-8">
+  <div class="col-md-8 mb-3">
     <!-- Recent Transactions -->
     <div class="card mb-4">
       <div class="card-header d-flex justify-content-between align-items-center">
