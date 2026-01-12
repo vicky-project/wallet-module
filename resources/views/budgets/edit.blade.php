@@ -24,12 +24,12 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <div class="stat-label">BUDGET SAAT INI</div>
-                    <div class="stat-value">{{ format_currency($budget->amount) }}</div>
+                    <div class="stat-value">@money($budget->amount)</div>
                 </div>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-1">
-                        <small>Terpakai: {{ format_currency($budget->spent) }}</small>
-                        <small>Sisa: {{ format_currency($budget->remaining) }}</small>
+                        <small>Terpakai: @money($budget->spent)</small>
+                        <small>Sisa: @money($budget->remaining)</small>
                     </div>
                     <div class="progress progress-edit">
                         <div class="progress-bar 
@@ -278,7 +278,7 @@
                                        value="{{ old('amount', $budget->amount) }}" required>
                             </div>
                             <div class="form-text">
-                                Saat ini: {{ format_currency($budget->amount) }} • Minimum: Rp 1.000
+                                Saat ini: @money($budget->amount) • Minimum: Rp 1.000
                             </div>
                             @error('amount')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -298,17 +298,17 @@
                                         ];
                                     @endphp
                                     <div class="suggested-amount" data-amount="{{ $adjustments[0] }}">
-                                        -10% ({{ format_currency($adjustments[0]) }})
+                                        -10% (@money($adjustments[0]))
                                     </div>
                                     <div class="suggested-amount" data-amount="{{ $adjustments[1] }}">
-                                        +10% ({{ format_currency($adjustments[1]) }})
+                                        +10% (@money($adjustments[1]))
                                     </div>
                                     <div class="suggested-amount" data-amount="{{ $adjustments[2] }}">
-                                        +20% ({{ format_currency($adjustments[2]) }})
+                                        +20% (@money($adjustments[2]))
                                     </div>
                                     @if($budget->remaining > 0)
                                     <div class="suggested-amount" data-amount="{{ $adjustments[3] }}">
-                                        Hapus Sisa ({{ format_currency($adjustments[3]) }})
+                                        Hapus Sisa (@money($adjustments[3]))
                                     </div>
                                     @endif
                                 </div>
@@ -317,11 +317,11 @@
                         
                         <div class="col-md-4">
                             <div class="amount-preview" id="amountPreview">
-                                {{ format_currency(old('amount', $budget->amount)) }}
+                                @money(old('amount', $budget->amount))
                             </div>
                             <div class="text-center mt-2">
-                                <small class="text-muted d-block">Terpakai: {{ format_currency($budget->spent) }}</small>
-                                <small class="text-muted">Sisa: {{ format_currency($budget->remaining) }}</small>
+                                <small class="text-muted d-block">Terpakai: @money($budget->spent)</small>
+                                <small class="text-muted">Sisa: @money($budget->remaining)</small>
                             </div>
                         </div>
                     </div>
@@ -358,7 +358,7 @@
                                             <div class="flex-grow-1">
                                                 <div class="fw-semibold">{{ $account->name }}</div>
                                                 <div class="text-muted small">
-                                                    Saldo: {{ format_currency($account->balance->getMinorAmount()->toInt()) }}
+                                                    Saldo: @money($account->balance->getMinorAmount()->toInt())
                                                     • {{ $account->type->label() }}
                                                 </div>
                                             </div>
@@ -415,7 +415,12 @@
                                            value="{{ old('rollover_limit', $budget->rollover_limit) }}">
                                 </div>
                                 <div class="form-text">
-                                    Saat ini: {{ $budget->rollover_limit ? format_currency($budget->rollover_limit) : 'Tidak ada limit' }}
+                                    Saat ini: 
+                                    @if($budget->rollover_limit)
+                                    @money($budget->rollover_limit)
+                                    @else
+                                    Tidak ada limit
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -445,7 +450,7 @@
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <h6 class="alert-heading mb-1">Perbarui Jumlah Terpakai</h6>
-                                        <p class="mb-0">Jumlah terpakai saat ini: {{ format_currency($budget->spent) }}</p>
+                                        <p class="mb-0">Jumlah terpakai saat ini: @money($budget->spent)</p>
                                         <div class="mt-2">
                                             <a href="{{ route('apps.budgets.update-spent') }}" 
                                                class="btn btn-sm btn-outline-warning"
@@ -524,21 +529,21 @@
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Budget:</span>
-                                    <span class="fw-semibold">{{ format_currency($budget->amount) }}</span>
+                                    <span class="fw-semibold">@money($budget->amount)</span>
                                 </div>
                             </div>
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Terpakai:</span>
                                     <span class="fw-semibold {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
-                                        {{ format_currency($budget->spent) }}
+                                        @money($budget->spent)
                                     </span>
                                 </div>
                             </div>
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Sisa:</span>
-                                    <span class="fw-semibold">{{ format_currency($budget->remaining) }}</span>
+                                    <span class="fw-semibold">@money($budget->remaining)</span>
                                 </div>
                             </div>
                             <div class="list-group-item px-0">
