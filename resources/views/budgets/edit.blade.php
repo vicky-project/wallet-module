@@ -650,6 +650,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize with current period type selected
     const currentPeriodType = '{{ $budget->period_type->value }}';
+    console.log(currentPeriodType);
     const periodTypeCards = document.querySelectorAll('.period-type-card');
     
     periodTypeCards.forEach(card => {
