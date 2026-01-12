@@ -137,7 +137,7 @@
                                                     @break
                                             @endswitch
                                         </div>
-                                        <div class="fw-semibold">{{ ucfirst($type) }}</div>
+                                        <div class="fw-semibold">{{ ucfirst($type->label()) }}</div>
                                     </div>
                                 </div>
                             @endforeach
