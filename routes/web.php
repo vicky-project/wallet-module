@@ -54,6 +54,13 @@ Route::middleware(["auth"])
 			CategoryController::class,
 			"bulkUpdate",
 		])->name("categories.bulk-update");
+		Route::post("categories/import", [CategoryController::class, ""])->name(
+			"categories.import"
+		);
+		Route::delete("categories/bulk-delete", [
+			CategoryController::class,
+			"",
+		])->name("categories.bulk-delete");
 		Route::resource("categories", CategoryController::class);
 
 		// Budget Routes
@@ -69,12 +76,9 @@ Route::middleware(["auth"])
 			BudgetController::class,
 			"toggleStatus",
 		])->name("budgets.toggle-status");
-		Route::post("categories/import", [CategoryController::class, ""])->name(
-			"categories.import"
-		);
-		Route::delete("categories/bulk-delete", [
-			CategoryController::class,
+		Route::get("budgets/{budget}/duplicate", [
+			BudgetController::class,
 			"",
-		])->name("categories.bulk-delete");
+		])->name("budgets.duplicate");
 		Route::resource("budgets", BudgetController::class);
 	});
