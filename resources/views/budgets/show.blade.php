@@ -54,7 +54,7 @@
         
     <div class="col-md-4 text-center text-md-end position-relative z-1">
       <div class="mb-3">
-        <div class="display-5 fw-bold text-white">@money((float) $budget->remaining)</div>
+        <div class="display-5 fw-bold text-white">@money(number_format((float) $budget->remaining, 0, ',', '.'))</div>
         <div class="text-white-75">SISA BUDGET</div>
       </div>
       <div class="d-flex justify-content-center justify-content-md-end">
