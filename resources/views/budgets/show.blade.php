@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="d-flex justify-content-between text-white-75">
-          <small>@money($budget->spent->getAmount()->toInt()) terpakai</small>
+          <small>@money($budget->spent->getMinorAmount()->toInt()) terpakai</small>
           <small>@money($budget->amount->getMinorAmount()->toInt()) total budget</small>
         </div>
       </div>
@@ -54,7 +54,7 @@
         
     <div class="col-md-4 text-center text-md-end position-relative z-1">
       <div class="mb-3">
-        <div class="display-5 fw-bold text-white">{{ Helper::formatMoney($budget->remaining) }}</div>
+        <div class="display-5 fw-bold text-white">@money($budget->remaining)</div>
         <div class="text-white-75">SISA BUDGET</div>
       </div>
       <div class="d-flex justify-content-center justify-content-md-end">
