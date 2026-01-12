@@ -47,7 +47,7 @@
         </div>
         <div class="d-flex justify-content-between text-white-75">
           <small>@money($budget->spent->getAmount()->toInt()) terpakai</small>
-          <small>@money($budget->amount->getAmount()->toInt()) total budget</small>
+          <small>@money($budget->amount->getMinorAmount()->toInt()) total budget</small>
         </div>
       </div>
     </div>
