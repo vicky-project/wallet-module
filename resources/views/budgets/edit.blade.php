@@ -650,11 +650,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize with current period type selected
     const currentPeriodType = '{{ $budget->period_type->value }}';
-    console.log(currentPeriodType);
     const periodTypeCards = document.querySelectorAll('.period-type-card');
     
     periodTypeCards.forEach(card => {
         if (card.dataset.type === currentPeriodType) {
+            console.log('sama'+ currentPeriodType + card.dataset.type);
             card.classList.add('selected');
         }
     });
