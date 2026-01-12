@@ -4,30 +4,22 @@
 
 @section('content')
 @include('wallet::partials.fab')
-    <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="page-title mb-2">
-                <i class="bi bi-pencil-square me-2"></i>Edit Budget
-            </h2>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('wallet.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('wallet.budgets.index') }}">Budget</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('wallet.budgets.show', $budget) }}">Detail</a></li>
-                    <li class="breadcrumb-item active">Edit</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="col-auto">
-            <a href="{{ route('wallet.budgets.show', $budget) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Kembali ke Detail
-            </a>
-        </div>
-    </div>
+<!-- Page Header -->
+<div class="row mb-4">
+  <div class="col">
+    <h2 class="page-title mb-2">
+      <i class="bi bi-pencil-square me-2"></i>Edit Budget
+    </h2>
+  </div>
+  <div class="col-auto">
+    <a href="{{ route('apps.budgets.show', $budget) }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i>Kembali ke Detail
+    </a>
+  </div>
+</div>
 
-    <!-- Current Budget Stats -->
-    <div class="current-stats">
+<!-- Current Budget Stats -->
+<div class="current-stats">
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="mb-3">
@@ -64,12 +56,12 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 
-    <!-- Main Form -->
-    <div class="row">
+<!-- Main Form -->
+<div class="row">
         <div class="col-lg-8">
-            <form action="{{ route('wallet.budgets.update', $budget) }}" method="POST" id="editBudgetForm">
+            <form action="{{ route('apps.budgets.update', $budget) }}" method="POST" id="editBudgetForm">
                 @csrf
                 @method('PUT')
                 
@@ -455,7 +447,7 @@
                                         <h6 class="alert-heading mb-1">Perbarui Jumlah Terpakai</h6>
                                         <p class="mb-0">Jumlah terpakai saat ini: {{ format_currency($budget->spent) }}</p>
                                         <div class="mt-2">
-                                            <a href="{{ route('wallet.budgets.update-spent') }}" 
+                                            <a href="{{ route('apps.budgets.update-spent') }}" 
                                                class="btn btn-sm btn-outline-warning"
                                                onclick="return confirm('Perbarui jumlah terpakai dari transaksi?')">
                                                 <i class="bi bi-arrow-clockwise me-1"></i>Perbarui dari Transaksi
@@ -498,7 +490,7 @@
                 <!-- Form Actions -->
                 <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                     <div>
-                        <a href="{{ route('wallet.budgets.show', $budget) }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('apps.budgets.show', $budget) }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i>Batal
                         </a>
                     </div>
@@ -605,13 +597,13 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('wallet.budgets.show', $budget) }}" class="btn btn-outline-primary">
+                        <a href="{{ route('apps.budgets.show', $budget) }}" class="btn btn-outline-primary">
                             <i class="bi bi-eye me-2"></i>Lihat Detail
                         </a>
-                        <a href="{{ route('wallet.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-outline-success">
+                        <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-outline-success">
                             <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
                         </a>
-                        <a href="{{ route('wallet.budgets.duplicate', $budget) }}" class="btn btn-outline-info"
+                        <a href="{{ route('apps.budgets.duplicate', $budget) }}" class="btn btn-outline-info"
                            onclick="return confirm('Duplikat budget ini?')">
                             <i class="bi bi-files me-2"></i>Duplikat Budget
                         </a>
@@ -619,7 +611,7 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 
 <!-- Reset Spent Confirmation Modal -->
 <div class="modal fade" id="resetSpentModal" tabindex="-1">
@@ -671,7 +663,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form method="POST" action="{{ route('wallet.budgets.reset-spent', $budget) }}" id="resetSpentForm">
+                <form method="POST" action="{{ route('apps.budgets.reset-spent', $budget) }}" id="resetSpentForm">
                     @csrf
                     @method('PUT')
                     <button type="submit" class="btn btn-danger" id="confirmResetBtn" disabled>
