@@ -651,12 +651,101 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize with current period type selected
     const currentPeriodType = '{{ $budget->period_type->value }}';
     const periodTypeCards = document.querySelectorAll('.period-type-card');
+    const periodTypeInput = document.getElementById('period_type');
+    const periodConfigs = document.querySelectorAll('.period-config');
+    
+    // Initialize period type
+    updatePeriodConfig();
     
     periodTypeCards.forEach(card => {
         if (card.dataset.type === currentPeriodType) {
-            console.log('sama'+ currentPeriodType + card.dataset.type);
-            card.classList.add('selected');
+            // Remove selected from all cards
+            periodTypeCards.forEach(c => c.classList.remove('selected'));
+            
+            card.classList.add('selected')
+            // Update period configuration
+            updatePeriodConfig();
+            
+            calculateDates();
         }
+    });
+    
+        // Update period configuration based on selected type
+    function updatePeriodConfig() {
+        const periodType = periodTypeInput.value;
+        
+        // Hide all configs
+        periodConfigs.forEach(config => {
+            config.classList.add('d-none');
+        });
+        
+        // Show selected config
+        const selectedConfig = document.querySelector(`.period-config.${periodType}`);
+        if (selectedConfig) {
+            selectedConfig.classList.remove('d-none');
+        }
+    }
+    
+    // Calculate dates based on period type, value, and year
+    function calculateDates() {
+        const periodType = periodTypeInput.value;
+        const periodValue = getPeriodValue();
+        const year = document.getElementById('year').value;
+        
+        if (!periodType || !periodValue || !year) return;
+        
+        // Make AJAX call to calculate dates
+        fetch(`{{ secure_url(config('app.url')) }}/api/apps/budgets/calculate-dates`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                period_type: periodType,
+                period_value: periodValue,
+                year: year
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('start_date').value = data.dates.start_date;
+                document.getElementById('end_date').value = data.dates.end_date;
+                updateDateRangeLabel(data.dates.start_date, data.dates.end_date);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+        // Get current period value
+    function getPeriodValue() {
+        const periodType = periodTypeInput.value;
+        const elementId = `period_value_${periodType}`;
+        const element = document.getElementById(elementId);
+        
+        if (element) {
+            return element.value;
+        }
+        
+        return document.querySelector('[name="period_value"]')?.value || 1;
+    }
+    
+    // Update date range label
+    function updateDateRangeLabel(startDate, endDate) {
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            const label = `Periode: ${start.toLocaleDateString('id-ID', options)} - ${end.toLocaleDateString('id-ID', options)}`;
+            document.getElementById('dateRangeLabel').textContent = label;
+        }
+    }
+    
+        // Event listeners for period value and year changes
+    document.getElementById('year').addEventListener('change', calculateDates);
+    document.querySelectorAll('[name="period_value"]').forEach(element => {
+        element.addEventListener('change', calculateDates);
     });
     
     // Reset spent amount button
