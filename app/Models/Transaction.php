@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Models;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,6 +61,9 @@ class Transaction extends Model
 			if ($transaction->type === TransactionType::EXPENSE) {
 				$transaction->updateBudgetSpent();
 			}
+
+			// Flush Cache
+			Cache::flush();
 		});
 
 		static::updated(function ($transaction) {
@@ -77,6 +81,9 @@ class Transaction extends Model
 			) {
 				$transaction->updateBudgetSpent();
 			}
+
+			// Flush Cache
+			Cache::flush();
 		});
 
 		static::deleted(function ($transaction) {
@@ -104,6 +111,9 @@ class Transaction extends Model
 			if ($transaction->type === TransactionType::EXPENSE) {
 				$transaction->updateBudgetSpent(remove: true);
 			}
+
+			// Flush Cache
+			Cache::flush();
 		});
 	}
 
