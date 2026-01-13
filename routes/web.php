@@ -43,6 +43,10 @@ Route::middleware(["auth"])
 			TransactionController::class,
 			"duplicate",
 		])->name("transactions.duplicate");
+		Route::post("transactions/check-budget", [
+			TransactionController::class,
+			"checkBudget",
+		])->name("transactions.check-budget");
 		Route::resource("transactions", TransactionController::class);
 
 		// Category Routes
