@@ -209,7 +209,7 @@
           <div>
             <h6 class="text-muted mb-1">Total Pemasukan</h6>
             <h4 class="text-success mb-0">
-              Rp @money($totals['income'])
+              @money($totals['income'])
             </h4>
           </div>
           <div class="bg-success bg-opacity-10 p-2 rounded">
@@ -227,7 +227,7 @@
           <div>
             <h6 class="text-muted mb-1">Total Pengeluaran</h6>
             <h4 class="text-danger mb-0">
-              Rp {{ number_format($totals['expense'], 0, ',', '.') }}
+              @money($totals['expense'])
             </h4>
           </div>
           <div class="bg-danger bg-opacity-10 p-2 rounded">
@@ -245,7 +245,7 @@
           <div>
             <h6 class="text-muted mb-1">Total Transfer</h6>
             <h4 class="text-primary mb-0">
-              Rp {{ number_format($totals['transfer'], 0, ',', '.') }}
+              @money($totals['transfer'])
             </h4>
           </div>
           <div class="bg-primary bg-opacity-10 p-2 rounded">
