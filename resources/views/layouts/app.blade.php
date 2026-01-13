@@ -735,7 +735,7 @@
                 }
                 
                 // Tutup FAB menu pada resize (untuk konsistensi UX)
-                if (fabMenu.classList.contains('active')) {
+                if (fabMenu?.classList.contains('active')) {
                     toggleFabMenu();
                 }
             });
