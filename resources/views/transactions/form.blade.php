@@ -233,24 +233,22 @@
               </div>
                             
               <div class="col-md-6 mb-3" id="toAccountField" style="{{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? '' : 'display: none;' }}">
-                                <label for="to_account_id" class="form-label">Ke Akun *</label>
-                                <select name="to_account_id" id="to_account_id" 
-                                        class="form-select @error('to_account_id') is-invalid @enderror">
-                                    <option value="">Pilih Akun Tujuan</option>
-                                    @foreach($accounts as $account)
-                                        <option value="{{ $account->id }}" 
-                                                data-balance="{{ $account->balance }}"
-                                                {{ old('to_account_id', $transaction->to_account_id ?? '') == $account->id ? 'selected' : '' }}>
-                                            {{ $account->name }} 
-                                            (Rp {{ number_format($account->balance, 0, ',', '.') }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <small class="text-muted" id="toAccountBalance"></small>
-                                @error('to_account_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                <label for="to_account_id" class="form-label">Ke Akun *</label>
+                <select name="to_account_id" id="to_account_id" class="form-select @error('to_account_id') is-invalid @enderror">
+                  <option value="">Pilih Akun Tujuan</option>
+                  @foreach($accounts as $account)
+                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}"
+                      {{ old('to_account_id', $transaction->to_account_id ?? '') == $account->id ? 'selected' : '' }}>
+                      {{ $account->name }} 
+                      (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
+                    </option>
+                  @endforeach
+                </select>
+                <small class="text-muted" id="toAccountBalance"></small>
+                @error('to_account_id')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
             </div>
           </div>
                     
