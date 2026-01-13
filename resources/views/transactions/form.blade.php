@@ -534,13 +534,17 @@
             }
             
             // Format amount helper
+            amountHelp(amount);
+        });
+        
+        
+        function amountHelp(amount) {
             if (amount > 0) {
                 amountHelp.textContent = `Rp ${amount.toLocaleString('id-ID')}`;
             } else {
                 amountHelp.textContent = '';
             }
-        });
-        
+        }
         // Form validation
         document.getElementById('transactionForm').addEventListener('submit', function(e) {
             const type = typeInput.value;
@@ -609,6 +613,10 @@
             if (initialCategoryId && initialAmount > 0) {
                 checkBudget(initialCategoryId, initialAmount, initialDate);
             }
+        @endif
+        
+        @if($transaction)
+        amountHelp(amountInput.value)
         @endif
     });
 </script>
