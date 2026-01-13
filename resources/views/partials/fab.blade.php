@@ -62,6 +62,12 @@
       }
     }
   });
+  
+  window.addEventListener('resize', function(){
+    if(fabMenu.classList.contains('active')) {
+      toggleFabMenu();
+    }
+  });
 
   // Tutup FAB Menu ketika klik item menu
   [fabIncome, fabExpense, fabRecurring, fabReport].forEach(item => {
@@ -96,5 +102,4 @@
       }
     });
   });
-            
 </script>

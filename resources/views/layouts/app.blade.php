@@ -733,11 +733,6 @@
                         sidebar.classList.add('sidebar-hidden');
                     }
                 }
-                
-                // Tutup FAB menu pada resize (untuk konsistensi UX)
-                if (fabMenu && fabMenu.classList.contains('active')) {
-                    toggleFabMenu();
-                }
             });
             
             // Format currency untuk semua elemen dengan class .currency
