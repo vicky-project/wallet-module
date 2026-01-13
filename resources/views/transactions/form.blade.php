@@ -2,6 +2,9 @@
 
 @section('title', $transaction ? 'Edit Transaksi' : 'Tambah Transaksi Baru')
 
+@use('Modules\Wallet\Enums\TransactionType')
+@use('Modules\Wallet\Enums\PaymentMethod')
+
 @push('styles')
 <style>
     .account-option {
@@ -110,103 +113,73 @@
                     
           <!-- Transaction Type -->
           <div class="form-section">
-                        <h5 class="form-section-title">Jenis Transaksi</h5>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="d-flex flex-wrap gap-3">
-                                    <div class="transaction-type-badge bg-success bg-opacity-10 text-success {{ (!$transaction && request('type') == 'income') || ($transaction && $transaction->type == 'income') ? 'active' : '' }}" 
-                                         data-type="income">
-                                        <i class="bi bi-arrow-down-left me-2"></i>
-                                        Pemasukan
-                                    </div>
-                                    <div class="transaction-type-badge bg-danger bg-opacity-10 text-danger {{ (!$transaction && request('type') == 'expense') || ($transaction && $transaction->type == 'expense') ? 'active' : '' }}" 
-                                         data-type="expense">
-                                        <i class="bi bi-arrow-up-right me-2"></i>
-                                        Pengeluaran
-                                    </div>
-                                    <div class="transaction-type-badge bg-primary bg-opacity-10 text-primary {{ (!$transaction && request('type') == 'transfer') || ($transaction && $transaction->type == 'transfer') ? 'active' : '' }}" 
-                                         data-type="transfer">
-                                        <i class="bi bi-arrow-left-right me-2"></i>
-                                        Transfer
-                                    </div>
-                                </div>
-                                <input type="hidden" name="type" id="type" 
-                                       value="{{ $transaction ? $transaction->type : (request('type') ?? 'expense') }}">
-                                @error('type')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
+            <h5 class="form-section-title">Jenis Transaksi</h5>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="d-flex flex-wrap gap-3">
+                  @foreach(TransactionType::cases() as $type)
+                    <div class="transaction-type-badge bg-{{ $type->color() }} bg-opacity-10 text-{{ $type->color() }} {{ (!$transaction && request('type') == $type->value) || ($transaction && $transaction->type == $type->value) ? 'active' : '' }}" data-type="{{ $type->value }}">
+                      <i class="bi {{ $type->icon() }} me-2"></i>
+                      {{ $type->name }}
                     </div>
+                  @endforeach
+                </div>
+                <input type="hidden" name="type" id="type" value="{{ $transaction ? $transaction->type : (request('type') ?? TransactionType::EXPENSE->value) }}">
+                @error('type')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+              </div>
+            </div>
+          </div>
                     
           <!-- Basic Information -->
           <div class="form-section">
-                        <h5 class="form-section-title">Informasi Dasar</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="description" class="form-label">Keterangan *</label>
-                                <input type="text" name="description" id="description" 
-                                       class="form-control @error('description') is-invalid @enderror"
-                                       value="{{ old('description', $transaction->description ?? '') }}" 
-                                       placeholder="Deskripsi transaksi..." required>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+            <h5 class="form-section-title">Informasi Dasar</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="description" class="form-label">Keterangan *</label>
+                <input type="text" name="description" id="description" class="form-control @error('description') is-invalid @enderror" value="{{ old('description', $transaction->description ?? '') }}" placeholder="Deskripsi transaksi..." required>
+                @error('description')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3">
-                                <label for="transaction_date" class="form-label">Tanggal & Waktu *</label>
-                                <input type="datetime-local" name="transaction_date" id="transaction_date" 
-                                       class="form-control @error('transaction_date') is-invalid @enderror"
-                                       value="{{ old('transaction_date', $transaction ? $transaction->transaction_date->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" 
-                                       required>
-                                @error('transaction_date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+              <div class="col-md-6 mb-3">
+                <label for="transaction_date" class="form-label">Tanggal & Waktu *</label>
+                <input type="datetime-local" name="transaction_date" id="transaction_date" class="form-control @error('transaction_date') is-invalid @enderror" value="{{ old('transaction_date', $transaction ? $transaction->transaction_date->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" required>
+                @error('transaction_date')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3">
-                                <label for="amount" class="form-label">Jumlah (Rp) *</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" name="amount" id="amount" 
-                                           class="form-control @error('amount') is-invalid @enderror"
-                                           value="{{ old('amount', $transaction->amount ?? '') }}" 
-                                           min="1" required>
-                                </div>
-                                <small class="text-muted" id="amountHelp"></small>
-                                @error('amount')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+              <div class="col-md-6 mb-3">
+                <label for="amount" class="form-label">Jumlah (Rp) *</label>
+                <div class="input-group">
+                  <span class="input-group-text" id="account-currency">Rp</span>
+                  <input type="number" name="amount" id="amount" class="form-control @error('amount') is-invalid @enderror" value="{{ old('amount', $transaction->amount ?? '') }}" min="1" required>
+                </div>
+                <small class="text-muted" id="amountHelp"></small>
+                @error('amount')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3">
-                                <label for="payment_method" class="form-label">Metode Pembayaran</label>
-                                <select name="payment_method" id="payment_method" 
-                                        class="form-select @error('payment_method') is-invalid @enderror">
-                                    <option value="">Pilih Metode</option>
-                                    <option value="cash" {{ old('payment_method', $transaction->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
-                                        Tunai
-                                    </option>
-                                    <option value="debit_card" {{ old('payment_method', $transaction->payment_method ?? '') == 'debit_card' ? 'selected' : '' }}>
-                                        Kartu Debit
-                                    </option>
-                                    <option value="credit_card" {{ old('payment_method', $transaction->payment_method ?? '') == 'credit_card' ? 'selected' : '' }}>
-                                        Kartu Kredit
-                                    </option>
-                                    <option value="bank_transfer" {{ old('payment_method', $transaction->payment_method ?? '') == 'bank_transfer' ? 'selected' : '' }}>
-                                        Transfer Bank
-                                    </option>
-                                    <option value="e-wallet" {{ old('payment_method', $transaction->payment_method ?? '') == 'e-wallet' ? 'selected' : '' }}>
-                                        E-Wallet
-                                    </option>
-                                </select>
-                                @error('payment_method')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
+              <div class="col-md-6 mb-3">
+                <label for="payment_method" class="form-label">Metode Pembayaran</label>
+                <select name="payment_method" id="payment_method" class="form-select @error('payment_method') is-invalid @enderror">
+                  <option value="">Pilih Metode</option>
+                  @foreach(PaymentMethod::cases() as $method)
+                    <option value="{{ $method->value }}" @selected(old('payment_method', $transaction->payment_method ?? '') == $method->value)>
+                      {{ $method->name }}
+                    </option>
+                  @endforeach
+                </select>
+                @error('payment_method')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+            </div>
+          </div>
                     
           <!-- Accounts -->
           <div class="form-section">
@@ -214,13 +187,12 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="account_id" class="form-label" id="accountLabel">
-                  {{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? 'Dari Akun *' : 'Akun *' }}
+                  {{ ($transaction && $transaction->type == TransactionType::TRANSFER) || request('type') == TransactionType::TRANSFER->value ? 'Dari Akun *' : 'Akun *' }}
                 </label>
                 <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
                   <option value="">Pilih Akun</option>
                   @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}"
-                      {{ old('account_id', $transaction->account_id ?? '') == $account->id ? 'selected' : '' }}>
+                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
                       {{ $account->name }} 
                       (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
                     </option>
@@ -232,13 +204,12 @@
                 @enderror
               </div>
                             
-              <div class="col-md-6 mb-3" id="toAccountField" style="{{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? '' : 'display: none;' }}">
+              <div class="col-md-6 mb-3" id="toAccountField" style="{{ ($transaction && $transaction->type == TransactionType::TRANSFER) || request('type') == TransactionType::TRANSFER->value ? '' : 'display: none;' }}">
                 <label for="to_account_id" class="form-label">Ke Akun *</label>
                 <select name="to_account_id" id="to_account_id" class="form-select @error('to_account_id') is-invalid @enderror">
                   <option value="">Pilih Akun Tujuan</option>
                   @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}"
-                      {{ old('to_account_id', $transaction->to_account_id ?? '') == $account->id ? 'selected' : '' }}>
+                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
                       {{ $account->name }} 
                       (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
                     </option>
@@ -254,102 +225,91 @@
                     
           <!-- Category -->
           <div class="form-section">
-                        <h5 class="form-section-title">Kategori</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="category_id" class="form-label">Kategori *</label>
-                                <select name="category_id" id="category_id" 
-                                        class="form-select @error('category_id') is-invalid @enderror" required>
-                                    <option value="">Pilih Kategori</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" 
-                                                data-type="{{ $category->type }}"
-                                                data-icon="{{ $category->icon }}"
-                                                {{ old('category_id', $transaction->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                                            <i class="bi bi-{{ $category->icon }} me-2"></i>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('category_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+            <h5 class="form-section-title">Kategori</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="category_id" class="form-label">Kategori *</label>
+                <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                  <option value="">Pilih Kategori</option>
+                  @foreach($categories as $category)
+                    <option value="{{ $category->id }}" data-type="{{ $category->type }}" data-icon="{{ $category->icon }}" @selected(old('category_id', $transaction->category_id ?? '') == $category->id)>
+                      <i class="bi {{ $category->icon }} me-2"></i>
+                      {{ $category->name }}
+                    </option>
+                  @endforeach
+                </select>
+                @error('category_id')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3" id="budgetInfo" style="display: none;">
-                                <label class="form-label">Informasi Anggaran</label>
-                                <div class="card bg-light">
-                                    <div class="card-body py-2">
-                                        <div id="budgetMessage"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              <div class="col-md-6 mb-3" id="budgetInfo" style="display: none;">
+                <label class="form-label">Informasi Anggaran</label>
+                <div class="card text-bg-light">
+                  <div class="card-body py-2">
+                    <div id="budgetMessage"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
                     
           <!-- Additional Information -->
           <div class="form-section">
-                        <h5 class="form-section-title">Informasi Tambahan</h5>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label for="notes" class="form-label">Catatan</label>
-                                <textarea name="notes" id="notes" rows="3" 
-                                          class="form-control @error('notes') is-invalid @enderror"
-                                          placeholder="Catatan tambahan...">{{ old('notes', $transaction->notes ?? '') }}</textarea>
-                                @error('notes')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+            <h5 class="form-section-title">Informasi Tambahan</h5>
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <label for="notes" class="form-label">Catatan</label>
+                <textarea name="notes" id="notes" rows="3" class="form-control @error('notes') is-invalid @enderror" placeholder="Catatan tambahan...">{{ old('notes', $transaction->notes ?? '') }}</textarea>
+                @error('notes')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3">
-                                <label for="reference_number" class="form-label">Nomor Referensi</label>
-                                <input type="text" name="reference_number" id="reference_number" 
-                                       class="form-control @error('reference_number') is-invalid @enderror"
-                                       value="{{ old('reference_number', $transaction->reference_number ?? '') }}"
-                                       placeholder="No. invoice, kode transaksi, dll.">
-                                @error('reference_number')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+              <div class="col-md-6 mb-3">
+                <label for="reference_number" class="form-label">Nomor Referensi</label>
+                <input type="text" name="reference_number" id="reference_number" class="form-control @error('reference_number') is-invalid @enderror" value="{{ old('reference_number', $transaction->reference_number ?? '') }}" placeholder="No. invoice, kode transaksi, dll.">
+                @error('reference_number')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Transaksi Berulang</label>
-                                <div class="form-check">
-                                    <input type="checkbox" name="is_recurring" id="is_recurring" 
-                                           class="form-check-input" value="1"
-                                           {{ old('is_recurring', $transaction->is_recurring ?? false) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="is_recurring">
-                                        Jadikan transaksi berulang
-                                    </label>
-                                </div>
-                                <small class="text-muted">Centang jika transaksi ini terjadi secara berkala</small>
-                            </div>
-                        </div>
-                    </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Transaksi Berulang</label>
+                <div class="form-check">
+                  <input type="checkbox" name="is_recurring" id="is_recurring" class="form-check-input" value="1" @checked(old('is_recurring', $transaction->is_recurring ?? false))>
+                  <label class="form-check-label" for="is_recurring">
+                    Jadikan transaksi berulang
+                  </label>
+                </div>
+                <small class="text-muted">Centang jika transaksi ini terjadi secara berkala</small>
+              </div>
+            </div>
+          </div>
                     
           <!-- Submit Buttons -->
           <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <button type="reset" class="btn btn-outline-secondary">
-                                        <i class="bi bi-arrow-clockwise me-2"></i> Reset
-                                    </button>
-                                </div>
-                                <div>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-circle me-2"></i>
-                                        {{ $transaction ? 'Simpan Perubahan' : 'Simpan Transaksi' }}
-                                    </button>
-                                    @if($transaction)
-                                        <a href="{{ route('wallet.transactions.index') }}" class="btn btn-outline-danger ms-2">
-                                            <i class="bi bi-x-circle me-2"></i> Batal
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-12">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <button type="reset" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise me-2"></i> Reset
+                  </button>
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>
+                    {{ $transaction ? 'Simpan Perubahan' : 'Simpan Transaksi' }}
+                  </button>
+                  @if($transaction)
+                    <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-danger ms-2">
+                      <i class="bi bi-x-circle me-2"></i> Batal
+                    </a>
+                  @endif
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -358,7 +318,7 @@
   <!-- Quick Stats -->
   @if(!$transaction)
     <div class="row mt-4">
-      <div class="col-md-4">
+      <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm">
           <div class="card-body text-center py-3">
             <h6 class="text-muted mb-1">Total Akun Aktif</h6>
@@ -366,7 +326,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm">
           <div class="card-body text-center py-3">
             <h6 class="text-muted mb-1">Total Kategori</h6>
@@ -374,7 +334,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 mb-3">
         <div class="card border-0 shadow-sm">
           <div class="card-body text-center py-3">
             <h6 class="text-muted mb-1">Transaksi Hari Ini</h6>

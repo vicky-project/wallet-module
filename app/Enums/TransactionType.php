@@ -15,4 +15,22 @@ enum TransactionType: string
 			self::TRANSFER => "Transfer",
 		};
 	}
+
+	public function icon(): string
+	{
+		return match ($this) {
+			self::INCOME => "bi-arrow-down-left",
+			self::EXPENSE => "bi-arrow-up-right",
+			self::TRANSFER => "bi-arrow-left-right",
+		};
+	}
+
+	public function color(): string
+	{
+		return match ($this) {
+			self::INCOME => "success",
+			self::EXPENSE => "danger",
+			self::TRANSFER => "primary",
+		};
+	}
 }
