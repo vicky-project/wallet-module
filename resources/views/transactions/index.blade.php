@@ -703,7 +703,7 @@
         // Duplicate Transaction
         window.duplicateTransaction = function(uuid) {
             if (confirm('Apakah Anda ingin menduplikasi transaksi ini?')) {
-                fetch("{{ route('apps.transactions.duplicate', '') }}/" + uuid, {
+                fetch("{{ secure_url(config('app.url').'/apps/transactions/') }}" + uuid + '{{ "/duplicate" }}', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
