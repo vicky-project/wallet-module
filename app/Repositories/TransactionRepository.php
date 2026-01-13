@@ -215,11 +215,6 @@ class TransactionRepository extends BaseRepository
 			// Revert old balances
 			$this->revertAccountBalance($transaction);
 
-			// Revert old budget spent if expense
-			if ($oldType === TransactionType::EXPENSE) {
-				$this->revertBudgetSpent($transaction);
-			}
-
 			// Update transaction
 			$transaction->update($data);
 
@@ -248,11 +243,6 @@ class TransactionRepository extends BaseRepository
 		try {
 			// Revert balances
 			$this->revertAccountBalance($transaction);
-
-			// Revert budget spent if expense
-			if ($transaction->type === TransactionType::EXPENSE) {
-				$this->revertBudgetSpent($transaction);
-			}
 
 			// Delete transaction
 			$deleted = $transaction->delete();
@@ -642,19 +632,19 @@ class TransactionRepository extends BaseRepository
 
 		if ($budget) {
 			if ($operation === "add") {
-				$budgetRepo->updateSpent($budget->id, $transaction->amount, "add");
+				$budgetRepo->updateSpentAmount(
+					$budget->id,
+					$transaction->amount,
+					"add"
+				);
 			} else {
-				$budgetRepo->updateSpent($budget->id, $transaction->amount, "subtract");
+				$budgetRepo->updateSpentAmount(
+					$budget->id,
+					$transaction->amount,
+					"subtract"
+				);
 			}
 		}
-	}
-
-	/**
-	 * Revert budget spent amount
-	 */
-	private function revertBudgetSpent(Transaction $transaction): void
-	{
-		$this->updateBudgetSpent($transaction, "subtract");
 	}
 
 	/**

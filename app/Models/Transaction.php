@@ -170,23 +170,17 @@ class Transaction extends Model
 	{
 		switch ($this->type) {
 			case TransactionType::INCOME:
-				$this->account->balance->plus($this->amount->getMinorAmount()->toInt());
+				$this->account->balance->plus($this->amount->getAmount()->toInt());
 				break;
 
 			case TransactionType::EXPENSE:
-				$this->account->balance->minus(
-					$this->amount->getMinorAmount()->toInt()
-				);
+				$this->account->balance->minus($this->amount->getAmount()->toInt());
 				break;
 
 			case TransactionType::TRANSFER:
-				$this->account->balance->minus(
-					$this->amount->getMinorAmount()->toInt()
-				);
+				$this->account->balance->minus($this->amount->getAmount()->toInt());
 				if ($this->toAccount) {
-					$this->toAccount->balance->plus(
-						$this->amount->getMinorAmount()->toInt()
-					);
+					$this->toAccount->balance->plus($this->amount->getAmount()->toInt());
 				}
 				break;
 		}
@@ -230,9 +224,9 @@ class Transaction extends Model
 
 		if ($budget) {
 			if ($remove) {
-				$budget->spent->minus($this->amount->getMinorAmount()->toInt());
+				$budget->spent->minus($this->amount->getAmount()->toInt());
 			} else {
-				$budget->spent->plus($this->amount->getMinorAmount()->toInt());
+				$budget->spent->plus($this->amount->getAmount()->toInt());
 			}
 		}
 	}

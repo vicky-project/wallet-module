@@ -598,4 +598,11 @@ class BudgetRepository extends BaseRepository
 				];
 		}
 	}
+
+	public function updateSpentAmount(
+		int $budgetId,
+		int $amount,
+		string $operation = "add"
+	) {
+	}
 }
