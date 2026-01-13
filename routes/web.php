@@ -66,7 +66,7 @@ Route::middleware(["auth"])
 		// Budget Routes
 		Route::get("budgets/update-spent", [
 			BudgetController::class,
-			"updateSpent",
+			"updateSpentAmounts",
 		])->name("budgets.update-spent");
 		Route::post("budgets/create-from-suggestions", [
 			BudgetController::class,
@@ -78,11 +78,11 @@ Route::middleware(["auth"])
 		])->name("budgets.toggle-status");
 		Route::get("budgets/{budget}/duplicate", [
 			BudgetController::class,
-			"",
+			"duplicate",
 		])->name("budgets.duplicate");
 		Route::put("budgets/{budget}/reset-spent", [
 			BudgetController::class,
-			"",
+			"resetSpent",
 		])->name("budgets.reset-spent");
 		Route::resource("budgets", BudgetController::class);
 	});

@@ -365,4 +365,98 @@ class BudgetController extends Controller
 			"budgets" => $budgets,
 		]);
 	}
+
+	/**
+	 * Duplicate budget
+	 */
+	public function duplicate(Request $request, Budget $budget)
+	{
+		try {
+			$request->validate([
+				"name" => "required|string|max:100",
+				"duplicate_settings" => "boolean",
+				"duplicate_next_period" => "boolean",
+			]);
+
+			$user = auth()->user();
+
+			// Check authorization
+			if ($budget->user_id !== $user->id) {
+				abort(403);
+			}
+
+			$newBudget = $budget->replicate();
+			$newBudget->name = $request->name;
+			$newBudget->spent = 0;
+
+			// If duplicate for next period
+			if ($request->boolean("duplicate_next_period")) {
+				$nextPeriod = $budget->getNextPeriod();
+				$newBudget->start_date = $nextPeriod->start_date;
+				$newBudget->end_date = $nextPeriod->end_date;
+				$newBudget->period_value = $nextPeriod->period_value;
+				$newBudget->year = $nextPeriod->year;
+			}
+
+			$newBudget->save();
+
+			// Duplicate accounts if requested
+			if ($request->boolean("duplicate_settings")) {
+				$accountIds = $budget
+					->accounts()
+					->pluck("accounts.id")
+					->toArray();
+				$newBudget->accounts()->sync($accountIds);
+			}
+
+			return redirect()
+				->route("apps.budgets.show", $newBudget)
+				->with("success", "Budget berhasil diduplikasi");
+		} catch (\Exception $e) {
+			return back()->with("error", $e->getMessage());
+		}
+	}
+
+	/**
+	 * Reset spent amount
+	 */
+	public function resetSpent(Request $request, Budget $budget)
+	{
+		try {
+			$user = auth()->user();
+
+			// Check authorization
+			if ($budget->user_id !== $user->id) {
+				abort(403);
+			}
+
+			$budget->spent = 0;
+			$budget->save();
+
+			return redirect()
+				->route("apps.budgets.edit", $budget)
+				->with("success", "Jumlah terpakai berhasil direset");
+		} catch (\Exception $e) {
+			return back()->with("error", $e->getMessage());
+		}
+	}
+
+	/**
+	 * Get next period dates
+	 */
+	private function getNextPeriodDates(Request $request, Budget $budget)
+	{
+		try {
+			$nextPeriod = $this->budgetService->calculateNextPeriod($budget);
+
+			dd($nextPeriod);
+		} catch (\Exception $e) {
+			return $request->wantsJson
+				? response()->json(
+					["success" => false, "message" => $e->getMessage()],
+					500
+				)
+				: back()->withErrors($e->getMessage());
+		}
+	}
 }

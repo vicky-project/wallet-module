@@ -312,4 +312,9 @@ class BudgetService
 
 		return $averageSpent ? (int) round($averageSpent) : 500000; // Default 500k
 	}
+
+	public function calculateNextPeriod(Budget $budget)
+	{
+		return $this->budgetRepository->calculateNextPeriod($budget);
+	}
 }

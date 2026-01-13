@@ -12,12 +12,13 @@ class AccountRequest extends FormRequest
 	public function authorize(): bool
 	{
 		return auth()->check() &&
-			(auth()
-				->user()
-				->can(Permissions::CREATE_ACCOUNTS) ||
-				auth()
+			($this->isMethod("PUT")
+				? auth()
 					->user()
-					->can(Permissions::EDIT_ACCOUNTS));
+					->can(Permissions::EDIT_ACCOUNTS)
+				: auth()
+					->user()
+					->can(Permissions::CREATE_ACCOUNTS));
 	}
 
 	public function rules(): array

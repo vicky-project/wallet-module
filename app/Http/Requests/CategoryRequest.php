@@ -5,12 +5,20 @@ namespace Modules\Wallet\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Modules\Wallet\Enums\CategoryType;
+use Modules\Wallet\Constants\Permissions;
 
 class CategoryRequest extends FormRequest
 {
 	public function authorize(): bool
 	{
-		return true;
+		return auth()->check() &&
+			($this->isMethod("PUT")
+				? auth()
+					->user()
+					->can(Permissions::EDIT_CATEGORIES)
+				: auth()
+					->user()
+					->can(Permissions::CREATE_CATEGORIES));
 	}
 
 	public function rules(): array

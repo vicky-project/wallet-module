@@ -2,51 +2,99 @@
 
 namespace Modules\Wallet\Models;
 
-use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Casts\MoneyCast;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Modules\Wallet\Casts\MoneyCast;
+use Modules\Wallet\Enums\TransactionType;
 
 class Transaction extends Model
 {
+	use HasFactory, SoftDeletes;
+
 	protected $fillable = [
+		"uuid",
 		"user_id",
-		"category_id",
 		"account_id",
-		"title",
-		"description",
-		"amount",
+		"to_account_id",
+		"category_id",
 		"type",
+		"amount",
+		"original_amount",
+		"original_currency",
+		"description",
+		"notes",
 		"transaction_date",
-		"payment_method",
-		"reference_number",
 		"is_recurring",
-		"recurring_period",
-		"recurring_end_date",
-		"is_verified",
+		"recurring_template_id",
+		"reference_number",
+		"payment_method",
+		"metadata",
 	];
 
 	protected $casts = [
 		"transaction_date" => "datetime",
 		"amount" => MoneyCast::class,
-		"is_recurring" => "boolean",
-		"is_verified" => "boolean",
-		"recurring_end_date" => "date",
 		"type" => TransactionType::class,
+		"original_amount" => "integer",
+		"metadata" => "array",
+		"is_recurring" => "boolean",
 	];
 
 	protected static function boot()
 	{
 		parent::boot();
 
-		static::saving(function ($transaction) {
-			if (!$transaction->is_recurring) {
-				self::where("user_id", $transaction->user_id)
-					->where("id", $transaction->id)
-					->where("account_id", $transaction->account_id)
-					->update([
-						"recurring_period" => null,
-						"recurring_end_date" => null,
-					]);
+		static::creating(function ($transaction) {
+			if (empty($transaction->uuid)) {
+				$transaction->uuid = \Illuminate\Support\Str::uuid();
+			}
+		});
+
+		static::created(function ($transaction) {
+			// Update account balance
+			$transaction->updateAccountBalance();
+
+			// Update budget spent
+			if ($transaction->type === "expense") {
+				$transaction->updateBudgetSpent();
+			}
+		});
+
+		static::updated(function ($transaction) {
+			// Recalculate balances if amount or account changed
+			if (
+				$transaction->isDirty(["amount", "account_id", "to_account_id", "type"])
+			) {
+				$transaction->recalculateBalances();
+			}
+
+			// Update budget if expense
+			if (
+				$transaction->type === TransactionType::EXPENSE &&
+				$transaction->isDirty(["amount", "category_id"])
+			) {
+				$transaction->updateBudgetSpent();
+			}
+		});
+
+		static::deleted(function ($transaction) {
+			// Restore balances when deleted
+			if ($transaction->type === TransactionType::INCOME) {
+				$transaction->account->decrement("balance", $transaction->amount);
+			} elseif ($transaction->type === TransactionType::EXPENSE) {
+				$transaction->account->increment("balance", $transaction->amount);
+			} elseif ($transaction->type === TransactionType::TRANSFER) {
+				$transaction->account->increment("balance", $transaction->amount);
+				if ($transaction->toAccount) {
+					$transaction->toAccount->decrement("balance", $transaction->amount);
+				}
+			}
+
+			// Update budget spent
+			if ($transaction->type === TransactionType::EXPENSE) {
+				$transaction->updateBudgetSpent(remove: true);
 			}
 		});
 	}
@@ -57,14 +105,27 @@ class Transaction extends Model
 		return $this->belongsTo(config("auth.providers.users.model"));
 	}
 
+	public function account()
+	{
+		return $this->belongsTo(Account::class);
+	}
+
+	public function toAccount()
+	{
+		return $this->belongsTo(Account::class, "to_account_id");
+	}
+
 	public function category()
 	{
 		return $this->belongsTo(Category::class);
 	}
 
-	public function account()
+	public function recurringTemplate()
 	{
-		return $this->belongsTo(Account::class);
+		return $this->belongsTo(
+			RecurringTransaction::class,
+			"recurring_template_id"
+		);
 	}
 
 	// Scopes
@@ -83,18 +144,95 @@ class Transaction extends Model
 		return $query->where("type", TransactionType::TRANSFER);
 	}
 
-	public function scopeThisMonth($query)
+	public function scopeByPeriod($query, $startDate, $endDate = null)
 	{
-		return $query
-			->whereMonth("transaction_date", date("m"))
-			->whereYear("transaction_date", date("Y"));
+		$endDate = $endDate ?? $startDate;
+		return $query->whereBetween("transaction_date", [$startDate, $endDate]);
 	}
 
-	public function scopeRecent($query, $limit = 10)
+	public function scopeByAccount($query, $accountId)
 	{
-		return $query
-			->orderBy("transaction_date", "desc")
-			->orderBy("created_at", "desc")
-			->limit($limit);
+		return $query->where(function ($q) use ($accountId) {
+			$q->where("account_id", $accountId)->orWhere("to_account_id", $accountId);
+		});
+	}
+
+	// Methods
+	public function updateAccountBalance()
+	{
+		switch ($this->type) {
+			case TransactionType::INCOME:
+				$this->account->increment("balance", $this->amount);
+				break;
+
+			case TransactionType::EXPENSE:
+				$this->account->decrement("balance", $this->amount);
+				break;
+
+			case TransactionType::TRANSFER:
+				$this->account->decrement("balance", $this->amount);
+				if ($this->toAccount) {
+					$this->toAccount->increment("balance", $this->amount);
+				}
+				break;
+		}
+	}
+
+	public function recalculateBalances()
+	{
+		// Get original values before update
+		$originalAmount = $this->getOriginal("amount");
+		$originalType = $this->getOriginal("type");
+		$originalAccountId = $this->getOriginal("account_id");
+		$originalToAccountId = $this->getOriginal("to_account_id");
+
+		// Revert old balances
+		if ($originalType === TransactionType::INCOME) {
+			Account::find($originalAccountId)?->decrement("balance", $originalAmount);
+		} elseif ($originalType === TransactionType::EXPENSE) {
+			Account::find($originalAccountId)?->increment("balance", $originalAmount);
+		} elseif ($originalType === TransactionType::TRANSFER) {
+			Account::find($originalAccountId)?->increment("balance", $originalAmount);
+			Account::find($originalToAccountId)?->decrement(
+				"balance",
+				$originalAmount
+			);
+		}
+
+		// Apply new balances
+		$this->updateAccountBalance();
+	}
+
+	public function updateBudgetSpent($remove = false)
+	{
+		// Find active budget for this category in current period
+		$now = $this->transaction_date ?? now();
+		$budget = Budget::where("category_id", $this->category_id)
+			->where("user_id", $this->user_id)
+			->where("is_active", true)
+			->whereDate("start_date", "<=", $now)
+			->whereDate("end_date", ">=", $now)
+			->first();
+
+		if ($budget) {
+			if ($remove) {
+				$budget->decrement("spent", $this->amount);
+			} else {
+				$budget->increment("spent", $this->amount);
+			}
+		}
+	}
+
+	// Accessors
+	protected function formattedAmount(): Attribute
+	{
+		return Attribute::make(
+			get: fn() => number_format($this->amount, 0, ",", ".")
+		);
+	}
+
+	protected function isTransfer(): Attribute
+	{
+		return Attribute::make(get: fn() => $this->type === "transfer");
 	}
 }
