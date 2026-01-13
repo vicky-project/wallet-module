@@ -101,8 +101,15 @@
 </div>
 
 <!-- Filter Card -->
-<div class="card border-0 shadow-sm mb-4">
-  <div class="card-body">
+<div class="card border-0 shadow-sm mb-4" id="filterCard">
+  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+    <h5 class="mb-0">
+      <i class="bi bi-funnel me-2"></i>Filter Pencarian
+    </h5>
+    <i class="bi bi-chevron-down transition-rotate"></i>
+  </div>
+  <div class="collapse" id="filterCollapse">
+    <div class="card-body">
     <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
       <div class="row g-3">
         <div class="col-md-3">
@@ -179,6 +186,7 @@
         </div>
       </div>
     </form>
+  </div>
   </div>
 </div>
 
@@ -628,6 +636,20 @@
                 transactionChecks.forEach(check => {
                     check.checked = isChecked;
                 });
+            });
+        }
+        
+                // Filter collapse functionality
+        const filterCollapse = document.getElementById('filterCollapse');
+        const filterCard = document.getElementById('filterCard');
+        
+        if (filterCollapse) {
+            filterCollapse.addEventListener('show.bs.collapse', function () {
+                filterCard.classList.remove('collapsed');
+            });
+            
+            filterCollapse.addEventListener('hide.bs.collapse', function () {
+                filterCard.classList.add('collapsed');
             });
         }
         
