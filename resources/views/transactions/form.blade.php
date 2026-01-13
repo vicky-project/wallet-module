@@ -117,7 +117,7 @@
               <div class="col-md-12">
                 <div class="d-flex flex-wrap gap-3">
                   @foreach(TransactionType::cases() as $type)
-                    <div class="transaction-type-badge bg-{{ $type->color() }} bg-opacity-10 text-{{ $type->color() }} {{ (!$transaction && request('type') == $type->value) || ($transaction && $transaction->type == $type->value) ? 'active' : '' }}" data-type="{{ $type->value }}">
+                    <div class="transaction-type-badge bg-{{ $type->color() }} bg-opacity-10 text-{{ $type->color() }} {{ (!$transaction && request('type') == $type->value) || ($transaction && $transaction->type == $type) ? 'active' : '' }}" data-type="{{ $type->value }}">
                       <i class="bi {{ $type->icon() }} me-2"></i>
                       {{ $type->name }}
                     </div>
