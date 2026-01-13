@@ -465,7 +465,6 @@
             })
             .then(response => response.json())
             .then(data => {
-            console.log(data.has_budget)
                 if (data.has_budget) {
                     budgetInfo.style.display = 'block';
                     
