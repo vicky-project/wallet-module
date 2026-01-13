@@ -191,7 +191,7 @@
                 <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
                   <option value="">Pilih Akun</option>
                   @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
+                    <option value="{{ $account->id }}" data-balance="{{ $account->balance->getAmount()->toInt() }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
                       {{ $account->name }} 
                       (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
                     </option>
@@ -208,7 +208,7 @@
                 <select name="to_account_id" id="to_account_id" class="form-select @error('to_account_id') is-invalid @enderror">
                   <option value="">Pilih Akun Tujuan</option>
                   @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
+                    <option value="{{ $account->id }}" data-balance="{{ $account->balance->getAmount()->toInt() }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
                       {{ $account->name }} 
                       (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
                     </option>
