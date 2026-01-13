@@ -230,9 +230,9 @@ class Transaction extends Model
 
 		if ($budget) {
 			if ($remove) {
-				$budget->decrement("spent", $this->amount);
+				$budget->spent->minus($this->amount->getMinorAmount()->toInt());
 			} else {
-				$budget->increment("spent", $this->amount);
+				$budget->spent->plus($this->amount->getMinorAmount()->toInt());
 			}
 		}
 	}
@@ -241,12 +241,19 @@ class Transaction extends Model
 	protected function formattedAmount(): Attribute
 	{
 		return Attribute::make(
-			get: fn() => number_format($this->amount, 0, ",", ".")
+			get: fn() => number_format(
+				$this->amount->getMinorAmount()->toInt(),
+				0,
+				",",
+				"."
+			)
 		);
 	}
 
 	protected function isTransfer(): Attribute
 	{
-		return Attribute::make(get: fn() => $this->type === "transfer");
+		return Attribute::make(
+			get: fn() => $this->type === TransactionType::TRANSFER
+		);
 	}
 }
