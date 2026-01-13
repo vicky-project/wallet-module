@@ -516,6 +516,21 @@ class BudgetRepository extends BaseRepository
 		return $this->createBudget($data, $budget->user);
 	}
 
+	public function getActiveBudgetForDate(
+		Category $category,
+		int $userId,
+		?Carbon $date = null
+	): Budget {
+		$date = $date ?? now();
+		return $this->model
+			->where("category_id", $category->id)
+			->where("user_id", $userId)
+			->where("is_active", true)
+			->whereDate("start_date", "<=", $date)
+			->whereDate("end_date", ">=", $date)
+			->first();
+	}
+
 	/**
 	 * Calculate next period
 	 */
