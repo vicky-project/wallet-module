@@ -43,6 +43,9 @@ Route::middleware(["auth"])
 			TransactionController::class,
 			"transfer",
 		])->name("transactions.transfer");
+		Route::get("export", [TransactionController::class, "export"])->name(
+			"export"
+		);
 		Route::resource("transactions", TransactionController::class);
 
 		// Category Routes
