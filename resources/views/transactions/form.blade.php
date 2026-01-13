@@ -210,32 +210,29 @@
                     
           <!-- Accounts -->
           <div class="form-section">
-                        <h5 class="form-section-title">Akun</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="account_id" class="form-label" id="accountLabel">
-                                    {{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? 'Dari Akun *' : 'Akun *' }}
-                                </label>
-                                <select name="account_id" id="account_id" 
-                                        class="form-select @error('account_id') is-invalid @enderror" required>
-                                    <option value="">Pilih Akun</option>
-                                    @foreach($accounts as $account)
-                                        <option value="{{ $account->id }}" 
-                                                data-balance="{{ $account->balance }}"
-                                                {{ old('account_id', $transaction->account_id ?? '') == $account->id ? 'selected' : '' }}>
-                                            {{ $account->name }} 
-                                            (Rp {{ number_format($account->balance, 0, ',', '.') }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <small class="text-muted" id="accountBalance"></small>
-                                @error('account_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+            <h5 class="form-section-title">Akun</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="account_id" class="form-label" id="accountLabel">
+                  {{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? 'Dari Akun *' : 'Akun *' }}
+                </label>
+                <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
+                  <option value="">Pilih Akun</option>
+                  @foreach($accounts as $account)
+                    <option value="{{ $account->id }}" data-balance="{{ $account->balance }}"
+                      {{ old('account_id', $transaction->account_id ?? '') == $account->id ? 'selected' : '' }}>
+                      {{ $account->name }} 
+                      (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
+                    </option>
+                  @endforeach
+                </select>
+                <small class="text-muted" id="accountBalance"></small>
+                @error('account_id')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
                             
-                            <div class="col-md-6 mb-3" id="toAccountField" 
-                                 style="{{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? '' : 'display: none;' }}">
+              <div class="col-md-6 mb-3" id="toAccountField" style="{{ ($transaction && $transaction->type == 'transfer') || request('type') == 'transfer' ? '' : 'display: none;' }}">
                                 <label for="to_account_id" class="form-label">Ke Akun *</label>
                                 <select name="to_account_id" id="to_account_id" 
                                         class="form-select @error('to_account_id') is-invalid @enderror">
@@ -254,8 +251,8 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                    </div>
+            </div>
+          </div>
                     
           <!-- Category -->
           <div class="form-section">
