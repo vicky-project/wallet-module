@@ -273,286 +273,274 @@
   <div class="card-body p-0">
     @if($transactions->count() > 0)
       <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="50"></th>
-                            <th>Tanggal</th>
-                            <th>Keterangan</th>
-                            <th>Kategori</th>
-                            <th>Akun</th>
-                            <th class="text-end">Jumlah</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($transactions as $transaction)
-                            <tr class="transaction-{{ $transaction->type }}">
-                                <td>
-                                    <input type="checkbox" class="form-check-input transaction-check" 
-                                           value="{{ $transaction->id }}">
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="transaction-icon">
-                                            <i class="bi bi-{{ $transaction->typeIcon }}"></i>
-                                        </div>
-                                        <div>
-                                            {{ $transaction->transaction_date->format('d/m/Y') }}
-                                            <br>
-                                            <small class="text-muted">
-                                                {{ $transaction->transaction_date->format('H:i') }}
-                                            </small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <strong>{{ $transaction->description }}</strong>
-                                    @if($transaction->notes)
-                                        <br>
-                                        <small class="text-muted">{{ Str::limit($transaction->notes, 50) }}</small>
-                                    @endif
-                                    @if($transaction->reference_number)
-                                        <br>
-                                        <small class="text-muted">
-                                            <i class="bi bi-hash"></i> {{ $transaction->reference_number }}
-                                        </small>
-                                    @endif
-                                </td>
-                                <td>
-                                    <span class="badge bg-light text-dark">
-                                        <i class="bi bi-{{ $transaction->category->icon }} me-1"></i>
-                                        {{ $transaction->category->name }}
-                                    </span>
-                                </td>
-                                <td>
-                                    @if($transaction->type == 'transfer')
-                                        <div>
-                                            <small class="text-muted">Dari:</small>
-                                            <br>{{ $transaction->account->name }}
-                                        </div>
-                                        <div class="mt-1">
-                                            <small class="text-muted">Ke:</small>
-                                            <br>{{ $transaction->toAccount->name ?? '-' }}
-                                        </div>
-                                    @else
-                                        {{ $transaction->account->name }}
-                                    @endif
-                                </td>
-                                <td class="text-end">
-                                    <span class="transaction-amount">
-                                        {{ $transaction->formattedAmount }}
-                                    </span>
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th width="50"></th>
+              <th>Tanggal</th>
+              <th>Keterangan</th>
+              <th>Kategori</th>
+              <th>Akun</th>
+              <th class="text-end">Jumlah</th>
+              <th class="text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($transactions as $transaction)
+              <tr class="transaction-{{ $transaction->type }}">
+                <td>
+                  <input type="checkbox" class="form-check-input transaction-check" value="{{ $transaction->id }}">
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="transaction-icon">
+                      <i class="bi bi-{{ $transaction->typeIcon }}"></i>
+                    </div>
+                    <div>
+                      {{ $transaction->transaction_date->format('d/m/Y') }}
+                      <br>
+                      <small class="text-muted">
+                        {{ $transaction->transaction_date->format('H:i') }}
+                      </small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <strong>{{ $transaction->description }}</strong>
+                  @if($transaction->notes)
+                    <br>
+                    <small class="text-muted">{{ Str::limit($transaction->notes, 50) }}</small>
+                  @endif
+                  @if($transaction->reference_number)
+                    <br>
+                    <small class="text-muted">
+                      <i class="bi bi-hash"></i> {{ $transaction->reference_number }}
+                    </small>
+                  @endif
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark">
+                    <i class="bi bi-{{ $transaction->category->icon }} me-1"></i>
+                    {{ $transaction->category->name }}
+                  </span>
+                </td>
+                <td>
+                  @if($transaction->type == 'transfer')
+                    <div>
+                      <small class="text-muted">Dari:</small>
+                      <br>{{ $transaction->account->name }}
+                    </div>
+                    <div class="mt-1">
+                      <small class="text-muted">Ke:</small>
+                      <br>{{ $transaction->toAccount->name ?? '-' }}
+                    </div>
+                  @else
+                    {{ $transaction->account->name }}
+                  @endif
+                </td>
+                <td class="text-end">
+                  <span class="transaction-amount">
+                    {{ $transaction->formattedAmount }}
+                  </span>
+                  <br>
+                  <small class="text-muted">{{ $transaction->typeLabel }}</small>
+                </td>
+                <td class="text-center">
+                  <div class="btn-group btn-group-sm">
+                    <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $transaction->id }}" title="Hapus">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                    <div class="dropdown">
+                      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a class="dropdown-item" href="#" onclick="duplicateTransaction('{{ $transaction->uuid }}')">
+                            <i class="bi bi-copy me-2"></i> Duplikat
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailModal{{ $transaction->id }}">
+                            <i class="bi bi-eye me-2"></i> Detail
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                                    
+                  <!-- Delete Modal -->
+                  <div class="modal fade" id="deleteModal{{ $transaction->id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Konfirmasi Hapus</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
+                          <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Perhatian:</strong> Saldo akun akan disesuaikan otomatis.
+                          </div>
+                          <div class="card">
+                            <div class="card-body">
+                              <strong>{{ $transaction->description }}</strong>
+                              <br>
+                              <small class="text-muted">
+                                {{ $transaction->transaction_date->format('d/m/Y H:i') }}</small>
+                                                    <div class="mt-2">
+                                <span class="badge bg-{{ $transaction->typeColor }}">
+                                  {{ $transaction->typeLabel }}: {{ $transaction->formattedAmount }}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                          <form action="{{ route('apps.transactions.destroy', $transaction->uuid) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                              <i class="bi bi-trash me-2"></i> Hapus
+                            </button>
+                          </form>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                                    
+                  <!-- Detail Modal -->
+                  <div class="modal fade" id="detailModal{{ $transaction->id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Detail Transaksi</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <label class="form-label text-muted">ID Transaksi</label>
+                                <p class="mb-0">{{ $transaction->uuid }}</p>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label text-muted">Tanggal Transaksi</label>
+                                <p class="mb-0">{{ $transaction->transaction_date->format('d F Y H:i') }}</p>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label text-muted">Jenis</label>
+                                <p class="mb-0">
+                                  <span class="badge bg-{{ $transaction->typeColor }}">
+                                    {{ $transaction->typeLabel }}
+                                  </span>
+                                </p>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label text-muted">Kategori</label>
+                                <p class="mb-0">
+                                                        <i class="bi bi-{{ $transaction->category->icon }} me-1"></i>
+                                  {{ $transaction->category->name }}
+                                </p>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <label class="form-label text-muted">Akun</label>
+                                <p class="mb-0">{{ $transaction->account->name }}</p>
+                              </div>
+                              @if($transaction->type == 'transfer' && $transaction->toAccount)
+                                <div class="mb-3">
+                                  <label class="form-label text-muted">Akun Tujuan</label>
+                                  <p class="mb-0">{{ $transaction->toAccount->name }}</p>
+                                </div>
+                              @endif
+                              <div class="mb-3">
+                                <label class="form-label text-muted">Jumlah</label>
+                                <h4 class="{{ $transaction->typeColor }}">
+                                  {{ $transaction->formattedAmount }}
+                                </h4>
+                              </div>
+                              @if($transaction->payment_method)
+                                <div class="mb-3">
+                                  <label class="form-label text-muted">Metode Pembayaran</label>
+                                  <p class="mb-0">{{ $transaction->payment_method }}</p>
+                                </div>
+                              @endif
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="mb-3">
+                                <label class="form-label text-muted">Keterangan</label>
+                                <p class="mb-0">{{ $transaction->description }}</p>
+                              </div>
+                              @if($transaction->notes)
+                                <div class="mb-3">
+                                  <label class="form-label text-muted">Catatan</label>
+                                  <p class="mb-0">{{ $transaction->notes }}</p>
+                                </div>
+                              @endif
+                              @if($transaction->reference_number)
+                                <div class="mb-3">
+                                  <label class="form-label text-muted">Nomor Referensi</label>
+                                  <p class="mb-0">{{ $transaction->reference_number }}</p>
+                                </div>
+                              @endif
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="card bg-light">
+                                <div class="card-body">
+                                  <small class="text-muted">
+                                    <i class="bi bi-clock-history me-1"></i>
+                                    Dibuat: {{ $transaction->created_at->format('d/m/Y H:i') }}
+                                    @if($transaction->created_at != $transaction->updated_at)
                                     <br>
-                                    <small class="text-muted">{{ $transaction->typeLabel }}</small>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" 
-                                           class="btn btn-outline-primary" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-outline-danger" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ $transaction->id }}"
-                                                title="Hapus">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                        <div class="dropdown">
-                                            <button class="btn btn-outline-secondary dropdown-toggle" 
-                                                    type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item" href="#" 
-                                                       onclick="duplicateTransaction('{{ $transaction->uuid }}')">
-                                                        <i class="bi bi-copy me-2"></i> Duplikat
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="#" 
-                                                       data-bs-toggle="modal" 
-                                                       data-bs-target="#detailModal{{ $transaction->id }}">
-                                                        <i class="bi bi-eye me-2"></i> Detail
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Delete Modal -->
-                                    <div class="modal fade" id="deleteModal{{ $transaction->id }}" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Konfirmasi Hapus</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
-                                                    <div class="alert alert-warning">
-                                                        <i class="bi bi-exclamation-triangle me-2"></i>
-                                                        <strong>Perhatian:</strong> Saldo akun akan disesuaikan otomatis.
-                                                    </div>
-                                                    <div class="card">
-                                                        <div class="card-body">
-                                                            <strong>{{ $transaction->description }}</strong>
-                                                            <br>
-                                                            <small class="text-muted">
-                                                                {{ $transaction->transaction_date->format('d/m/Y H:i') }}
-                                                            </small>
-                                                            <div class="mt-2">
-                                                                <span class="badge bg-{{ $transaction->typeColor }}">
-                                                                    {{ $transaction->typeLabel }}: {{ $transaction->formattedAmount }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" 
-                                                            data-bs-dismiss="modal">Batal</button>
-                                                    <form action="{{ route('apps.transactions.destroy', $transaction->uuid) }}" 
-                                                          method="POST" style="display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">
-                                                            <i class="bi bi-trash me-2"></i> Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Detail Modal -->
-                                    <div class="modal fade" id="detailModal{{ $transaction->id }}" tabindex="-1">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Detail Transaksi</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">ID Transaksi</label>
-                                                                <p class="mb-0">{{ $transaction->uuid }}</p>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">Tanggal Transaksi</label>
-                                                                <p class="mb-0">{{ $transaction->transaction_date->format('d F Y H:i') }}</p>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">Jenis</label>
-                                                                <p class="mb-0">
-                                                                    <span class="badge bg-{{ $transaction->typeColor }}">
-                                                                        {{ $transaction->typeLabel }}
-                                                                    </span>
-                                                                </p>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">Kategori</label>
-                                                                <p class="mb-0">
-                                                                    <i class="bi bi-{{ $transaction->category->icon }} me-1"></i>
-                                                                    {{ $transaction->category->name }}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">Akun</label>
-                                                                <p class="mb-0">{{ $transaction->account->name }}</p>
-                                                            </div>
-                                                            @if($transaction->type == 'transfer' && $transaction->toAccount)
-                                                                <div class="mb-3">
-                                                                    <label class="form-label text-muted">Akun Tujuan</label>
-                                                                    <p class="mb-0">{{ $transaction->toAccount->name }}</p>
-                                                                </div>
-                                                            @endif
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">Jumlah</label>
-                                                                <h4 class="{{ $transaction->typeColor }}">
-                                                                    {{ $transaction->formattedAmount }}
-                                                                </h4>
-                                                            </div>
-                                                            @if($transaction->payment_method)
-                                                                <div class="mb-3">
-                                                                    <label class="form-label text-muted">Metode Pembayaran</label>
-                                                                    <p class="mb-0">{{ $transaction->payment_method }}</p>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <div class="mb-3">
-                                                                <label class="form-label text-muted">Keterangan</label>
-                                                                <p class="mb-0">{{ $transaction->description }}</p>
-                                                            </div>
-                                                            @if($transaction->notes)
-                                                                <div class="mb-3">
-                                                                    <label class="form-label text-muted">Catatan</label>
-                                                                    <p class="mb-0">{{ $transaction->notes }}</p>
-                                                                </div>
-                                                            @endif
-                                                            @if($transaction->reference_number)
-                                                                <div class="mb-3">
-                                                                    <label class="form-label text-muted">Nomor Referensi</label>
-                                                                    <p class="mb-0">{{ $transaction->reference_number }}</p>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <div class="card bg-light">
-                                                                <div class="card-body">
-                                                                    <small class="text-muted">
-                                                                        <i class="bi bi-clock-history me-1"></i>
-                                                                        Dibuat: {{ $transaction->created_at->format('d/m/Y H:i') }}
-                                                                        @if($transaction->created_at != $transaction->updated_at)
-                                                                            <br>
-                                                                            <i class="bi bi-arrow-clockwise me-1"></i>
-                                                                            Terakhir diubah: {{ $transaction->updated_at->format('d/m/Y H:i') }}
-                                                                        @endif
-                                                                    </small>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                    <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" 
-                                                       class="btn btn-primary">
-                                                        <i class="bi bi-pencil me-2"></i> Edit
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                                    <i class="bi bi-arrow-clockwise me-1"></i>
+                                    Terakhir diubah: {{ $transaction->updated_at->format('d/m/Y H:i') }}
+                                    @endif
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                          <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-primary">
+                            <i class="bi bi-pencil me-2"></i> Edit
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
             
       <!-- Pagination -->
       @if($transactions->hasPages())
         <div class="card-footer bg-white border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            Menampilkan {{ $transactions->firstItem() }} - {{ $transactions->lastItem() }}
-                            dari {{ $transactions->total() }} transaksi
-                        </div>
-                        <div>
-                            {{ $transactions->links() }}
-                        </div>
-                    </div>
-                </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              Menampilkan {{ $transactions->firstItem() }} - {{ $transactions->lastItem() }}
+              dari {{ $transactions->total() }} transaksi
+            </div>
+            <div>
+              {{ $transactions->links() }}
+            </div>
+          </div>
+        </div>
       @endif
     @else
       <div class="text-center py-5">
@@ -563,10 +551,10 @@
         <p class="text-muted">Mulai dengan menambahkan transaksi pertama Anda</p>
         <div class="mt-4">
           <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="btn btn-success me-2 mb-2">
-            <i class="bi bi-plus-circle me-2"></i> Tambah Pemasukan
+            <i class="bi bi-plus-circle me-2"></i> Pemasukan
           </a>
           <a href="{{ route('apps.transactions.create', ['type' => 'expense']) }}" class="btn btn-danger mb-2">
-            <i class="bi bi-plus-circle me-2"></i> Tambah Pengeluaran
+            <i class="bi bi-plus-circle me-2"></i> Pengeluaran
           </a>
         </div>
       </div>
