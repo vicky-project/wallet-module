@@ -236,7 +236,7 @@ class Transaction extends Model
 	{
 		return Attribute::make(
 			get: fn() => number_format(
-				$this->amount->getMinorAmount()->toInt(),
+				$this->amount->getAmount()->toInt(),
 				0,
 				",",
 				"."

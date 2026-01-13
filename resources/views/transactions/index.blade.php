@@ -312,7 +312,7 @@
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="transaction-icon">
-                      <i class="bi bi-{{ $transaction->typeIcon }}"></i>
+                      <i class="bi {{ $transaction->type->icon() }}"></i>
                     </div>
                     <div>
                       {{ $transaction->transaction_date->format('d/m/Y') }}
@@ -338,12 +338,12 @@
                 </td>
                 <td>
                   <span class="badge bg-light text-dark">
-                    <i class="bi bi-{{ $transaction->category->icon }} me-1"></i>
+                    <i class="bi {{ $transaction->category->icon }} me-1"></i>
                     {{ $transaction->category->name }}
                   </span>
                 </td>
                 <td>
-                  @if($transaction->type == 'transfer')
+                  @if($transaction->type == TransactionType::TRANSFER)
                     <div>
                       <small class="text-muted">Dari:</small>
                       <br>{{ $transaction->account->name }}
@@ -361,7 +361,7 @@
                     {{ $transaction->formattedAmount }}
                   </span>
                   <br>
-                  <small class="text-muted">{{ $transaction->typeLabel }}</small>
+                  <small class="text-muted">{{ $transaction->type->label() }}</small>
                 </td>
                 <td class="text-center">
                   <div class="btn-group btn-group-sm">
@@ -563,8 +563,8 @@
     @else
       <div class="text-center py-5">
         <div class="mb-4">
-                    <i class="bi bi-receipt display-1 text-muted"></i>
-                </div>
+          <i class="bi bi-receipt display-1 text-muted"></i>
+        </div>
         <h5 class="text-muted">Belum ada transaksi</h5>
         <p class="text-muted">Mulai dengan menambahkan transaksi pertama Anda</p>
         <div class="mt-4">
