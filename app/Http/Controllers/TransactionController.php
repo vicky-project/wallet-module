@@ -62,9 +62,7 @@ class TransactionController extends Controller
 		$result = $this->transactionService->getPaginatedTransactions($filters, 20);
 
 		if (!$result["success"]) {
-			return redirect()
-				->back()
-				->with("error", $result["message"]);
+			return back()->withErrors($result["message"]);
 		}
 
 		return view("wallet::transactions.index", [

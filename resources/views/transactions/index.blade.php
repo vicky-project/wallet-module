@@ -209,7 +209,7 @@
           <div>
             <h6 class="text-muted mb-1">Total Pemasukan</h6>
             <h4 class="text-success mb-0">
-              Rp {{ number_format($totals['income'], 0, ',', '.') }}
+              Rp {{ number_format($totals['income']->getAmount()->toInt(), 0, ',', '.') }}
             </h4>
           </div>
           <div class="bg-success bg-opacity-10 p-2 rounded">
