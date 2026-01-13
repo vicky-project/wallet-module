@@ -57,7 +57,7 @@ class Transaction extends Model
 			$transaction->updateAccountBalance();
 
 			// Update budget spent
-			if ($transaction->type === "expense") {
+			if ($transaction->type === TransactionType::EXPENSE) {
 				$transaction->updateBudgetSpent();
 			}
 		});
@@ -82,13 +82,21 @@ class Transaction extends Model
 		static::deleted(function ($transaction) {
 			// Restore balances when deleted
 			if ($transaction->type === TransactionType::INCOME) {
-				$transaction->account->decrement("balance", $transaction->amount);
+				$transaction->account->balance->minus(
+					$transaction->amount->getMinorAmount()->toInt()
+				);
 			} elseif ($transaction->type === TransactionType::EXPENSE) {
-				$transaction->account->increment("balance", $transaction->amount);
+				$transaction->account->balance->plus(
+					$transaction->amount->getMinorAmount()->toInt()
+				);
 			} elseif ($transaction->type === TransactionType::TRANSFER) {
-				$transaction->account->increment("balance", $transaction->amount);
+				$transaction->account->balance->plus(
+					$transaction->amount->getMinorAmount()->toInt()
+				);
 				if ($transaction->toAccount) {
-					$transaction->toAccount->decrement("balance", $transaction->amount);
+					$transaction->toAccount->balance->minus(
+						$transaction->amount->getMinorAmount()->toInt()
+					);
 				}
 			}
 

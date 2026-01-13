@@ -183,14 +183,6 @@ class TransactionRepository extends BaseRepository
 			// Create transaction
 			$transaction = Transaction::create($data);
 
-			// Update account balance based on transaction type
-			$this->updateAccountBalance($transaction, "create");
-
-			// Update budget spent if expense
-			if ($transaction->type === TransactionType::EXPENSE) {
-				$this->updateBudgetSpent($transaction, "add");
-			}
-
 			DB::commit();
 
 			// Invalidate cache
@@ -233,12 +225,6 @@ class TransactionRepository extends BaseRepository
 
 			// Apply new balances
 			$transaction = $transaction->fresh();
-			$this->updateAccountBalance($transaction, "update");
-
-			// Apply new budget spent if expense
-			if ($transaction->type === TransactionType::EXPENSE) {
-				$this->updateBudgetSpent($transaction, "add");
-			}
 
 			DB::commit();
 
@@ -595,49 +581,6 @@ class TransactionRepository extends BaseRepository
 		}
 
 		return $trends;
-	}
-
-	/**
-	 * Update account balance based on transaction
-	 */
-	private function updateAccountBalance(
-		Transaction $transaction,
-		string $action
-	): void {
-		$accountRepo = app(AccountRepository::class);
-
-		switch ($transaction->type) {
-			case TransactionType::INCOME:
-				$accountRepo->updateBalance(
-					$transaction->account_id,
-					$transaction->amount,
-					true
-				);
-				break;
-
-			case TransactionType::EXPENSE:
-				$accountRepo->updateBalance(
-					$transaction->account_id,
-					$transaction->amount,
-					false
-				);
-				break;
-
-			case TransactionType::TRANSFER:
-				$accountRepo->updateBalance(
-					$transaction->account_id,
-					$transaction->amount,
-					false
-				);
-				if ($transaction->to_account_id) {
-					$accountRepo->updateBalance(
-						$transaction->to_account_id,
-						$transaction->amount,
-						true
-					);
-				}
-				break;
-		}
 	}
 
 	/**
