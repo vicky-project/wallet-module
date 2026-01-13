@@ -271,8 +271,8 @@
   </div>
     
   <div class="card-body p-0">
-        @if($transactions->count() > 0)
-            <div class="table-responsive">
+    @if($transactions->count() > 0)
+      <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
@@ -540,9 +540,9 @@
                 </table>
             </div>
             
-            <!-- Pagination -->
-            @if($transactions->hasPages())
-                <div class="card-footer bg-white border-0">
+      <!-- Pagination -->
+      @if($transactions->hasPages())
+        <div class="card-footer bg-white border-0">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             Menampilkan {{ $transactions->firstItem() }} - {{ $transactions->lastItem() }}
@@ -553,25 +553,25 @@
                         </div>
                     </div>
                 </div>
-            @endif
-        @else
-            <div class="text-center py-5">
-                <div class="mb-4">
+      @endif
+    @else
+      <div class="text-center py-5">
+        <div class="mb-4">
                     <i class="bi bi-receipt display-1 text-muted"></i>
                 </div>
-                <h5 class="text-muted">Belum ada transaksi</h5>
-                <p class="text-muted">Mulai dengan menambahkan transaksi pertama Anda</p>
-                <div class="mt-4">
-                    <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="btn btn-success me-2">
-                        <i class="bi bi-plus-circle me-2"></i> Tambah Pemasukan
-                    </a>
-                    <a href="{{ route('apps.transactions.create', ['type' => 'expense']) }}" class="btn btn-danger">
-                        <i class="bi bi-plus-circle me-2"></i> Tambah Pengeluaran
-                    </a>
-                </div>
-            </div>
-        @endif
-    </div>
+        <h5 class="text-muted">Belum ada transaksi</h5>
+        <p class="text-muted">Mulai dengan menambahkan transaksi pertama Anda</p>
+        <div class="mt-4">
+          <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="btn btn-success me-2 mb-2">
+            <i class="bi bi-plus-circle me-2"></i> Tambah Pemasukan
+          </a>
+          <a href="{{ route('apps.transactions.create', ['type' => 'expense']) }}" class="btn btn-danger mb-2">
+            <i class="bi bi-plus-circle me-2"></i> Tambah Pengeluaran
+          </a>
+        </div>
+      </div>
+    @endif
+  </div>
 </div>
 
 <!-- Export Modal -->
