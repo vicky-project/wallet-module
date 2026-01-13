@@ -534,11 +534,11 @@
             }
             
             // Format amount helper
-            amountHelp(amount);
+            amountHelpText(amount);
         });
         
         
-        function amountHelp(amount) {
+        function amountHelpText(amount) {
             if (amount > 0) {
                 amountHelp.textContent = `Rp ${amount.toLocaleString('id-ID')}`;
             } else {
@@ -616,7 +616,7 @@
         @endif
         
         @if($transaction)
-          amountHelp(parseInt(amountInput.value))
+          amountHelpText(parseInt(amountInput.value))
         @endif
     });
 </script>
