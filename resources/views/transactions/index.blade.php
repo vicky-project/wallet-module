@@ -165,7 +165,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-funnel me-2"></i> Terapkan Filter
                         </button>
-                        <a href="{{ route('wallet.transactions.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-2"></i> Reset
                         </a>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
@@ -341,7 +341,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('wallet.transactions.edit', $transaction->uuid) }}" 
+                                        <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" 
                                            class="btn btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
