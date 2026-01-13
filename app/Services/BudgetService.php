@@ -119,9 +119,6 @@ class BudgetService
 			);
 		}
 
-		// Validate data
-		$this->validateBudgetData($data, $user, $budget->id);
-
 		try {
 			return $this->budgetRepository->updateBudget($budget, $data);
 		} catch (\Exception $e) {
