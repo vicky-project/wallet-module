@@ -87,8 +87,8 @@ class TransactionController extends Controller
 		$categories = $this->categoryRepository->getUserCategories();
 
 		// Filter categories by type if specified
-		$type = $request->get("type", "expense");
-		if (in_array($type, ["income", "expense"])) {
+		$type = $request->get("type", TransactionType::EXPENSE->value);
+		if (in_array($type, TransactionType::all())) {
 			$categories = $categories->where("type", $type);
 		}
 
@@ -120,7 +120,7 @@ class TransactionController extends Controller
 
 		if ($result["success"]) {
 			return redirect()
-				->route("wallet.transactions.index")
+				->route("apps.transactions.index")
 				->with("success", $result["message"]);
 		} else {
 			return redirect()
@@ -142,7 +142,7 @@ class TransactionController extends Controller
 
 		if (!$result["success"]) {
 			return redirect()
-				->route("wallet.transactions.index")
+				->route("apps.transactions.index")
 				->with("error", $result["message"]);
 		}
 
@@ -178,7 +178,7 @@ class TransactionController extends Controller
 
 		if ($result["success"]) {
 			return redirect()
-				->route("wallet.transactions.index")
+				->route("apps.transactions.index")
 				->with("success", $result["message"]);
 		} else {
 			return redirect()
@@ -199,7 +199,7 @@ class TransactionController extends Controller
 
 		if ($result["success"]) {
 			return redirect()
-				->route("wallet.transactions.index")
+				->route("apps.transactions.index")
 				->with("success", $result["message"]);
 		} else {
 			return redirect()
@@ -317,7 +317,7 @@ class TransactionController extends Controller
 				}
 
 				return redirect()
-					->route("wallet.transactions.index")
+					->route("apps.transactions.index")
 					->with("success", $message);
 			} else {
 				return redirect()
@@ -342,7 +342,7 @@ class TransactionController extends Controller
 
 		if ($result["success"]) {
 			return redirect()
-				->route("wallet.transactions.index")
+				->route("apps.transactions.index")
 				->with("success", $result["message"]);
 		} else {
 			return redirect()

@@ -31,22 +31,14 @@ Route::middleware(["auth"])
 		Route::resource("accounts", AccountController::class);
 
 		// Transaction Routes
-		Route::get("transactions/by-date", [
-			TransactionController::class,
-			"byDate",
-		])->name("transactions.dates");
-		Route::get("transactions/trash", [
-			TransactionController::class,
-			"trashed",
-		])->name("transactions.trash");
-		Route::post("transactions/transfer", [
-			TransactionController::class,
-			"transfer",
-		])->name("transactions.transfer");
 		Route::get("transactions/export", [
 			TransactionController::class,
 			"export",
 		])->name("transactions.export");
+		Route::post("transactions/bulk-delete", [
+			TransactionController::class,
+			"bulkDelete",
+		])->name("transactions.bulk-delete");
 		Route::resource("transactions", TransactionController::class);
 
 		// Category Routes
