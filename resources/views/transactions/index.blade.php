@@ -184,7 +184,7 @@
 
 <!-- Summary Stats -->
 <div class="row mb-4">
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <div class="card border-0 shadow-sm">
       <div class="card-body py-3">
         <div class="d-flex justify-content-between align-items-center">
@@ -202,7 +202,7 @@
     </div>
   </div>
     
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <div class="card border-0 shadow-sm">
       <div class="card-body py-3">
         <div class="d-flex justify-content-between align-items-center">
@@ -220,7 +220,7 @@
     </div>
   </div>
     
-  <div class="col-md-4">
+  <div class="col-md-4 mb-3">
     <div class="card border-0 shadow-sm">
       <div class="card-body py-3">
         <div class="d-flex justify-content-between align-items-center">
@@ -594,11 +594,11 @@
             </select>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
               <label for="export_start_date" class="form-label">Dari Tanggal</label>
               <input type="date" name="start_date" id="export_start_date" class="form-control">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
               <label for="export_end_date" class="form-label">Sampai Tanggal</label>
               <input type="date" name="end_date" id="export_end_date" class="form-control">
             </div>
