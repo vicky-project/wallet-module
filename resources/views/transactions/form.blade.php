@@ -616,7 +616,7 @@
         @endif
         
         @if($transaction)
-        amountHelp(amountInput.value)
+          amountHelp(parseInt(amountInput.value))
         @endif
     });
 </script>
