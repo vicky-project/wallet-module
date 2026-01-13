@@ -7,6 +7,17 @@
 
 @push('styles')
 <style>
+    /* Custom styling for accounts page */
+    .filter-card {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .filter-card.collapsed {
+        height: 60px;
+        overflow: hidden;
+    }
+    
     .transaction-icon {
         width: 40px;
         height: 40px;
