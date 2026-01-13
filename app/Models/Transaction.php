@@ -180,20 +180,22 @@ class Transaction extends Model
 	{
 		switch ($this->type) {
 			case TransactionType::INCOME:
-				$this->account->balance->plus($this->amount->getAmount()->toInt());
+				$this->account()->balance->plus($this->amount->getAmount()->toInt());
 				break;
 
 			case TransactionType::EXPENSE:
-				$this->account->balance->minus($this->amount->getAmount()->toInt());
+				$this->account()->balance->minus($this->amount->getAmount()->toInt());
 				break;
 
 			case TransactionType::TRANSFER:
-				$this->account->balance->minus($this->amount->getAmount()->toInt());
+				$this->account()->balance->minus($this->amount->getAmount()->toInt());
 				if ($this->toAccount) {
 					$this->toAccount->balance->plus($this->amount->getAmount()->toInt());
 				}
 				break;
 		}
+
+		$this->account()->save();
 	}
 
 	public function recalculateBalances()

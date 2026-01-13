@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Services;
 
 use App\Models\User;
+use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
@@ -49,7 +50,7 @@ class TransactionService
 			}
 
 			// For transfer, validate to_account
-			if ($data["type"] === "transfer") {
+			if ($data["type"] === TransactionType::TRANSFER->value) {
 				$toAccount = $this->accountRepository->find($data["to_account_id"]);
 				if (
 					!$toAccount ||
@@ -65,7 +66,10 @@ class TransactionService
 			}
 
 			// Check budget for expense
-			if ($data["type"] === "expense" && $category->is_budgetable) {
+			if (
+				$data["type"] === TransactionType::EXPENSE->value &&
+				$category->is_budgetable
+			) {
 				$this->checkBudgetLimit($data, $user);
 			}
 
