@@ -416,7 +416,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="balance-display currency">@money($account->balance->getMinorAmount()->toInt())</div>
+                  <div class="balance-display currency">{{ $account->balance->getAmount()->toInt() }}</div>
                   <div class="balance-change text-muted">
                     <small>
                       Mata uang: {{ $account->currency }}
