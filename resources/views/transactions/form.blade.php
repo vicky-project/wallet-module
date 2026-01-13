@@ -155,7 +155,7 @@
                 <label for="amount" class="form-label">Jumlah (Rp) *</label>
                 <div class="input-group">
                   <span class="input-group-text" id="account-currency">Rp</span>
-                  <input type="number" name="amount" id="amount" class="form-control @error('amount') is-invalid @enderror" value="{{ old('amount', $transaction->amount ?? '') }}" min="1" required>
+                  <input type="number" name="amount" id="amount" class="form-control @error('amount') is-invalid @enderror" value="{{ old('amount', $transaction->amount->getAmount()->toInt() ?? '') }}" min="1" required>
                 </div>
                 <small class="text-muted" id="amountHelp"></small>
                 @error('amount')
