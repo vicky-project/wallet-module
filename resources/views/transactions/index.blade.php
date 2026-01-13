@@ -260,7 +260,7 @@
 
 <!-- Transactions List -->
 <div class="card border-0 shadow-sm">
-  <div class="card-header bg-white border-0">
+  <div class="card-header text-bg-white border-0">
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Daftar Transaksi</h5>
       <div class="d-flex align-items-center gap-2">
