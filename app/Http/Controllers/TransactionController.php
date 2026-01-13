@@ -9,6 +9,7 @@ use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
 use Modules\Wallet\Repositories\TransactionRepository;
+use Modules\Wallet\Enums\TransactionType;
 
 class TransactionController extends Controller
 {
