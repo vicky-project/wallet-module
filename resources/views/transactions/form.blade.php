@@ -349,13 +349,6 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Select2
-        $('#account_id, #to_account_id, #category_id').select2({
-            placeholder: "Pilih...",
-            allowClear: true,
-            width: '100%'
-        });
-        
         // Elements
         const typeBadges = document.querySelectorAll('.transaction-type-badge');
         const typeInput = document.getElementById('type');
