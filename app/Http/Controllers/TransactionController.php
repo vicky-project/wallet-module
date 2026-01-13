@@ -10,6 +10,7 @@ use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Enums\TransactionType;
+use Brick\Math\RoundingMode;
 
 class TransactionController extends Controller
 {
@@ -237,15 +238,21 @@ class TransactionController extends Controller
 		if ($budget) {
 			// Calculate current spent
 			$currentSpent = $budget->spent;
-			$newTotal = $currentSpent + $request->amount;
+			$newTotal = $currentSpent->plus(
+				(int) $request->amount,
+				RoundingMode::DOWN
+			);
 
 			return response()->json([
 				"has_budget" => true,
-				"budget_amount" => $budget->amount,
-				"current_spent" => $currentSpent,
+				"budget_amount" => $budget->amount->getAmount()->toInt(),
+				"current_spent" => $currentSpent->getAmount()->toInt(),
 				"formatted_budget_amount" =>
-					"Rp " . number_format($budget->amount, 0, ",", "."),
-				"formatted_spent" => "Rp " . number_format($currentSpent, 0, ",", "."),
+					"Rp " .
+					number_format($budget->amount->getAmount()->toInt(), 0, ",", "."),
+				"formatted_spent" =>
+					"Rp " .
+					number_format($currentSpent->getAmount()->toInt(), 0, ",", "."),
 			]);
 		}
 
