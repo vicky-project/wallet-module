@@ -500,7 +500,7 @@
         function checkBudget(categoryId, amount, date) {
             if (!categoryId || !amount) return;
             
-            fetch("{{ route('wallet.transactions.check-budget') }}", {
+            fetch("{{ route('apps.transactions.check-budget') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
