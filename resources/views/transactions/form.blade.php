@@ -94,17 +94,17 @@
                 
         @if($transaction)
           <div class="alert alert-info mb-4">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-info-circle me-3 fs-4"></i>
-                            <div>
-                                <strong>ID Transaksi:</strong> {{ $transaction->uuid }}<br>
-                                <strong>Dibuat:</strong> {{ $transaction->created_at->format('d/m/Y H:i') }}
-                                @if($transaction->updated_at != $transaction->created_at)
-                                    <br><strong>Terakhir diubah:</strong> {{ $transaction->updated_at->format('d/m/Y H:i') }}
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+            <div class="d-flex align-items-center">
+              <i class="bi bi-info-circle me-3 fs-4"></i>
+              <div>
+                <strong>ID Transaksi:</strong> {{ $transaction->uuid }}<br>
+                <strong>Dibuat:</strong> {{ $transaction->created_at->format('d/m/Y H:i') }}
+                @if($transaction->updated_at != $transaction->created_at)
+                  <br><strong>Terakhir diubah:</strong> {{ $transaction->updated_at->format('d/m/Y H:i') }}
+                @endif
+              </div>
+            </div>
+          </div>
         @endif
                 
         <form method="POST" action="{{ $transaction ? route('apps.transactions.update', $transaction->uuid) : route('apps.transactions.store') }}" id="transactionForm">
