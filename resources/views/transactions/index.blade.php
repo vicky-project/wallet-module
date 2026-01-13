@@ -2,6 +2,9 @@
 
 @section('title', 'Transaksi - Aplikasi Keuangan')
 
+@use('Modules\Wallet\Enums\TransactionType')
+@use('Modules\Wallet\Enums\PaymentMethod')
+
 @push('styles')
 <style>
     .transaction-icon {
@@ -63,207 +66,211 @@
 @endpush
 
 @section('content')
+@include('wallet::partials.fab')
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="page-title">Transaksi</h2>
-                <p class="text-muted mb-0">Kelola semua transaksi keuangan Anda</p>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-plus-circle me-2"></i> Transaksi Baru
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ route('apps.transactions.create', ['type' => 'income']) }}">
-                        <i class="bi bi-arrow-down-left text-success me-2"></i> Pemasukan
-                    </a></li>
-                    <li><a class="dropdown-item" href="{{ route('apps.transactions.create', ['type' => 'expense']) }}">
-                        <i class="bi bi-arrow-up-right text-danger me-2"></i> Pengeluaran
-                    </a></li>
-                    <li><a class="dropdown-item" href="{{ route('apps.transactions.create', ['type' => 'transfer']) }}">
-                        <i class="bi bi-arrow-left-right text-primary me-2"></i> Transfer
-                    </a></li>
-                </ul>
-            </div>
-        </div>
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title">Transaksi</h2>
+        <p class="text-muted mb-0">Kelola semua transaksi keuangan Anda</p>
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="bi bi-plus-circle me-2"></i> Transaksi Baru
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item" href="{{ route('apps.transactions.create', ['type' => 'income']) }}">
+              <i class="bi bi-arrow-down-left text-success me-2"></i> Pemasukan
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ route('apps.transactions.create', ['type' => 'expense']) }}">
+              <i class="bi bi-arrow-up-right text-danger me-2"></i> Pengeluaran
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ route('apps.transactions.create', ['type' => 'transfer']) }}">
+              <i class="bi bi-arrow-left-right text-primary me-2"></i> Transfer
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Filter Card -->
 <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
-        <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <label for="type" class="form-label">Jenis</label>
-                    <select name="type" id="type" class="form-select">
-                        <option value="">Semua Jenis</option>
-                        <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Pemasukan</option>
-                        <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Pengeluaran</option>
-                        <option value="transfer" {{ request('type') == 'transfer' ? 'selected' : '' }}>Transfer</option>
-                    </select>
-                </div>
+  <div class="card-body">
+    <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="type" class="form-label">Jenis</label>
+          <select name="type" id="type" class="form-select">
+            <option value="">Semua Jenis</option>
+            @foreach(TransactionType::cases() as $type)
+              <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->label() }}</option>
+            @endforeach
+          </select>
+        </div>
                 
-                <div class="col-md-3">
-                    <label for="account_id" class="form-label">Akun</label>
-                    <select name="account_id" id="account_id" class="form-select select2">
-                        <option value="">Semua Akun</option>
-                        @foreach($accounts as $account)
-                            <option value="{{ $account->id }}" {{ request('account_id') == $account->id ? 'selected' : '' }}>
-                                {{ $account->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        <div class="col-md-3">
+          <label for="account_id" class="form-label">Akun</label>
+          <select name="account_id" id="account_id" class="form-select select2">
+            <option value="">Semua Akun</option>
+            @foreach($accounts as $account)
+              <option value="{{ $account->id }}" @selected(request('account_id') == $account->id)>
+                {{ $account->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
                 
-                <div class="col-md-3">
-                    <label for="category_id" class="form-label">Kategori</label>
-                    <select name="category_id" id="category_id" class="form-select select2">
-                        <option value="">Semua Kategori</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        <div class="col-md-3">
+          <label for="category_id" class="form-label">Kategori</label>
+          <select name="category_id" id="category_id" class="form-select select2">
+            <option value="">Semua Kategori</option>
+            @foreach($categories as $category)
+              <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
+                {{ $category->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
                 
-                <div class="col-md-3">
-                    <label for="payment_method" class="form-label">Metode Pembayaran</label>
-                    <select name="payment_method" id="payment_method" class="form-select">
-                        <option value="">Semua Metode</option>
-                        <option value="cash" {{ request('payment_method') == 'cash' ? 'selected' : '' }}>Tunai</option>
-                        <option value="debit_card" {{ request('payment_method') == 'debit_card' ? 'selected' : '' }}>Kartu Debit</option>
-                        <option value="credit_card" {{ request('payment_method') == 'credit_card' ? 'selected' : '' }}>Kartu Kredit</option>
-                        <option value="bank_transfer" {{ request('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Transfer Bank</option>
-                        <option value="e-wallet" {{ request('payment_method') == 'e-wallet' ? 'selected' : '' }}>E-Wallet</option>
-                    </select>
-                </div>
+        <div class="col-md-3">
+          <label for="payment_method" class="form-label">Metode Pembayaran</label>
+          <select name="payment_method" id="payment_method" class="form-select">
+            <option value="">Semua Metode</option>
+            @foreach(PaymentMethod::cases() as $payment)
+              <option value="{{ $payment->value }}" @selected(request('payment_method') == $payment->value)>{{ $payment->label() }}</option>
+            @endforeach
+          </select>
+         </div>
                 
-                <div class="col-md-6">
-                    <label for="description" class="form-label">Keterangan / Catatan</label>
-                    <input type="text" name="description" id="description" class="form-control" 
-                           placeholder="Cari dalam keterangan atau catatan..."
-                           value="{{ request('description') }}">
-                </div>
+        <div class="col-md-6">
+          <label for="description" class="form-label">Keterangan / Catatan</label>
+          <input type="text" name="description" id="description" class="form-control" placeholder="Cari dalam keterangan atau catatan..." value="{{ request('description') }}">
+        </div>
                 
-                <div class="col-md-3">
-                    <label for="start_date" class="form-label">Dari Tanggal</label>
-                    <input type="date" name="start_date" id="start_date" class="form-control" 
-                           value="{{ request('start_date') }}">
-                </div>
+        <div class="col-md-3">
+          <label for="start_date" class="form-label">Dari Tanggal</label>
+          <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
+        </div>
                 
-                <div class="col-md-3">
-                    <label for="end_date" class="form-label">Sampai Tanggal</label>
-                    <input type="date" name="end_date" id="end_date" class="form-control" 
-                           value="{{ request('end_date') }}">
-                </div>
+        <div class="col-md-3">
+          <label for="end_date" class="form-label">Sampai Tanggal</label>
+          <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
+        </div>
                 
-                <div class="col-md-12">
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-funnel me-2"></i> Terapkan Filter
-                        </button>
-                        <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-2"></i> Reset
-                        </a>
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
-                            <i class="bi bi-download me-2"></i> Export
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+        <div class="col-md-12">
+          <div class="d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-funnel me-2"></i> Terapkan Filter
+            </button>
+            <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle me-2"></i> Reset
+            </a>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+              <i class="bi bi-download me-2"></i> Export
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Summary Stats -->
 <div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted mb-1">Total Pemasukan</h6>
-                        <h4 class="text-success mb-0">
-                            Rp {{ number_format($totals['income'], 0, ',', '.') }}
-                        </h4>
-                    </div>
-                    <div class="bg-success bg-opacity-10 p-2 rounded">
-                        <i class="bi bi-arrow-down-left text-success"></i>
-                    </div>
-                </div>
-            </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Pemasukan</h6>
+            <h4 class="text-success mb-0">
+              Rp {{ number_format($totals['income'], 0, ',', '.') }}
+            </h4>
+          </div>
+          <div class="bg-success bg-opacity-10 p-2 rounded">
+            <i class="bi bi-arrow-down-left text-success"></i>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted mb-1">Total Pengeluaran</h6>
-                        <h4 class="text-danger mb-0">
-                            Rp {{ number_format($totals['expense'], 0, ',', '.') }}
-                        </h4>
-                    </div>
-                    <div class="bg-danger bg-opacity-10 p-2 rounded">
-                        <i class="bi bi-arrow-up-right text-danger"></i>
-                    </div>
-                </div>
-            </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Pengeluaran</h6>
+            <h4 class="text-danger mb-0">
+              Rp {{ number_format($totals['expense'], 0, ',', '.') }}
+            </h4>
+          </div>
+          <div class="bg-danger bg-opacity-10 p-2 rounded">
+            <i class="bi bi-arrow-up-right text-danger"></i>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted mb-1">Total Transfer</h6>
-                        <h4 class="text-primary mb-0">
-                            Rp {{ number_format($totals['transfer'], 0, ',', '.') }}
-                        </h4>
-                    </div>
-                    <div class="bg-primary bg-opacity-10 p-2 rounded">
-                        <i class="bi bi-arrow-left-right text-primary"></i>
-                    </div>
-                </div>
-            </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Transfer</h6>
+            <h4 class="text-primary mb-0">
+              Rp {{ number_format($totals['transfer'], 0, ',', '.') }}
+            </h4>
+          </div>
+          <div class="bg-primary bg-opacity-10 p-2 rounded">
+            <i class="bi bi-arrow-left-right text-primary"></i>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Transactions List -->
 <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-0">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Daftar Transaksi</h5>
-            <div class="d-flex align-items-center gap-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="selectAll">
-                    <label class="form-check-label" for="selectAll">Pilih Semua</label>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" 
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item bulk-action" href="#" data-action="delete">
-                            <i class="bi bi-trash text-danger me-2"></i> Hapus Terpilih
-                        </a></li>
-                        <li><a class="dropdown-item bulk-action" href="#" data-action="export">
-                            <i class="bi bi-download me-2"></i> Export Terpilih
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
+  <div class="card-header bg-white border-0">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Daftar Transaksi</h5>
+      <div class="d-flex align-items-center gap-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="selectAll">
+          <label class="form-check-label" for="selectAll">Pilih Semua</label>
         </div>
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item bulk-action" href="#" data-action="delete">
+                <i class="bi bi-trash text-danger me-2"></i> Hapus Terpilih
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item bulk-action" href="#" data-action="export">
+                <i class="bi bi-download me-2"></i> Export Terpilih
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
     
-    <div class="card-body p-0">
+  <div class="card-body p-0">
         @if($transactions->count() > 0)
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -556,7 +563,6 @@
                 <p class="text-muted">Mulai dengan menambahkan transaksi pertama Anda</p>
                 <div class="mt-4">
                     <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="btn btn-success me-2">
-                    <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="btn btn-success me-2">
                         <i class="bi bi-plus-circle me-2"></i> Tambah Pemasukan
                     </a>
                     <a href="{{ route('apps.transactions.create', ['type' => 'expense']) }}" class="btn btn-danger">
@@ -570,46 +576,46 @@
 
 <!-- Export Modal -->
 <div class="modal fade" id="exportModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Export Data Transaksi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Export Data Transaksi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ route('apps.transactions.export') }}" method="GET" id="exportForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="export_format" class="form-label">Format Export</label>
+            <select name="format" id="export_format" class="form-select" required>
+              <option value="excel">Excel (.xlsx)</option>
+              <option value="csv">CSV (.csv)</option>
+              <option value="pdf">PDF (.pdf)</option>
+              <option value="json">JSON (.json)</option>
+            </select>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="export_start_date" class="form-label">Dari Tanggal</label>
+              <input type="date" name="start_date" id="export_start_date" class="form-control">
             </div>
-            <form action="{{ route('apps.transactions.export') }}" method="GET" id="exportForm">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="export_format" class="form-label">Format Export</label>
-                        <select name="format" id="export_format" class="form-select" required>
-                            <option value="excel">Excel (.xlsx)</option>
-                            <option value="csv">CSV (.csv)</option>
-                            <option value="pdf">PDF (.pdf)</option>
-                            <option value="json">JSON (.json)</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="export_start_date" class="form-label">Dari Tanggal</label>
-                            <input type="date" name="start_date" id="export_start_date" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="export_end_date" class="form-label">Sampai Tanggal</label>
-                            <input type="date" name="end_date" id="export_end_date" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-text">
-                        Kosongkan tanggal untuk mengekspor semua data transaksi.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-download me-2"></i> Export Data
-                    </button>
-                </div>
-            </form>
+            <div class="col-md-6">
+              <label for="export_end_date" class="form-label">Sampai Tanggal</label>
+              <input type="date" name="end_date" id="export_end_date" class="form-control">
+            </div>
+          </div>
+          <div class="form-text">
+            Kosongkan tanggal untuk mengekspor semua data transaksi.
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-download me-2"></i> Export Data
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 @endsection
 

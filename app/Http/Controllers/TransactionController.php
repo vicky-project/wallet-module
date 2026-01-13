@@ -88,7 +88,7 @@ class TransactionController extends Controller
 
 		// Filter categories by type if specified
 		$type = $request->get("type", TransactionType::EXPENSE->value);
-		if (in_array($type, TransactionType::all())) {
+		if (in_array($type, TransactionType::cases())) {
 			$categories = $categories->where("type", $type);
 		}
 
