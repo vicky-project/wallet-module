@@ -162,27 +162,21 @@ class Transaction extends Model
 	{
 		switch ($this->type) {
 			case TransactionType::INCOME:
-				$this->account->increment(
-					"balance",
-					$this->amount->getMinorAmount()->toInt()
-				);
+				$this->account->balance->plus($this->amount->getMinorAmount()->toInt());
 				break;
 
 			case TransactionType::EXPENSE:
-				$this->account->decrement(
-					"balance",
+				$this->account->balance->minus(
 					$this->amount->getMinorAmount()->toInt()
 				);
 				break;
 
 			case TransactionType::TRANSFER:
-				$this->account->decrement(
-					"balance",
+				$this->account->balance->minus(
 					$this->amount->getMinorAmount()->toInt()
 				);
 				if ($this->toAccount) {
-					$this->toAccount->increment(
-						"balance",
+					$this->toAccount->balance->plus(
 						$this->amount->getMinorAmount()->toInt()
 					);
 				}
