@@ -36,7 +36,7 @@ class TransactionRequest extends FormRequest
 			"is_recurring" => "nullable|boolean",
 		];
 
-		if ($request->type === TransactionType::TRANSFER->value) {
+		if ($this->type === TransactionType::TRANSFER->value) {
 			$rules["to_account_id"] =
 				"required|exists:accounts,id|different:account_id";
 		}
