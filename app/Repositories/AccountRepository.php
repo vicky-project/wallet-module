@@ -187,6 +187,7 @@ class AccountRepository extends BaseRepository
 		$accountCount = $accounts->count();
 
 		foreach ($accounts as $account) {
+			dd($account);
 			$balance = $account->balance->getAmount()->toInt();
 
 			if ($account->isLiability()) {
