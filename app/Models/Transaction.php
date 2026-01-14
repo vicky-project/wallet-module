@@ -184,8 +184,8 @@ class Transaction extends Model
 			case TransactionType::INCOME:
 				$account->update([
 					"balance" => $this->account->balance
-						->plus($this->amount->getAmount()->toInt())
-						->getAmount()
+						->plus($this->amount->getMinorAmount()->toInt())
+						->getMinorAmount()
 						->toInt(),
 				]);
 				break;
@@ -193,8 +193,8 @@ class Transaction extends Model
 			case TransactionType::EXPENSE:
 				$account->update([
 					"balance" => $this->account->balance
-						->minus($this->amount->getAmount()->toInt())
-						->getAmount()
+						->minus($this->amount->getMinorAmount()->toInt())
+						->getMinorAmount()
 						->toInt(),
 				]);
 				break;
@@ -202,16 +202,16 @@ class Transaction extends Model
 			case TransactionType::TRANSFER:
 				$account->update([
 					"balance" => $this->account()
-						->balance->minus($this->amount->getAmount()->toInt())
-						->getAmount()
+						->balance->minus($this->amount->getMinorAmount()->toInt())
+						->getMinorAmount()
 						->toInt(),
 				]);
 
 				if ($this->toAccount) {
 					$this->toAccount()->update([
 						"to_account_id" => $this->toAccount->balance
-							->plus($this->amount->getAmount()->toInt())
-							->getAmount()
+							->plus($this->amount->getMinorAmount()->toInt())
+							->getMinorAmount()
 							->toInt(),
 					]);
 				}
