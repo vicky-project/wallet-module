@@ -185,7 +185,7 @@ class Transaction extends Model
 				$account->update([
 					"balance" => $this->account->balance
 						->plus($this->amount->getMinorAmount()->toInt())
-						->getMinorAmount()
+						->getAmount()
 						->toInt(),
 				]);
 				break;
@@ -194,7 +194,7 @@ class Transaction extends Model
 				$account->update([
 					"balance" => $this->account->balance
 						->minus($this->amount->getMinorAmount()->toInt())
-						->getMinorAmount()
+						->getAmount()
 						->toInt(),
 				]);
 				break;
@@ -203,7 +203,7 @@ class Transaction extends Model
 				$account->update([
 					"balance" => $this->account()
 						->balance->minus($this->amount->getMinorAmount()->toInt())
-						->getMinorAmount()
+						->getAmount()
 						->toInt(),
 				]);
 
@@ -211,7 +211,7 @@ class Transaction extends Model
 					$this->toAccount()->update([
 						"to_account_id" => $this->toAccount->balance
 							->plus($this->amount->getMinorAmount()->toInt())
-							->getMinorAmount()
+							->getAmount()
 							->toInt(),
 					]);
 				}
