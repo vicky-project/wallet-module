@@ -24,11 +24,11 @@ class MoneyCast implements CastsAttributes
 			($model->currency ?? config("wallet.default_currency", "USD"));
 
 		if (is_null($value)) {
-			return Money::zero($currency);
+			$value = Money::zero($currency);
 		}
 
 		if (!is_numeric($value)) {
-			return Money::zero($currency);
+			$value = Money::zero($currency);
 		}
 
 		// Create a Money instance from the minor unit (cents) stored in the database.
