@@ -178,24 +178,41 @@ class Transaction extends Model
 	// Methods
 	public function updateAccountBalance()
 	{
+		$account = $this->account();
+
 		switch ($this->type) {
 			case TransactionType::INCOME:
-				$this->account()->balance->plus($this->amount->getAmount()->toInt());
+				$account->update([
+					"balance" => $this->account->balance->plus(
+						$this->amount->getAmount()->toInt()
+					),
+				]);
 				break;
 
 			case TransactionType::EXPENSE:
-				$this->account()->balance->minus($this->amount->getAmount()->toInt());
+				$account->update([
+					"balance" => $this->account->balance->minus(
+						$this->amount->getAmount()->toInt()
+					),
+				]);
 				break;
 
 			case TransactionType::TRANSFER:
-				$this->account()->balance->minus($this->amount->getAmount()->toInt());
+				$account->update([
+					"balance" => $this->account()->balance->minus(
+						$this->amount->getAmount()->toInt()
+					),
+				]);
+
 				if ($this->toAccount) {
-					$this->toAccount->balance->plus($this->amount->getAmount()->toInt());
+					$this->toAccount()->update([
+						"to_account_id" => $this->toAccount->balance->plus(
+							$this->amount->getAmount()->toInt()
+						),
+					]);
 				}
 				break;
 		}
-
-		$this->account()->save();
 	}
 
 	public function recalculateBalances()
