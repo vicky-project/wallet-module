@@ -33,7 +33,7 @@
   
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="quick-stat" style="border-left: 4px solid #28a745;">
-      <div class="stat-value">{{ Helper::formatMoney(Helper::toMoney($stats['total_spent'])->getAmount()->toInt() ?? 0) }}</div>
+      <div class="stat-value">@money($stats['total_spent'])</div>
       <div class="stat-label">Total Terpakai</div>
       <small class="text-muted">{{ number_format($stats['overall_usage'] ?? 0, 1) }}% dari total</small>
     </div>
@@ -41,7 +41,7 @@
   
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="quick-stat" style="border-left: 4px solid #ffc107;">
-      <div class="stat-value">{{ Helper::formatMoney(Helper::toMoney($stats['total_remaining'])->getAmount()->toInt() ?? 0) }}</div>
+      <div class="stat-value">@money($stats['total_remaining'])</div>
       <div class="stat-label">Total Sisa</div>
       <small class="text-muted">{{ $stats['days_in_month'] ?? 30 }} hari tersisa</small>
     </div>
