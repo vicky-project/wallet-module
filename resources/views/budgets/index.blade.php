@@ -25,7 +25,7 @@
 <div class="row mb-4">
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="quick-stat" style="border-left: 4px solid #0d6efd;">
-      <div class="stat-value">{{ Helper::formatMoney(Helper::toMoney($stats['total_amount'])->getAmount()->toInt() ?? 0) }}</div>
+      <div class="stat-value">@money($stats['total_amount']->getAmount()->toInt())</div>
       <div class="stat-label">Total Budget Aktif</div>
       <small class="text-muted">{{ $stats['current'] ?? 0 }} budget aktif</small>
     </div>
