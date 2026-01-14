@@ -25,22 +25,21 @@ class TransactionRequest extends FormRequest
 	{
 		$rules = [
 			"account_id" => "required|exists:accounts,id",
-			"type" => ["required", Rule::enum(TransactionType::class)],
-			"title" => "required|string|max:500",
-			"amount" => "required|numeric|min:0.01",
 			"category_id" => "required|exists:categories,id",
-			"transaction_date" => "nullable|date",
-			"payment_method" => "nullable|string|max:50",
+			"type" => ["required", Rule::enum(TransactionType::class)],
+			"amount" => "required|integer|min:1",
+			"description" => "required|string|max:255",
+			"transaction_date" => "required|date",
+			"notes" => "nullable|string",
+			"payment_method" => "nullable|string",
 			"reference_number" => "nullable|string|max:100",
-			"description" => "nullable|string|max:5000",
-			"is_recurring" => "nullable",
-			"recurring_period" => [
-				Rule::requiredIf(!is_null($this->is_recurring)),
-				"nullable",
-				"string",
-			],
-			"recurring_end_date" => "nullable|date",
+			"is_recurring" => "nullable|boolean",
 		];
+
+		if ($request->type === TransactionType::TRANSFER->value) {
+			$rules["to_account_id"] =
+				"required|exists:accounts,id|different:account_id";
+		}
 
 		if ($this->isMethod("PUT") || $this->isMethod("PATCH")) {
 			unset($rules["account_id"]);
@@ -54,7 +53,7 @@ class TransactionRequest extends FormRequest
 		$validator->after(function ($validator) {
 			if ($this->type === TransactionType::EXPENSE) {
 				$account = \Modules\Wallet\Models\Account::find($this->account_id);
-				if ($account && $account->current_balance < $this->amount) {
+				if ($account && $account->balance < $this->amount) {
 					$validator
 						->errors()
 						->add("amount", "Insufficient balance in account.");

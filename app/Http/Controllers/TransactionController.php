@@ -5,6 +5,7 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Wallet\Http\Requests\TransactionRequest;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
@@ -109,11 +110,11 @@ class TransactionController extends Controller
 	/**
 	 * Store a newly created transaction.
 	 */
-	public function store(Request $request)
+	public function store(TransactionRequest $request)
 	{
-		$user = Auth::user();
+		$user = $request->user();
 
-		$validated = $this->validateTransaction($request);
+		$validated = $request->validated();
 
 		$result = $this->transactionService->createTransaction($validated, $user);
 
@@ -122,10 +123,9 @@ class TransactionController extends Controller
 				->route("apps.transactions.index")
 				->with("success", $result["message"]);
 		} else {
-			return redirect()
-				->back()
+			return back()
 				->withInput()
-				->with("error", $result["message"]);
+				->withErrors($result["message"]);
 		}
 	}
 
