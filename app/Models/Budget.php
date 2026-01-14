@@ -253,7 +253,8 @@ class Budget extends Model
 			$query->whereIn("account_id", $this->accounts->pluck("id"));
 		}
 
-		$this->spent = $query->sum("amount");
+		$amount = $query->sum("amount");
+		dd($amount);
 		$this->save();
 	}
 
