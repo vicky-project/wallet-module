@@ -53,7 +53,10 @@ class TransactionRequest extends FormRequest
 		$validator->after(function ($validator) {
 			if ($this->type === TransactionType::EXPENSE) {
 				$account = \Modules\Wallet\Models\Account::find($this->account_id);
-				if ($account && $account->balance < $this->amount) {
+				if (
+					$account &&
+					$account->balance->getAmount()->toInt() < $this->amount
+				) {
 					$validator
 						->errors()
 						->add("amount", "Insufficient balance in account.");

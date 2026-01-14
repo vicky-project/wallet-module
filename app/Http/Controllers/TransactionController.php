@@ -113,19 +113,28 @@ class TransactionController extends Controller
 	public function store(TransactionRequest $request)
 	{
 		$user = $request->user();
+		try {
+			$validated = $request->validated();
 
-		$validated = $request->validated();
+			$result = $this->transactionService->createTransaction($validated, $user);
 
-		$result = $this->transactionService->createTransaction($validated, $user);
-
-		if ($result["success"]) {
-			return redirect()
-				->route("apps.transactions.index")
-				->with("success", $result["message"]);
-		} else {
+			if ($result["success"]) {
+				return redirect()
+					->route("apps.transactions.index")
+					->with("success", $result["message"]);
+			} else {
+				return back()
+					->withInput()
+					->withErrors($result["message"]);
+			}
+		} catch (\Exception $e) {
+			logger()->error("Error saving data transaction", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace,
+			]);
 			return back()
 				->withInput()
-				->withErrors($result["message"]);
+				->withErrors($e->getMessage);
 		}
 	}
 
