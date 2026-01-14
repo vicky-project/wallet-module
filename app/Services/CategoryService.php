@@ -103,7 +103,7 @@ class CategoryService
 									100
 								: 0;
 						$category->has_budget_exceeded =
-							$monthlyTotal > $activeBudget->amount;
+							$monthlyTotal > $activeBudget->amount->getAmount()->toInt();
 						$category->budget_limit = $activeBudget->amount;
 					} else {
 						$category->budget_usage_percentage = 0;
