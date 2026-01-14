@@ -238,7 +238,6 @@ class AccountService
 				$account->currency
 			);
 			$netFlow = $account->getNetFlowForPeriod($startDate, $endDate);
-			dd($income, $expense, $netFlow);
 
 			$analytics[] = [
 				"account" => $account,

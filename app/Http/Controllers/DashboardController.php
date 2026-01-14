@@ -33,7 +33,7 @@ class DashboardController extends BaseController
 		);
 
 		// Get account analytics for current month
-		$currentMonth = date("m");
+		$currentMonth = $request->period ?? date("m");
 		$currentYear = date("Y");
 		$accountAnalytics = $this->accountService->getAccountAnalytics(
 			$user,
