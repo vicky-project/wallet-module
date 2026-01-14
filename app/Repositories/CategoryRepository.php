@@ -590,8 +590,8 @@ class CategoryRepository extends BaseRepository
 							->sum("amount");
 
 						$usage =
-							$budget && $budget->amount > 0
-								? ($total / $budget->amount) * 100
+							$budget && $budget->amount->getAmount()->toInt() > 0
+								? ($total / $budget->amount->getAmount()->toInt()) * 100
 								: 0;
 
 						return [
