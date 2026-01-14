@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         refreshBtn.addEventListener('click', function() {
           if(!confirm('Rescalculate all spent budget ?')) return;
           
-            fetch('{{ route("apps.budgets.update-spent") }}', {
+            fetch('{{ secure_url(config("app.url")) }}/apps/budgets/update-spent', {
               headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -504,7 +504,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(res => res.json()).then(data => {
               alert(data.message)
               window.location.reload();
-            }).catch(error => alert(error.message));
+            }).catch(error => {
+              console.error(error);
+              alert(error.message);
+            });
         });
     }
     
