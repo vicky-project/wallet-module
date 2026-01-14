@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Models;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -178,45 +179,78 @@ class Transaction extends Model
 	// Methods
 	public function updateAccountBalance()
 	{
-		$account = $this->account();
+		DB::transaction(function () {
+			$amount = $this->amount->getMinorAmount()->toInt();
 
-		switch ($this->type) {
-			case TransactionType::INCOME:
-				$account->update([
-					"balance" => $this->account->balance
-						->plus($this->amount->getMinorAmount()->toInt())
-						->getAmount()
-						->toInt(),
-				]);
-				break;
+			switch ($this->type) {
+				case TransactionType::INCOME:
+					$this->handleIncome($amount);
+					break;
 
-			case TransactionType::EXPENSE:
-				$account->update([
-					"balance" => $this->account->balance
-						->minus($this->amount->getMinorAmount()->toInt())
-						->getAmount()
-						->toInt(),
-				]);
-				break;
+				case TransactionType::EXPENSE:
+					$this->handleExpense($amount);
+					break;
 
-			case TransactionType::TRANSFER:
-				$account->update([
-					"balance" => $this->account()
-						->balance->minus($this->amount->getMinorAmount()->toInt())
-						->getAmount()
-						->toInt(),
-				]);
+				case TransactionType::TRANSFER:
+					$this->handleTransfer($amount);
+					break;
+			}
+		});
+	}
 
-				if ($this->toAccount) {
-					$this->toAccount()->update([
-						"to_account_id" => $this->toAccount->balance
-							->plus($this->amount->getMinorAmount()->toInt())
-							->getAmount()
-							->toInt(),
-					]);
-				}
-				break;
+	private function handleIncome($amount)
+	{
+		$account = $this->account()
+			->lockForUpdate()
+			->first();
+
+		if (!$account) {
+			return;
 		}
+
+		$account->incrementBalance($amount);
+	}
+
+	private function handleExpense($amount)
+	{
+		$account = $this->account()
+			->lockForUpdate()
+			->first();
+
+		if (!$account) {
+			return;
+		}
+
+		if ($account->balance->getMinorAmount()->toInt() < $amount) {
+			throw new \Exception("Insufficient balance");
+		}
+
+		$account->decrementBalance($amount);
+	}
+
+	private function handleTransfer($amount)
+	{
+		$fromAccount = $this->account()
+			->lockForUpdate()
+			->first();
+		$toAccount = $this->toAccount()
+			->lockForUpdate()
+			->first();
+
+		if (!$fromAccount || !$toAccount) {
+			throw new \Exception("Account not found.");
+		}
+
+		if ($fromAccount->id === $toAccount->id) {
+			throw new \Exception("Can not transfer to the same account");
+		}
+
+		if ($fromAccount->balance->getMinorAmount()->toInt() < $amount) {
+			throw new \Exception("Insufficient balance");
+		}
+
+		$fromAccount->decrementBalance($amount);
+		$toAccount->incrementBalance($amount);
 	}
 
 	public function recalculateBalances()

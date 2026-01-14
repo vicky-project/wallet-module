@@ -227,4 +227,26 @@ class Account extends Model
 		$expense = $this->getExpenseForPeriod($startDate, $endDate);
 		return $income->minus($expense);
 	}
+
+	public function incrementBalance($amount)
+	{
+		$newBalance = $this->balance
+			->plus($amount)
+			->getAmount()
+			->toInt();
+
+		$this->update(["balance" => $newBalance]);
+		$this->refresh();
+	}
+
+	public function decrementBalance($amount)
+	{
+		$newBalance = $this->balance
+			->minus($amount)
+			->getAmount()
+			->toInt();
+
+		$this->update(["balance" => $newBalance]);
+		$this->refresh();
+	}
 }
