@@ -85,6 +85,10 @@ class TransactionService
 				"message" => "Transaksi berhasil ditambahkan.",
 			];
 		} catch (\Exception $e) {
+			logger()->error("Failed create transaction data", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace,
+			]);
 			return [
 				"success" => false,
 				"message" => $e->getMessage(),
