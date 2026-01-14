@@ -183,32 +183,36 @@ class Transaction extends Model
 		switch ($this->type) {
 			case TransactionType::INCOME:
 				$account->update([
-					"balance" => $this->account->balance->plus(
-						$this->amount->getAmount()->toInt()
-					),
+					"balance" => $this->account->balance
+						->plus($this->amount->getAmount()->toInt())
+						->getAmount()
+						->toInt(),
 				]);
 				break;
 
 			case TransactionType::EXPENSE:
 				$account->update([
-					"balance" => $this->account->balance->minus(
-						$this->amount->getAmount()->toInt()
-					),
+					"balance" => $this->account->balance
+						->minus($this->amount->getAmount()->toInt())
+						->getAmount()
+						->toInt(),
 				]);
 				break;
 
 			case TransactionType::TRANSFER:
 				$account->update([
-					"balance" => $this->account()->balance->minus(
-						$this->amount->getAmount()->toInt()
-					),
+					"balance" => $this->account()
+						->balance->minus($this->amount->getAmount()->toInt())
+						->getAmount()
+						->toInt(),
 				]);
 
 				if ($this->toAccount) {
 					$this->toAccount()->update([
-						"to_account_id" => $this->toAccount->balance->plus(
-							$this->amount->getAmount()->toInt()
-						),
+						"to_account_id" => $this->toAccount->balance
+							->plus($this->amount->getAmount()->toInt())
+							->getAmount()
+							->toInt(),
 					]);
 				}
 				break;
