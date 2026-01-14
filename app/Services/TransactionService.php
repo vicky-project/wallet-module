@@ -418,8 +418,8 @@ class TransactionService
 		);
 
 		if ($budget) {
-			$projectedSpent = $budget->spent + $data["amount"];
-			if ($projectedSpent > $budget->amount) {
+			$projectedSpent = $budget->spent->getAmount()->toInt() + $data["amount"];
+			if ($projectedSpent > $budget->amount->getAmount()->toInt()) {
 				// Log warning but don't prevent transaction
 				\Log::warning("Budget exceeded", [
 					"budget_id" => $budget->id,
