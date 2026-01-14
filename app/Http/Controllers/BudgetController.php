@@ -283,6 +283,11 @@ class BudgetController extends Controller
 					"Jumlah terpakai semua budget berhasil diperbarui"
 				);
 		} catch (\Exception $e) {
+			logger()->error("Failed to update all spent budgets.", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace(),
+			]);
+
 			return $request->wantsJson()
 				? response()->json(["success" => false, "message" => $e->getMessage()])
 				: back()->with("error", $e->getMessage());
