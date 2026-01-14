@@ -186,9 +186,9 @@
           <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xlsx me-2"></i>Excel</a></li>
         </ul>
       </div>
-      <button class="btn btn-outline-secondary btn-sm" id="refreshBudgets">
+      <a href="{{ route('apps.budgets.update-spent') }}" class="btn btn-outline-secondary btn-sm" onclick="return confirm('Will re-calculate all spent budgets ?')">
         <i class="bi bi-arrow-clockwise"></i>
-      </button>
+      </a>
     </div>
   </div>
         
@@ -486,27 +486,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error:', error);
                 showToast('danger', 'Error', 'Terjadi kesalahan');
-            });
-        });
-    }
-    
-    // Refresh budgets
-    const refreshBtn = document.getElementById('refreshBudgets');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', function() {
-          if(!confirm('Rescalculate all spent budget ?')) return;
-          
-            fetch('{{ secure_url(config("app.url")) }}/apps/budgets/update-spent', {
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-              },
-            }).then(res => res.json()).then(data => {
-              alert(data.message)
-              window.location.reload();
-            }).catch(error => {
-              console.error(error);
-              alert(error.message);
             });
         });
     }

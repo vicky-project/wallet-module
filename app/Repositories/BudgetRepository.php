@@ -520,7 +520,7 @@ class BudgetRepository extends BaseRepository
 		Category $category,
 		int $userId,
 		?Carbon $date = null
-	): Budget {
+	): ?Budget {
 		$date = $date ?? now();
 		return $this->model
 			->where("category_id", $category->id)
