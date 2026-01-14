@@ -378,7 +378,7 @@
 <div class="card mt-4">
   <div class="card-body">
     <div class="row align-items-center">
-      <div class="col-md-3">
+      <div class="col-md-3 mb-3">
         <select class="form-select" id="bulkAction">
           <option value="">Aksi Massal</option>
           <option value="activate">Aktifkan</option>
@@ -387,7 +387,7 @@
           <option value="delete">Hapus</option>
         </select>
       </div>
-      <div class="col-md-9">
+      <div class="col-md-9 mb-3">
         <div class="d-flex justify-content-end">
           <button class="btn btn-outline-primary me-2" id="applyBulkAction">
             <i class="bi bi-check-circle me-1"></i>Terapkan
