@@ -494,7 +494,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const refreshBtn = document.getElementById('refreshBudgets');
     if (refreshBtn) {
         refreshBtn.addEventListener('click', function() {
-            window.location.reload();
+            fetch('{{ route("apps.budgets.update-spent") }}', {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              },
+            }).then(res => res.json()).then(data => {
+              alert(data.message)
+              window.location.reload();
+            });
         });
     }
     

@@ -603,6 +603,30 @@ class BudgetRepository extends BaseRepository
 		int $budgetId,
 		int $amount,
 		string $operation = "add"
-	) {
+	): bool {
+		$budget = $this->find($budgetId);
+
+		if (!$budget) {
+			return false;
+		}
+
+		switch ($operation) {
+			case "add":
+				$budget->spent = $budget->spent->plus($amount);
+				break;
+			case "subtract":
+				$budget->spent = max(0, $budget->spent->getAmount()->toInt() - $amount);
+				break;
+			case "set":
+				$budget->spent = $amount;
+				break;
+		}
+
+		$success = $budget->save();
+		if ($success) {
+			Cache::flush();
+		}
+
+		return $success;
 	}
 }

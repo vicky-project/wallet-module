@@ -268,17 +268,24 @@ class BudgetController extends Controller
 	/**
 	 * Update all spent amounts
 	 */
-	public function updateSpentAmounts()
+	public function updateSpentAmounts(Request $request)
 	{
 		try {
 			$this->budgetService->updateAllSpentAmounts();
 
-			return back()->with(
-				"success",
-				"Jumlah terpakai semua budget berhasil diperbarui"
-			);
+			return $request->wantsJson
+				? response()->json([
+					"success" => true,
+					"message" => "All spent amounts up to date",
+				])
+				: back()->with(
+					"success",
+					"Jumlah terpakai semua budget berhasil diperbarui"
+				);
 		} catch (\Exception $e) {
-			return back()->with("error", $e->getMessage());
+			return $request->wantsJson()
+				? response()->json(["success" => false, "message" => $e->getMessage()])
+				: back()->with("error", $e->getMessage());
 		}
 	}
 
