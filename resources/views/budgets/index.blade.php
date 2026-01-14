@@ -494,6 +494,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const refreshBtn = document.getElementById('refreshBudgets');
     if (refreshBtn) {
         refreshBtn.addEventListener('click', function() {
+          if(!confirm('Rescalculate all spent budget ?')) return;
+          
             fetch('{{ route("apps.budgets.update-spent") }}', {
               headers: {
                 'Content-Type': 'application/json',
@@ -502,7 +504,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(res => res.json()).then(data => {
               alert(data.message)
               window.location.reload();
-            });
+            }).catch(error => alert(error.message));
         });
     }
     
