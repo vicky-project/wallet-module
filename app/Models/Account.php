@@ -144,7 +144,7 @@ class Account extends Model
 	 */
 	public function isLiability(): bool
 	{
-		return in_array($this->type, [AccountType::CREDIT_CARD]);
+		return in_array($this->type, [AccountType::CREDIT_CARD, AccountType::CASH]);
 	}
 
 	/**
