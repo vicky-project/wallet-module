@@ -87,7 +87,7 @@ class TransactionService
 		} catch (\Exception $e) {
 			logger()->error("Failed create transaction data", [
 				"message" => $e->getMessage(),
-				"trace" => $e->getTrace,
+				"trace" => $e->getTrace(),
 			]);
 			return [
 				"success" => false,

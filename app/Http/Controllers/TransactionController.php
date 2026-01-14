@@ -130,7 +130,7 @@ class TransactionController extends Controller
 		} catch (\Exception $e) {
 			logger()->error("Error saving data transaction", [
 				"message" => $e->getMessage(),
-				"trace" => $e->getTrace,
+				"trace" => $e->getTrace(),
 			]);
 			return back()
 				->withInput()
