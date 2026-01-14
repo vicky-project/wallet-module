@@ -254,7 +254,9 @@ class Budget extends Model
 		}
 
 		$amount = $query->sum("amount");
-		dd($amount);
+		$this->spent = Money::ofMinor($amount)
+			->getAmount()
+			->toInt();
 		$this->save();
 	}
 
