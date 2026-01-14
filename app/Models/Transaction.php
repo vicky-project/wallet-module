@@ -180,7 +180,7 @@ class Transaction extends Model
 	public function updateAccountBalance()
 	{
 		DB::transaction(function () {
-			$amount = $this->amount->getMinorAmount()->toInt();
+			$amount = $this->amount->getAmount()->toInt();
 
 			switch ($this->type) {
 				case TransactionType::INCOME:
@@ -221,7 +221,7 @@ class Transaction extends Model
 			return;
 		}
 
-		if ($account->balance->getMinorAmount()->toInt() < $amount) {
+		if ($account->balance->getAmount()->toInt() < $amount) {
 			throw new \Exception("Insufficient balance");
 		}
 
@@ -245,7 +245,7 @@ class Transaction extends Model
 			throw new \Exception("Can not transfer to the same account");
 		}
 
-		if ($fromAccount->balance->getMinorAmount()->toInt() < $amount) {
+		if ($fromAccount->balance->getAmount()->toInt() < $amount) {
 			throw new \Exception("Insufficient balance");
 		}
 
