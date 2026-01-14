@@ -32,7 +32,7 @@ class MoneyCast implements CastsAttributes
 		}
 
 		// Create a Money instance from the minor unit (cents) stored in the database.
-		return Money::ofMinor($value, $currency);
+		return Money::ofMinor($value, $currency, roundingMode: RoundingMode::UP);
 	}
 
 	/**
