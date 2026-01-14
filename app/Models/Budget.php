@@ -254,7 +254,10 @@ class Budget extends Model
 		}
 
 		$amount = $query->sum("amount");
-		$this->spent = Money::ofMinor($amount)
+		$this->spent = Money::ofMinor(
+			$amount,
+			config("wallet.default_currency", "USD")
+		)
 			->getAmount()
 			->toInt();
 		$this->save();
