@@ -5,6 +5,7 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Modules\Wallet\Exports\TransactionsExport;
 use Modules\Wallet\Http\Requests\TransactionRequest;
 use Modules\Wallet\Services\TransactionService;
@@ -315,7 +316,7 @@ class TransactionController extends Controller
 					break;
 			}
 
-			return response()->download($file->getFile());
+			return Storage::download($file->getFile());
 		} catch (\Exception $e) {
 			logger()->error("Failef to export file.", [
 				"message" => $e->getMessage(),
