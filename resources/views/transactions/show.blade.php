@@ -21,6 +21,7 @@
         justify-content: center;
         font-size: 2rem;
         margin: 0 auto;
+        color: white;
     }
     
     .detail-item {
