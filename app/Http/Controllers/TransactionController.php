@@ -314,7 +314,7 @@ class TransactionController extends Controller
 					$file = Excel::download(new TransactionsExport($result), $filename);
 					break;
 			}
-			dd($file);
+			dd($file->file);
 
 			return response()->stream($file);
 		} catch (\Exception $e) {
