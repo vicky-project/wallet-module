@@ -21,7 +21,6 @@
         justify-content: center;
         font-size: 2rem;
         margin: 0 auto;
-        color: white;
     }
     
     .detail-item {
@@ -78,7 +77,7 @@
     <div class="card transaction-detail-card mb-4">
       <div class="card-body text-center py-4">
         <div class="transaction-icon-large bg-{{ $transaction->type->color() }} mb-3">
-          <i class="bi {{ $transaction->type->icon() }} {{ $transaction->type->textColor() }}"></i>
+          <i class="bi {{ $transaction->type->icon() }} text-light"></i>
         </div>
 
         <h2 class="{{ $transaction->type->textColor() }} mb-2">
