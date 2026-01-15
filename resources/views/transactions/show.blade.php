@@ -175,7 +175,7 @@
               'yearly' => 'Tahunan'
             ];
             @endphp
-            {{ $transaction->recurringTemplate->exists() ? $transaction->recurringTemplate->frequency->label() : 'No recurring' }}
+            {{ $transaction->recurringTemplate?->frequency?->label() }}
 
             @if($transaction->recurringTemplate->end_date)
             <span class="text-muted ms-2">
