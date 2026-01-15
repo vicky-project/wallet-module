@@ -311,7 +311,10 @@ class TransactionController extends Controller
 				case "excel":
 				default:
 					$filename .= ".xlsx";
-					return (new TransactionsExport($result))->download($filename);
+					return (new TransactionsExport($result))->download(
+						$filename,
+						\Maatwebsite\Excel\Excel::XLSX
+					);
 					break;
 			}
 		} catch (\Exception $e) {
