@@ -3,7 +3,7 @@
 namespace Modules\Wallet\Exports;
 
 use Modules\Wallet\Models\Transaction;
-use Illuminate\Support\Facades\Collection;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
