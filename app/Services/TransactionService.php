@@ -486,7 +486,12 @@ class TransactionService
 					"Kategori" => $transaction["Kategori"],
 					"Akun" => $transaction["Akun"],
 					"Akun Tujuan" => $transaction["Akun Tujuan"],
-					"Jumlah" => number_format($transaction["Jumlah"], 0, ",", "."),
+					"Jumlah" => number_format(
+						$transaction["Jumlah"]->getAmount()->toInt(),
+						0,
+						",",
+						"."
+					),
 					"Catatan" => $transaction["Catatan"],
 					"Metode Pembayaran" => $transaction["Metode Pembayaran"],
 					"Nomor Referensi" => $transaction["Nomor Referensi"],
