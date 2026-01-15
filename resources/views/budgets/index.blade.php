@@ -57,13 +57,15 @@
 </div>
 
 <!-- Filter Section -->
-<div class="card mb-4">
-  <div class="card-header">
+<div class="card mb-4" id="filterCard">
+  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
     <h5 class="mb-0">
       <i class="bi bi-funnel me-2"></i>Filter & Pencarian
     </h5>
+    <i class="bi bi-chevron-down transition-rotate"></i>
   </div>
-  <div class="card-body">
+  <div class="collapse" id="filterCollapse">
+    <div class="card-body">
     <form action="{{ route('apps.budgets.index') }}" method="GET" id="filterForm">
       <div class="row g-3">
         <!-- Category Filter -->
@@ -138,6 +140,7 @@
         </div>
       </div>
     </form>
+  </div>
   </div>
 </div>
 
