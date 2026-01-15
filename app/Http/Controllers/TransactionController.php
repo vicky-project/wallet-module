@@ -314,9 +314,8 @@ class TransactionController extends Controller
 					$file = Excel::download(new TransactionsExport($result), $filename);
 					break;
 			}
-			return $file->getFile();
 
-			return response()->stream($file);
+			return response()->download($file->getFile());
 		} catch (\Exception $e) {
 			logger()->error("Failef to export file.", [
 				"message" => $e->getMessage(),
