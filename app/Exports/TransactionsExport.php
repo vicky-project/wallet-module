@@ -34,7 +34,7 @@ class TransactionsExport implements
 	// Maps and formats each data row
 	public function map($transaction): array
 	{
-		dd($transaction);
+		dd(array_values($transaction));
 		return [
 			$transaction->id,
 			$transaction->created_at->format("Y-m-d H:i"),
