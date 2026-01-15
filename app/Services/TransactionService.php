@@ -4,6 +4,7 @@ namespace Modules\Wallet\Services;
 
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Exports\TransactionsExport;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facade\Excel;
 
 class TransactionService
 {
@@ -327,8 +329,8 @@ class TransactionService
 	public function exportTransactions(
 		User $user,
 		string $format = "excel",
-		string $startDate = null,
-		string $endDate = null
+		?string $startDate = null,
+		?string $endDate = null
 	): array {
 		try {
 			$transactions = $this->transactionRepository->getForExport(
@@ -341,22 +343,40 @@ class TransactionService
 				throw new \Exception("Tidak ada data transaksi untuk diekspor.");
 			}
 
-			// Format data based on export type
-			$formattedData = $this->formatExportData($transactions, $format);
+			$filename = "transactions_" . date("Ymd_His");
+
+			switch (strtolower($format)) {
+				case "csv":
+					$filename .= ".csv";
+					$file = Excel::download(
+						new TransactionsExport($transactions),
+						$filename,
+						\Maatwebsite\Excel\Excel::CSV
+					);
+					break;
+				case "excel":
+				default:
+					$filename .= ".xlsx";
+					$file = Excel::download(
+						new TransactionsExport($transactions),
+						$filename
+					);
+					break;
+			}
 
 			return [
 				"success" => true,
-				"data" => $formattedData,
-				"count" => $transactions->count(),
-				"period" => [
-					"start" => $startDate,
-					"end" => $endDate,
-				],
+				"data" => ["file" => $file, "file_name" => $filename],
 			];
 		} catch (\Exception $e) {
+			logger()->error("Export failed:", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace,
+			]);
+
 			return [
 				"success" => false,
-				"message" => $e->getMessage(),
+				"message" => "Export failed: " . $e->getMessage(),
 			];
 		}
 	}

@@ -273,21 +273,22 @@ class TransactionController extends Controller
 	{
 		$user = Auth::user();
 
-		$result = $this->transactionService->exportTransactions(
-			$user,
-			$request->get("format", "excel"),
-			$request->get("start_date"),
-			$request->get("end_date")
-		);
+		try {
+			$result = $this->transactionService->exportTransactions(
+				$user,
+				$request->get("format", "excel"),
+				$request->get("start_date"),
+				$request->get("end_date")
+			);
 
-		if (!$result["success"]) {
-			return redirect()
-				->back()
-				->with("error", $result["message"]);
+			if (!$result["success"]) {
+				return back()->withErrors($result["message"]);
+			}
+
+			return $result["data"]["file"];
+		} catch (\Exception $e) {
+			return back()->withErrors($e->getMessage());
 		}
-
-		// For now, return JSON (in real implementation, generate file)
-		return response()->json($result["data"]);
 	}
 
 	/**

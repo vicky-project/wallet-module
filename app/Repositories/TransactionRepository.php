@@ -774,7 +774,7 @@ class TransactionRepository extends BaseRepository
 					"Akun Tujuan" => $transaction->toAccount
 						? $transaction->toAccount->name
 						: "",
-					"Jumlah" => $transaction->amount,
+					"Jumlah" => $transaction->amount->getAmount()->toInt(),
 					"Catatan" => $transaction->notes,
 					"Metode Pembayaran" => $transaction->payment_method,
 					"Nomor Referensi" => $transaction->reference_number,
