@@ -315,9 +315,7 @@ class TransactionController extends Controller
 					break;
 			}
 
-			dd($file);
-
-			return back()->with("success", "File will be download early.");
+			return response()->download($file);
 		} catch (\Exception $e) {
 			logger()->error("Failef to export file.", [
 				"message" => $e->getMessage(),
