@@ -289,8 +289,8 @@ class TransactionController extends Controller
 			}
 
 			$tmp_dir = config("excel.temporary_files.local_path");
-			if (!file_exists($tmp_dir) || !is_readable($tmp_dir)) {
-				return back()->withErrors("Directory exports unwritable.");
+			if (!is_readable($tmp_dir)) {
+				return back()->withErrors("Directory export unwritable.");
 			}
 
 			$filename = "transactions_" . date("Ymd_His");
