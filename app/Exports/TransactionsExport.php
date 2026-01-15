@@ -11,7 +11,6 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\Exportable;
 
 class TransactionsExport implements
 	FromCollection,
@@ -21,8 +20,6 @@ class TransactionsExport implements
 	WithStyles,
 	WithTitle
 {
-	use Exportable;
-
 	// Constructor to accept filters
 	public function __construct(protected Collection $data)
 	{
