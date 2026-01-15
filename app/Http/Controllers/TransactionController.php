@@ -289,7 +289,7 @@ class TransactionController extends Controller
 			}
 
 			$tmp_dir = config("excel.temporary_files.local_path");
-			if (!file_exists($tmp_dir)) {
+			if (!is_dir($tmp_dir)) {
 				@mkdir($tmp_dir);
 			}
 
