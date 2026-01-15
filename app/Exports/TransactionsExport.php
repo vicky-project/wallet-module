@@ -48,10 +48,7 @@ class TransactionsExport implements
 	// Defines the column headings
 	public function headings(): array
 	{
-		return $this->data
-			->first()
-			->keys()
-			->toArray();
+		return array_keys($this->data->first());
 		return ["ID", "Date", "Amount", "Type", "Description", "Status"];
 	}
 
