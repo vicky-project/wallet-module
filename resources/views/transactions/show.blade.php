@@ -167,19 +167,11 @@
         <div class="detail-item">
           <div class="detail-label">Pengaturan Rutin</div>
           <div class="detail-value">
-            @php
-            $periods = [
-              'daily' => 'Harian',
-              'weekly' => 'Mingguan',
-              'monthly' => 'Bulanan',
-              'yearly' => 'Tahunan'
-            ];
-            @endphp
             {{ $transaction->recurringTemplate?->frequency?->label() }}
 
-            @if($transaction->recurringTemplate->end_date)
+            @if($transaction->recurringTemplate?->end_date)
             <span class="text-muted ms-2">
-              hingga {{ $transaction->recurringTemplate->end_date->format('d/m/Y') }}
+              hingga {{ $transaction->recurringTemplate?->end_date->format('d/m/Y') }}
             </span>
             @endif
           </div>
