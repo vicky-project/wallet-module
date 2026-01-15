@@ -32,9 +32,9 @@ class TransactionsExport implements
 	}
 
 	// Maps and formats each data row
-	public function map(array $transaction): array
+	public function map($row): array
 	{
-		return array_values($transaction);
+		return array_values($row);
 	}
 
 	// Defines the column headings
