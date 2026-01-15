@@ -290,7 +290,7 @@ class TransactionController extends Controller
 
 			$tmp_dir = config("excel.temporary_files.local_path");
 			if (!file_exists($tmp_dir) || !is_readable($tmp_dir)) {
-				mkdir($tmp_dir, 0775);
+				@mkdir($tmp_dir, 0775);
 			}
 
 			$filename = "transactions_" . date("Ymd_His");
