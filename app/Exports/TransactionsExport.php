@@ -32,24 +32,15 @@ class TransactionsExport implements
 	}
 
 	// Maps and formats each data row
-	public function map($transaction): array
+	public function map(array $transaction): array
 	{
-		dd(array_values($transaction));
-		return [
-			$transaction->id,
-			$transaction->created_at->format("Y-m-d H:i"),
-			number_format($transaction->amount, 2),
-			$transaction->type,
-			$transaction->description,
-			ucfirst($transaction->status),
-		];
+		return array_values($transaction);
 	}
 
 	// Defines the column headings
 	public function headings(): array
 	{
 		return array_keys($this->data->first());
-		return ["ID", "Date", "Amount", "Type", "Description", "Status"];
 	}
 
 	// Applies basic styling to the sheet
