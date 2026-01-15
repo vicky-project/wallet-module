@@ -365,6 +365,7 @@
                 </td>
                 <td class="text-center">
                   <div class="btn-group btn-group-sm">
+                    <a href="{{ route('apps.transactions.show', $transaction) }}" class="btn btn-outline-success"title="View"><i class="bi bi-eye"></i></i>
                     <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary" title="Edit">
                       <i class="bi bi-pencil"></i>
                     </a>
