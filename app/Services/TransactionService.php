@@ -4,7 +4,6 @@ namespace Modules\Wallet\Services;
 
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Exports\TransactionsExport;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
@@ -13,11 +12,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionService
 {
-	protected $transactionRepository;
+	public $transactionRepository;
 	protected $accountRepository;
 	protected $categoryRepository;
 	protected $budgetRepository;
@@ -324,64 +322,6 @@ class TransactionService
 	}
 
 	/**
-	 * Export transactions
-	 */
-	public function exportTransactions(
-		User $user,
-		string $format = "excel",
-		?string $startDate = null,
-		?string $endDate = null
-	): array {
-		try {
-			$transactions = $this->transactionRepository->getForExport(
-				$user->id,
-				$startDate,
-				$endDate
-			);
-
-			if ($transactions->isEmpty()) {
-				throw new \Exception("Tidak ada data transaksi untuk diekspor.");
-			}
-
-			$filename = "transactions_" . date("Ymd_His");
-
-			switch (strtolower($format)) {
-				case "csv":
-					$filename .= ".csv";
-					$file = Excel::download(
-						new TransactionsExport($transactions),
-						$filename,
-						\Maatwebsite\Excel\Excel::CSV
-					);
-					break;
-				case "excel":
-				default:
-					$filename .= ".xlsx";
-					$file = Excel::download(
-						new TransactionsExport($transactions),
-						$filename
-					);
-					break;
-			}
-
-			return [
-				"success" => true,
-				"data" => ["file" => $file, "file_name" => $filename],
-			];
-		} catch (\Exception $e) {
-			logger()->error("Export failed:", [
-				"message" => $e->getMessage(),
-				"trace" => $e->getTrace,
-			]);
-
-			return [
-				"success" => false,
-				"message" => "Export failed: " . $e->getMessage(),
-			];
-		}
-	}
-
-	/**
 	 * Import transactions
 	 */
 	public function importTransactions(
@@ -482,42 +422,6 @@ class TransactionService
 		}
 
 		return $query->sum("amount") ?? 0;
-	}
-
-	/**
-	 * Format export data
-	 */
-	private function formatExportData(
-		Collection $transactions,
-		string $format
-	): array {
-		if ($format === "json") {
-			return $transactions->toArray();
-		}
-
-		// Default: array for CSV/Excel
-		return $transactions
-			->map(function ($transaction) {
-				return [
-					"Tanggal" => $transaction["Tanggal"],
-					"Waktu" => $transaction["Waktu"],
-					"Tipe" => $transaction["Tipe"],
-					"Deskripsi" => $transaction["Deskripsi"],
-					"Kategori" => $transaction["Kategori"],
-					"Akun" => $transaction["Akun"],
-					"Akun Tujuan" => $transaction["Akun Tujuan"],
-					"Jumlah" => number_format(
-						$transaction["Jumlah"]->getAmount()->toInt(),
-						0,
-						",",
-						"."
-					),
-					"Catatan" => $transaction["Catatan"],
-					"Metode Pembayaran" => $transaction["Metode Pembayaran"],
-					"Nomor Referensi" => $transaction["Nomor Referensi"],
-				];
-			})
-			->toArray();
 	}
 
 	/**

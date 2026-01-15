@@ -5,6 +5,7 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Modules\Wallet\Exports\TransactionsExport;
 use Modules\Wallet\Http\Requests\TransactionRequest;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
@@ -12,6 +13,7 @@ use Modules\Wallet\Repositories\CategoryRepository;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Enums\TransactionType;
 use Brick\Math\RoundingMode;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -274,18 +276,38 @@ class TransactionController extends Controller
 		$user = Auth::user();
 
 		try {
-			$result = $this->transactionService->exportTransactions(
+			$format = $request->get("format", "excel");
+
+			$result = $this->transactionService->transactionRepository->getForExport(
 				$user,
-				$request->get("format", "excel"),
 				$request->get("start_date"),
 				$request->get("end_date")
 			);
 
-			if (!$result["success"]) {
-				return back()->withErrors($result["message"]);
+			if ($transactions->isEmpty()) {
+				return back()->withErrors("Tidak ada data transaksi untuk diekspor.");
 			}
 
-			return $result["data"]["file"];
+			$filename = "transactions_" . date("Ymd_His");
+
+			switch (strtolower($format)) {
+				case "csv":
+					$filename .= ".csv";
+					return Excel::download(
+						new TransactionsExport($transactions),
+						$filename,
+						\Maatwebsite\Excel\Excel::CSV
+					);
+					break;
+				case "excel":
+				default:
+					$filename .= ".xlsx";
+					return Excel::download(
+						new TransactionsExport($transactions),
+						$filename
+					);
+					break;
+			}
 		} catch (\Exception $e) {
 			return back()->withErrors($e->getMessage());
 		}
