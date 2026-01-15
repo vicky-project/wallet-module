@@ -599,7 +599,7 @@ class CategoryRepository extends BaseRepository
 							"budget" => $budget,
 							"usage_percentage" => $usage,
 							"total_spent" => $total,
-							"formatted_spent" => Helper::formatMoney($total),
+							"formatted_spent" => Helper::formatMoney($total / 100),
 							"formatted_budget_amount" => Helper::formatMoney(
 								$budget->amount->getAmount()->toInt()
 							),
