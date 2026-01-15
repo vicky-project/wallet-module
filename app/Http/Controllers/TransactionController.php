@@ -308,6 +308,11 @@ class TransactionController extends Controller
 
 			return back()->with("success", "File will be download early.");
 		} catch (\Exception $e) {
+			logger()->error("Failef to export file.", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTrace(),
+			]);
+
 			return back()->withErrors($e->getMessage());
 		}
 	}
