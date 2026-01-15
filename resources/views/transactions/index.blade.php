@@ -365,8 +365,8 @@
                 </td>
                 <td class="text-center">
                   <div class="btn-group btn-group-sm">
-                    <a href="{{ route('apps.transactions.show', $transaction) }}" class="btn btn-outline-success" title="View"><i class="bi bi-eye"></i></i>
-                    <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary" title="Edit">
+                    <a href="{{ route('apps.transactions.show', $transaction) }}" class="btn btn-outline-success p-1" title="View"><i class="bi bi-eye"></i></i>
+                    <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary p-1" title="Edit">
                       <i class="bi bi-pencil"></i>
                     </a>
                     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $transaction->id }}" title="Hapus">
