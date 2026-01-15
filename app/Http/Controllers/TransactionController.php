@@ -315,7 +315,7 @@ class TransactionController extends Controller
 					break;
 			}
 
-			return response($file);
+			return response()->stream($file);
 		} catch (\Exception $e) {
 			logger()->error("Failef to export file.", [
 				"message" => $e->getMessage(),
