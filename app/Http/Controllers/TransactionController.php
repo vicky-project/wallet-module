@@ -302,7 +302,7 @@ class TransactionController extends Controller
 			switch (strtolower($format)) {
 				case "csv":
 					$filename .= ".csv";
-					Excel::download(
+					$file = Excel::download(
 						new TransactionsExport($result),
 						$filename,
 						\Maatwebsite\Excel\Excel::CSV
@@ -311,9 +311,11 @@ class TransactionController extends Controller
 				case "excel":
 				default:
 					$filename .= ".xlsx";
-					Excel::download(new TransactionsExport($result), $filename);
+					$file = Excel::download(new TransactionsExport($result), $filename);
 					break;
 			}
+
+			dd($file);
 
 			return back()->with("success", "File will be download early.");
 		} catch (\Exception $e) {
