@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Facade\Excel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionService
 {
