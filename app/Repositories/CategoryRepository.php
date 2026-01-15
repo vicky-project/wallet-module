@@ -591,7 +591,7 @@ class CategoryRepository extends BaseRepository
 
 						$usage =
 							$budget && $budget->amount->getAmount()->toInt() > 0
-								? ($total / $budget->amount->getAmount()->toInt()) * 100
+								? ($total / $budget->amount->getMinorAmount()->toInt()) * 100
 								: 0;
 
 						return [
