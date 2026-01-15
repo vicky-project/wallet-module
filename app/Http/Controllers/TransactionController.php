@@ -316,7 +316,7 @@ class TransactionController extends Controller
 					break;
 			}
 
-			return Storage::download($file->getFile());
+			dd(Storage::url($file->getFile()));
 		} catch (\Exception $e) {
 			logger()->error("Failef to export file.", [
 				"message" => $e->getMessage(),
