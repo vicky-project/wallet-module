@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Modules\Wallet\Exports\TransactionsExport;
 use Modules\Wallet\Http\Requests\TransactionRequest;
+use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Services\TransactionService;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
@@ -139,6 +140,11 @@ class TransactionController extends Controller
 				->withInput()
 				->withErrors($e->getMessage);
 		}
+	}
+
+	public function show(Request $request, Transaction $transaction)
+	{
+		return view("wallet::transactions.show", compact("transaction"));
 	}
 
 	/**
