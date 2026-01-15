@@ -33,4 +33,13 @@ enum TransactionType: string
 			self::TRANSFER => "primary",
 		};
 	}
+
+	public function textColor(): string
+	{
+		return match ($this) {
+			self::INCOME => "text-income",
+			self::EXPENSE => "text-expense",
+			self::TRANSFER => "text-transfer",
+		};
+	}
 }

@@ -76,18 +76,18 @@
     <!-- Transaction Header -->
     <div class="card transaction-detail-card mb-4">
       <div class="card-body text-center py-4">
-        <div class="transaction-icon-large {{ $transaction->type == TransactionType::INCOME ? 'bg-income' : 'bg-expense' }} mb-3">
-          <i class="bi {{ $transaction->type == TransactionType::INCOME ? 'bi-arrow-up-circle text-income' : 'bi-arrow-down-circle text-expense' }}"></i>
+        <div class="transaction-icon-large bg-{{ $transaction->type->color() }} mb-3">
+          <i class="bi {{ $transaction->type->icon() }} {{ $transaction->type->textColor() }}"></i>
         </div>
 
-        <h2 class="{{ $transaction->type == TransactionType::INCOME ? 'text-income' : 'text-expense' }} mb-2">
+        <h2 class="{{ $transaction->type->textColor() }} mb-2">
           {{ $transaction->type == TransactionType::INCOME ? '+' : '-' }}{{ $transaction->amount->formatTo('id_ID') }}
         </h2>
 
         <h4 class="mb-3">{{ $transaction->title }}</h4>
                     
         <div class="d-flex justify-content-center gap-2 mb-3">
-          <span class="badge {{ $transaction->type == TransactionType::INCOME ? 'bg-income' : 'bg-expense' }} tag-badge">
+          <span class="badge bg-{{ $transaction->type->value }} tag-badge">
             {{ $transaction->type == TransactionType::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
           </span>
 
@@ -143,16 +143,7 @@
             <div class="col-md-6">
               <div class="detail-label">Metode Pembayaran</div>
               <div class="detail-value">
-                @php
-                $paymentMethods = [
-                  'cash' => 'Tunai',
-                  'bank_transfer' => 'Transfer Bank',
-                  'credit_card' => 'Kartu Kredit',
-                  'e_wallet' => 'E-Wallet',
-                  'other' => 'Lainnya'
-                ];
-                @endphp
-                {{ $paymentMethods[$transaction->payment_method] ?? $transaction->payment_method }}
+                {{ $transaction->payment_method ?? $transaction->payment_method->label() }}
               </div>
             </div>
             <div class="col-md-6">
@@ -184,11 +175,11 @@
               'yearly' => 'Tahunan'
             ];
             @endphp
-            {{ $periods[$transaction->recurring_period] ?? $transaction->recurring_period }}
+            {{ $transaction->recurringTemplate->exist() ? $transaction->recurringTemplate->frequency->label() : 'No recurring' }}
 
-            @if($transaction->recurring_end_date)
+            @if($transaction->recurringTemplate->end_date)
             <span class="text-muted ms-2">
-              hingga {{ $transaction->recurring_end_date->format('d/m/Y') }}
+              hingga {{ $transaction->recurringTemplate->end_date->format('d/m/Y') }}
             </span>
             @endif
           </div>
