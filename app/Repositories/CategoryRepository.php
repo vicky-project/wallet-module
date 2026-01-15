@@ -600,8 +600,11 @@ class CategoryRepository extends BaseRepository
 							"usage_percentage" => $usage,
 							"total_spent" => $total,
 							"formatted_spent" => Helper::formatMoney($total),
-							"formatted_budget_amount" => Helper::formatMoney($budget->amount),
-							"is_exceeded" => $total > $budget->amount->getAmount()->toInt(),
+							"formatted_budget_amount" => Helper::formatMoney(
+								$budget->amount->getAmount()->toInt()
+							),
+							"is_exceeded" =>
+								$total > $budget->amount->getMinorAmount()->toInt(),
 						];
 					})
 					->filter(
