@@ -767,7 +767,7 @@ class TransactionRepository extends BaseRepository
 				return [
 					"Tanggal" => $transaction->transaction_date->format("d/m/Y"),
 					"Waktu" => $transaction->transaction_date->format("H:i"),
-					"Tipe" => $transaction->type,
+					"Tipe" => $transaction->type->name,
 					"Deskripsi" => $transaction->description,
 					"Kategori" => $transaction->category->name,
 					"Akun" => $transaction->account->name,
