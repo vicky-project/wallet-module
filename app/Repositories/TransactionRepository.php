@@ -744,8 +744,8 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function getForExport(
 		int $userId,
-		string $startDate = null,
-		string $endDate = null
+		?string $startDate = null,
+		?string $endDate = null
 	): Collection {
 		$query = Transaction::with(["account", "toAccount", "category"])->where(
 			"user_id",

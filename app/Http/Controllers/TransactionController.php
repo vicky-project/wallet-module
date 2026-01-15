@@ -279,7 +279,7 @@ class TransactionController extends Controller
 			$format = $request->get("format", "excel");
 
 			$result = $this->transactionService->transactionRepository->getForExport(
-				$user,
+				$user->id,
 				$request->get("start_date"),
 				$request->get("end_date")
 			);
