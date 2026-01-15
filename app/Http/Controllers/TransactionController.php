@@ -284,7 +284,7 @@ class TransactionController extends Controller
 				$request->get("end_date")
 			);
 
-			if ($transactions->isEmpty()) {
+			if ($result->isEmpty()) {
 				return back()->withErrors("Tidak ada data transaksi untuk diekspor.");
 			}
 
@@ -294,7 +294,7 @@ class TransactionController extends Controller
 				case "csv":
 					$filename .= ".csv";
 					Excel::download(
-						new TransactionsExport($transactions),
+						new TransactionsExport($result),
 						$filename,
 						\Maatwebsite\Excel\Excel::CSV
 					);
@@ -302,7 +302,7 @@ class TransactionController extends Controller
 				case "excel":
 				default:
 					$filename .= ".xlsx";
-					Excel::download(new TransactionsExport($transactions), $filename);
+					Excel::download(new TransactionsExport($result), $filename);
 					break;
 			}
 
