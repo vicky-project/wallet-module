@@ -343,7 +343,7 @@ class TransactionRepository extends BaseRepository
 					TransactionType::TRANSFER,
 				];
 				foreach ($types as $type) {
-					if (!isset($results[$type])) {
+					if (!isset($results[$type->value])) {
 						$results[$type] = 0;
 					}
 				}
