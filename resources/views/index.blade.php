@@ -223,7 +223,7 @@
                 <span class="badge bg-primary">{{ $dashboardData['budget_stats']['total_budgets'] ?? 0 }} Budget</span>
             </div>
             <div class="card-body">
-                @if(isset($dashboardData['budget_stats']) && $dashboardData['budget_stats']['total_budgets'] > 0)
+                @if(isset($dashboardData['budget_stats']) && $dashboardData['budget_stats']['total'] > 0)
                     <div class="row mb-3">
                         <div class="col-6">
                             <small class="text-muted d-block">Total Budget</small>
