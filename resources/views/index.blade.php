@@ -325,7 +325,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mt-1">
                                         <small class="text-muted">
-                                            {{ ucfirst($account['type'] ?? 'cash') }}
+                                            {{ ucfirst($account['type']->name ?? 'cash') }}
                                             @if($account['is_default'] ?? false)
                                                 <span class="badge bg-info ms-2">Utama</span>
                                             @endif
