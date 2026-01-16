@@ -214,12 +214,16 @@ class CategoryRepository extends BaseRepository
 
 						if ($activeBudget) {
 							$category->budget_usage =
-								$activeBudget->amount > 0
-									? ($monthlyTotal / $activeBudget->amount) * 100
+								$activeBudget->amount->getAmount()->toInt() > 0
+									? ($monthlyTotal /
+											$activeBudget->amount->getAmount()->toInt()) *
+										100
 									: 0;
 							$category->has_budget_exceeded =
-								$monthlyTotal > $activeBudget->amount;
-							$category->budget_amount = $activeBudget->amount;
+								$monthlyTotal > $activeBudget->amount->getAmount()->toInt();
+							$category->budget_amount = $activeBudget->amount
+								->getAmount()
+								->toInt();
 						} else {
 							$category->budget_usage = 0;
 							$category->has_budget_exceeded = false;
