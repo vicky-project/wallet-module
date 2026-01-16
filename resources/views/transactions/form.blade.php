@@ -4,6 +4,7 @@
 
 @use('Modules\Wallet\Enums\TransactionType')
 @use('Modules\Wallet\Enums\PaymentMethod')
+@use('Modules\Wallet\Enums\RecurringFreq')
 
 @push('styles')
 <style>
@@ -284,6 +285,49 @@
                 <small class="text-muted">Centang jika transaksi ini terjadi secara berkala</small>
               </div>
             </div>
+            <div id="recurringOptions" style="display: none;margin-top: 1rem;">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <label for="recurring_period" class="form-label">Period</label>
+                    <select class="form-select" name="recurring_period" id="recurring_period">
+                      <option value="">Pilih Period</option>
+                      @foreach(RecurringFreq::cases() as $freq)
+                        <option value="{{ $freq->value }}" @selected(old('recurring_period') == $freq->value)>{{ $freq->label() }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <label for="interval">Interval</label>
+                    <input type="number" class="form-control" name="interval" id="interval" value="1" min="1" value="{{ old('interval') }}">
+                    <small class="form-text text-muted">Repeat every X frequency units.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <label for="start_date">Tanggal Mulai</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date">
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                    <label for="end_date" class="form-label">Tanggal Berakhir (Optional)</label>
+                    <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('recurring_end_date') }}">
+                    <small class="form-text text-muted">Biarkan kosong jika tidak ada tanggal berakhir</small>
+                  </div>
+                </div>
+              </div>
+              <div id="frequencyFields"></div>
+              <div class="form-group">
+                <label for="remaining_occurrences">Number of Occurrences (Optional)</label>
+                <input type="number" class="form-control" id="remaining_occurrences" name="remaining_occurrences" min="1">
+                <small class="form-text text-muted">Leave empty for unlimited occurrences</small>
+              </div>
+            </div>
           </div>
                     
           <!-- Submit Buttons -->
@@ -361,6 +405,66 @@
         const amountHelp = document.getElementById('amountHelp');
         const budgetInfo = document.getElementById('budgetInfo');
         const budgetMessage = document.getElementById('budgetMessage');
+        
+        // Toggle recurring options
+        const isRecurring = document.getElementById('is_recurring');
+        const recurringOptions = document.getElementById('recurringOptions');
+        const frequencySelect = document.getElementById('frequency');
+    
+        isRecurring.addEventListener('change', function () {
+          recurringOptions.style.display = this.checked ? 'block' : 'none';
+        });
+    
+        frequencySelect.addEventListener('change', updateFrequencyFields);
+        updateFrequencyFields();
+        
+        function updateFrequencyFields() {
+    const frequency = frequencySelect.value;
+    const frequencyFields = document.getElementById('frequencyFields');
+        
+    let html = '';
+        
+    switch(frequency) {
+      case 'weekly':
+        html = `
+          <div class="form-group">
+            <label for="day_of_week">Day of Week</label>
+            <select name="day_of_week" id="day_of_week" class="form-control">
+              <option value="0">Sunday</option>
+              <option value="1">Monday</option>
+              <option value="2">Tuesday</option>
+              <option value="3">Wednesday</option>
+              <option value="4">Thursday</option>
+              <option value="5">Friday</option>
+              <option value="6">Saturday</option>
+            </select>
+          </div>
+        `;
+        break;
+                
+      case 'monthly':
+      case 'quarterly':
+        html = `
+          <div class="form-group">
+            <label for="day_of_month">Day of Month</label>
+            <input type="number" name="day_of_month" id="day_of_month" class="form-control" min="1" max="31">
+          </div>
+        `;
+        break;
+                
+      case 'custom':
+        html = `
+          <div class="form-group">
+            <label for="custom_schedule">Custom Schedule (YYYY-MM-DD)</label>
+            <textarea name="custom_schedule" id="custom_schedule" class="form-control" rows="3" placeholder="Enter dates separated by commas or new lines&#10;Example: 2024-01-15, 2024-02-15, 2024-03-15"></textarea>
+            <small class="form-text text-muted">Enter specific dates for the transaction to occur</small>
+          </div>
+        `;
+        break;
+    }
+        
+    frequencyFields.innerHTML = html;
+  }
         
         // Transaction type selection
         typeBadges.forEach(badge => {
