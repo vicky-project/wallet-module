@@ -339,7 +339,7 @@
                                             @elseif(($account['net_flow']->getAmount()->toInt() ?? 0) < 0)
                                                 <span class="trend-down">
                                                     <i class="bi bi-arrow-down"></i> 
-                                                    <span class="currency">{{ abs($account['net_flow']) }}</span>
+                                                    <span class="currency">{{ abs($account['net_flow']->getAmount()->toInt()) }}</span>
                                                 </span>
                                             @endif
                                         </small>
