@@ -323,7 +323,8 @@ class TransactionRepository extends BaseRepository
 			$cacheKey,
 			config("wallet.cache_ttl"),
 			function () use ($userId, $startDate, $endDate) {
-				$results = Transaction::where("user_id", $userId)
+				$results = \DB::table("transactions")
+					->where("user_id", $userId)
 					->whereBetween("transaction_date", [$startDate, $endDate])
 					->select(
 						"type",
