@@ -4,7 +4,7 @@ namespace Modules\Wallet\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Schedule;
+use Illuminate\Support\Facades\Schedule;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -58,9 +58,8 @@ class WalletServiceProvider extends ServiceProvider
 	protected function registerCommandSchedules(): void
 	{
 		$this->app->booted(function () {
-			$schedule = $this->app->make(Schedule::class);
-			$schedule
-				->command("app:process-recurring")
+			//$schedule = $this->app->make(Schedule::class);
+			Schedule::command("app:process-recurring")
 				->dailyAt("00:01")
 				->withoutOverlapping();
 		});
