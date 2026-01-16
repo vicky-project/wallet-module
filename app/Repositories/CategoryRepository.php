@@ -721,7 +721,7 @@ class CategoryRepository extends BaseRepository
 	private function getActiveBudgetForPeriod(
 		Category $category,
 		int $userId,
-		string $periodType,
+		string|PeriodType $periodType,
 		int $periodValue,
 		int $year,
 		?Carbon $startDate = null,
