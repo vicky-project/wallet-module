@@ -322,7 +322,7 @@
                 </div>
               </div>
               <div id="frequencyFields"></div>
-              <div class="form-group">
+              <div class="form-group mt-3">
                 <label for="remaining_occurrences">Number of Occurrences (Optional)</label>
                 <input type="number" class="form-control" id="remaining_occurrences" name="remaining_occurrences" min="1">
                 <small class="form-text text-muted">Leave empty for unlimited occurrences</small>
