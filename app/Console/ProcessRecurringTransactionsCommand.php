@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Modules\Wallet\Services\RecurringTransactionService;
 use Illuminate\Support\Facades\Log;
 
-class ProcessRecurringTransactions extends Command
+class ProcessRecurringTransactionsCommand extends Command
 {
 	protected $signature = 'app:process-recurring {--test : Test mode, don\'t actually create transactions} {--days= : Show upcoming transactions for X days}';
 
