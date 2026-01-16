@@ -14,6 +14,10 @@ Route::middleware(["auth"])
 		Route::get("preview", [DashboardController::class, "index"])->name(
 			"financial"
 		);
+		Route::get("preview/refresh", [
+			DashboardController::class,
+			"refresh",
+		])->name("refresh");
 
 		// Account Routes
 		Route::put("accounts/{account}/set-default", [

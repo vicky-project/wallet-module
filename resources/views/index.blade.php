@@ -285,7 +285,7 @@
                     <div class="text-center py-4">
                         <i class="bi bi-piggy-bank display-4 text-muted"></i>
                         <p class="text-muted mt-3">Belum ada budget yang diatur</p>
-                        <a href="{{ route('wallet.budgets.create') }}" class="btn btn-sm btn-outline-primary">Buat Budget</a>
+                        <a href="{{ route('apps.budgets.create') }}" class="btn btn-sm btn-outline-primary">Buat Budget</a>
                     </div>
                 @endif
             </div>
@@ -302,7 +302,7 @@
                 <h5 class="card-title mb-0">Akun Saya</h5>
                 <div>
                     <span class="badge bg-info me-2">{{ $dashboardData['account_stats']['active'] ?? 0 }} Aktif</span>
-                    <a href="{{ route('wallet.accounts.create') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-plus"></i> Tambah
                     </a>
                 </div>
@@ -428,7 +428,7 @@
                 <h5 class="card-title mb-0">Transaksi Terbaru</h5>
                 <div>
                     <span class="badge bg-secondary me-2">{{ $dashboardData['transaction_stats']['total_this_month'] ?? 0 }} Bulan Ini</span>
-                    <a href="{{ route('wallet.transactions.create') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('apps.transactions.create') }}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-plus-circle"></i> Transaksi Baru
                     </a>
                 </div>
@@ -694,7 +694,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Auto-refresh dashboard setiap 5 menit
     setInterval(() => {
-        fetch('/wallet/dashboard/refresh')
+        fetch('{{ config("app.url") }}/apps/preview/refresh')
             .then(response => response.json())
             .then(data => {
                 // Update statistik
