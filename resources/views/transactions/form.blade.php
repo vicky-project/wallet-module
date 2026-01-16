@@ -289,8 +289,8 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
-                    <label for="recurring_period" class="form-label">Period</label>
-                    <select class="form-select" name="recurring_period" id="recurring_period">
+                    <label for="frequency" class="form-label">Period</label>
+                    <select class="form-select" name="frequency" id="frequency">
                       <option value="">Pilih Period</option>
                       @foreach(RecurringFreq::cases() as $freq)
                         <option value="{{ $freq->value }}" @selected(old('recurring_period') == $freq->value)>{{ $freq->label() }}</option>
