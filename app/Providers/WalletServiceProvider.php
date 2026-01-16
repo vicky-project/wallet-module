@@ -56,10 +56,13 @@ class WalletServiceProvider extends ServiceProvider
 	 */
 	protected function registerCommandSchedules(): void
 	{
-		// $this->app->booted(function () {
-		//     $schedule = $this->app->make(Schedule::class);
-		//     $schedule->command('inspire')->hourly();
-		// });
+		$this->app->booted(function () {
+			//     $schedule = $this->app->make(Schedule::class);
+			$schedule
+				->command("app:process-recurring")
+				->dailyAt("00:01")
+				->withoutOverlapping();
+		});
 	}
 
 	/**

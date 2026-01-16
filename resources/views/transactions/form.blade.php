@@ -419,52 +419,52 @@
         updateFrequencyFields();
         
         function updateFrequencyFields() {
-    const frequency = frequencySelect.value;
-    const frequencyFields = document.getElementById('frequencyFields');
+          const frequency = frequencySelect.value;
+          const frequencyFields = document.getElementById('frequencyFields');
         
-    let html = '';
+          let html = '';
         
-    switch(frequency) {
-      case 'weekly':
-        html = `
-          <div class="form-group">
-            <label for="day_of_week">Day of Week</label>
-            <select name="day_of_week" id="day_of_week" class="form-control">
-              <option value="0">Sunday</option>
-              <option value="1">Monday</option>
-              <option value="2">Tuesday</option>
-              <option value="3">Wednesday</option>
-              <option value="4">Thursday</option>
-              <option value="5">Friday</option>
-              <option value="6">Saturday</option>
-            </select>
-          </div>
-        `;
-        break;
+          switch(frequency) {
+            case 'weekly':
+              html = `
+                <div class="form-group">
+                  <label for="day_of_week">Day of Week</label>
+                  <select name="day_of_week" id="day_of_week" class="form-control">
+                    <option value="0">Sunday</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                  </select>
+                </div>
+              `;
+              break;
                 
-      case 'monthly':
-      case 'quarterly':
-        html = `
-          <div class="form-group">
-            <label for="day_of_month">Day of Month</label>
-            <input type="number" name="day_of_month" id="day_of_month" class="form-control" min="1" max="31">
-          </div>
-        `;
-        break;
+            case 'monthly':
+            case 'quarterly':
+              html = `
+                <div class="form-group">
+                  <label for="day_of_month">Day of Month</label>
+                  <input type="number" name="day_of_month" id="day_of_month" class="form-control" min="1" max="31">
+                </div>
+                `;
+              break;
                 
-      case 'custom':
-        html = `
-          <div class="form-group">
-            <label for="custom_schedule">Custom Schedule (YYYY-MM-DD)</label>
-            <textarea name="custom_schedule" id="custom_schedule" class="form-control" rows="3" placeholder="Enter dates separated by commas or new lines&#10;Example: 2024-01-15, 2024-02-15, 2024-03-15"></textarea>
-            <small class="form-text text-muted">Enter specific dates for the transaction to occur</small>
-          </div>
-        `;
-        break;
-    }
+            case 'custom':
+              html = `
+                <div class="form-group">
+                  <label for="custom_schedule">Custom Schedule (YYYY-MM-DD)</label>
+                  <textarea name="custom_schedule" id="custom_schedule" class="form-control" rows="3" placeholder="Enter dates separated by commas or new lines&#10;Example: 2024-01-15, 2024-02-15, 2024-03-15"></textarea>
+                  <small class="form-text text-muted">Enter specific dates for the transaction to occur</small>
+                </div>
+                `;
+              break;
+          }
         
-    frequencyFields.innerHTML = html;
-  }
+          frequencyFields.innerHTML = html;
+        }
         
         // Transaction type selection
         typeBadges.forEach(badge => {
