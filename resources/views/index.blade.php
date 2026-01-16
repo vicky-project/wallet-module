@@ -331,7 +331,7 @@
                                             @endif
                                         </small>
                                         <small class="text-muted">
-                                            @if(($account['net_flow'] ?? 0) > 0)
+                                            @if(($account['net_flow']->getAmount()->toInt() ?? 0) > 0)
                                                 <span class="trend-up">
                                                     <i class="bi bi-arrow-up"></i> 
                                                     <span class="currency">{{ $account['net_flow'] }}</span>
