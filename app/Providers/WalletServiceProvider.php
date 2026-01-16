@@ -46,7 +46,9 @@ class WalletServiceProvider extends ServiceProvider
 	 */
 	protected function registerCommands(): void
 	{
-		// $this->commands([]);
+		$this->commands([
+			\Modules\Wallet\Console\ProcessRecurringTransactions::class,
+		]);
 	}
 
 	/**
