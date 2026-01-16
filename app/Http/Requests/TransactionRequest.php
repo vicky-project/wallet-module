@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Http\Requests;
 
 use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Enums\RecurringFreq;
 use Modules\Wallet\Constants\Permissions;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,6 +40,34 @@ class TransactionRequest extends FormRequest
 		if ($this->type === TransactionType::TRANSFER->value) {
 			$rules["to_account_id"] =
 				"required|exists:accounts,id|different:account_id";
+		}
+
+		if ($this->boolean("is_recurring")) {
+			$rules["frequency"] = ["required", Rule::enum(RecurringFreq::class)];
+			$rules["interval"] = "integer|min:1";
+			$rules["start_date"] = "required|date";
+			$rules["end_date"] = "nullable|date|after:start_date";
+			$rules["remaining_occurrences"] = "nullable|integer|min:0";
+
+			$frequency = $this->input("frequency");
+
+			if ($frequency === RecurringFreq::WEEKLY->value) {
+				$rules["day_of_week"] = "nullable|integer|between:0,6";
+			}
+
+			if (
+				in_array($frequency, [
+					RecurringFreq::MONTHLY->value,
+					RecurringFreq::QUARTERLY->value,
+				])
+			) {
+				$rules["day_of_month"] = "nullable|integer|between:1,31";
+			}
+
+			if ($frequency === RecurringFreq::CUSTOM->value) {
+				$rules["custom_schedule"] = "required|array|min:1";
+				$rules["custom_schedule.*"] = "date";
+			}
 		}
 
 		if ($this->isMethod("PUT") || $this->isMethod("PATCH")) {

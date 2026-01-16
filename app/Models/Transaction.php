@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Modules\Wallet\Casts\MoneyCast;
 use Modules\Wallet\Enums\TransactionType;
@@ -119,27 +120,27 @@ class Transaction extends Model
 	}
 
 	// Relationships
-	public function user()
+	public function user(): BelongsTo
 	{
 		return $this->belongsTo(config("auth.providers.users.model"));
 	}
 
-	public function account()
+	public function account(): BelongsTo
 	{
 		return $this->belongsTo(Account::class);
 	}
 
-	public function toAccount()
+	public function toAccount(): BelongsTo
 	{
 		return $this->belongsTo(Account::class, "to_account_id");
 	}
 
-	public function category()
+	public function category(): BelongsTo
 	{
 		return $this->belongsTo(Category::class);
 	}
 
-	public function recurringTemplate()
+	public function recurringTemplate(): BelongsTo
 	{
 		return $this->belongsTo(
 			RecurringTransaction::class,
@@ -174,6 +175,27 @@ class Transaction extends Model
 		return $query->where(function ($q) use ($accountId) {
 			$q->where("account_id", $accountId)->orWhere("to_account_id", $accountId);
 		});
+	}
+
+	public function scopeRecurring($query)
+	{
+		return $query->where("is_recurring", true);
+	}
+
+	public function scopeNonRecurring($query)
+	{
+		return $query->where("is_recurring", false);
+	}
+
+	public function scopeFromRecurringTemplate($query, $templateId)
+	{
+		return $query->where("recurring_template_id", $templateId);
+	}
+
+	// Helper methods
+	public function isFromRecurring(): bool
+	{
+		return !is_null($this->recurring_template_id);
 	}
 
 	// Methods

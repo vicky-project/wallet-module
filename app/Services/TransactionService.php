@@ -8,6 +8,7 @@ use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
 use Modules\Wallet\Repositories\BudgetRepository;
+use Modules\Wallet\Models\RecurringTransaction;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +78,12 @@ class TransactionService
 			// Add user_id
 			$data["user_id"] = $user->id;
 
+			// Check is recurring
+			if (isset($data["is_recurring"]) && $data["is_recurring"]) {
+				$recurringTemplate = $this->createRecurringTemplate($data);
+				$data["is_recurring"] = true;
+			}
+
 			// Create transaction
 			$transaction = $this->transactionRepository->createTransaction($data);
 
@@ -95,6 +102,41 @@ class TransactionService
 				"message" => $e->getMessage(),
 			];
 		}
+	}
+
+	private function createRecurringTemplate(array $data): RecurringTransaction
+	{
+		$validated = $this->validateRecurringData($data);
+
+		// Set default values
+		$defaults = [
+			"interval" => 1,
+			"is_active" => true,
+			"day_of_month" => null,
+			"day_of_week" => null,
+			"custom_schedule" => null,
+			"remaining_occurrences" => null,
+		];
+
+		$templateData = array_merge($defaults, $validated);
+		$templateData["user_id"] = $data["user_id"];
+
+		// Calculate remaining occurrences if end_date is provided
+		if (
+			isset($templateData["end_date"]) &&
+			!isset($templateData["remaining_occurrences"])
+		) {
+			$templateData[
+				"remaining_occurrences"
+			] = $this->calculateRemainingOccurrences(
+				Carbon::parse($templateData["start_date"]),
+				Carbon::parse($templateData["end_date"]),
+				$templateData["frequency"],
+				$templateData["interval"]
+			);
+		}
+
+		return RecurringTransaction::create($templateData);
 	}
 
 	/**
@@ -134,6 +176,10 @@ class TransactionService
 				if (!$category || !$category->is_active) {
 					throw new \Exception("Kategori tidak ditemukan atau tidak aktif.");
 				}
+			}
+
+			if ($transaction->isFromRecurring() && isset($data["update_future"])) {
+				return $this->handleRecurringUpdate($transaction, $data);
 			}
 
 			// Update transaction
@@ -791,5 +837,101 @@ class TransactionService
 				"message" => $e->getMessage(),
 			];
 		}
+	}
+
+	private function validateRecurringData(array $data): array
+	{
+		$validated = [
+			"account_id" => $data["account_id"],
+			"category_id" => $data["category_id"],
+			"type" => $data["type"],
+			"amount" => $data["amount"],
+			"description" => $data["description"],
+			"frequency" => $data["frequency"],
+			"interval" => $data["interval"] ?? 1,
+			"start_date" => $data["start_date"] ?? now(),
+			"end_date" => $data["end_date"] ?? null,
+		];
+
+		// Frequency-specific validations
+		switch ($data["frequency"]) {
+			case RecurringFreq::WEEKLY:
+				$validated["day_of_week"] =
+					$data["day_of_week"] ??
+					Carbon::parse($validated["start_date"])->dayOfWeek;
+				$validated["day_of_month"] = null;
+				break;
+
+			case RecurringFreq::MONTHLY:
+				$validated["day_of_month"] =
+					$data["day_of_month"] ?? Carbon::parse($validated["start_date"])->day;
+				$validated["day_of_week"] = null;
+				break;
+
+			case RecurringFreq::QUARTERLY:
+				$validated["day_of_month"] =
+					$data["day_of_month"] ?? Carbon::parse($validated["start_date"])->day;
+				$validated["day_of_week"] = null;
+				break;
+
+			case RecurringFreq::CUSTOM:
+				$validated["custom_schedule"] = $data["custom_schedule"];
+				$validated["day_of_month"] = null;
+				$validated["day_of_week"] = null;
+				break;
+
+			default:
+				$validated["day_of_month"] = null;
+				$validated["day_of_week"] = null;
+				break;
+		}
+
+		return $validated;
+	}
+
+	private function calculateRemainingOccurrences(
+		Carbon $startDate,
+		Carbon $endDate,
+		RecurringFreq $frequency,
+		int $interval
+	): int {
+		return match ($frequency) {
+			RecurringFreq::DAILY => $startDate->diffInDays($endDate) / $interval,
+			RecurringFreq::WEEKLY => $startDate->diffInWeeks($endDate) / $interval,
+			RecurringFreq::MONTHLY => $startDate->diffInMonths($endDate) / $interval,
+			RecurringFreq::QUARTERLY => $startDate->diffInQuarters($endDate) /
+				$interval,
+			RecurringFreq::YEARLY => $startDate->diffInYears($endDate) / $interval,
+			default => 0,
+		};
+	}
+
+	private function handleRecurringUpdate(
+		Transaction $transaction,
+		array $data
+	): bool {
+		$template = $transaction->recurringTemplate;
+
+		if (isset($data["update_future"]) && $data["update_future"] === "all") {
+			// Update the template and all future transactions
+			$template->update([
+				"amount" => $data["amount"] ?? $template->amount,
+				"description" => $data["description"] ?? $template->description,
+				// ... other fields
+			]);
+
+			// Update all future transactions from this template
+			$this->transactionRepository
+				->getModel()
+				->where("recurring_template_id", $template->id)
+				->where("transaction_date", ">=", $transaction->transaction_date)
+				->update([
+					"amount" => $data["amount"] ?? $transaction->amount,
+					"description" => $data["description"] ?? $transaction->description,
+				]);
+		}
+
+		// Update current transaction
+		return $transaction->update($data);
 	}
 }

@@ -61,6 +61,30 @@ class RecurringTransaction extends Model
 		return $this->hasMany(Transaction::class, "recurring_template_id");
 	}
 
+	public function getNextDueDate(): ?Carbon
+	{
+		if (!$this->is_active) {
+			return null;
+		}
+
+		$today = now();
+		$startDate = Carbon::parse($this->start_date);
+
+		// Jika belum pernah diproses, mulai dari start_date
+		$lastDate = $this->last_processed
+			? Carbon::parse($this->last_processed)
+			: $startDate->copy()->subDay();
+
+		return match ($this->frequency) {
+			RecurringFreq::DAILY => $lastDate->addDays($this->interval),
+			RecurringFreq::WEEKLY => $lastDate->addWeeks($this->interval),
+			RecurringFreq::MONTHLY => $lastDate->addMonths($this->interval),
+			RecurringFreq::QUARTERLY => $lastDate->addMonths(3 * $this->interval),
+			RecurringFreq::YEARLY => $lastDate->addYears($this->interval),
+			default => null,
+		};
+	}
+
 	// Methods for generating transactions
 	public function shouldProcessToday()
 	{
@@ -137,6 +161,12 @@ class RecurringTransaction extends Model
 		return false;
 	}
 
+	private function checkCustomSchedule(Carbon $date): bool
+	{
+		$schedule = $this->custom_schedule ?? [];
+		return in_array($date->format("Y-m-d"), $schedule);
+	}
+
 	public function process()
 	{
 		$transaction = Transaction::create([
@@ -158,5 +188,29 @@ class RecurringTransaction extends Model
 		$this->save();
 
 		return $transaction;
+	}
+
+	public function getFrequencyLabel(): string
+	{
+		return $this->frequency->label();
+	}
+
+	public function getNextOccurrenceText(): string
+	{
+		$nextDate = $this->getNextDueDate();
+
+		if (!$nextDate) {
+			return "Tidak aktif";
+		}
+
+		if ($nextDate->isToday()) {
+			return "Hari ini";
+		}
+
+		if ($nextDate->isTomorrow()) {
+			return "Besok";
+		}
+
+		return $nextDate->format("d M Y");
 	}
 }
