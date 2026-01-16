@@ -296,11 +296,14 @@ class DashboardController extends Controller
 
 		foreach ($accounts as $account) {
 			// Alert untuk saldo rendah
-			if ($account->balance < 100000 && $account->type !== "liability") {
+			if (
+				$account->balance->getAmount()->toInt() < 100000 &&
+				$account->type !== "liability"
+			) {
 				$alerts[] = [
 					"message" =>
 						"Saldo {$account->name} rendah: " .
-						number_format($account->balance) .
+						number_format($account->balance->getAmount()->toInt()) .
 						" IDR",
 					"level" => "warning",
 				];
