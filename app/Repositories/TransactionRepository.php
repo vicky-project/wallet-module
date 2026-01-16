@@ -344,7 +344,7 @@ class TransactionRepository extends BaseRepository
 				];
 				foreach ($types as $type) {
 					if (!isset($results[$type->value])) {
-						$results[$type] = 0;
+						$results[$type->value] = 0;
 					}
 				}
 
