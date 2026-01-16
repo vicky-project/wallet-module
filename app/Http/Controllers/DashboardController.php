@@ -129,7 +129,7 @@ class DashboardController extends Controller
 			"account_alerts" => $accountAlerts,
 		];
 
-		return view("wallet::dashboard.index", compact("dashboardData"));
+		return view("wallet::index", compact("dashboardData"));
 	}
 
 	public function refresh()
