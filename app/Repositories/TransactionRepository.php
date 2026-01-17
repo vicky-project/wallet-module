@@ -76,7 +76,7 @@ class TransactionRepository extends BaseRepository
 						)
 					)
 					->setBindings([
-						$params["now"]->toDateString(),
+						$params["now"]->toDateTimeString(),
 						$params["now"],
 						$params["now"],
 						$params["now"],
