@@ -645,63 +645,6 @@ class TransactionRepository extends BaseRepository
 	}
 
 	/**
-	 * Get transaction statistics
-	 */
-	public function getTransactionStats(int $userId): array
-	{
-		$cacheKey = Helper::generateCacheKey("transaction_stats", [
-			"user_id" => $userId,
-		]);
-
-		return Cache::remember(
-			$cacheKey,
-			config("wallet.cache_ttl"),
-			function () use ($userId) {
-				$now = Carbon::now();
-				$startOfMonth = $now->copy()->startOfMonth();
-				$endOfMonth = $now->copy()->endOfMonth();
-
-				$totalTransactions = Transaction::where("user_id", $userId)->count();
-
-				$monthlyIncome = Transaction::where("user_id", $userId)
-					->where("type", TransactionType::INCOME)
-					->whereBetween("transaction_date", [$startOfMonth, $endOfMonth])
-					->sum("amount");
-
-				$monthlyExpense = Transaction::where("user_id", $userId)
-					->where("type", TransactionType::EXPENSE)
-					->whereBetween("transaction_date", [$startOfMonth, $endOfMonth])
-					->sum("amount");
-
-				$todayTransactions = Transaction::where("user_id", $userId)
-					->whereDate("transaction_date", $now->toDateString())
-					->count();
-
-				$largestTransaction = Transaction::where("user_id", $userId)
-					->orderBy("amount", "desc")
-					->first();
-
-				$averageTransaction =
-					Transaction::where("user_id", $userId)
-						->select(DB::raw("AVG(amount) as average"))
-						->first()->average ?? 0;
-
-				return [
-					"total" => $totalTransactions,
-					"monthly_income" => $monthlyIncome,
-					"monthly_expense" => $monthlyExpense,
-					"monthly_net" => $monthlyIncome - $monthlyExpense,
-					"today" => $todayTransactions,
-					"largest_transaction" => $largestTransaction
-						? $largestTransaction->amount
-						: 0,
-					"average_transaction" => $averageTransaction,
-				];
-			}
-		);
-	}
-
-	/**
 	 * Get transactions by account
 	 */
 	public function getByAccount(int $accountId, array $filters = []): Collection
