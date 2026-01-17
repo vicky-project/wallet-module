@@ -505,7 +505,7 @@
                     @foreach($dashboardData['upcoming_recurring'] as $recurring)
                     <div class="d-flex align-items-center mb-2">
                         <div class="flex-shrink-0">
-                            <i class="bi {{ $recurring['type'] == 'income' ? 'bi-arrow-down-left text-success' : 'bi-arrow-up-right text-danger' }}"></i>
+                            <i class="bi {{ $recurring['recurring']['type'] == 'income' ? 'bi-arrow-down-left text-success' : 'bi-arrow-up-right text-danger' }}"></i>
                         </div>
                         <div class="flex-grow-1 ms-2">
                             <small class="d-block">{{ $recurring['description'] }}</small>
