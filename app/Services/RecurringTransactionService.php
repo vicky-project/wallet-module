@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Services;
 
+use App\Models\User;
 use Modules\Wallet\Models\RecurringTransaction;
 use Modules\Wallet\Enums\RecurringFreq;
 use Illuminate\Support\Facades\DB;
