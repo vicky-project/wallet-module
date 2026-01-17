@@ -224,7 +224,7 @@
           <div class="row mb-3">
             <div class="col-6">
               <small class="text-muted d-block">Total Budget</small>
-              <strong class="currency">{{ $dashboardData['budget_stats']['stats']['total_amount'] ?? 0 }}</strong>
+              <strong class="currency">{{ $dashboardData['budget_stats']['total_amount'] ?? 0 }}</strong>
             </div>
             <div class="col-6">
               <small class="text-muted d-block">Terkeluarkan</small>
