@@ -80,7 +80,6 @@ class TransactionRepository extends BaseRepository
 						$params["now"],
 						$params["now"],
 						$params["now"],
-						$params["now"],
 					])
 					->first();
 
