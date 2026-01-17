@@ -387,8 +387,8 @@ class BudgetRepository extends BaseRepository
 					"active" => $activeBudgets,
 					"current" => $currentBudgets,
 					"over_budget" => $overBudgetCount,
-					"total_amount" => $totalBudgetAmount,
-					"total_spent" => $totalSpent,
+					"total_amount" => $totalBudgetAmount / 100,
+					"total_spent" => $totalSpent / 100,
 					"total_remaining" => max(0, $totalBudgetAmount - $totalSpent),
 					"overall_usage" =>
 						$totalBudgetAmount > 0
@@ -423,7 +423,6 @@ class BudgetRepository extends BaseRepository
 		return [
 			"current_budgets" => $currentBudgets,
 			"stats" => $stats,
-			"total" => $currentBudgets->count(),
 			"categorized" => [
 				"on_track" => $onTrack,
 				"warning" => $warning,
