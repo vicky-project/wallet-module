@@ -4,6 +4,7 @@ namespace Modules\Wallet\Services;
 
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Enums\RecurringFreq;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
