@@ -65,7 +65,6 @@ class DashboardController extends Controller
 
 		// 5. Transaksi Rutin Mendatang
 		$upcomingRecurring = $this->recurringService->getUpcomingTransactions(7);
-		dd($upcomingRecurring);
 
 		// 6. Transaksi Terbaru
 		$recentTransactions = $this->getRecentTransactions($user);

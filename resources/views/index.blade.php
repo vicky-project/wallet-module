@@ -2,6 +2,8 @@
 
 @section('title', 'Dashboard - Aplikasi Keuangan Digital')
 
+@use('Modules\Wallet\Enums\RecurringFreq')
+
 @push('styles')
 <style>
     .stat-card {
