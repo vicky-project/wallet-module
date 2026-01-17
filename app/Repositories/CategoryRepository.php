@@ -22,9 +22,39 @@ class CategoryRepository extends BaseRepository
 		parent::__construct($model);
 	}
 
-	public function getDashboardData(User $user, array $params)
+	public function getDashboardData(User $user, array $params): array
 	{
-		return ["analysis" => [], "stats" => []];
+		return [
+			"analysis" => $this->getCategoryAnalysis(
+				$user,
+				$params["start_date"],
+				$params["end_date"]
+			),
+			"stats" => $this->getCategoryStats($user),
+		];
+	}
+
+	protected function getCategoryAnalysis(
+		User $user,
+		Carbon $startDate,
+		Carbon $endDate
+	): array {
+		return $this->getWithMonthlyTotals($user, $startDate->month, $endDate->year)
+			->map(function ($category) {
+				return [
+					"id" => $category->id,
+					"name" => $category->name,
+					"icon" => $category->icon,
+					"monthly_total" => $category->monthly_total ?? 0,
+					"budget_usage_percentage" => $category->budget_usage_percentage ?? 0,
+					"has_budget_exceeded" => $category->has_budget_exceeded ?? false,
+					"budget_limit" => $category->budget_limit ?? 0,
+				];
+			})
+			->sortByDesc("monthly_total")
+			->take(8)
+			->values()
+			->toArray();
 	}
 
 	/**

@@ -331,7 +331,10 @@ class CategoryService
 	public function getBudgetWarnings(int $threshold = 80): Collection
 	{
 		$user = auth()->user();
-		return $this->categoryRepository->getBudgetWarnings($user, $threshold);
+		$warnings = $this->categoryRepository->getBudgetWarnings($user, $threshold);
+		return $warnings->map(function ($warning) {
+			return [];
+		});
 	}
 
 	/**
