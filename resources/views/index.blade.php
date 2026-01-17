@@ -272,10 +272,10 @@
                     <div class="mt-4">
                         <h6 class="mb-3"><i class="bi bi-exclamation-triangle text-warning"></i> Peringatan Budget</h6>
                         @foreach($dashboardData['budget_warnings'] as $warning)
-                        <div class="alert alert-budget {{ $warning['percentage'] > 90 ? 'danger' : 'warning' }} mb-2 p-2">
+                        <div class="alert alert-budget {{ $warning['usage_percentage'] > 90 ? 'danger' : 'warning' }} mb-2 p-2">
                             <div class="d-flex justify-content-between align-items-center">
-                                <small class="fw-bold">{{ $warning['category_name'] }}</small>
-                                <small class="fw-bold">{{ number_format($warning['percentage'], 1) }}%</small>
+                                <small class="fw-bold">{{ $warning['category']['name'] }}</small>
+                                <small class="fw-bold">{{ number_format($warning['usage_percentage'], 1) }}%</small>
                             </div>
                             <small class="d-block">{{ $warning['message'] }}</small>
                         </div>
