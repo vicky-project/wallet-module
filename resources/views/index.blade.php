@@ -215,78 +215,72 @@
   <!-- Ringkasan Budget & Peringatan -->
   <div class="col-xl-4 mb-4">
     <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Ringkasan Budget</h5>
-                <span class="badge bg-primary">{{ $dashboardData['budget_stats']['total_budgets'] ?? 0 }} Budget</span>
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Ringkasan Budget</h5>
+        <span class="badge bg-primary">{{ $dashboardData['budget_stats']['total'] ?? 0 }} Budget</span>
+      </div>
+      <div class="card-body">
+        @if(isset($dashboardData['budget_stats']) && $dashboardData['budget_stats']['total'] > 0)
+          <div class="row mb-3">
+            <div class="col-6">
+              <small class="text-muted d-block">Total Budget</small>
+              <strong class="currency">{{ $dashboardData['budget_stats']['stats']['total_amount'] ?? 0 }}</strong>
             </div>
-            <div class="card-body">
-                @if(isset($dashboardData['budget_stats']) && $dashboardData['budget_stats']['total'] > 0)
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <small class="text-muted d-block">Total Budget</small>
-                            <strong class="currency">{{ $dashboardData['budget_stats']['total_amount'] ?? 0 }}</strong>
-                        </div>
-                        <div class="col-6">
-                            <small class="text-muted d-block">Terkeluarkan</small>
-                            <strong class="currency">{{ $dashboardData['budget_stats']['total_spent'] ?? 0 }}</strong>
-                        </div>
-                    </div>
-                    
-                    @foreach($dashboardData['budget_summary'] ?? [] as $budget)
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="small">{{ $budget['category_name'] ?? 'Kategori' }}</span>
-                            <span class="small">
-                                <span class="currency">{{ $budget['spent'] ?? 0 }}</span> / 
-                                <span class="currency">{{ $budget['amount'] ?? 0 }}</span>
-                            </span>
-                        </div>
-                        <div class="progress progress-budget">
-                            @php
-                                $percentage = isset($budget['amount']) && $budget['amount'] > 0 ? 
-                                    min(100, ($budget['spent'] / $budget['amount']) * 100) : 0;
-                                $bgClass = $percentage > 90 ? 'bg-danger' : ($percentage > 70 ? 'bg-warning' : 'bg-success');
-                            @endphp
-                            <div class="progress-bar {{ $bgClass }}" 
-                                 role="progressbar" 
-                                 style="width: {{ $percentage }}%"
-                                 aria-valuenow="{{ $percentage }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100">
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between mt-1">
-                            <span class="small text-muted">{{ number_format($percentage, 1) }}%</span>
-                            <span class="small text-muted currency">{{ ($budget['amount'] ?? 0) - ($budget['spent'] ?? 0) }}</span>
-                        </div>
-                    </div>
-                    @endforeach
-                    
-                    <!-- Peringatan Budget -->
-                    @if(isset($dashboardData['budget_warnings']) && count($dashboardData['budget_warnings']) > 0)
-                    <div class="mt-4">
-                        <h6 class="mb-3"><i class="bi bi-exclamation-triangle text-warning"></i> Peringatan Budget</h6>
-                        @foreach($dashboardData['budget_warnings'] as $warning)
-                        <div class="alert alert-budget {{ $warning['usage_percentage'] > 90 ? 'danger' : 'warning' }} mb-2 p-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="fw-bold">{{ $warning['category']['name'] }}</small>
-                                <small class="fw-bold">{{ number_format($warning['usage_percentage'], 1) }}%</small>
-                            </div>
-                            <small class="d-block">{{ $warning['message'] }}</small>
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
-                    
-                @else
-                    <div class="text-center py-4">
-                        <i class="bi bi-piggy-bank display-4 text-muted"></i>
-                        <p class="text-muted mt-3">Belum ada budget yang diatur</p>
-                        <a href="{{ route('apps.budgets.create') }}" class="btn btn-sm btn-outline-primary">Buat Budget</a>
-                    </div>
-                @endif
+            <div class="col-6">
+              <small class="text-muted d-block">Terkeluarkan</small>
+              <strong class="currency">{{ $dashboardData['budget_stats']['stats']['total_spent'] ?? 0 }}</strong>
             </div>
-        </div>
+          </div>
+                    
+          @foreach($dashboardData['budget_summary'] ?? [] as $budget)
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="small">{{ $budget['category_name'] ?? 'Kategori' }}</span>
+                <span class="small">
+                  <span class="currency">{{ $budget['spent'] ?? 0 }}</span> / 
+                  <span class="currency">{{ $budget['amount'] ?? 0 }}</span>
+                </span>
+              </div>
+              <div class="progress progress-budget">
+                @php
+                  $percentage = isset($budget['amount']) && $budget['amount'] > 0 ? min(100, ($budget['spent'] / $budget['amount']) * 100) : 0;
+                  $bgClass = $percentage > 90 ? 'bg-danger' : ($percentage > 70 ? 'bg-warning' : 'bg-success');
+                @endphp
+                <div class="progress-bar {{ $bgClass }}" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-1">
+                <span class="small text-muted">{{ number_format($percentage, 1) }}%</span>
+                <span class="small text-muted currency">{{ ($budget['amount'] ?? 0) - ($budget['spent'] ?? 0) }}</span>
+              </div>
+            </div>
+          @endforeach
+                    
+          <!-- Peringatan Budget -->
+          @if(isset($dashboardData['budget_warnings']) && count($dashboardData['budget_warnings']) > 0)
+            <div class="mt-4">
+              <h6 class="mb-3"><i class="bi bi-exclamation-triangle text-warning"></i> Peringatan Budget</h6>
+              @foreach($dashboardData['budget_warnings'] as $warning)
+                <div class="alert alert-budget {{ $warning['usage_percentage'] > 90 ? 'danger' : 'warning' }} mb-2 p-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="fw-bold">{{ $warning['category']['name'] }}</small>
+                    <small class="fw-bold">{{ number_format($warning['usage_percentage'], 1) }}%</small>
+                  </div>
+                  <small class="d-block">{{ $warning['message'] }}</small>
+                </div>
+              @endforeach
+            </div>
+          @endif
+                    
+        @else
+          <div class="text-center py-4">
+            <i class="bi bi-piggy-bank display-4 text-muted"></i>
+            <p class="text-muted mt-3">Belum ada budget yang diatur</p>
+            <a href="{{ route('apps.budgets.create') }}" class="btn btn-sm btn-outline-primary">Buat Budget</a>
+          </div>
+        @endif
+      </div>
+    </div>
   </div>
 </div>
 

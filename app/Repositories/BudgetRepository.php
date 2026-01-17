@@ -423,6 +423,7 @@ class BudgetRepository extends BaseRepository
 		return [
 			"current_budgets" => $currentBudgets,
 			"stats" => $stats,
+			"total" => $currentBudgets->count(),
 			"categorized" => [
 				"on_track" => $onTrack,
 				"warning" => $warning,
