@@ -609,7 +609,8 @@ class CategoryRepository extends BaseRepository
 							),
 							"is_exceeded" =>
 								$total > $budget->amount->getMinorAmount()->toInt(),
-							"message" => "budget over {$usage} from total {$total}",
+							"message" =>
+								"budget over " . (int) $usage . "% from total {$total}",
 						];
 					})
 					->filter(

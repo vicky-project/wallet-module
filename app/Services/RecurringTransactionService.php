@@ -67,7 +67,8 @@ class RecurringTransactionService
 		$today = now();
 		$endDate = $today->copy()->addDays($days);
 
-		$recurringTransactions = RecurringTransaction::where("is_active", true)
+		$recurringTransactions = RecurringTransaction::with("account")
+			->where("is_active", true)
 			->where("start_date", "<=", $endDate)
 			->where(function ($query) use ($today) {
 				$query->whereNull("end_date")->orWhere("end_date", ">=", $today);

@@ -336,7 +336,7 @@
                                             @if(($account['net_flow']->getAmount()->toInt() ?? 0) > 0)
                                                 <span class="trend-up">
                                                     <i class="bi bi-arrow-up"></i> 
-                                                    <span class="currency">{{ $account['net_flow'] }}</span>
+                                                    <span class="currency">{{ $account['net_flow']->getAmount()->toInt() }}</span>
                                                 </span>
                                             @elseif(($account['net_flow']->getAmount()->toInt() ?? 0) < 0)
                                                 <span class="trend-down">
@@ -693,51 +693,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }).format(value);
         }
     });
-
-    // Auto-refresh dashboard setiap 5 menit
-    setInterval(() => {
-        fetch('{{ config("app.url") }}/apps/preview/refresh')
-            .then(response => response.json())
-            .then(data => {
-                // Update statistik
-                if (data.total_balance) {
-                    document.querySelector('.stat-card-balance .card-title').textContent = 
-                        new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
-                        }).format(data.total_balance);
-                }
-                
-                if (data.monthly_income) {
-                    document.querySelector('.stat-card-income .card-title').textContent = 
-                        new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
-                        }).format(data.monthly_income);
-                }
-                
-                if (data.monthly_expense) {
-                    document.querySelector('.stat-card-expense .card-title').textContent = 
-                        new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
-                        }).format(data.monthly_expense);
-                }
-                
-                // Update waktu di sidebar
-                const now = new Date();
-                const timeElement = document.querySelector('.sidebar .card-body small:nth-child(3)');
-                if (timeElement) {
-                    timeElement.textContent = 'Update: ' + now.toLocaleTimeString('id-ID', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                }
-            });
-    }, 300000); // 5 menit
 });
 </script>
 @endpush
