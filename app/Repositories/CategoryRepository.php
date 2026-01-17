@@ -22,6 +22,11 @@ class CategoryRepository extends BaseRepository
 		parent::__construct($model);
 	}
 
+	public function getDashboardData(User $user, array $params)
+	{
+		return ["analysis" => [], "stats" => []];
+	}
+
 	/**
 	 * Get all categories for current user with filters (cached)
 	 */
