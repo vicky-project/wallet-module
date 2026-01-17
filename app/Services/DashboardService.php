@@ -30,19 +30,23 @@ class DashboardService
 
 	public function getDashboardData(User $user): array
 	{
-		$now = Carbon::now();
+		try {
+			$now = Carbon::now();
 
-		// Gunakan Parallel Processing jika memungkinkan
-		$results = $this->executeConcurrentQueries($user, $now);
+			// Gunakan Parallel Processing jika memungkinkan
+			$results = $this->executeQueriesWithFallback($user, $now);
 
-		// Format data untuk response
-		return $this->formatDashboardData($results, $user);
+			// Format data untuk response
+			return $this->formatDashboardData($results, $user);
+		} catch (\Exception $e) {
+			return $this->getMinimalDashboardData($user);
+		}
 	}
 
-	protected function executeConcurrentQueries(User $user, Carbon $now): array
+	protected function executeQueriesWithFallback(User $user, Carbon $now): array
 	{
 		// Menggunakan Laravel's Collection untuk parallel processing (PHP 7.4+)
-		$tasks = [
+		$services = [
 			"accounts" => fn() => $this->accountService->getDashboardData(
 				$user,
 				$now
@@ -63,11 +67,94 @@ class DashboardService
 		];
 
 		$results = [];
-		foreach ($tasks as $key => $task) {
-			$results[$key] = $task();
+		foreach ($services as $key => $service) {
+			try {
+				$results[$key] = $service();
+			} catch (\Exception $e) {
+				$results[$key] = $this->getFallbackData($key);
+			}
 		}
 
 		return $results;
+	}
+
+	protected function getFallbackData(string $serviceKey): array
+	{
+		switch ($serviceKey) {
+			case "accounts":
+				return [
+					"accounts" => [],
+					"analytics" => [],
+					"stats" => ["total" => 0, "active" => 0, "total_balance" => 0],
+					"alerts" => [],
+				];
+			case "transactions":
+				return [
+					"monthly_income" => 0,
+					"monthly_expense" => 0,
+					"income_count" => 0,
+					"expense_count" => 0,
+					"stats" => [
+						"today_total" => 0,
+						"last_7_days" => 0,
+						"last_30_days" => 0,
+						"current_month_count" => 0,
+					],
+					"recent" => [],
+					"chart_data" => [],
+				];
+			case "budgets":
+				return [
+					"stats" => [],
+					"summary" => [],
+					"warnings" => [],
+				];
+			case "categories":
+				return [
+					"analysis" => [],
+					"stats" => [],
+				];
+			case "recurring":
+				return [
+					"upcoming" => [],
+				];
+			default:
+				return [];
+		}
+	}
+
+	protected function getMinimalDashboardData(User $user): array
+	{
+		return [
+			"total_balance" => 0,
+			"balance_trend" => 0,
+			"monthly_income" => 0,
+			"monthly_expense" => 0,
+			"income_count" => 0,
+			"expense_count" => 0,
+			"budget_usage_percentage" => 0,
+			"budget_stats" => [],
+			"budget_summary" => [],
+			"budget_warnings" => [],
+			"account_stats" => [
+				"total" => 0,
+				"active" => 0,
+				"total_balance" => 0,
+			],
+			"accounts" => [],
+			"category_analysis" => [],
+			"transaction_stats" => [
+				"total_this_month" => 0,
+				"today" => 0,
+				"last_7_days" => 0,
+				"last_30_days" => 0,
+			],
+			"recent_transactions" => [],
+			"upcoming_recurring" => [],
+			"monthly_chart" => [],
+			"recent_activity" => [],
+			"account_alerts" => [],
+		];
 	}
 
 	protected function formatDashboardData(array $data, User $user): array

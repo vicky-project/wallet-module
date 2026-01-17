@@ -59,29 +59,7 @@ class TransactionRepository extends BaseRepository
 					->first();
 
 				// Single query untuk stats
-				$stats = DB::table("transactions as t")
-					->where("t.user_id", $user->id)
-					->select(
-						DB::raw(
-							"COUNT(CASE WHEN DATE(t.transaction_date) = ? THEN 1 END) as today_total"
-						),
-						DB::raw(
-							"COUNT(CASE WHEN t.transaction_date >= DATE_SUB(?, INTERVAL 7 DAY) THEN 1 END) as last_7_days"
-						),
-						DB::raw(
-							"COUNT(CASE WHEN t.transaction_date >= DATE_SUB(?, INTERVAL 30 DAY) THEN 1 END) as last_30_days"
-						),
-						DB::raw(
-							"COUNT(CASE WHEN MONTH(t.transaction_date) = MONTH(?) AND YEAR(t.transaction_date) = YEAR(?) THEN 1 END) as current_month_count"
-						)
-					)
-					->setBindings([
-						$params["now"]->toDateTimeString(),
-						$params["now"],
-						$params["now"],
-						$params["now"],
-					])
-					->first();
+				$stats = $this->getTransactionStats($user, $params["now"]);
 
 				// Recent transactions
 				$recentTransactions = DB::table("transactions as t")
@@ -110,6 +88,119 @@ class TransactionRepository extends BaseRepository
 				];
 			});
 		});
+	}
+
+	/**
+	 * Get transaction stats dengan query terpisah
+	 */
+	protected function getTransactionStats(User $user, Carbon $now): object
+	{
+		$today = $now->toDateString();
+		$sevenDaysAgo = $now
+			->copy()
+			->subDays(7)
+			->toDateString();
+		$thirtyDaysAgo = $now
+			->copy()
+			->subDays(30)
+			->toDateString();
+		$startOfMonth = $now
+			->copy()
+			->startOfMonth()
+			->toDateString();
+		$endOfMonth = $now
+			->copy()
+			->endOfMonth()
+			->toDateString();
+
+		// Query 1: Today's transactions
+		$todayTotal = DB::table("transactions")
+			->where("user_id", $user->id)
+			->whereDate("transaction_date", $today)
+			->count();
+
+		// Query 2: Last 7 days
+		$last7Days = DB::table("transactions")
+			->where("user_id", $user->id)
+			->whereDate("transaction_date", ">=", $sevenDaysAgo)
+			->whereDate("transaction_date", "<=", $today)
+			->count();
+
+		// Query 3: Last 30 days
+		$last30Days = DB::table("transactions")
+			->where("user_id", $user->id)
+			->whereDate("transaction_date", ">=", $thirtyDaysAgo)
+			->whereDate("transaction_date", "<=", $today)
+			->count();
+
+		// Query 4: Current month
+		$currentMonthCount = DB::table("transactions")
+			->where("user_id", $user->id)
+			->whereDate("transaction_date", ">=", $startOfMonth)
+			->whereDate("transaction_date", "<=", $endOfMonth)
+			->count();
+
+		return (object) [
+			"today_total" => $todayTotal,
+			"last_7_days" => $last7Days,
+			"last_30_days" => $last30Days,
+			"current_month_count" => $currentMonthCount,
+		];
+	}
+
+	/**
+	 * ALTERNATIF: Versi single query dengan raw SQL yang benar
+	 */
+	protected function getTransactionStatsSingleQuery(
+		User $user,
+		Carbon $now
+	): object {
+		$today = $now->toDateString();
+		$sevenDaysAgo = $now
+			->copy()
+			->subDays(7)
+			->toDateString();
+		$thirtyDaysAgo = $now
+			->copy()
+			->subDays(30)
+			->toDateString();
+		$startOfMonth = $now
+			->copy()
+			->startOfMonth()
+			->toDateString();
+		$endOfMonth = $now
+			->copy()
+			->endOfMonth()
+			->toDateString();
+
+		$sql = "
+            SELECT
+                COUNT(CASE WHEN DATE(transaction_date) = ? THEN 1 END) as today_total,
+                COUNT(CASE WHEN DATE(transaction_date) BETWEEN ? AND ? THEN 1 END) as last_7_days,
+                COUNT(CASE WHEN DATE(transaction_date) BETWEEN ? AND ? THEN 1 END) as last_30_days,
+                COUNT(CASE WHEN DATE(transaction_date) BETWEEN ? AND ? THEN 1 END) as current_month_count
+            FROM transactions
+            WHERE user_id = ?
+        ";
+
+		$result = DB::selectOne($sql, [
+			$today,
+			$sevenDaysAgo,
+			$today,
+			$thirtyDaysAgo,
+			$today,
+			$startOfMonth,
+			$endOfMonth,
+			$user->id,
+		]);
+
+		return $result ??
+			(object) [
+				"today_total" => 0,
+				"last_7_days" => 0,
+				"last_30_days" => 0,
+				"current_month_count" => 0,
+			];
 	}
 
 	/**
