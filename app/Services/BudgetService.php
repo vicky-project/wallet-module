@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Services;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Models\Category;
@@ -13,7 +14,6 @@ use Modules\Wallet\Enums\CategoryType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Carbon\Carbon;
 
 class BudgetService
 {
@@ -37,6 +37,35 @@ class BudgetService
 	) {
 		$this->budgetRepository = $budgetRepository;
 		$this->categoryRepository = $categoryRepository;
+	}
+
+	/**
+	 * Get dashboard data for budgets
+	 */
+	public function getDashboardData(User $user, Carbon $now): array
+	{
+		$data = $this->budgetRepository->getDashboardData($user, $now);
+
+		return [
+			"stats" => $data["stats"] ?? [],
+			"summary" => $data["summary"] ?? [],
+			"warnings" => $data["warnings"] ?? [],
+		];
+	}
+
+	/**
+	 * Calculate average budget usage
+	 */
+	public function calculateAverageBudgetUsage(array $budgetData): float
+	{
+		if (empty($budgetData["summary"])) {
+			return 0;
+		}
+
+		$totalUsage = array_sum(
+			array_column($budgetData["summary"], "usage_percentage")
+		);
+		return $totalUsage / count($budgetData["summary"]);
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Repositories;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Models\Account;
@@ -16,6 +17,110 @@ class AccountRepository extends BaseRepository
 	public function __construct(Account $model)
 	{
 		parent::__construct($model);
+	}
+
+	/**
+	 * Get optimized dashboard data for accounts
+	 */
+	public function getDashboardData(User $user, array $params = []): array
+	{
+		$cacheKey = Helper::generateCacheKey("dashboard_accounts", [
+			"user_id" => $user->id,
+			"start_date" => $params["start_date"] ?? null,
+			"end_date" => $params["end_date"] ?? null,
+		]);
+
+		return Cache::remember($cacheKey, 300, function () use ($user, $params) {
+			// Single optimized query untuk semua data
+			return DB::transaction(function () use ($user, $params) {
+				// Query 1: Get accounts
+				$accounts = $this->getUserAccounts($user, $params)
+					->map(function ($account) {
+						return [
+							"id" => $account->id,
+							"name" => $account->name,
+							"type" => $account->type,
+							"balance" => $account->balance->getAmount()->toInt(),
+							"color" => $account->color,
+							"icon" => $account->icon,
+							"is_default" => $account->is_default,
+							"currency" => $account->currency,
+							"is_active" => $account->is_active,
+						];
+					})
+					->toArray();
+
+				if (empty($accounts)) {
+					return ["accounts" => [], "analytics" => []];
+				}
+
+				$accountIds = array_column($accounts, "id");
+
+				// Query 2: Get analytics for all accounts in single query
+				$analytics = DB::table("transactions as t")
+					->where("t.user_id", $user->id)
+					->whereBetween("t.transaction_date", [
+						$params["start_date"],
+						$params["end_date"],
+					])
+					->whereIn("t.account_id", $accountIds)
+					->select(
+						"t.account_id",
+						DB::raw(
+							'SUM(CASE WHEN t.type = "income" THEN t.amount ELSE 0 END) as income'
+						),
+						DB::raw(
+							'SUM(CASE WHEN t.type = "expense" THEN t.amount ELSE 0 END) as expense'
+						)
+					)
+					->groupBy("t.account_id")
+					->get()
+					->map(function ($item) {
+						return [
+							"account" => ["id" => $item->account_id],
+							"income" => $item->income ?? 0,
+							"expense" => $item->expense ?? 0,
+							"net_flow" => ($item->income ?? 0) - ($item->expense ?? 0),
+						];
+					})
+					->toArray();
+
+				return [
+					"accounts" => $accounts,
+					"analytics" => $analytics,
+				];
+			});
+		});
+	}
+
+	/**
+	 * Calculate balance trend
+	 */
+	public function calculateBalanceTrend(User $user): float
+	{
+		$currentMonth = Carbon::now()->month;
+		$lastMonth = Carbon::now()->subMonth()->month;
+
+		$currentBalance = $this->getTotalBalanceForMonth($user, $currentMonth);
+		$previousBalance = $this->getTotalBalanceForMonth($user, $lastMonth);
+
+		if ($previousBalance > 0) {
+			return (($currentBalance - $previousBalance) / $previousBalance) * 100;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Get total balance for specific month
+	 */
+	protected function getTotalBalanceForMonth(User $user, int $month): float
+	{
+		return $this->model
+			->where("user_id", $user->id)
+			->where("is_active", true)
+			->whereMonth("created_at", $month)
+			->sum("balance");
 	}
 
 	/**

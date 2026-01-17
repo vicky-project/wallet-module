@@ -29,7 +29,7 @@ return new class extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->unique(["user_id", "name", "type"]);
+			$table->unique(["user_id", "is_active", "created_at"]);
 		});
 
 		// 2. Categories
@@ -125,9 +125,9 @@ return new class extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(["user_id", "transaction_date", "type"]);
-			$table->index(["account_id", "transaction_date"]);
-			$table->index(["category_id", "transaction_date"]);
+			$table->index(["user_id", "type", "transaction_date"]);
+			$table->index(["user_id", "account_id", "transaction_date"]);
+			$table->index(["user_id", "category_id", "transaction_date"]);
 		});
 
 		// 5. Budgets
@@ -160,7 +160,7 @@ return new class extends Migration {
 				["user_id", "category_id", "period_type", "period_value", "year"],
 				"budget_period_unique"
 			);
-			$table->index(["user_id", "start_date", "end_date"]);
+			$table->index(["user_id", "is_active", "start_date", "end_date"]);
 		});
 
 		// 6. Budget Accounts

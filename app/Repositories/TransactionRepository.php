@@ -2,7 +2,11 @@
 
 namespace Modules\Wallet\Repositories;
 
+use Carbon\Carbon;
 use App\Models\User;
+use Modules\Wallet\Enums\PeriodType;
+use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Category;
@@ -10,16 +14,142 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Carbon\Carbon;
-use Modules\Wallet\Helpers\Helper;
-use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Enums\PeriodType;
 
 class TransactionRepository extends BaseRepository
 {
 	public function __construct(Transaction $model)
 	{
 		parent::__construct($model);
+	}
+
+	/**
+	 * Get optimized dashboard data for transactions
+	 */
+	public function getDashboardData(User $user, array $params = []): array
+	{
+		$cacheKey = Helper::generateCacheKey("dashboard_transactions", [
+			"user_id" => $user->id,
+			"start_date" => $params["start_date"] ?? null,
+			"end_date" => $params["end_date"] ?? null,
+		]);
+
+		return Cache::remember($cacheKey, 300, function () use ($user, $params) {
+			return DB::transaction(function () use ($user, $params) {
+				// Single query untuk semua summary
+				$summary = DB::table("transactions as t")
+					->where("t.user_id", $user->id)
+					->whereBetween("t.transaction_date", [
+						$params["start_date"],
+						$params["end_date"],
+					])
+					->select(
+						DB::raw(
+							'SUM(CASE WHEN t.type = "income" THEN t.amount ELSE 0 END) as income'
+						),
+						DB::raw(
+							'SUM(CASE WHEN t.type = "expense" THEN t.amount ELSE 0 END) as expense'
+						),
+						DB::raw(
+							'COUNT(CASE WHEN t.type = "income" THEN 1 END) as income_count'
+						),
+						DB::raw(
+							'COUNT(CASE WHEN t.type = "expense" THEN 1 END) as expense_count'
+						)
+					)
+					->first();
+
+				// Single query untuk stats
+				$stats = DB::table("transactions as t")
+					->where("t.user_id", $user->id)
+					->select(
+						DB::raw(
+							"COUNT(CASE WHEN DATE(t.transaction_date) = ? THEN 1 END) as today_total"
+						),
+						DB::raw(
+							"COUNT(CASE WHEN t.transaction_date >= DATE_SUB(?, INTERVAL 7 DAY) THEN 1 END) as last_7_days"
+						),
+						DB::raw(
+							"COUNT(CASE WHEN t.transaction_date >= DATE_SUB(?, INTERVAL 30 DAY) THEN 1 END) as last_30_days"
+						),
+						DB::raw(
+							"COUNT(CASE WHEN MONTH(t.transaction_date) = MONTH(?) AND YEAR(t.transaction_date) = YEAR(?) THEN 1 END) as current_month_count"
+						)
+					)
+					->setBindings([
+						$params["now"]->toDateString(),
+						$params["now"],
+						$params["now"],
+						$params["now"],
+						$params["now"],
+					])
+					->first();
+
+				// Recent transactions
+				$recentTransactions = DB::table("transactions as t")
+					->join("accounts as a", "t.account_id", "=", "a.id")
+					->join("categories as c", "t.category_id", "=", "c.id")
+					->where("t.user_id", $user->id)
+					->select(
+						"t.id",
+						"t.description",
+						"t.amount",
+						"t.type",
+						"t.transaction_date",
+						"a.name as account_name",
+						"c.name as category_name",
+						"c.icon as category_icon"
+					)
+					->orderBy("t.transaction_date", "desc")
+					->limit(10)
+					->get()
+					->toArray();
+
+				return [
+					"summary" => (array) $summary,
+					"stats" => (array) $stats,
+					"recent_transactions" => $recentTransactions,
+				];
+			});
+		});
+	}
+
+	/**
+	 * Get monthly chart data
+	 */
+	public function getMonthlyChartData(User $user, Carbon $now): array
+	{
+		return DB::table("transactions")
+			->where("user_id", $user->id)
+			->whereYear("transaction_date", $now->year)
+			->whereMonth("transaction_date", $now->month)
+			->select(
+				DB::raw("DAY(transaction_date) as day"),
+				DB::raw(
+					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income'
+				),
+				DB::raw(
+					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense'
+				)
+			)
+			->groupBy(DB::raw("DAY(transaction_date)"))
+			->orderBy("day")
+			->get()
+			->toArray();
+	}
+
+	/**
+	 * Get recent activity
+	 */
+	public function getRecentActivity(User $user): array
+	{
+		return DB::table("activity_log")
+			->where("causer_id", $user->id)
+			->where("causer_type", User::class)
+			->select("description", "properties", "created_at")
+			->orderBy("created_at", "desc")
+			->limit(5)
+			->get()
+			->toArray();
 	}
 
 	/**

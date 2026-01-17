@@ -3,10 +3,10 @@
 namespace Modules\Wallet\Repositories;
 
 use App\Models\User;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Models\Account;
@@ -19,6 +19,100 @@ class BudgetRepository extends BaseRepository
 	public function __construct(Budget $model)
 	{
 		parent::__construct($model);
+	}
+
+	/**
+	 * Get optimized dashboard data for budgets
+	 */
+	public function getDashboardData(User $user, Carbon $now): array
+	{
+		$cacheKey = Helper::generateCacheKey("dashboard_budgets", [
+			"user_id" => $user->id,
+			"current_date" => $now->toDateString(),
+		]);
+
+		return Cache::remember($cacheKey, 300, function () use ($user, $now) {
+			return DB::transaction(function () use ($user, $now) {
+				// Current active budgets
+				$summary = DB::table("budgets as b")
+					->join("categories as c", "b.category_id", "=", "c.id")
+					->where("b.user_id", $user->id)
+					->where("b.is_active", true)
+					->where("b.start_date", "<=", $now)
+					->where("b.end_date", ">=", $now)
+					->select(
+						"b.id",
+						"b.name",
+						"b.amount",
+						"b.spent",
+						"b.start_date",
+						"b.end_date",
+						"c.name as category_name",
+						"c.icon as category_icon",
+						DB::raw("(b.spent / b.amount * 100) as usage_percentage")
+					)
+					->get()
+					->toArray();
+
+				// Budget stats
+				$stats = $this->calculateBudgetStats($summary);
+
+				// Budget warnings
+				$warnings = $this->getBudgetWarnings($summary);
+
+				return [
+					"summary" => $summary,
+					"stats" => $stats,
+					"warnings" => $warnings,
+				];
+			});
+		});
+	}
+
+	/**
+	 * Calculate budget stats
+	 */
+	protected function calculateBudgetStats(array $budgets): array
+	{
+		if (empty($budgets)) {
+			return [
+				"total" => 0,
+				"over_budget" => 0,
+				"total_amount" => 0,
+				"total_spent" => 0,
+			];
+		}
+
+		$overBudget = array_filter($budgets, fn($b) => $b->usage_percentage > 100);
+
+		return [
+			"total" => count($budgets),
+			"over_budget" => count($overBudget),
+			"total_amount" => array_sum(array_column($budgets, "amount")),
+			"total_spent" => array_sum(array_column($budgets, "spent")),
+		];
+	}
+
+	/**
+	 * Get budget warnings
+	 */
+	protected function getBudgetWarnings(array $budgets): Collection
+	{
+		$threshold = 80;
+
+		return collect($budgets)
+			->filter(fn($budget) => $budget->usage_percentage >= $threshold)
+			->map(function ($budget) {
+				return [
+					"budget_id" => $budget->id,
+					"budget_name" => $budget->name,
+					"category_name" => $budget->category_name,
+					"usage_percentage" => $budget->usage_percentage,
+					"spent" => $budget->spent,
+					"amount" => $budget->amount,
+				];
+			})
+			->values();
 	}
 
 	/**

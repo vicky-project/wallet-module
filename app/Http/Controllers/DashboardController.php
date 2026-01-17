@@ -4,130 +4,20 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Wallet\Services\TransactionService;
-use Modules\Wallet\Services\AccountService;
-use Modules\Wallet\Services\BudgetService;
-use Modules\Wallet\Services\CategoryService;
-use Modules\Wallet\Services\RecurringTransactionService;
+use Modules\Wallet\Services\DashboardService;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-	protected $transactionService;
-	protected $accountService;
-	protected $budgetService;
-	protected $categoryService;
-	protected $recurringService;
-
-	public function __construct(
-		TransactionService $transactionService,
-		AccountService $accountService,
-		BudgetService $budgetService,
-		CategoryService $categoryService,
-		RecurringTransactionService $recurringService
-	) {
-		$this->transactionService = $transactionService;
-		$this->accountService = $accountService;
-		$this->budgetService = $budgetService;
-		$this->categoryService = $categoryService;
-		$this->recurringService = $recurringService;
+	public function __construct(protected DashboardService $dashboardService)
+	{
 	}
 
-	public function index()
+	public function index(Request $request)
 	{
-		$user = auth()->user();
-		$now = Carbon::now();
-		$startOfMonth = $now->copy()->startOfMonth();
-		$endOfMonth = $now->copy()->endOfMonth();
+		$user = $request->user();
 
-		// 1. Data Transaksi
-		$transactionSummary = $this->transactionService->getDashboardSummary($user);
-		$transactionStats = $this->transactionService->getTransactionStats($user);
-
-		// 2. Data Akun
-		$accounts = $this->accountService
-			->getRepository()
-			->getUserAccounts($user, ["is_active" => true]);
-		$accountSummary = $this->accountService->getAccountSummary($user);
-		$accountAnalytics = $this->accountService->getAccountAnalytics(
-			$user,
-			$startOfMonth,
-			$endOfMonth
-		);
-
-		// 3. Data Budget
-		$budgetSummary = $this->budgetService->getDashboardSummary();
-		$budgetWarnings = $this->categoryService->getBudgetWarnings();
-
-		// 4. Data Kategori
-		$categoryStats = $this->categoryService->getCategoryStats();
-		$categoryAnalysis = $this->getCategoryAnalysis($user);
-
-		// 5. Transaksi Rutin Mendatang
-		$upcomingRecurring = $this->recurringService->getUpcomingTransactions(7);
-
-		// 6. Transaksi Terbaru
-		$recentTransactions = $this->getRecentTransactions($user);
-
-		// 7. Data Grafik Bulanan
-		$monthlyChartData = $this->getMonthlyChartData($user);
-
-		// 8. Aktivitas Terakhir
-		$recentActivity = $this->getRecentActivity($user);
-
-		// 9. Peringatan Akun
-		$accountAlerts = $this->getAccountAlerts($accounts);
-
-		$dashboardData = [
-			"total_balance" => $accountSummary["total_balance"] ?? 0,
-			"balance_trend" => $this->calculateBalanceTrend($user),
-			"monthly_income" =>
-				$transactionSummary["transaction_summary"]["monthly_income"] ?? 0,
-			"monthly_expense" =>
-				$transactionSummary["transaction_summary"]["monthly_expense"] ?? 0,
-			"income_count" => $transactionStats["stats"]["income_count"] ?? 0,
-			"expense_count" => $transactionStats["stats"]["expense_count"] ?? 0,
-			"budget_usage_percentage" => $this->calculateAverageBudgetUsage(
-				$budgetSummary
-			),
-			"budget_stats" => $budgetSummary["stats"] ?? [],
-			"budget_summary" => $budgetSummary["budgets"] ?? [],
-			"budget_warnings" => $budgetWarnings,
-			"account_stats" => [
-				"total" => $accounts->count(),
-				"active" => $accounts->where("is_active", true)->count(),
-				"total_balance" => $accountSummary["total_balance"] ?? 0,
-			],
-			"accounts" => $accounts->map(function ($account) use ($accountAnalytics) {
-				$analytics = collect($accountAnalytics)->firstWhere(
-					"account.id",
-					$account->id
-				);
-				return [
-					"id" => $account->id,
-					"name" => $account->name,
-					"type" => $account->type,
-					"balance" => $account->balance,
-					"color" => $account->color,
-					"icon" => $account->icon,
-					"is_default" => $account->is_default,
-					"net_flow" => $analytics["net_flow"] ?? 0,
-				];
-			}),
-			"category_analysis" => $categoryAnalysis,
-			"transaction_stats" => [
-				"total_this_month" =>
-					$transactionStats["stats"]["current_month_count"] ?? 0,
-				"today" => $transactionStats["stats"]["today_total"] ?? 0,
-				"last_7_days" => $transactionStats["stats"]["last_7_days"] ?? 0,
-				"last_30_days" => $transactionStats["stats"]["last_30_days"] ?? 0,
-			],
-			"recent_transactions" => $recentTransactions,
-			"upcoming_recurring" => $upcomingRecurring,
-			"monthly_chart" => $monthlyChartData,
-			"recent_activity" => $recentActivity,
-			"account_alerts" => $accountAlerts,
-		];
+		$dashboardData = $this->dashboardService->getDashboardData($user);
 
 		return view("wallet::index", compact("dashboardData"));
 	}

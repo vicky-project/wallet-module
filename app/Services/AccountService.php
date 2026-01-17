@@ -23,6 +23,67 @@ class AccountService
 	}
 
 	/**
+	 * Get dashboard data for accounts
+	 */
+	public function getDashboardData(User $user, Carbon $now): array
+	{
+		$startOfMonth = $now->copy()->startOfMonth();
+		$endOfMonth = $now->copy()->endOfMonth();
+
+		// Get all data in single optimized query
+		$data = $this->repository->getDashboardData($user, [
+			"start_date" => $startOfMonth,
+			"end_date" => $endOfMonth,
+			"is_active" => true,
+		]);
+
+		// Calculate account alerts
+		$alerts = $this->getAccountAlerts($data["accounts"]);
+
+		return [
+			"accounts" => $data["accounts"],
+			"analytics" => $data["analytics"],
+			"stats" => [
+				"total" => count($data["accounts"]),
+				"active" => count($data["accounts"]),
+				"total_balance" => collect($data["accounts"])->sum("balance"),
+			],
+			"alerts" => $alerts,
+		];
+	}
+
+	/**
+	 * Get account alerts
+	 */
+	protected function getAccountAlerts(array $accounts): array
+	{
+		$alerts = [];
+
+		foreach ($accounts as $account) {
+			if ($account["balance"] < 100000) {
+				// threshold 100k
+				$alerts[] = [
+					"type" => "low_balance",
+					"account_id" => $account["id"],
+					"account_name" => $account["name"],
+					"balance" => $account["balance"],
+					"message" => "Saldo akun rendah",
+				];
+			}
+		}
+
+		return $alerts;
+	}
+
+	/**
+	 * Calculate balance trend
+	 */
+	public function calculateBalanceTrend(User $user): float
+	{
+		return $this->repository->calculateBalanceTrend($user);
+	}
+
+	/**
 	 * Create new account with validation
 	 */
 	public function createAccount(User $user, array $data): Account

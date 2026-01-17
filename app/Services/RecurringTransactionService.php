@@ -9,6 +9,15 @@ use Carbon\Carbon;
 
 class RecurringTransactionService
 {
+	public function getDashboardData(User $user, Carbon $now): array
+	{
+		$data = $this->recurringRepository->getDashboardData($user, $now);
+
+		return [
+			"upcoming" => $data["upcoming"] ?? [],
+		];
+	}
+
 	public function processDueRecurringTransactions(): array
 	{
 		$results = [

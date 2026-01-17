@@ -25,6 +25,22 @@ class CategoryService
 		$this->categoryRepository = $categoryRepository;
 	}
 
+	public function getDashboardData(User $user, Carbon $now): array
+	{
+		$startOfMonth = $now->copy()->startOfMonth();
+		$endOfMonth = $now->copy()->endOfMonth();
+
+		$data = $this->categoryRepository->getDashboardData($user, [
+			"start_date" => $startOfMonth,
+			"end_date" => $endOfMonth,
+		]);
+
+		return [
+			"analysis" => $data["analysis"] ?? [],
+			"stats" => $data["stats"] ?? [],
+		];
+	}
+
 	/**
 	 * Get all categories with stats for index page
 	 */

@@ -35,6 +35,48 @@ class TransactionService
 	}
 
 	/**
+	 * Get dashboard data for transactions
+	 */
+	public function getDashboardData(User $user, Carbon $now): array
+	{
+		$startOfMonth = $now->copy()->startOfMonth();
+		$endOfMonth = $now->copy()->endOfMonth();
+
+		// Get all transaction data in optimized queries
+		$data = $this->transactionRepository->getDashboardData($user, [
+			"start_date" => $startOfMonth,
+			"end_date" => $endOfMonth,
+			"now" => $now,
+		]);
+
+		return [
+			"monthly_income" => $data["summary"]["income"] ?? 0,
+			"monthly_expense" => $data["summary"]["expense"] ?? 0,
+			"income_count" => $data["summary"]["income_count"] ?? 0,
+			"expense_count" => $data["summary"]["expense_count"] ?? 0,
+			"stats" => $data["stats"] ?? [],
+			"recent" => $data["recent_transactions"] ?? [],
+			"chart_data" => $this->getMonthlyChartData($user, $now),
+		];
+	}
+
+	/**
+	 * Get monthly chart data
+	 */
+	public function getMonthlyChartData(User $user, Carbon $now): array
+	{
+		return $this->transactionRepository->getMonthlyChartData($user, $now);
+	}
+
+	/**
+	 * Get recent activity
+	 */
+	public function getRecentActivity(User $user): array
+	{
+		return $this->transactionRepository->getRecentActivity($user);
+	}
+
+	/**
 	 * Create a new transaction
 	 */
 	public function createTransaction(array $data, User $user): array
