@@ -33,6 +33,16 @@
         border-left-color: #f59e0b;
     }
     
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+    
     .progress-thin {
         height: 6px;
         border-radius: 3px;
@@ -187,8 +197,8 @@
             <span class="text-muted small">Total Saldo</span>
             <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['total_balance'] }}</h3>
           </div>
-          <div class="bg-primary rounded-circle p-2">
-            <i class="bi bi-wallet2 text-white fs-5"></i>
+          <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+            <i class="bi bi-wallet2"></i>
           </div>
         </div>
         <div class="d-flex align-items-center mt-3">
