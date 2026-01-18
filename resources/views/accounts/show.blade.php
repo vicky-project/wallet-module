@@ -158,7 +158,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Pemasukan</h6>
-            <h4 class="mb-0 currency">{{ $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth()) }}</h4>
+            <h4 class="mb-0 currency">{{ dd($account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth())) }}</h4>
             <small class="text-muted">Bulan ini</small>
           </div>
         </div>
