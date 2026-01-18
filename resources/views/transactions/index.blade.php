@@ -18,6 +18,16 @@
         overflow: hidden;
     }
     
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+    
     .transaction-icon {
         width: 40px;
         height: 40px;
@@ -212,8 +222,8 @@
               @money($totals['income'])
             </h4>
           </div>
-          <div class="bg-success bg-opacity-10 p-2 rounded">
-            <i class="bi bi-arrow-down-left text-success"></i>
+          <div class="stat-icon bg-success bg-opacity-10 text-success">
+            <i class="bi bi-arrow-down-left"></i>
           </div>
         </div>
       </div>
@@ -230,8 +240,8 @@
               @money($totals['expense'])
             </h4>
           </div>
-          <div class="bg-danger bg-opacity-10 p-2 rounded">
-            <i class="bi bi-arrow-up-right text-danger"></i>
+          <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+            <i class="bi bi-arrow-up-right"></i>
           </div>
         </div>
       </div>
@@ -248,8 +258,8 @@
               @money($totals['transfer'])
             </h4>
           </div>
-          <div class="bg-primary bg-opacity-10 p-2 rounded">
-            <i class="bi bi-arrow-left-right text-primary"></i>
+          <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+            <i class="bi bi-arrow-left-right"></i>
           </div>
         </div>
       </div>
