@@ -253,8 +253,8 @@ class AccountService
 				->minus($transfersOut);
 			dd(
 				$account->initial_balance
-					->plus($income)
-					->minus($expense)
+					->plus($income / 100)
+					->minus($expense / 100)
 					->getAmount()
 					->toInt(),
 				$income,
