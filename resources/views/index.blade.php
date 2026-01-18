@@ -1,679 +1,720 @@
 @extends('wallet::layouts.app')
 
-@section('title', 'Dashboard - Aplikasi Keuangan Digital')
-
-@use('Modules\Wallet\Enums\RecurringFreq')
+@section('title', 'Dashboard - ' . config('app.name', 'Vicky Server'))
 
 @push('styles')
 <style>
+    /* Custom dashboard styles */
     .stat-card {
         border-left: 4px solid;
+        transition: all 0.3s ease;
     }
     
-    .stat-card-income {
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .stat-card.income {
         border-left-color: #10b981;
     }
     
-    .stat-card-expense {
+    .stat-card.expense {
         border-left-color: #ef4444;
     }
     
-    .stat-card-balance {
-        border-left-color: #4361ee;
-    }
-    
-    .stat-card-accounts {
-        border-left-color: #8b5cf6;
-    }
-    
-    .stat-card-budget {
-        border-left-color: #f59e0b;
-    }
-    
-    .stat-card-savings {
+    .stat-card.balance {
         border-left-color: #3b82f6;
     }
     
-    .stat-card-recurring {
-        border-left-color: #8b5cf6;
+    .stat-card.budget {
+        border-left-color: #f59e0b;
     }
     
-    .progress-budget {
-        height: 8px;
-        border-radius: 4px;
+    .progress-thin {
+        height: 6px;
+        border-radius: 3px;
+    }
+    
+    .category-item {
+        transition: all 0.2s ease;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 8px;
+    }
+    
+    .category-item:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+        transform: translateX(5px);
+    }
+    
+    body[data-bs-theme="dark"] .category-item:hover {
+        background-color: rgba(255, 255, 255, 0.05);
     }
     
     .account-card {
-        transition: all 0.3s;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
     }
     
     .account-card:hover {
         transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15) !important;
     }
     
-    .quick-actions .btn {
-        border-radius: 10px;
-        padding: 10px 15px;
+    .account-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
     }
     
-    .transaction-tag {
-        font-size: 0.75rem;
-        padding: 2px 8px;
+    .account-card.asset::before {
+        background-color: #10b981;
     }
     
-    .alert-budget {
-        border-left: 4px solid;
+    .account-card.liability::before {
+        background-color: #ef4444;
     }
     
-    .alert-budget.warning {
-        border-left-color: #f59e0b;
+    .transaction-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+    
+    .alert-card {
+        border-left: 4px solid #f59e0b;
+        background-color: rgba(245, 158, 11, 0.05);
+    }
+    
+    body[data-bs-theme="dark"] .alert-card {
         background-color: rgba(245, 158, 11, 0.1);
     }
     
-    .alert-budget.danger {
-        border-left-color: #ef4444;
-        background-color: rgba(239, 68, 68, 0.1);
+    .recurring-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
     }
     
-    .mini-chart {
-        height: 40px;
-        width: 100%;
+    .chart-container {
+        position: relative;
+        height: 300px;
     }
     
-    .trend-up {
-        color: #10b981;
+    .empty-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: #6c757d;
     }
     
-    .trend-down {
-        color: #ef4444;
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+    
+    .floating-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+        .chart-container {
+            height: 250px;
+        }
+        
+        .stat-card .fs-4 {
+            font-size: 1.2rem !important;
+        }
+        
+        .stat-card .fs-5 {
+            font-size: 1rem !important;
+        }
     }
 </style>
 @endpush
 
 @section('content')
 @include('wallet::partials.fab')
-<!-- Statistik Utama -->
-<div class="row mb-4">
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card stat-card stat-card-balance">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="card-subtitle mb-2 text-muted">Total Saldo</h6>
-            <h3 class="card-title mb-0 currency">{{ number_format($dashboardData['total_balance'] ?? 0) }}</h3>
-            <p class="text-muted small mb-0">Semua akun aktif</p>
-          </div>
-          <div class="card-icon bg-primary">
-            <i class="bi bi-wallet text-white"></i>
-          </div>
-        </div>
-        <div class="mt-3">
-          @if(($dashboardData['balance_trend'] ?? 0) > 0)
-            <span class="badge bg-success">
-              <i class="bi bi-arrow-up"></i> 
-              {{ number_format($dashboardData['balance_trend'] ?? 0, 1) }}%
-            </span>
-          @elseif(($dashboardData['balance_trend'] ?? 0) < 0)
-            <span class="badge bg-danger">
-              <i class="bi bi-arrow-down"></i> 
-              {{ number_format(abs($dashboardData['balance_trend'] ?? 0), 1) }}%
-            </span>
-          @endif
-        </div>
-      </div>
-    </div>
-  </div>
-    
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card stat-card stat-card-income">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="card-subtitle mb-2 text-muted">Pemasukan Bulan Ini</h6>
-            <h3 class="card-title mb-0 currency">{{ number_format($dashboardData['monthly_income'] ?? 0) }}</h3>
-            <p class="text-muted small mb-0">{{ date('F Y') }}</p>
-          </div>
-          <div class="card-icon bg-success">
-            <i class="bi bi-arrow-down-left text-white"></i>
-          </div>
-        </div>
-        <div class="mt-3">
-          <span class="badge bg-info">
-            <i class="bi bi-cash-stack"></i> 
-            {{ $dashboardData['income_count'] ?? 0 }} transaksi
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-    
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card stat-card stat-card-expense">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="card-subtitle mb-2 text-muted">Pengeluaran Bulan Ini</h6>
-            <h3 class="card-title mb-0 currency">{{ number_format($dashboardData['monthly_expense'] ?? 0) }}</h3>
-            <p class="text-muted small mb-0">{{ date('F Y') }}</p>
-          </div>
-          <div class="card-icon bg-danger">
-            <i class="bi bi-arrow-up-right text-white"></i>
-          </div>
-        </div>
-        <div class="mt-3">
-          <span class="badge bg-warning">
-            <i class="bi bi-receipt"></i> 
-            {{ $dashboardData['expense_count'] ?? 0 }} transaksi
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-    
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card stat-card stat-card-budget">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="card-subtitle mb-2 text-muted">Penggunaan Budget</h6>
-            <h3 class="card-title mb-0">{{ $dashboardData['budget_usage_percentage'] ?? 0 }}%</h3>
-            <p class="text-muted small mb-0">Rata-rata kategori</p>
-          </div>
-          <div class="card-icon" style="background-color: #f59e0b;">
-            <i class="bi bi-pie-chart text-white"></i>
-          </div>
-        </div>
-        <div class="mt-3">
-          <div class="progress progress-budget">
-            <div class="progress-bar {{ ($dashboardData['budget_usage_percentage'] ?? 0) > 90 ? 'bg-danger' : (($dashboardData['budget_usage_percentage'] ?? 0) > 70 ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ min(100, $dashboardData['budget_usage_percentage'] ?? 0) }}%" aria-valuenow="{{ $dashboardData['budget_usage_percentage'] ?? 0 }}" aria-valuemin="0" aria-valuemax="100">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Ringkasan Keuangan -->
-<div class="row mb-4">
-  <!-- Grafik Transaksi -->
-  <div class="col-xl-8 mb-4">
-    <div class="card h-100">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">Grafik Transaksi (6 Bulan Terakhir)</h5>
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-outline-secondary active" data-period="month">Bulanan</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-period="year">Tahunan</button>
-        </div>
-      </div>
-      <div class="card-body">
-        <canvas id="transactionChart" height="250"></canvas>
-      </div>
-    </div>
-  </div>
-    
-  <!-- Ringkasan Budget & Peringatan -->
-  <div class="col-xl-4 mb-4">
-    <div class="card h-100">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">Ringkasan Budget</h5>
-        <span class="badge bg-primary">{{ $dashboardData['budget_stats']['total'] ?? 0 }} Budget</span>
-      </div>
-      <div class="card-body">
-        @if(isset($dashboardData['budget_stats']) && $dashboardData['budget_stats']['total'] > 0)
-          <div class="row mb-3">
-            <div class="col-6">
-              <small class="text-muted d-block">Total Budget</small>
-              <strong class="currency">{{ $dashboardData['budget_stats']['total_amount'] ?? 0 }}</strong>
-            </div>
-            <div class="col-6">
-              <small class="text-muted d-block">Terkeluarkan</small>
-              <strong class="currency">{{ $dashboardData['budget_stats']['total_spent'] ?? 0 }}</strong>
-            </div>
-          </div>
-                    
-          @foreach($dashboardData['budget_summary'] ?? [] as $budget)
-            <div class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="small">{{ $budget['category_name'] ?? 'Kategori' }}</span>
-                <span class="small">
-                  <span class="currency">{{ $budget['spent'] ?? 0 }}</span> / 
-                  <span class="currency">{{ $budget['amount'] ?? 0 }}</span>
-                </span>
-              </div>
-              <div class="progress progress-budget">
-                @php
-                  $percentage = isset($budget['amount']) && $budget['amount'] > 0 ? min(100, ($budget['spent'] / $budget['amount']) * 100) : 0;
-                  $bgClass = $percentage > 90 ? 'bg-danger' : ($percentage > 70 ? 'bg-warning' : 'bg-success');
-                @endphp
-                <div class="progress-bar {{ $bgClass }}" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
-                </div>
-              </div>
-              <div class="d-flex justify-content-between mt-1">
-                <span class="small text-muted">{{ number_format($percentage, 1) }}%</span>
-                <span class="small text-muted currency">{{ ($budget['amount'] ?? 0) - ($budget['spent'] ?? 0) }}</span>
-              </div>
-            </div>
-          @endforeach
-                    
-          <!-- Peringatan Budget -->
-          @if(isset($dashboardData['budget_warnings']) && count($dashboardData['budget_warnings']) > 0)
-            <div class="mt-4">
-              <h6 class="mb-3"><i class="bi bi-exclamation-triangle text-warning"></i> Peringatan Budget</h6>
-              @foreach($dashboardData['budget_warnings'] as $warning)
-                <div class="alert alert-budget {{ $warning['usage_percentage'] > 90 ? 'danger' : 'warning' }} mb-2 p-2">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="fw-bold">{{ $warning['category']['name'] }}</small>
-                    <small class="fw-bold">{{ number_format($warning['usage_percentage'], 1) }}%</small>
-                  </div>
-                  <small class="d-block">{{ $warning['message'] }}</small>
-                </div>
-              @endforeach
-            </div>
-          @endif
-                    
-        @else
-          <div class="text-center py-4">
-            <i class="bi bi-piggy-bank display-4 text-muted"></i>
-            <p class="text-muted mt-3">Belum ada budget yang diatur</p>
-            <a href="{{ route('apps.budgets.create') }}" class="btn btn-sm btn-outline-primary">Buat Budget</a>
-          </div>
-        @endif
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Akun dan Analisis -->
-<div class="row mb-4">
-  <!-- Daftar Akun -->
-  <div class="col-lg-5 mb-4">
-    <div class="card h-100">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">Akun Saya</h5>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <span class="badge bg-info me-2">{{ $dashboardData['account_stats']['active'] ?? 0 }} Aktif</span>
-          <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-plus"></i> Tambah
-          </a>
+            <h1 class="page-title mb-1">Dashboard Keuangan</h1>
+            <p class="text-muted mb-0">Ringkasan keuangan Anda {{ now()->format('d M Y') }}</p>
         </div>
-      </div>
-      <div class="card-body p-0">
-        <div class="list-group list-group-flush">
-          @if(isset($dashboardData['accounts']) && count($dashboardData['accounts']) > 0)
-            @foreach($dashboardData['accounts'] as $account)
-              <div class="list-group-item p-3 account-card">
-                <div class="d-flex align-items-center">
-                  <div class="flex-shrink-0">
-                    <div class="transaction-icon" style="background-color: {{ $account['color'] ?? '#3490dc' }};">
-                      <i class="bi {{ $account['icon'] ?? 'bi-wallet' }} text-white"></i>
-                    </div>
-                  </div>
-                  <div class="flex-grow-1 ms-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <h6 class="mb-0">{{ $account['name'] }}</h6>
-                      <span class="currency fw-bold">{{ $account['balance'] ?? 0 }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-1">
-                      <small class="text-muted">
-                        {{ ucfirst($account['type']->name ?? 'cash') }}
-                        @if($account['is_default'] ?? false)
-                          <span class="badge bg-info ms-2">Utama</span>
-                        @endif
-                      </small>
-                      <small class="text-muted">
-                        @if(($account['net_flow']->getAmount()->toInt() ?? 0) > 0)
-                          <span class="trend-up">
-                            <i class="bi bi-arrow-up"></i> 
-                            <span class="currency">{{ $account['net_flow']->getAmount()->toInt() }}</span>
-                          </span>
-                        @elseif(($account['net_flow']->getAmount()->toInt() ?? 0) < 0)
-                          <span class="trend-down">
-                            <i class="bi bi-arrow-down"></i> 
-                            <span class="currency">{{ $account['net_flow']->getAmount()->toInt() }}</span>
-                          </span>
-                        @endif
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            @endforeach
-          @else
-            <div class="text-center py-5">
-              <i class="bi bi-wallet display-4 text-muted"></i>
-              <p class="text-muted mt-3">Belum ada akun</p>
-            </div>
-          @endif
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-download"></i> Ekspor
+            </button>
+            <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" id="refreshDashboard">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
         </div>
-        @if(isset($dashboardData['account_stats']) && $dashboardData['account_stats']['total'] > 0)
-          <div class="card-footer bg-transparent">
-            <div class="row text-center">
-              <div class="col-4">
-                <small class="text-muted d-block">Total</small>
-                <strong>{{ $dashboardData['account_stats']['total'] ?? 0 }}</strong>
-              </div>
-              <div class="col-4">
-                <small class="text-muted d-block">Aktif</small>
-                <strong class="text-success">{{ $dashboardData['account_stats']['active'] ?? 0 }}</strong>
-              </div>
-              <div class="col-4">
-                <small class="text-muted d-block">Saldo</small>
-                <strong class="currency">{{ $dashboardData['account_stats']['total_balance'] ?? 0 }}</strong>
-              </div>
-            </div>
-          </div>
-        @endif
-      </div>
     </div>
-  </div>
-    
-  <!-- Analisis Kategori -->
-  <div class="col-lg-7 mb-4">
-    <div class="card h-100">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">Analisis Kategori</h5>
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-outline-secondary active" data-type="expense">Pengeluaran</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-type="income">Pemasukan</button>
-        </div>
-      </div>
-      <div class="card-body">
-        @if(isset($dashboardData['category_analysis']) && count($dashboardData['category_analysis']) > 0)
-          <canvas id="categoryChart" height="200"></canvas>
-          <div class="row mt-3">
-            @foreach($dashboardData['category_analysis'] as $index => $category)
-              @if($index < 6)
-                <div class="col-6 mb-2">
-                  <div class="d-flex align-items-center">
-                    <span class="badge me-2" style="background-color: {{ $category['color'] ?? '#3490dc' }};">&nbsp;</span>
-                    <small class="text-truncate">{{ $category['name'] }}</small>
-                    <small class="ms-auto fw-bold currency">{{ $category['amount'] }}</small>
-                  </div>
-                  <div class="progress progress-budget mt-1">
-                    <div class="progress-bar" style="width: {{ $category['percentage'] ?? 0 }}%; background-color: {{ $category['color'] ?? '#3490dc' }};">
-                    </div>
-                  </div>
-                </div>
-              @endif
-            @endforeach
-          </div>
-        @else
-          <div class="text-center py-5">
-            <i class="bi bi-tags display-4 text-muted"></i>
-            <p class="text-muted mt-3">Belum ada data kategori</p>
-          </div>
-        @endif
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Transaksi dan Aktivitas -->
-<div class="row">
-  <!-- Transaksi Terbaru -->
-  <div class="col-lg-8 mb-4">
-    <div class="card h-100">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">Transaksi Terbaru</h5>
-        <div>
-          <span class="badge bg-secondary me-2">{{ $dashboardData['transaction_stats']['total_this_month'] ?? 0 }} Bulan Ini</span>
-          <a href="{{ route('apps.transactions.create') }}" class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-plus-circle"></i> Transaksi Baru
-          </a>
-        </div>
-      </div>
-      <div class="card-body p-0">
-        @if(isset($dashboardData['recent_transactions']) && count($dashboardData['recent_transactions']) > 0)
-          @foreach($dashboardData['recent_transactions'] as $transaction)
-            <div class="transaction-item">
-              <div class="transaction-icon {{ $transaction['type'] == 'income' ? 'bg-income' : 'bg-expense' }}">
-                <i class="bi {{ $transaction['icon'] ?? 'bi-cash' }} {{ $transaction['type'] == 'income' ? 'text-income' : 'text-expense' }}"></i>
-              </div>
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 class="mb-0">{{ $transaction['description'] }}</h6>
-                    <div class="d-flex align-items-center mt-1">
-                      <small class="text-muted me-2">{{ $transaction['category_name'] ?? 'Tidak Berkategori' }}</small>
-                      @if($transaction['is_recurring'] ?? false)
-                        <span class="badge bg-info transaction-tag">
-                          <i class="bi bi-arrow-repeat"></i> Rutin
-                        </span>
-                      @endif
-                    </div>
-                  </div>
-                  <div class="text-end">
-                    <span class="currency fw-bold {{ $transaction['type'] == 'income' ? 'text-income' : 'text-expense' }}">
-                      {{ $transaction['type'] == 'income' ? '+' : '-' }}{{ $transaction['amount'] }}
-                    </span>
-                    <div class="small text-muted mt-1">
-                      {{ \Carbon\Carbon::parse($transaction['date'])->format('d M Y') }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          @endforeach
-        @else
-          <div class="text-center py-5">
-            <i class="bi bi-receipt display-4 text-muted"></i>
-            <p class="text-muted mt-3">Belum ada transaksi</p>
-          </div>
-        @endif
-      </div>
-      <div class="card-footer bg-transparent">
-        <div class="row text-center">
-          <div class="col-4">
-            <small class="text-muted d-block">Hari Ini</small>
-            <strong class="currency">{{ $dashboardData['transaction_stats']['today'] ?? 0 }}</strong>
-          </div>
-          <div class="col-4">
-            <small class="text-muted d-block">7 Hari</small>
-            <strong class="currency">{{ $dashboardData['transaction_stats']['last_7_days'] ?? 0 }}</strong>
-          </div>
-          <div class="col-4">
-            <small class="text-muted d-block">30 Hari</small>
-            <strong class="currency">{{ $dashboardData['transaction_stats']['last_30_days'] ?? 0 }}</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-    
-  <!-- Aktivitas dan Notifikasi -->
-  <div class="col-lg-4 mb-4">
-    <div class="card h-100">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Aktivitas & Peringatan</h5>
-      </div>
-      <div class="card-body p-0">
-        <!-- Transaksi Rutin Mendatang -->
-        @if(isset($dashboardData['upcoming_recurring']) && count($dashboardData['upcoming_recurring']) > 0)
-          <div class="p-3 border-bottom">
-            <h6 class="mb-3"><i class="bi bi-arrow-repeat text-primary"></i> Transaksi Rutin Mendatang</h6>
-            @foreach($dashboardData['upcoming_recurring'] as $recurring)
-              <div class="d-flex align-items-center mb-2">
-                <div class="flex-shrink-0">
-                  <i class="bi {{ $recurring['recurring']['type'] == 'income' ? 'bi-arrow-down-left text-success' : 'bi-arrow-up-right text-danger' }}"></i>
-                </div>
-                <div class="flex-grow-1 ms-2">
-                  <small class="d-block">{{ $recurring['description'] }}</small>
-                  <small class="text-muted">
-                    <span class="currency">{{ $recurring['amount'] }}</span> • 
-                    {{ \Carbon\Carbon::parse($recurring['next_date'])->format('d M') }}
-                  </small>
-                </div>
-              </div>
-            @endforeach
-          </div>
-        @endif
-                
-        <!-- Peringatan Saldo -->
-        @if(isset($dashboardData['account_alerts']) && count($dashboardData['account_alerts']) > 0)
-          <div class="p-3 border-bottom">
-            <h6 class="mb-3"><i class="bi bi-exclamation-triangle text-warning"></i> Peringatan Akun</h6>
-            @foreach($dashboardData['account_alerts'] as $alert)
-              <div class="alert alert-warning alert-sm mb-2 p-2">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-wallet me-2"></i>
-                            <small>{{ $alert['message'] }}</small>
+    <!-- Quick Stats Row -->
+    <div class="row g-3 mb-4">
+        <!-- Total Balance -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card stat-card balance h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="text-muted small">Total Saldo</span>
+                            <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['total_balance'] }}</h3>
                         </div>
-              </div>
-            @endforeach
-          </div>
-        @endif
-                
-        <!-- Aktivitas Terakhir -->
-        <div class="p-3">
-          <h6 class="mb-3"><i class="bi bi-clock-history text-muted"></i> Aktivitas Terakhir</h6>
-          @if(isset($dashboardData['recent_activity']) && count($dashboardData['recent_activity']) > 0)
-            @foreach($dashboardData['recent_activity'] as $activity)
-              <div class="d-flex align-items-center mb-2">
-                <div class="flex-shrink-0">
-                  <i class="bi {{ $activity['icon'] ?? 'bi-check-circle' }} text-muted"></i>
+                        <div class="bg-primary rounded-circle p-2">
+                            <i class="bi bi-wallet2 text-white fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        @if($dashboardData['balance_trend'] >= 0)
+                            <span class="badge bg-success bg-opacity-10 text-success me-2">
+                                <i class="bi bi-arrow-up-right me-1"></i>
+                                {{ number_format($dashboardData['balance_trend'], 1) }}%
+                            </span>
+                        @else
+                            <span class="badge bg-danger bg-opacity-10 text-danger me-2">
+                                <i class="bi bi-arrow-down-right me-1"></i>
+                                {{ number_format(abs($dashboardData['balance_trend']), 1) }}%
+                            </span>
+                        @endif
+                        <span class="text-muted small">dari bulan lalu</span>
+                    </div>
                 </div>
-                <div class="flex-grow-1 ms-2">
-                  <small class="d-block">{{ $activity['description'] }}</small>
-                  <small class="text-muted">{{ $activity['time_ago'] }}</small>
-                </div>
-              </div>
-            @endforeach
-          @else
-            <small class="text-muted">Belum ada aktivitas</small>
-          @endif
+            </div>
         </div>
-      </div>
+
+        <!-- Monthly Income -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card stat-card income h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="text-muted small">Pemasukan Bulan Ini</span>
+                            <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['monthly_income'] }}</h3>
+                        </div>
+                        <div class="bg-success rounded-circle p-2">
+                            <i class="bi bi-arrow-down-left text-white fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="badge bg-success bg-opacity-10 text-success me-2">
+                            {{ $dashboardData['income_count'] }} transaksi
+                        </span>
+                        <span class="text-muted small">sampai hari ini</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Expense -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card stat-card expense h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="text-muted small">Pengeluaran Bulan Ini</span>
+                            <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['monthly_expense'] }}</h3>
+                        </div>
+                        <div class="bg-danger rounded-circle p-2">
+                            <i class="bi bi-arrow-up-right text-white fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="badge bg-danger bg-opacity-10 text-danger me-2">
+                            {{ $dashboardData['expense_count'] }} transaksi
+                        </span>
+                        <span class="text-muted small">sampai hari ini</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Usage -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card stat-card budget h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="text-muted small">Penggunaan Budget</span>
+                            <h3 class="mt-1 mb-0 fw-bold">{{ number_format($dashboardData['budget_usage_percentage'], 1) }}%</h3>
+                        </div>
+                        <div class="bg-warning rounded-circle p-2">
+                            <i class="bi bi-pie-chart text-white fs-5"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress progress-thin mb-1">
+                            <div class="progress-bar bg-warning" 
+                                 role="progressbar" 
+                                 style="width: {{ min($dashboardData['budget_usage_percentage'], 100) }}%"
+                                 aria-valuenow="{{ $dashboardData['budget_usage_percentage'] }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <span class="text-muted small">{{ count($dashboardData['budget_warnings']) }} peringatan budget</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+
+    <!-- Charts and Main Content -->
+    <div class="row g-4">
+        <!-- Monthly Chart -->
+        <div class="col-xl-8">
+            <div class="card h-100">
+                <div class="card-header bg-transparent border-0 pb-2">
+                    <h5 class="card-title mb-0">Grafik Keuangan Bulan {{ now()->format('F') }}</h5>
+                    <p class="text-muted small mb-0">Pemasukan vs Pengeluaran Harian</p>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="col-xl-4">
+            <div class="card h-100">
+                <div class="card-header bg-transparent border-0 pb-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-0">Akun Saya</h5>
+                            <p class="text-muted small mb-0">{{ $dashboardData['account_stats']['total'] }} akun aktif</p>
+                        </div>
+                        <a href="{{ route('wallet.accounts.index') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus-lg"></i> Baru
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    @if(count($dashboardData['accounts']) > 0)
+                        @foreach($dashboardData['accounts']->take(5) as $account)
+                            <div class="account-card {{ $account['type'] == 'asset' ? 'asset' : 'liability' }} bg-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle p-2 me-3" style="background-color: {{ $account['color'] }}; color: white;">
+                                            <i class="{{ $account['icon'] }}"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ $account['name'] }}</h6>
+                                            <small class="text-muted">{{ ucfirst($account['type']) }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold currency">{{ $account['balance'] }}</div>
+                                        <small class="{{ $account['net_flow'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                            @if($account['net_flow'] >= 0)
+                                                <i class="bi bi-arrow-up-right"></i>
+                                            @else
+                                                <i class="bi bi-arrow-down-right"></i>
+                                            @endif
+                                            <span class="currency">{{ abs($account['net_flow']) }}</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                @if($account['is_default'])
+                                    <span class="badge bg-primary bg-opacity-10 text-primary mt-2">
+                                        <i class="bi bi-star-fill me-1"></i> Utama
+                                    </span>
+                                @endif
+                            </div>
+                        @endforeach
+                        
+                        @if($dashboardData['account_stats']['total'] > 5)
+                            <div class="text-center mt-3">
+                                <a href="{{ route('wallet.accounts.index') }}" class="btn btn-sm btn-outline-secondary">
+                                    Lihat Semua Akun ({{ $dashboardData['account_stats']['total'] }})
+                                </a>
+                            </div>
+                        @endif
+                    @else
+                        <div class="empty-state">
+                            <i class="bi bi-wallet text-muted"></i>
+                            <p class="mt-3 mb-2">Belum ada akun</p>
+                            <a href="{{ route('wallet.accounts.create') }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Akun Pertama
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row: Recent Transactions and Budgets -->
+    <div class="row g-4 mt-2">
+        <!-- Recent Transactions -->
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header bg-transparent border-0 pb-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-0">Transaksi Terbaru</h5>
+                            <p class="text-muted small mb-0">
+                                {{ $dashboardData['transaction_stats']['total_this_month'] }} transaksi bulan ini
+                            </p>
+                        </div>
+                        <a href="{{ route('wallet.transactions.index') }}" class="btn btn-sm btn-outline-primary">
+                            Lihat Semua
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    @if(count($dashboardData['recent_transactions']) > 0)
+                        @foreach($dashboardData['recent_transactions'] as $transaction)
+                            <div class="transaction-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="transaction-icon {{ $transaction['type'] == 'income' ? 'bg-income' : 'bg-expense' }} me-3">
+                                        <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">{{ $transaction['description'] }}</h6>
+                                        <div class="d-flex align-items-center mt-1">
+                                            <span class="badge transaction-badge bg-light text-dark me-2">
+                                                {{ $transaction['category_name'] }}
+                                            </span>
+                                            <small class="text-muted">{{ $transaction['account_name'] }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }} currency">
+                                            {{ $transaction['amount'] }}
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="empty-state py-4">
+                            <i class="bi bi-receipt text-muted"></i>
+                            <p class="mt-3 mb-2">Belum ada transaksi</p>
+                            <a href="{{ route('wallet.transactions.create') }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Transaksi
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Warnings and Upcoming Recurring -->
+        <div class="col-xl-6">
+            <div class="row g-4 h-100">
+                <!-- Budget Warnings -->
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header bg-transparent border-0 pb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-0">Peringatan Budget</h5>
+                                    <p class="text-muted small mb-0">
+                                        {{ $dashboardData['budget_stats']['over_budget'] ?? 0 }} melebihi budget
+                                    </p>
+                                </div>
+                                @if(count($dashboardData['budget_warnings']) > 0)
+                                    <span class="badge bg-danger floating-badge">
+                                        {{ count($dashboardData['budget_warnings']) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            @if(count($dashboardData['budget_warnings']) > 0)
+                                @foreach(array_slice($dashboardData['budget_warnings'], 0, 3) as $warning)
+                                    <div class="alert-card p-3 mb-3 rounded">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">{{ $warning['category_name'] }}</h6>
+                                                <p class="mb-0 small">{{ $warning['message'] }}</p>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="fw-bold text-warning">
+                                                    {{ number_format($warning['usage_percentage'], 0) }}%
+                                                </div>
+                                                <small class="text-muted currency">{{ $warning['spent'] }} / {{ $warning['budget_amount'] }}</small>
+                                            </div>
+                                        </div>
+                                        <div class="progress progress-thin mt-2">
+                                            <div class="progress-bar bg-warning" 
+                                                 role="progressbar" 
+                                                 style="width: {{ min($warning['usage_percentage'], 100) }}%"
+                                                 aria-valuenow="{{ $warning['usage_percentage'] }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                
+                                @if(count($dashboardData['budget_warnings']) > 3)
+                                    <div class="text-center">
+                                        <a href="{{ route('wallet.budgets.index') }}" class="btn btn-sm btn-outline-warning">
+                                            Lihat {{ count($dashboardData['budget_warnings']) - 3 }} peringatan lainnya
+                                        </a>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="empty-state py-4">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <p class="mt-3 mb-2">Semua budget berjalan baik</p>
+                                    <small class="text-muted">Tidak ada peringatan budget</small>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Recurring Transactions -->
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header bg-transparent border-0 pb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-0">Transaksi Rutin Mendatang</h5>
+                                    <p class="text-muted small mb-0">7 hari ke depan</p>
+                                </div>
+                                <a href="{{ route('wallet.recurring.index') }}" class="btn btn-sm btn-outline-primary">
+                                    Kelola
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            @if(count($dashboardData['upcoming_recurring']) > 0)
+                                @foreach($dashboardData['upcoming_recurring'] as $recurring)
+                                    <div class="transaction-item position-relative">
+                                        @if($recurring['is_today'])
+                                            <span class="badge bg-success bg-opacity-10 text-success mb-1">Hari Ini</span>
+                                        @endif
+                                        
+                                        <div class="d-flex align-items-center">
+                                            <div class="transaction-icon bg-info bg-opacity-10 text-info me-3">
+                                                <i class="{{ $recurring['category_icon'] }}"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">{{ $recurring['description'] }}</h6>
+                                                <div class="d-flex align-items-center mt-1">
+                                                    <span class="badge transaction-badge bg-light text-dark me-2">
+                                                        {{ $recurring['frequency'] }}
+                                                    </span>
+                                                    <small class="text-muted">{{ $recurring['account_name'] }}</small>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="fw-bold {{ $recurring['type'] == 'income' ? 'text-success' : 'text-danger' }} currency">
+                                                    {{ $recurring['amount'] }}
+                                                </div>
+                                                <small class="text-muted">
+                                                    {{ $recurring['formatted_next_date'] }}
+                                                    @if($recurring['days_until'] > 0)
+                                                        <br><span class="text-info">({{ $recurring['days_until'] }} hari lagi)</span>
+                                                    @endif
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="empty-state py-4">
+                                    <i class="bi bi-calendar-event text-muted"></i>
+                                    <p class="mt-3 mb-2">Tidak ada transaksi rutin mendatang</p>
+                                    <a href="{{ route('wallet.recurring.create') }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-plus-lg me-1"></i> Buat Transaksi Rutin
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Row: Category Analysis and Recent Activity -->
+    <div class="row g-4 mt-2">
+        <!-- Category Analysis -->
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header bg-transparent border-0 pb-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-0">Analisis Kategori</h5>
+                            <p class="text-muted small mb-0">Pengeluaran berdasarkan kategori</p>
+                        </div>
+                        <a href="{{ route('wallet.categories.index') }}" class="btn btn-sm btn-outline-primary">
+                            Kelola
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    @if(count($dashboardData['category_analysis']) > 0)
+                        @foreach($dashboardData['category_analysis'] as $category)
+                            <div class="category-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle p-2 me-3 bg-light">
+                                            <i class="{{ $category['icon'] }} text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ $category['name'] }}</h6>
+                                            @if($category['budget_limit'] > 0)
+                                                <small class="text-muted currency">
+                                                    {{ $category['monthly_total'] }} / {{ $category['budget_limit'] }}
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold currency">{{ $category['monthly_total'] }}</div>
+                                        @if($category['budget_limit'] > 0)
+                                            <div class="d-flex align-items-center mt-1">
+                                                <div class="progress progress-thin flex-grow-1 me-2" style="width: 80px;">
+                                                    <div class="progress-bar {{ $category['has_budget_exceeded'] ? 'bg-danger' : 'bg-success' }}" 
+                                                         role="progressbar" 
+                                                         style="width: {{ min($category['budget_usage_percentage'], 100) }}%"
+                                                         aria-valuenow="{{ $category['budget_usage_percentage'] }}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <span class="small {{ $category['has_budget_exceeded'] ? 'text-danger' : 'text-success' }}">
+                                                    {{ number_format($category['budget_usage_percentage'], 0) }}%
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="empty-state py-4">
+                            <i class="bi bi-tags text-muted"></i>
+                            <p class="mt-3 mb-2">Belum ada kategori dengan pengeluaran</p>
+                            <a href="{{ route('wallet.categories.create') }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Kategori
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity and Account Alerts -->
+        <div class="col-xl-6">
+            <div class="row g-4 h-100">
+                <!-- Recent Activity -->
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header bg-transparent border-0 pb-2">
+                            <h5 class="card-title mb-0">Aktivitas Terbaru</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            @if(count($dashboardData['recent_activity']) > 0)
+                                @foreach($dashboardData['recent_activity'] as $activity)
+                                    <div class="transaction-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="transaction-icon bg-light text-dark me-3">
+                                                <i class="bi bi-clock-history"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">{{ $activity['description'] }}</h6>
+                                                <small class="text-muted">
+                                                    {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="empty-state py-4">
+                                    <i class="bi bi-activity text-muted"></i>
+                                    <p class="mt-3 mb-2">Belum ada aktivitas</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Alerts -->
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header bg-transparent border-0 pb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Peringatan Akun</h5>
+                                @if(count($dashboardData['account_alerts']) > 0)
+                                    <span class="badge bg-danger floating-badge">
+                                        {{ count($dashboardData['account_alerts']) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            @if(count($dashboardData['account_alerts']) > 0)
+                                @foreach($dashboardData['account_alerts'] as $alert)
+                                    <div class="alert alert-warning alert-dismissible fade show mb-2" role="alert">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            <div class="flex-grow-1">
+                                                <strong>{{ $alert['account_name'] }}</strong> - {{ $alert['message'] }}
+                                                <div class="mt-1">
+                                                    <small>Saldo: <span class="currency">{{ $alert['balance'] }}</span></small>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="empty-state py-4">
+                                    <i class="bi bi-shield-check text-success"></i>
+                                    <p class="mt-3 mb-2">Semua akun dalam kondisi baik</p>
+                                    <small class="text-muted">Tidak ada peringatan akun</small>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Data untuk grafik transaksi
-  const transactionData = {
-    labels: {!! json_encode($dashboardData['monthly_chart']['labels'] ?? ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun']) !!},
-    datasets: [{
-      label: 'Pemasukan',
-      data: {!! json_encode($dashboardData['monthly_chart']['income'] ?? [0,0,0,0,0,0]) !!},
-      backgroundColor: 'rgba(16, 185, 129, 0.2)',
-      borderColor: '#10b981',
-      borderWidth: 2,
-      tension: 0.4,
-      fill: true
-    }, {
-      label: 'Pengeluaran',
-      data: {!! json_encode($dashboardData['monthly_chart']['expense'] ?? [0,0,0,0,0,0]) !!},
-      backgroundColor: 'rgba(239, 68, 68, 0.2)',
-      borderColor: '#ef4444',
-      borderWidth: 2,
-      tension: 0.4,
-      fill: true
-    }]
-  };
-    
-  // Data untuk grafik kategori
-  const categoryData = {
-    labels: {!! json_encode(array_slice(array_column($dashboardData['category_analysis'] ?? [], 'name'), 0, 5)) !!},
-    datasets: [{
-      data: {!! json_encode(array_slice(array_column($dashboardData['category_analysis'] ?? [], 'percentage'), 0, 5)) !!},
-      backgroundColor: {!! json_encode(array_slice(array_column($dashboardData['category_analysis'] ?? [], 'color'), 0, 5)) !!},
-      borderWidth: 1
-    }]
-  };
-    
 document.addEventListener('DOMContentLoaded', function() {
-    // Konfigurasi grafik transaksi
-    const ctx = document.getElementById('transactionChart').getContext('2d');
-    const transactionChart = new Chart(ctx, {
-        type: 'line',
-        data: transactionData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            label += new Intl.NumberFormat('id-ID', {
-                                style: 'currency',
-                                currency: 'IDR',
-                                minimumFractionDigits: 0
-                            }).format(context.parsed.y);
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            if (value >= 1000000) {
-                                return 'Rp' + (value / 1000000).toFixed(1) + 'Jt';
-                            }
-                            return 'Rp' + value;
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    // Konfigurasi grafik kategori
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    const categoryChart = new Chart(categoryCtx, {
-        type: 'doughnut',
-        data: categoryData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-
-    // Toggle periode grafik
-    document.querySelectorAll('[data-period]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            const period = this.getAttribute('data-period');
-            // Di sini Anda bisa menambahkan logika untuk mengubah data grafik
-            // berdasarkan periode yang dipilih
-        });
-    });
-
-    // Toggle tipe kategori
-    document.querySelectorAll('[data-type]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            const type = this.getAttribute('data-type');
-            // Di sini Anda bisa menambahkan logika untuk mengubah data kategori
-        });
-    });
-
     // Format semua currency
     document.querySelectorAll('.currency').forEach(element => {
-        const value = element.textContent;
+        const value = parseFloat(element.textContent.replace(/[^0-9.-]+/g,""));
         if (!isNaN(value)) {
             element.textContent = new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -682,6 +723,160 @@ document.addEventListener('DOMContentLoaded', function() {
             }).format(value);
         }
     });
+
+    // Refresh dashboard button
+    const refreshBtn = document.getElementById('refreshDashboard');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function() {
+            const btn = this;
+            const originalHtml = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise animate-spin"></i> Memuat...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        });
+    }
+
+    // Monthly Chart
+    const chartData = @json($dashboardData['monthly_chart']);
+    
+    if (chartData && chartData.length > 0) {
+        const days = chartData.map(item => item.day);
+        const income = chartData.map(item => item.income || 0);
+        const expense = chartData.map(item => item.expense || 0);
+        
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        const monthlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: days,
+                datasets: [
+                    {
+                        label: 'Pemasukan',
+                        data: income,
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: '#10b981',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.7
+                    },
+                    {
+                        label: 'Pengeluaran',
+                        data: expense,
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.7
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR',
+                                        minimumFractionDigits: 0
+                                    }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            callback: function(value, index) {
+                                return 'Hari ' + this.getLabelForValue(value);
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return 'Rp' + (value / 1000000).toFixed(1) + 'Jt';
+                                }
+                                if (value >= 1000) {
+                                    return 'Rp' + (value / 1000).toFixed(0) + 'rb';
+                                }
+                                return 'Rp' + value;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    } else {
+        // Jika tidak ada data chart
+        const chartContainer = document.querySelector('.chart-container');
+        if (chartContainer) {
+            chartContainer.innerHTML = `
+                <div class="empty-state h-100 d-flex flex-column justify-content-center align-items-center">
+                    <i class="bi bi-bar-chart text-muted mb-3" style="font-size: 3rem;"></i>
+                    <p class="text-muted">Belum ada data transaksi bulan ini</p>
+                </div>
+            `;
+        }
+    }
+
+    // Auto-close alerts after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
 });
+
+// Add animate-spin class for refresh button
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+`;
+document.head.appendChild(style);
 </script>
 @endpush
