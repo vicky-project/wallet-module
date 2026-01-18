@@ -222,7 +222,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Total Transaksi</h6>
-            <h4 class="mb-0">{{ $account->transactions_count ?? 0 }}</h4>
+            <h4 class="mb-0">{{ $account->transaction_counts ?? 0 }}</h4>
             <small class="text-muted">Semua waktu</small>
           </div>
         </div>

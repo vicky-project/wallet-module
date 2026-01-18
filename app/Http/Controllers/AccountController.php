@@ -85,6 +85,7 @@ class AccountController extends BaseController
 			// Get recent transactions
 			$this->service->validateAccount($account, $request->user());
 			$account->withCount("transactions");
+			dd($account);
 
 			return view("wallet::accounts.show", compact("account"));
 		} catch (\Exception $e) {
