@@ -237,7 +237,17 @@ class TransactionRepository extends BaseRepository
 			->groupBy(DB::raw("DAY(transaction_date)"))
 			->orderBy("day")
 			->get()
-			->dd()
+			->map(function ($item) {
+				return [
+					"day" => $item->day,
+					"income" => $this->toMoney($item->income, isInteger: false)
+						->getAmount()
+						->toInt(),
+					"expense" => $this->toMoney($item->expense, isInteger: false)
+						->getAmount()
+						->toInt(),
+				];
+			})
 			->toArray();
 	}
 
