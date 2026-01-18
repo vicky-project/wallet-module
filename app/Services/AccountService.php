@@ -230,7 +230,8 @@ class AccountService
 					$account
 						->transactions()
 						->income()
-						->sum("amount")
+						->sum("amount"),
+					isInteger: false
 				)
 				->getAmount()
 				->toInt();
@@ -240,7 +241,8 @@ class AccountService
 					$account
 						->transactions()
 						->expense()
-						->sum("amount")
+						->sum("amount"),
+					isInteger: false
 				)
 				->getAmount()
 				->toInt();
