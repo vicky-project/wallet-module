@@ -407,7 +407,10 @@ class TransactionRepository extends BaseRepository
 			});
 		}
 
-		return $query->orderBy("transaction_date", "desc")->paginate($perPage);
+		return $query
+			->orderBy("created_at", "desc")
+			->orderBy("transaction_date", "desc")
+			->paginate($perPage);
 	}
 
 	/**
