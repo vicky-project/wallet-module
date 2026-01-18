@@ -3,6 +3,7 @@
 @section('title', $account->name . ' - Detail Akun')
 
 @use('Brick\Money\Money')
+@use('Modules\Wallet\Helpers\Helper')
 
 @push('styles')
 <style>
@@ -158,7 +159,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Pemasukan</h6>
-            <h4 class="mb-0 currency">{{ dd($account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth())) }}</h4>
+            <h4 class="mb-0 currency">{{ Helper::toMoney($account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth()), $account->currency, true)->getAmount()->toInt() }}</h4>
             <small class="text-muted">Bulan ini</small>
           </div>
         </div>
@@ -199,7 +200,7 @@
             @php
               $income = $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth());
               $expense = $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth());
-              $netFlow = Money::of($income - $expense, $account->currency);
+              $netFlow = Helper::toMoney($income - $expense, $account->currency, true);
             @endphp
             <h4 class="mb-0 currency {{ $netFlow->getAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }}">
               {{ $netFlow->getAmount()->toInt() }}
