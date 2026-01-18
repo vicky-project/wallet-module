@@ -6,6 +6,7 @@ use Modules\Wallet\Http\Controllers\TransactionController;
 use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
 use Modules\Wallet\Http\Controllers\BudgetController;
+use Modules\Wallet\Http\Controllers\RecurringController;
 
 Route::middleware(["auth"])
 	->prefix("apps")
@@ -93,4 +94,7 @@ Route::middleware(["auth"])
 			"resetSpent",
 		])->name("budgets.reset-spent");
 		Route::resource("budgets", BudgetController::class);
+
+		// Recurring routes
+		Route::resource("recurrings", RecurringController::class);
 	});
