@@ -48,6 +48,7 @@ class TransactionService
 			"end_date" => $endOfMonth,
 			"now" => $now,
 		]);
+		dd($data["summary"]);
 
 		return [
 			"monthly_income" => $data["summary"]["income"] ?? 0,

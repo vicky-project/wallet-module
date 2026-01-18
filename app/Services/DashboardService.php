@@ -161,7 +161,7 @@ class DashboardService
 	protected function formatDashboardData(array $data, User $user): array
 	{
 		return [
-			"total_balance" => $data["accounts"]["total_balance"] ?? 0,
+			"total_balance" => $data["accounts"]["stats"]["total_balance"] ?? 0,
 			"balance_trend" => $this->calculateBalanceTrend($user),
 			"monthly_income" => $data["transactions"]["monthly_income"] ?? 0,
 			"monthly_expense" => $data["transactions"]["monthly_expense"] ?? 0,
