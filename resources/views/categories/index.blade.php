@@ -29,13 +29,13 @@
     }
     
     .category-icon {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
     
     .category-type-badge {
@@ -179,12 +179,6 @@
         
         .budget-display {
             font-size: 0.9rem;
-        }
-        
-        .category-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
         }
     }
 </style>
