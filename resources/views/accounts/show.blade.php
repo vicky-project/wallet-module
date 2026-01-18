@@ -199,7 +199,7 @@
             @php
               $income = $account->getIncomeForPeriod(now()->startOfMonth(), now()->endOfMonth());
               $expense = $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth());
-              $netFlow = Helper::toMoney($income - $expense, $account->currency, true);
+              $netFlow = Helper::toMoney($income - $expense, $account->currency);
             @endphp
             <h4 class="mb-0 currency {{ $netFlow->getAmount()->toInt() >= 0 ? 'text-success' : 'text-danger' }}">
               {{ $netFlow->getAmount()->toInt() }}
@@ -222,7 +222,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Total Transaksi</h6>
-            <h4 class="mb-0">{{ $account->transaction_counts ?? 0 }}</h4>
+            <h4 class="mb-0">{{ $account->transactions_count ?? 0 }}</h4>
             <small class="text-muted">Semua waktu</small>
           </div>
         </div>
