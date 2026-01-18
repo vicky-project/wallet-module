@@ -91,7 +91,8 @@ class TransactionRepository extends BaseRepository
 							"type" => $recent->type,
 							"transaction_date" => $recent->transaction_date,
 						];
-					});
+					})
+					->toArray();
 
 				return [
 					"summary" => (array) $summary,

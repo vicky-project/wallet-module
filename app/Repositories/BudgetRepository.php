@@ -88,8 +88,16 @@ class BudgetRepository extends BaseRepository
 		return [
 			"total" => count($budgets),
 			"over_budget" => count($overBudget),
-			"total_amount" => array_sum(array_column($budgets, "amount")),
-			"total_spent" => array_sum(array_column($budgets, "spent")),
+			"total_amount" => $this->toMoney(
+				array_sum(array_column($budgets, "amount")),
+				isInteger: false
+			)
+				->getAmount()
+				->toInt(),
+			"total_spent" => $this->toMoney(
+				array_sum(array_column($budgets, "spent")),
+				isInteger: false
+			),
 		];
 	}
 
