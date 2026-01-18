@@ -643,6 +643,7 @@
                         <div class="card-body pt-0">
                             @if(count($dashboardData['recent_activity']) > 0)
                                 @foreach($dashboardData['recent_activity'] as $activity)
+                                {{ dd($activity) }}
                                     <div class="transaction-item">
                                         <div class="d-flex align-items-center">
                                             <div class="transaction-icon bg-light text-dark me-3">
