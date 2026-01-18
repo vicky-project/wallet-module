@@ -523,7 +523,7 @@
                 // Determine budget status
                 $budgetStatus = 'budget-none';
                 $usagePercentage = $category->budget_usage_percentage ?? 0;
-                $hasBudget = isset($category->current_budget);
+                $hasBudget = isset($category->budgets);
                 $isExceeded = $category->has_budget_exceeded ?? false;
                 
                 if ($hasBudget) {
@@ -578,7 +578,7 @@
                   @endif
                 </td>
                 <td>
-                  @if($hasBudget && $category->current_budget)
+                  @if($hasBudget)
                     <div class="budget-display">
                       {{ Helper::toMoney($category->current_spent ?? 0)->getAmount()->toInt() }} / {{ Helper::toMoney($category->current_budget->amount)->getAmount()->toInt() }}
                     </div>

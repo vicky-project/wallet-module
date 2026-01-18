@@ -107,29 +107,37 @@ class CategoryService
 			->paginate($perPage)
 			->through(function ($category) {
 				// Add monthly total and budget usage for expense and income categories
-				$monthlyTotal = 0;
+
+				switch ($category->type) {
+					case CategoryType::EXPENSE:
+						break;
+						$monthlyTotal = $category->getExpenseTotal();
+						$activeBudget = $category->getCurrentBudget();
+						if ($activeBudget) {
+							$category->budget_usage_percentage =
+								$activeBudget->amount->getAmount()->toInt() > 0
+									? ($monthlyTotal /
+											$activeBudget->amount->getAmount()->toInt()) *
+										100
+									: 0;
+							$category->has_budget_exceeded =
+								$monthlyTotal > $activeBudget->amount->getAmount()->toInt();
+							$category->budget_limit = $activeBudget->amount;
+						} else {
+							$category->budget_usage_percentage = 0;
+							$category->has_budget_exceeded = false;
+							$category->budget_limit = 0;
+						}
+					case CategoryType::INCOME:
+						$monthlyTotal = $category->getIncomeTotal();
+						break;
+					default:
+						$monthlyTotal = 0;
+						break;
+				}
 
 				if ($category->type === CategoryType::EXPENSE) {
-					$monthlyTotal = $category->getExpenseTotal();
-
-					$activeBudget = $category->getCurrentBudget();
-					if ($activeBudget) {
-						$category->budget_usage_percentage =
-							$activeBudget->amount->getAmount()->toInt() > 0
-								? ($monthlyTotal /
-										$activeBudget->amount->getAmount()->toInt()) *
-									100
-								: 0;
-						$category->has_budget_exceeded =
-							$monthlyTotal > $activeBudget->amount->getAmount()->toInt();
-						$category->budget_limit = $activeBudget->amount;
-					} else {
-						$category->budget_usage_percentage = 0;
-						$category->has_budget_exceeded = false;
-						$category->budget_limit = 0;
-					}
 				} elseif ($category->type === CategoryType::EXPENSE) {
-					$monthlyTotal = $category->getIncomeTotal();
 				}
 
 				$category->monthly_total = $monthlyTotal;
