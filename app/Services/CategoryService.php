@@ -106,10 +106,11 @@ class CategoryService
 			->orderBy("name")
 			->paginate($perPage)
 			->through(function ($category) {
-				// Add monthly total and budget usage for expense categories
+				// Add monthly total and budget usage for expense and income categories
+				$monthlyTotal = 0;
+
 				if ($category->type === CategoryType::EXPENSE) {
 					$monthlyTotal = $category->getExpenseTotal();
-					$category->monthly_total = $monthlyTotal;
 
 					$activeBudget = $category->getCurrentBudget();
 					if ($activeBudget) {
@@ -127,8 +128,11 @@ class CategoryService
 						$category->has_budget_exceeded = false;
 						$category->budget_limit = 0;
 					}
+				} elseif ($category->type === CategoryType::EXPENSE) {
+					$monthlyTotal = $category->getIncomeTotal();
 				}
 
+				$category->monthly_total = $monthlyTotal;
 				return $category;
 			});
 	}
