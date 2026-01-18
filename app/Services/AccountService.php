@@ -225,23 +225,25 @@ class AccountService
 	public function recalculateBalance(Account $account): bool
 	{
 		return DB::transaction(function () use ($account) {
-			$income = $this->repository->toDatabaseAmount(
-				$this->repository->toMoney(
+			$income = $this->repository
+				->toMoney(
 					$account
 						->transactions()
 						->income()
 						->sum("amount")
 				)
-			);
+				->getAmount()
+				->toInt();
 
-			$expense = $this->toDatabaseAmount(
-				$this->repository->toMoney(
+			$expense = $this->repository
+				->toMoney(
 					$account
 						->transactions()
 						->expense()
 						->sum("amount")
 				)
-			);
+				->getAmount()
+				->toInt();
 
 			$transfersIn = $account
 				->destinationTransactions()
@@ -262,7 +264,7 @@ class AccountService
 			dd(
 				$account->initial_balance
 					->plus($income)
-					->minus()
+					->minus($expense)
 					->getAmount()
 					->toInt(),
 				$income,
