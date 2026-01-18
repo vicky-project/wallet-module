@@ -309,7 +309,7 @@
                             <h5 class="card-title mb-0">Akun Saya</h5>
                             <p class="text-muted small mb-0">{{ $dashboardData['account_stats']['total'] }} akun aktif</p>
                         </div>
-                        <a href="{{ route('wallet.accounts.index') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('apps.accounts.index') }}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-plus-lg"></i> Baru
                         </a>
                     </div>
@@ -350,7 +350,7 @@
                         
                         @if($dashboardData['account_stats']['total'] > 5)
                             <div class="text-center mt-3">
-                                <a href="{{ route('wallet.accounts.index') }}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ route('apps.accounts.index') }}" class="btn btn-sm btn-outline-secondary">
                                     Lihat Semua Akun ({{ $dashboardData['account_stats']['total'] }})
                                 </a>
                             </div>
@@ -359,7 +359,7 @@
                         <div class="empty-state">
                             <i class="bi bi-wallet text-muted"></i>
                             <p class="mt-3 mb-2">Belum ada akun</p>
-                            <a href="{{ route('wallet.accounts.create') }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-plus-lg me-1"></i> Tambah Akun Pertama
                             </a>
                         </div>
@@ -382,7 +382,7 @@
                                 {{ $dashboardData['transaction_stats']['total_this_month'] }} transaksi bulan ini
                             </p>
                         </div>
-                        <a href="{{ route('wallet.transactions.index') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('apps.transactions.index') }}" class="btn btn-sm btn-outline-primary">
                             Lihat Semua
                         </a>
                     </div>
@@ -419,7 +419,7 @@
                         <div class="empty-state py-4">
                             <i class="bi bi-receipt text-muted"></i>
                             <p class="mt-3 mb-2">Belum ada transaksi</p>
-                            <a href="{{ route('wallet.transactions.create') }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('apps.transactions.create') }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-plus-lg me-1"></i> Tambah Transaksi
                             </a>
                         </div>
@@ -479,7 +479,7 @@
                                 
                                 @if(count($dashboardData['budget_warnings']) > 3)
                                     <div class="text-center">
-                                        <a href="{{ route('wallet.budgets.index') }}" class="btn btn-sm btn-outline-warning">
+                                        <a href="{{ route('apps.budgets.index') }}" class="btn btn-sm btn-outline-warning">
                                             Lihat {{ count($dashboardData['budget_warnings']) - 3 }} peringatan lainnya
                                         </a>
                                     </div>
@@ -504,7 +504,7 @@
                                     <h5 class="card-title mb-0">Transaksi Rutin Mendatang</h5>
                                     <p class="text-muted small mb-0">7 hari ke depan</p>
                                 </div>
-                                <a href="{{ route('wallet.recurring.index') }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('apps.recurring.index') }}" class="btn btn-sm btn-outline-primary">
                                     Kelola
                                 </a>
                             </div>
@@ -548,7 +548,7 @@
                                 <div class="empty-state py-4">
                                     <i class="bi bi-calendar-event text-muted"></i>
                                     <p class="mt-3 mb-2">Tidak ada transaksi rutin mendatang</p>
-                                    <a href="{{ route('wallet.recurring.create') }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route('apps.recurring.create') }}" class="btn btn-sm btn-primary">
                                         <i class="bi bi-plus-lg me-1"></i> Buat Transaksi Rutin
                                     </a>
                                 </div>
@@ -571,7 +571,7 @@
                             <h5 class="card-title mb-0">Analisis Kategori</h5>
                             <p class="text-muted small mb-0">Pengeluaran berdasarkan kategori</p>
                         </div>
-                        <a href="{{ route('wallet.categories.index') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('apps.categories.index') }}" class="btn btn-sm btn-outline-primary">
                             Kelola
                         </a>
                     </div>
@@ -620,7 +620,7 @@
                         <div class="empty-state py-4">
                             <i class="bi bi-tags text-muted"></i>
                             <p class="mt-3 mb-2">Belum ada kategori dengan pengeluaran</p>
-                            <a href="{{ route('wallet.categories.create') }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('apps.categories.create') }}" class="btn btn-sm btn-primary">
                                 <i class="bi bi-plus-lg me-1"></i> Tambah Kategori
                             </a>
                         </div>
