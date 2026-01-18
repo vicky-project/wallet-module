@@ -392,27 +392,26 @@
                 <div class="card-body pt-0">
                     @if(count($dashboardData['recent_transactions']) > 0)
                         @foreach($dashboardData['recent_transactions'] as $transaction)
-                        {{ dd($transaction) }}
                             <div class="transaction-item">
                                 <div class="d-flex align-items-center">
-                                    <div class="transaction-icon {{ $transaction->type == TransactionType::INCOME ? 'bg-income' : 'bg-expense' }} me-3">
-                                        <i class="{{ $transaction->category_icon ?? 'bi-arrow-left-right' }} {{ $transaction->type == TransactionType::INCOME ? 'text-success' : 'text-danger' }}"></i>
+                                    <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME ? 'bg-income' : 'bg-expense' }} me-3">
+                                        <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME ? 'text-success' : 'text-danger' }}"></i>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0">{{ $transaction->description }}</h6>
+                                        <h6 class="mb-0">{{ $transaction['description'] }}</h6>
                                         <div class="d-flex align-items-center mt-1">
                                             <span class="badge transaction-badge bg-light text-dark me-2">
-                                                {{ $transaction->category_name }}
+                                                {{ $transaction['category_name'] }}
                                             </span>
-                                            <small class="text-muted">{{ $transaction->account_name }}</small>
+                                            <small class="text-muted">{{ $transaction['account_name'] }}</small>
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        <div class="fw-bold {{ $transaction->type == TransactionType::INCOME ? 'text-success' : 'text-danger' }} currency">
-                                            {{ $transaction->amount }}
+                                        <div class="fw-bold {{ $transaction['type'] == TransactionType::INCOME ? 'text-success' : 'text-danger' }} currency">
+                                            {{ $transaction['amount'] }}
                                         </div>
                                         <small class="text-muted">
-                                            {{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d M H:i') }}
+                                            {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}
                                         </small>
                                     </div>
                                 </div>
