@@ -387,10 +387,12 @@
       <div class="card-body pt-0">
         @forelse($dashboardData['recent_transactions'] as $transaction)
           <div class="transaction-item">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                
               <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME->value ? 'bg-income' : 'bg-expense' }} me-3">
                 <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }}"></i>
               </div>
-            <div class="d-flex align-items-center justify-content-between">
               <div class="flex-grow-1">
                 <h6 class="mb-0">{{ $transaction['description'] }}</h6>
                 <div class="d-flex align-items-center mt-1">
@@ -399,6 +401,7 @@
                   </span>
                   <small class="text-muted">{{ $transaction['account_name'] }}</small>
                 </div>
+              </div>
               </div>
               <div class="ms-auto text-end">
                 <div class="fw-bold {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }} currency">
