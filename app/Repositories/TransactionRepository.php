@@ -84,7 +84,17 @@ class TransactionRepository extends BaseRepository
 				return [
 					"summary" => (array) $summary,
 					"stats" => (array) $stats,
-					"recent_transactions" => $recentTransactions,
+					"recent_transactions" => $recentTransactions->map(function ($recent) {
+						return [
+							"account_name" => $recent->account_name,
+							"category_name" => $recent->category_name,
+							"category_icon" => $recent->category_icon,
+							"description" => $recent->description,
+							"amount" => $recent->amount->getAmount()->toInt(),
+							"type" => $recent->type,
+							"transaction_date" => $recent->transaction_date,
+						];
+					}),
 				];
 			});
 		});
