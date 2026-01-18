@@ -45,7 +45,12 @@ class CategoryRepository extends BaseRepository
 					"id" => $category->id,
 					"name" => $category->name,
 					"icon" => $category->icon,
-					"monthly_total" => $category->monthly_total ?? 0,
+					"monthly_total" => $this->toMoney(
+						$category->monthly_total ?? 0,
+						isInteger: false
+					)
+						->getAmount()
+						->toInt(),
 					"budget_usage_percentage" => $category->budget_usage_percentage ?? 0,
 					"has_budget_exceeded" => $category->has_budget_exceeded ?? false,
 					"budget_limit" => $category->budget_limit ?? 0,

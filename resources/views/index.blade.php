@@ -570,7 +570,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div class="d-flex align-items-center">
                 <div class="rounded-circle p-2 me-3 bg-light">
-                  <i class="{{ $category['icon'] }} text-primary"></i>
+                  <i class="bi {{ $category['icon'] }} text-primary"></i>
                 </div>
                 <div>
                   <h6 class="mb-0">{{ $category['name'] }}</h6>
