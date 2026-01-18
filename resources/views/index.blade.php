@@ -506,7 +506,7 @@
                                     <h5 class="card-title mb-0">Transaksi Rutin Mendatang</h5>
                                     <p class="text-muted small mb-0">7 hari ke depan</p>
                                 </div>
-                                <a href="{{ route('apps.recurring.index') }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('apps.recurrings.index') }}" class="btn btn-sm btn-outline-primary">
                                     Kelola
                                 </a>
                             </div>
@@ -550,7 +550,7 @@
                                 <div class="empty-state py-4">
                                     <i class="bi bi-calendar-event text-muted"></i>
                                     <p class="mt-3 mb-2">Tidak ada transaksi rutin mendatang</p>
-                                    <a href="{{ route('apps.recurring.create') }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route('apps.recurrings.create') }}" class="btn btn-sm btn-primary">
                                         <i class="bi bi-plus-lg me-1"></i> Buat Transaksi Rutin
                                     </a>
                                 </div>
