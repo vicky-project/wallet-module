@@ -333,7 +333,18 @@ class CategoryService
 		$user = auth()->user();
 		$warnings = $this->categoryRepository->getBudgetWarnings($user, $threshold);
 		return $warnings->map(function ($warning) {
-			return [];
+			return [
+				"category_id" => $warning["category"]->id ?? null,
+				"category_name" => $warning["category"]->name ?? "Unknown",
+				"budget_name" => $warning["budget"]->name ?? "Unknown",
+				"usage_percentage" => $warning["usage_percentage"] ?? 0,
+				"spent" => $warning["total_spent"] ?? 0,
+				"budget_amount" => $warning["budget"]->amount ?? 0,
+				"message" =>
+					"{$warning["category"]->name} telah menggunakan " .
+					round($warning["usage_percentage"]) .
+					"% dari budget",
+			];
 		});
 	}
 
