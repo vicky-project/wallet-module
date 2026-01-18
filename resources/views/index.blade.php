@@ -394,8 +394,8 @@
                         @foreach($dashboardData['recent_transactions'] as $transaction)
                             <div class="transaction-item">
                                 <div class="d-flex align-items-center">
-                                    <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME ? 'bg-income' : 'bg-expense' }} me-3">
-                                        <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME ? 'text-success' : 'text-danger' }}"></i>
+                                    <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME->value ? 'bg-income' : 'bg-expense' }} me-3">
+                                        <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }}"></i>
                                     </div>
                                     <div class="flex-grow-1">
                                         <h6 class="mb-0">{{ $transaction['description'] }}</h6>
@@ -407,7 +407,7 @@
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        <div class="fw-bold {{ $transaction['type'] == TransactionType::INCOME ? 'text-success' : 'text-danger' }} currency">
+                                        <div class="fw-bold {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }} currency">
                                             {{ $transaction['amount'] }}
                                         </div>
                                         <small class="text-muted">
