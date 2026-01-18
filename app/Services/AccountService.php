@@ -251,7 +251,18 @@ class AccountService
 				->minus($expense)
 				->plus($transfersIn)
 				->minus($transfersOut);
-			dd($income, $expense, $transfersOut, $transfersIn, $newBalance);
+			dd(
+				$account->initial_balance
+					->plus($income)
+					->minus($expense)
+					->getAmount()
+					->toInt(),
+				$income,
+				$expense,
+				$transfersOut,
+				$transfersIn,
+				$newBalance
+			);
 
 			$account->balance = $newBalance;
 			return $account->save();
