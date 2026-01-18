@@ -392,6 +392,7 @@
                 <div class="card-body pt-0">
                     @if(count($dashboardData['recent_transactions']) > 0)
                         @foreach($dashboardData['recent_transactions'] as $transaction)
+                        {{ dd($transaction) }}
                             <div class="transaction-item">
                                 <div class="d-flex align-items-center">
                                     <div class="transaction-icon {{ $transaction->type == TransactionType::INCOME ? 'bg-income' : 'bg-expense' }} me-3">
