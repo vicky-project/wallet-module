@@ -2,7 +2,6 @@
 
 @section('title', $account->name . ' - Detail Akun')
 
-@use('Brick\Money\Money')
 @use('Modules\Wallet\Helpers\Helper')
 
 @push('styles')
@@ -178,7 +177,7 @@
           </div>
           <div>
             <h6 class="text-muted mb-1">Pengeluaran</h6>
-            <h4 class="mb-0 currency">{{ $account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth()) }}</h4>
+            <h4 class="mb-0 currency">{{ Helper::toMoney($account->getExpenseForPeriod(now()->startOfMonth(), now()->endOfMonth()), $account->currency) }}</h4>
             <small class="text-muted">Bulan ini</small>
           </div>
         </div>
