@@ -228,8 +228,8 @@
             <span class="text-muted small">Pemasukan Bulan Ini</span>
             <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['monthly_income'] }}</h3>
           </div>
-          <div class="bg-success rounded-circle p-2">
-            <i class="bi bi-arrow-down-left text-white fs-5"></i>
+          <div class="stat-icon bg-success bg-opacity-10 text-success">
+            <i class="bi bi-arrow-down-left"></i>
           </div>
         </div>
         <div class="d-flex align-items-center mt-3">
@@ -251,8 +251,8 @@
             <span class="text-muted small">Pengeluaran Bulan Ini</span>
             <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['monthly_expense'] }}</h3>
           </div>
-          <div class="bg-danger rounded-circle p-2">
-            <i class="bi bi-arrow-up-right text-white fs-5"></i>
+          <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+            <i class="bi bi-arrow-up-right"></i>
           </div>
         </div>
         <div class="d-flex align-items-center mt-3">
@@ -274,8 +274,8 @@
             <span class="text-muted small">Penggunaan Budget</span>
             <h3 class="mt-1 mb-0 fw-bold">{{ number_format($dashboardData['budget_usage_percentage'], 1) }}%</h3>
           </div>
-          <div class="bg-warning rounded-circle p-2">
-            <i class="bi bi-pie-chart text-white fs-5"></i>
+          <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+            <i class="bi bi-pie-chart"></i>
           </div>
         </div>
         <div class="mt-3">
