@@ -233,7 +233,7 @@
       <div class="mt-2">
         @foreach($budgetWarnings->take(3) as $warning)
         <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle me-2 mb-1">
-          {{ $warning['category']->name }} ({{ number_format($warning['usage_percentage'], 0) }}%)
+          {{ $warning['category_name'] }} ({{ number_format($warning['usage_percentage'], 0) }}%)
         </span>
         @endforeach
         @if($budgetWarnings->count() > 3)
