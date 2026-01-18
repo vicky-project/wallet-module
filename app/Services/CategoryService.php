@@ -136,10 +136,6 @@ class CategoryService
 						break;
 				}
 
-				if ($category->type === CategoryType::EXPENSE) {
-				} elseif ($category->type === CategoryType::EXPENSE) {
-				}
-
 				$category->monthly_total = $monthlyTotal;
 				return $category;
 			})
