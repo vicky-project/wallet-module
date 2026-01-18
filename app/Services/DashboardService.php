@@ -35,7 +35,7 @@ class DashboardService
 
 			// Gunakan Parallel Processing jika memungkinkan
 			$results = $this->executeQueriesWithFallback($user, $now);
-			//dd($results);
+			dd($results["transactions"]["chart_data"]);
 
 			// Format data untuk response
 			return $this->formatDashboardData($results, $user);
