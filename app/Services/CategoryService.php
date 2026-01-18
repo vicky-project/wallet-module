@@ -110,7 +110,6 @@ class CategoryService
 
 				switch ($category->type) {
 					case CategoryType::EXPENSE:
-						break;
 						$monthlyTotal = $category->getExpenseTotal();
 						$activeBudget = $category->getCurrentBudget();
 						if ($activeBudget) {
@@ -128,6 +127,7 @@ class CategoryService
 							$category->has_budget_exceeded = false;
 							$category->budget_limit = 0;
 						}
+						break;
 					case CategoryType::INCOME:
 						$monthlyTotal = $category->getIncomeTotal();
 						break;
