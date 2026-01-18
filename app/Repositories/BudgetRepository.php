@@ -96,7 +96,7 @@ class BudgetRepository extends BaseRepository
 	/**
 	 * Get budget warnings
 	 */
-	protected function getBudgetWarnings(array $budgets): Collection
+	protected function getBudgetWarnings(array $budgets): array
 	{
 		$threshold = 80;
 
@@ -112,7 +112,8 @@ class BudgetRepository extends BaseRepository
 					"amount" => $budget->amount,
 				];
 			})
-			->values();
+			->values()
+			->toArray();
 	}
 
 	/**
