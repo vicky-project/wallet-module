@@ -64,7 +64,7 @@ class TransactionController extends Controller
 		]);
 
 		// Get paginated transactions
-		$result = $this->transactionService->getPaginatedTransactions($filters, 20);
+		$result = $this->transactionService->getPaginatedTransactions($filters, 10);
 
 		if (!$result["success"]) {
 			return back()->withErrors($result["message"]);
