@@ -237,6 +237,7 @@ class TransactionRepository extends BaseRepository
 			->groupBy(DB::raw("DAY(transaction_date)"))
 			->orderBy("day")
 			->get()
+			->dd()
 			->toArray();
 	}
 
