@@ -325,7 +325,7 @@
                                         </div>
                                         <div>
                                             <h6 class="mb-0">{{ $account['name'] }}</h6>
-                                            <small class="text-muted">{{ ucfirst($account['type']) }}</small>
+                                            <small class="text-muted">{{ ucfirst($account['type']->value) }}</small>
                                         </div>
                                     </div>
                                     <div class="text-end">
