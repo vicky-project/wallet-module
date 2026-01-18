@@ -200,7 +200,6 @@ class DashboardService
 				"account.id",
 				$account["id"]
 			);
-			dd($analytics);
 
 			return [
 				"id" => $account["id"],
