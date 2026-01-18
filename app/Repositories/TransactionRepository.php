@@ -79,12 +79,7 @@ class TransactionRepository extends BaseRepository
 					->orderBy("t.transaction_date", "desc")
 					->limit(10)
 					->get()
-					->toArray();
-
-				return [
-					"summary" => (array) $summary,
-					"stats" => (array) $stats,
-					"recent_transactions" => $recentTransactions->map(function ($recent) {
+					->map(function ($recent) {
 						return [
 							"account_name" => $recent->account_name,
 							"category_name" => $recent->category_name,
@@ -94,7 +89,12 @@ class TransactionRepository extends BaseRepository
 							"type" => $recent->type,
 							"transaction_date" => $recent->transaction_date,
 						];
-					}),
+					});
+
+				return [
+					"summary" => (array) $summary,
+					"stats" => (array) $stats,
+					"recent_transactions" => $recentTransactions,
 				];
 			});
 		});
