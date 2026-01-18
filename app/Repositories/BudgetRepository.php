@@ -116,8 +116,12 @@ class BudgetRepository extends BaseRepository
 					"budget_name" => $budget->name,
 					"category_name" => $budget->category_name,
 					"usage_percentage" => $budget->usage_percentage,
-					"spent" => $budget->spent,
-					"amount" => $budget->amount,
+					"spent" => $this->toMoney($budget->spent, isInteger: false)
+						->getAmount()
+						->toInt(),
+					"amount" => $this->toMoney($budget->amount, isInteger: false)
+						->getAmount()
+						->toInt(),
 					"message" =>
 						"{$budget->name} using " .
 						(int) $budget->usage_percentage .
