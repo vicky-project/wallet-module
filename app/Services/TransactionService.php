@@ -5,6 +5,7 @@ namespace Modules\Wallet\Services;
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Enums\RecurringFreq;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Repositories\CategoryRepository;
@@ -48,11 +49,14 @@ class TransactionService
 			"end_date" => $endOfMonth,
 			"now" => $now,
 		]);
-		dd($data["summary"]);
 
 		return [
-			"monthly_income" => $data["summary"]["income"] ?? 0,
-			"monthly_expense" => $data["summary"]["expense"] ?? 0,
+			"monthly_income" => Helper::toMoney($data["summary"]["income"] ?? 0)
+				->getAmount()
+				->toInt(),
+			"monthly_expense" => Helper::toMoney($data["summary"]["expense"] ?? 0)
+				->getAmount()
+				->toInt(),
 			"income_count" => $data["summary"]["income_count"] ?? 0,
 			"expense_count" => $data["summary"]["expense_count"] ?? 0,
 			"stats" => $data["stats"] ?? [],
