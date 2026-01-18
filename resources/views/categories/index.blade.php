@@ -28,7 +28,7 @@
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important;
     }
     
-    .category-icon {
+    .stat-icon {
         width: 60px;
         height: 60px;
         border-radius: 12px;
@@ -36,6 +36,16 @@
         align-items: center;
         justify-content: center;
         font-size: 1.8rem;
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
     }
     
     .category-type-badge {
@@ -179,6 +189,12 @@
         
         .budget-display {
             font-size: 0.9rem;
+        }
+        
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
         }
     }
 </style>
@@ -349,7 +365,7 @@
             <h2 class="mb-0">{{ $stats['total'] ?? 0 }}</h2>
           </div>
           <div class="col-auto">
-            <div class="category-icon bg-primary bg-opacity-10 text-primary">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
               <i class="bi bi-tags"></i>
             </div>
           </div>
@@ -372,7 +388,7 @@
             <h2 class="mb-0">{{ $stats['income'] ?? 0 }}</h2>
           </div>
           <div class="col-auto">
-            <div class="category-icon bg-success bg-opacity-10 text-success">
+            <div class="stat-icon bg-success bg-opacity-10 text-success">
               <i class="bi bi-arrow-down-left"></i>
             </div>
           </div>
@@ -395,7 +411,7 @@
             <h2 class="mb-0">{{ $stats['expense'] ?? 0 }}</h2>
           </div>
           <div class="col-auto">
-            <div class="category-icon bg-danger bg-opacity-10 text-danger">
+            <div class="stat-icon bg-danger bg-opacity-10 text-danger">
               <i class="bi bi-arrow-up-right"></i>
             </div>
           </div>
@@ -418,7 +434,7 @@
             <h2 class="mb-0">{{ $stats['with_budget'] ?? 0 }}</h2>
           </div>
           <div class="col-auto">
-            <div class="category-icon bg-warning bg-opacity-10 text-warning">
+            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
               <i class="bi bi-cash-coin"></i>
             </div>
           </div>
