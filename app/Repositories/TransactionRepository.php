@@ -79,6 +79,7 @@ class TransactionRepository extends BaseRepository
 					->orderBy("t.transaction_date", "desc")
 					->limit(10)
 					->get()
+					->dd()
 					->map(function ($transaction) {
 						dd($transaction);
 					})
