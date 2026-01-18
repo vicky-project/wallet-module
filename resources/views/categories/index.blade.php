@@ -611,7 +611,7 @@
                 </td>
                 <td>
                   <div class="budget-display">
-                    @money($category->monthly_total ?? 0))
+                    @money($category->monthly_total ?? 0)
                   </div>
                   <div class="budget-usage text-muted">
                     <small>
