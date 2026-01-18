@@ -12,11 +12,15 @@ class RecurringTransactionService
 {
 	public function getDashboardData(User $user, Carbon $now): array
 	{
-		$data = $this->recurringRepository->getDashboardData($user, $now);
+		try {
+			$data = $this->recurringRepository->getDashboardData($user, $now);
 
-		return [
-			"upcoming" => $data["upcoming"] ?? [],
-		];
+			return [
+				"upcoming" => $data["upcoming"] ?? [],
+			];
+		} catch (\Exception $e) {
+			return ["upcoming" => []];
+		}
 	}
 
 	public function processDueRecurringTransactions(): array
@@ -69,43 +73,6 @@ class RecurringTransactionService
 		}
 
 		return $results;
-	}
-
-	public function getUpcomingTransactions(int $days = 30): array
-	{
-		$upcoming = [];
-		$today = now();
-		$endDate = $today->copy()->addDays($days);
-
-		$recurringTransactions = RecurringTransaction::with("account")
-			->where("is_active", true)
-			->where("start_date", "<=", $endDate)
-			->where(function ($query) use ($today) {
-				$query->whereNull("end_date")->orWhere("end_date", ">=", $today);
-			})
-			->get();
-
-		foreach ($recurringTransactions as $recurring) {
-			$nextDate = $recurring->getNextDueDate();
-			if ($nextDate && $nextDate->between($today, $endDate)) {
-				$upcoming[] = [
-					"recurring" => $recurring,
-					"next_date" => $nextDate,
-					"amount" => $recurring->amount,
-					"description" => $recurring->description,
-					"frequency" => $recurring->getFrequencyLabel(),
-					"account" => $recurring->account->name ?? "N/A",
-					"category" => $recurring->category->name ?? "N/A",
-				];
-			}
-		}
-
-		// Sort by date
-		usort($upcoming, function ($a, $b) {
-			return $a["next_date"] <=> $b["next_date"];
-		});
-
-		return $upcoming;
 	}
 
 	public function createRecurringTransaction(array $data): RecurringTransaction
