@@ -80,7 +80,10 @@ class AccountRepository extends BaseRepository
 							"account" => ["id" => $item->account_id],
 							"income" => $item->income ?? 0,
 							"expense" => $item->expense ?? 0,
-							"net_flow" => ($item->income ?? 0) - ($item->expense ?? 0),
+							"net_flow" => $this->toMoney(
+								($item->income ?? 0) - ($item->expense ?? 0),
+								isInteger: false
+							),
 						];
 					})
 					->toArray();
