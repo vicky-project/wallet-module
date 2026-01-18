@@ -110,6 +110,7 @@ class BudgetRepository extends BaseRepository
 					"usage_percentage" => $budget->usage_percentage,
 					"spent" => $budget->spent,
 					"amount" => $budget->amount,
+					"message" => "{$budget->name} using {$budget->usage_percentage}% of total {$budget->amount}",
 				];
 			})
 			->values()
