@@ -85,7 +85,9 @@ class TransactionRepository extends BaseRepository
 							"category_name" => $recent->category_name,
 							"category_icon" => $recent->category_icon,
 							"description" => $recent->description,
-							"amount" => $recent->amount->getAmount()->toInt(),
+							"amount" => $this->toMoney($recent->amount)
+								->getAmount()
+								->toInt(),
 							"type" => $recent->type,
 							"transaction_date" => $recent->transaction_date,
 						];
