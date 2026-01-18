@@ -580,7 +580,7 @@
                 <td>
                   @if($hasBudget)
                     <div class="budget-display">
-                      {{ Helper::toMoney($category->current_spent ?? 0)->getAmount()->toInt() }} / {{ Helper::toMoney($category->current_budget->amount)->getAmount()->toInt() }}
+                      {{ Helper::toMoney($category->budgets->first()->spent ?? 0)->getAmount()->toInt() }} / {{ Helper::toMoney($category->budgets->first()->amount)->getAmount()->toInt() }}
                     </div>
                     <div class="d-flex align-items-center">
                       <div class="progress progress-thin flex-grow-1 me-2">
@@ -596,7 +596,7 @@
                       </span>
                     </div>
                     <small class="text-muted d-block mt-1">
-                      Sisa: {{ Helper::formatMoney(Helper::toMoney($category->budget_remaining ?? 0)->getAmount()->toInt()) }}
+                      Sisa: {{ Helper::formatMoney(Helper::toMoney($category->budgets->first->remaining ?? 0)) }}
                     </small>
                   @else
                     <div class="text-muted">
