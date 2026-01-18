@@ -20,14 +20,19 @@ abstract class BaseRepository
 	/**
 	 * Convert value to Money object
 	 */
-	public function toMoney($amount, string $currency = "IDR"): Money
-	{
+	public function toMoney(
+		$amount,
+		string $currency = "IDR",
+		bool $isInteger = false
+	): Money {
 		if ($amount instanceof Money) {
 			return $amount;
 		}
 
 		if (is_numeric($amount) || is_int($amount)) {
-			return Money::of($amount, $currency);
+			return $isInteger
+				? Money::of($amount, $currency)
+				: Money::ofMinor($amount, $currency);
 		}
 
 		if (is_null($amount)) {

@@ -79,13 +79,20 @@ class TransactionRepository extends BaseRepository
 					->orderBy("t.transaction_date", "desc")
 					->limit(10)
 					->get()
-					->map(function ($recent) {
+					->map(function ($recent) use ($user) {
 						return [
 							"account_name" => $recent->account_name,
 							"category_name" => $recent->category_name,
 							"category_icon" => $recent->category_icon,
 							"description" => $recent->description,
-							"amount" => $this->toMoney($recent->amount)
+							"amount" => $this->toMoney(
+								$recent->amount,
+								$user
+									->accounts()
+									->first()
+									->pluck("currency"),
+								false
+							)
 								->getAmount()
 								->toInt(),
 							"type" => $recent->type,
