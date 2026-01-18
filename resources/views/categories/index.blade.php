@@ -580,8 +580,7 @@
                 <td>
                   @if($hasBudget)
                     <div class="budget-display">
-                      {{ dd($category->budgets->first()->spent) }}
-                      {{ $category->budgets->first()->spent->getAmount()->toInt() }} / {{ $category->budgets->first()->amount->getAmount()->toInt() }}
+                      {{ $category->budgets?->first()->spent->getAmount()->toInt() }} / {{ $category->budgets->first()->amount->getAmount()->toInt() }}
                     </div>
                     <div class="d-flex align-items-center">
                       <div class="progress progress-thin flex-grow-1 me-2">
