@@ -643,16 +643,15 @@
                         <div class="card-body pt-0">
                             @if(count($dashboardData['recent_activity']) > 0)
                                 @foreach($dashboardData['recent_activity'] as $activity)
-                                {{ dd($activity) }}
                                     <div class="transaction-item">
                                         <div class="d-flex align-items-center">
                                             <div class="transaction-icon bg-light text-dark me-3">
                                                 <i class="bi bi-clock-history"></i>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <h6 class="mb-0">{{ $activity['description'] }}</h6>
+                                                <h6 class="mb-0">{{ $activity->description }}</h6>
                                                 <small class="text-muted">
-                                                    {{ \Carbon\Carbon::parse($activity['created_at'])->diffForHumans() }}
+                                                    {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}
                                                 </small>
                                             </div>
                                         </div>
