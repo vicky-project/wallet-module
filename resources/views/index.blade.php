@@ -457,7 +457,8 @@
                       <div class="fw-bold text-warning">
                         {{ number_format($warning['usage_percentage'], 0) }}%
                       </div>
-                      <small class="text-muted currency">{{ $warning['spent'] }} / {{ $warning['amount'] }}</small>
+                      <small class="text-muted currency">{{ $warning['spent'] }}</small>/
+                      <small class="text-muted currency">{{ $warning['amount'] }}</small>
                     </div>
                   </div>
                   <div class="progress progress-thin mt-2">
