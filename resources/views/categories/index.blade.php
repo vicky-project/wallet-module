@@ -611,7 +611,7 @@
                 </td>
                 <td>
                   <div class="budget-display">
-                    {{ Helper::formatMoney(Helper::toMoney($category->monthly_total ?? 0)->getAmount()->toInt()) }}
+                    @money($category->monthly_total ?? 0))
                   </div>
                   <div class="budget-usage text-muted">
                     <small>
