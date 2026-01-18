@@ -390,9 +390,10 @@
                 <div class="card-body pt-0">
                     @if(count($dashboardData['recent_transactions']) > 0)
                         @foreach($dashboardData['recent_transactions'] as $transaction)
+                        {{ dd($transaction) }}
                             <div class="transaction-item">
                                 <div class="d-flex align-items-center">
-                                    <div class="transaction-icon {{ $transaction['type'] == 'income' ? 'bg-income' : 'bg-expense' }} me-3">
+                                    <div class="transaction-icon {{ $transaction->type] == 'income' ? 'bg-income' : 'bg-expense' }} me-3">
                                         <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}"></i>
                                     </div>
                                     <div class="flex-grow-1">
