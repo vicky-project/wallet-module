@@ -716,7 +716,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Format semua currency
     document.querySelectorAll('.currency').forEach(element => {
-        const value = parseFloat(element.textContent.replace(/[^0-9.-]+/g,""));
+        const value = element.textContent;
         if (!isNaN(value)) {
             element.textContent = new Intl.NumberFormat('id-ID', {
                 style: 'currency',
