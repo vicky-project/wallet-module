@@ -386,20 +386,20 @@
       </div>
       <div class="card-body pt-0">
         @forelse($dashboardData['recent_transactions'] as $transaction)
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-center mb-2">
               <div class="d-flex align-items-center">
-              <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME->value ? 'bg-income' : 'bg-expense' }} me-3">
-                <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }}"></i>
-              </div>
-              <div class="flex-grow-1">
-                <h6 class="mb-0">{{ $transaction['description'] }}</h6>
-                <div class="d-flex align-items-center mt-1">
-                  <span class="badge transaction-badge text-bg-light text-dark p-2 me-2">
-                    {{ $transaction['category_name'] }}
-                  </span>
-                  <small class="text-muted">{{ $transaction['account_name'] }}</small>
+                <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME->value ? 'bg-income' : 'bg-expense' }} me-3">
+                  <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }}"></i>
                 </div>
-              </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">{{ $transaction['description'] }}</h6>
+                  <div class="d-flex align-items-center mt-1">
+                    <span class="badge transaction-badge text-bg-light text-dark p-2 me-2">
+                      {{ $transaction['category_name'] }}
+                    </span>
+                    <small class="text-muted">{{ $transaction['account_name'] }}</small>
+                  </div>
+                </div>
               </div>
               <div class="text-end">
                 <div class="fw-bold {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }} currency">
@@ -409,7 +409,7 @@
                   {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}
                 </small>
               </div>
-            </div>
+          </div>
         @empty
           <div class="empty-state py-4">
             <i class="bi bi-receipt text-muted"></i>
