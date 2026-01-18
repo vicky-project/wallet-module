@@ -23,7 +23,7 @@ abstract class BaseRepository
 	public function toMoney(
 		$amount,
 		string $currency = "IDR",
-		bool $isInteger = false
+		bool $isInteger = true
 	): Money {
 		if ($amount instanceof Money) {
 			return $amount;
