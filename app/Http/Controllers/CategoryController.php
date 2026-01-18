@@ -35,6 +35,7 @@ class CategoryController extends Controller
 			search: $request->get("search"),
 			includeInactive: $request->boolean("include_inactive")
 		);
+		dd($categories);
 
 		// Get budget warnings for alert
 		$budgetWarnings = $this->categoryService->getBudgetWarnings();
