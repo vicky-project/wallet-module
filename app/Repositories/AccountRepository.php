@@ -83,7 +83,9 @@ class AccountRepository extends BaseRepository
 							"net_flow" => $this->toMoney(
 								($item->income ?? 0) - ($item->expense ?? 0),
 								isInteger: false
-							),
+							)
+								->getAmount()
+								->toInt(),
 						];
 					})
 					->toArray();
