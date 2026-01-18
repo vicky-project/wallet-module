@@ -400,7 +400,7 @@
                   <small class="text-muted">{{ $transaction['account_name'] }}</small>
                 </div>
               </div>
-              <div class="ms-auto text-end">
+              <div class="float-end ms-auto text-end">
                 <div class="fw-bold {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }} currency">
                   {{ $transaction['amount'] }}
                 </div>
