@@ -549,7 +549,7 @@
             
       <!-- Pagination -->
       @if($transactions->hasPages())
-        <div class="card-footer bg-white border-0">
+        <div class="card-footer text-bg-white border-0">
           <div class="d-flex justify-content-between align-items-center">
             <div>
               Menampilkan {{ $transactions->firstItem() }} - {{ $transactions->lastItem() }}
