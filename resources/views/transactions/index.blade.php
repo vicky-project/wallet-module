@@ -262,11 +262,6 @@
   <div class="card-header text-bg-white border-0">
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Daftar Transaksi</h5>
-      <div class="d-flex align-items-center gap-2">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="selectAll">
-          <label class="form-check-label" for="selectAll">Pilih Semua</label>
-        </div>
         <div class="dropdown">
           <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
@@ -284,7 +279,6 @@
             </li>
           </ul>
         </div>
-      </div>
     </div>
   </div>
     
@@ -294,7 +288,12 @@
         <table class="table table-hover mb-0">
           <thead class="table-dark">
             <tr>
-              <th width="50"></th>
+              <th width="50">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="selectAll">
+                  <label class="form-check-label" for="selectAll">All</label>
+                </div>
+              </th>
               <th>Tanggal</th>
               <th>Keterangan</th>
               <th>Kategori</th>
