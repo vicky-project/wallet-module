@@ -118,7 +118,10 @@ class BudgetController extends Controller
 		// Get budget statistics
 		$stats = [
 			"total_transactions" => $transactions->total(),
-			"average_transaction" => $transactions->avg("amount") ?? 0,
+			"average_transaction" =>
+				$transactions->avg(
+					fn($transaction) => $transaction->getAmount()->toInt()
+				) ?? 0,
 			"largest_transaction" => $transactions->max("amount") ?? 0,
 			"transactions_today" => $budget->category
 				->transactions()
