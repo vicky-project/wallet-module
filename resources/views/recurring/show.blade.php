@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const occurrencesContainer = document.getElementById('nextOccurrences');
         const recurringId = '{{ $recurringTransaction->id }}';
         
-        fetch('{{ route("apps.recurrings.preview-occurrences", "") }}/' + recurringId)
+        fetch('{{ secure_url(config("app.url") . "/apps/recurrings/preview-occurrences") }}/' + recurringId)
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.occurrences) {
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 : 'Apakah Anda yakin ingin mengaktifkan transaksi ini?';
             
             if (confirm(message)) {
-                fetch('{{ route("apps.recurrings.toggle-status", "") }}/' + id, {
+                fetch('{{ secure_url(config("app.url"). "/apps/recurrings/toggle-status") }}/' + id, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -545,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        fetch('{{ route("apps.recurrings.preview-occurrences", "") }}/' + recurringId + '?count=20')
+        fetch('{{ secure_url(config("app.url") ."/apps/recurrings/preview-occurrences") }}/' + recurringId + '?count=20')
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.occurrences) {
