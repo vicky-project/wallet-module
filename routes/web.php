@@ -96,5 +96,25 @@ Route::middleware(["auth"])
 		Route::resource("budgets", BudgetController::class);
 
 		// Recurring routes
+		Route::get("recurrings/{id}/preview-occurrences", [
+			RecurringController::class,
+			"previewNextOccurrences",
+		])->name("preview-occurrences");
+		Route::post("recurrings/bulk-update", [
+			RecurringController::class,
+			"bulkUpdate",
+		])->name("recurrings.bulk-update");
+		Route::post("recurrings/bulk-delete", [
+			RecurringController::class,
+			"bulkDelete",
+		])->name("recurrings.bulk-delete");
+		Route::post("recurrings/export", [
+			RecurringController::class,
+			"export",
+		])->name("recurrings.export");
+		Route::post("recurrings/{id}/toggle-status", [
+			RecurringController::class,
+			"toggleStatus",
+		])->name("recurrings.toggle-status");
 		Route::resource("recurrings", RecurringController::class);
 	});

@@ -398,4 +398,8 @@ class RecurringController extends Controller
 			);
 		}
 	}
+
+	public function bulkUpdate(Request $request)
+	{
+	}
 }
