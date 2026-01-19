@@ -4,12 +4,17 @@ namespace Modules\Wallet\Services;
 
 use App\Models\User;
 use Modules\Wallet\Models\RecurringTransaction;
+use Modules\Wallet\Repositories\RecurringRepository;
 use Modules\Wallet\Enums\RecurringFreq;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class RecurringTransactionService
 {
+	public function __construct(protected RecurringRepository $repository)
+	{
+	}
+
 	public function getDashboardData(User $user, Carbon $now): array
 	{
 		try {
@@ -73,6 +78,13 @@ class RecurringTransactionService
 		}
 
 		return $results;
+	}
+
+	public function getPaginatedRecurringTransactions(
+		array $filters = [],
+		int $perPage = 10
+	) {
+		return $this->repository->paginateWithFilters($filters, $perPage);
 	}
 
 	public function createRecurringTransaction(array $data): RecurringTransaction

@@ -55,4 +55,65 @@ class RecurringRepository extends BaseRepository
 
 		return array_slice($upcoming, 0, 10);
 	}
+
+	public function paginateWithFilters(
+		array $filters = [],
+		int $perPage = 10
+	): array {
+		$query = $this->model
+			->with(["account", "category"])
+			->where("user_id", auth()->id());
+
+		// Apply filters
+		if (!empty($filters["status"])) {
+			if ($filters["status"] === "active") {
+				$query->where("is_active", true);
+			} elseif ($filters["status"] === "inactive") {
+				$query->where("is_active", false);
+			}
+		}
+
+		if (!empty($filters["type"])) {
+			$query->where("type", $filters["type"]);
+		}
+
+		if (!empty($filters["frequency"])) {
+			$query->where("frequency", $filters["frequency"]);
+		}
+
+		if (!empty($filters["search"])) {
+			$query->where(function ($q) use ($filters) {
+				$q->where("description", "like", "%" . $filters["search"] . "%")
+					->orWhereHas("account", function ($q) use ($filters) {
+						$q->where("name", "like", "%" . $filters["search"] . "%");
+					})
+					->orWhereHas("category", function ($q) use ($filters) {
+						$q->where("name", "like", "%" . $filters["search"] . "%");
+					});
+			});
+		}
+
+		$transactions = $query->orderBy("created_at", "desc")->paginate($perPage);
+
+		// Calculate stats
+		$stats = [
+			"total" => $this->model->where("user_id", auth()->id())->count(),
+			"active" => $this->model
+				->where("user_id", auth()->id())
+				->where("is_active", true)
+				->count(),
+			"inactive" => $this->model
+				->where("user_id", auth()->id())
+				->where("is_active", false)
+				->count(),
+			"total_amount" => $this->model
+				->where("user_id", auth()->id())
+				->sum("amount"),
+		];
+
+		return [
+			"transactions" => $transactions,
+			"stats" => $stats,
+		];
+	}
 }
