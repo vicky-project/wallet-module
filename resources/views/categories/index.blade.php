@@ -592,7 +592,7 @@
                         </div>
                       </div>
                       <span class="budget-usage {{ $usageClass }} fw-semibold">
-                        {{ number_format($usagePercentage, 1) }}%
+                        {{ number_format($usagePercentage, 1, ',', '.') }}%
                       </span>
                     </div>
                     <small class="text-muted d-block mt-1">
