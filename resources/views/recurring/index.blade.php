@@ -178,7 +178,7 @@
             <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1" id="processDueBtn">
                 <i class="bi bi-play-circle"></i> Proses
             </button>
-            <a href="{{ route('wallet.recurring.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+            <a href="{{ route('wallet.recurrings.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
                 <i class="bi bi-plus-lg"></i> Tambah
             </a>
         </div>
@@ -187,7 +187,7 @@
     <!-- Filters Card -->
     <div class="card filter-card mb-3" id="filterCard">
         <div class="card-body">
-            <form method="GET" action="{{ route('wallet.recurring.index') }}" id="filterForm">
+            <form method="GET" action="{{ route('wallet.recurrings.index') }}" id="filterForm">
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label small">Status</label>
@@ -446,12 +446,12 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end action-dropdown">
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('wallet.recurring.show', $recurring->id) }}">
+                                                    <a class="dropdown-item" href="{{ route('wallet.recurrings.show', $recurring->id) }}">
                                                         <i class="bi bi-eye me-2"></i> Detail
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('wallet.recurring.edit', $recurring->id) }}">
+                                                    <a class="dropdown-item" href="{{ route('wallet.recurrings.edit', $recurring->id) }}">
                                                         <i class="bi bi-pencil me-2"></i> Edit
                                                     </a>
                                                 </li>
@@ -472,7 +472,7 @@
                                                 </li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li>
-                                                    <form action="{{ route('wallet.recurring.destroy', $recurring->id) }}" 
+                                                    <form action="{{ route('wallet.recurrings.destroy', $recurring->id) }}" 
                                                           method="POST" 
                                                           class="d-inline delete-form">
                                                         @csrf
@@ -506,7 +506,7 @@
                     <i class="bi bi-arrow-repeat text-muted" style="font-size: 3rem;"></i>
                     <h5 class="mt-3 mb-2">Belum ada transaksi rutin</h5>
                     <p class="text-muted mb-4">Mulai dengan membuat transaksi rutin pertama Anda</p>
-                    <a href="{{ route('wallet.recurring.create') }}" class="btn btn-primary">
+                    <a href="{{ route('wallet.recurrings.create') }}" class="btn btn-primary">
                         <i class="bi bi-plus-lg me-2"></i> Tambah Transaksi Rutin
                     </a>
                 </div>
@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (resetFiltersBtn) {
         resetFiltersBtn.addEventListener('click', function() {
             document.getElementById('filterForm').reset();
-            window.location.href = '{{ route('wallet.recurring.index') }}';
+            window.location.href = '{{ route('wallet.recurrings.index') }}';
         });
     }
 
@@ -681,7 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Bulk update status
     function bulkUpdateStatus(ids, activate) {
-        fetch('{{ route("apps.recurring.bulk-update") }}', {
+        fetch('{{ route("apps.recurrings.bulk-update") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -708,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Bulk delete transactions
     function bulkDeleteTransactions(ids) {
-        fetch('{{ route("apps.recurring.bulk-delete") }}', {
+        fetch('{{ route("apps.recurrings.bulk-delete") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle status function
     function toggleStatus(id) {
-        fetch('{{ route("apps.recurring.toggle-status", "") }}/' + id, {
+        fetch('{{ route("apps.recurrings.toggle-status", "") }}/' + id, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -770,7 +770,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (processDueBtn) {
         processDueBtn.addEventListener('click', function() {
             if (confirm('Proses transaksi rutin yang jatuh tempo hari ini?')) {
-                window.location.href = '{{ route("wallet.recurring.process-due") }}';
+                window.location.href = '{{ route("wallet.recurrings.process-due") }}';
             }
         });
     }
@@ -807,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        fetch('{{ route("apps.recurring.preview-occurrences", "") }}/' + id)
+        fetch('{{ route("apps.recurrings.preview-occurrences", "") }}/' + id)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
             search: document.querySelector('[name="search"]').value
         };
 
-        fetch('{{ route("apps.recurring.export") }}', {
+        fetch('{{ route("apps.recurrings.export") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

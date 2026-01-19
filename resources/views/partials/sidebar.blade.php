@@ -33,6 +33,11 @@
       </a>
     </li>
     <li>
+      <a href="{{ route('apps.recurrings.index') }}" class="{{ request()->routeIs('apps.recurrings.*') ? 'active' : ''}}">
+        <i class="bi bi-calendar-day"></i> Recurrings
+      </a>
+    </li>
+    <li>
       <a href="#">
         <i class="bi bi-graph-up"></i> Laporan
       </a>
