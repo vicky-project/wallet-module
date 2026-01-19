@@ -99,7 +99,7 @@ Route::middleware(["auth"])
 		Route::get("recurrings/{id}/preview-occurrences", [
 			RecurringController::class,
 			"previewNextOccurrences",
-		])->name("preview-occurrences");
+		])->name("recurrings.preview-occurrences");
 		Route::post("recurrings/bulk-update", [
 			RecurringController::class,
 			"bulkUpdate",
