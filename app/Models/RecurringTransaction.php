@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Wallet\Casts\MoneyCast;
 use Modules\Wallet\Enums\RecurringFreq;
+use Modules\Wallet\Enums\TransactionType;
 
 class RecurringTransaction extends Model
 {
@@ -37,6 +38,7 @@ class RecurringTransaction extends Model
 		"last_processed" => "date",
 		"custom_schedule" => "array",
 		"is_active" => "boolean",
+		"type" => TransactionType::class,
 		"amount" => MoneyCast::class,
 		"frequency" => RecurringFreq::class,
 	];
