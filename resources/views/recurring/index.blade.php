@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle status function
     function toggleStatus(id) {
-        fetch('{{ route("apps.recurrings.toggle-status", "") }}/' + id, {
+        fetch('{{ secure_url(config("app.url")."/apps/recurrings/toggle-status") }}/' + id, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
