@@ -205,4 +205,9 @@ class RecurringTransactionService
 			default => 0,
 		};
 	}
+
+	public function findRecurringTransaction(int $id)
+	{
+		return $this->repository->find($id);
+	}
 }

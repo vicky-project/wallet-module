@@ -122,8 +122,8 @@ class RecurringController extends Controller
 
 			if (!$recurringTransaction) {
 				return redirect()
-					->route("wallet.recurring.index")
-					->with("error", "Transaksi rutin tidak ditemukan.");
+					->route("apps.recurring.index")
+					->withErrors("Transaksi rutin tidak ditemukan.");
 			}
 
 			// Get related transactions
