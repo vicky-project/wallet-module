@@ -112,6 +112,10 @@ Route::middleware(["auth"])
 			RecurringController::class,
 			"export",
 		])->name("recurrings.export");
+		Route::post("recurrings/process-due", [
+			RecurringController::class,
+			"processDue",
+		])->name("recurrings.process-due");
 		Route::post("recurrings/toggle-status/{id}", [
 			RecurringController::class,
 			"toggleStatus",
