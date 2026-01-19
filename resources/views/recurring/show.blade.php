@@ -330,7 +330,7 @@
                             </button>
                         @endif
                         
-                        <a href="{{ route('apps.recurring.edit', $recurringTransaction->id) }}" 
+                        <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" 
                            class="btn btn-outline-info">
                             <i class="bi bi-pencil me-2"></i> Edit Transaksi
                         </a>
@@ -362,7 +362,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('apps.recurring.destroy', $recurringTransaction->id) }}" method="POST">
+                <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Hapus</button>
