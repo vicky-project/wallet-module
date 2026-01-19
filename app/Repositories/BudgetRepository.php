@@ -501,8 +501,8 @@ class BudgetRepository extends BaseRepository
 					"active" => $activeBudgets,
 					"current" => $currentBudgets,
 					"over_budget" => $overBudgetCount,
-					"total_amount" => $totalBudgetAmount / 100,
-					"total_spent" => $totalSpent / 100,
+					"total_amount" => $totalBudgetAmount,
+					"total_spent" => $totalSpent,
 					"total_remaining" => max(0, $totalBudgetAmount - $totalSpent),
 					"overall_usage" =>
 						$totalBudgetAmount > 0
