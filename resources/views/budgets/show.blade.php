@@ -407,7 +407,7 @@
           </div>
                     
           <div class="col-md-4 text-center mb-4">
-            <div class="display-6 fw-bold text-danger">@money($stats['largest_transaction'])</div>
+            <div class="display-6 fw-bold text-danger">@money($stats['largest_transaction']->getMinorAmount()->toInt())</div>
             <div class="text-muted">Transaksi Terbesar</div>
             <small class="text-muted">single transaction</small>
           </div>
