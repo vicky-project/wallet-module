@@ -807,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        fetch('{{ route("apps.recurrings.preview-occurrences", "") }}/' + id)
+        fetch('{{ secure_url(config("app.url") . "/apps/recurrings/preview-occurrences") }}/' + id)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

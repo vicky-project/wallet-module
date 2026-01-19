@@ -96,7 +96,7 @@ Route::middleware(["auth"])
 		Route::resource("budgets", BudgetController::class);
 
 		// Recurring routes
-		Route::get("recurrings/{id}/preview-occurrences", [
+		Route::get("recurrings/preview-occurrences/{id}", [
 			RecurringController::class,
 			"previewNextOccurrences",
 		])->name("recurrings.preview-occurrences");
