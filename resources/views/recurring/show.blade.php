@@ -32,7 +32,7 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
             <div class="btn-group">
-                <a href="{{ route('apps.recurring.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
+                <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
                     <i class="bi bi-pencil"></i>
                 </a>
                 <button class="btn btn-light btn-sm toggle-status-btn"
@@ -56,7 +56,7 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <form action="{{ route('apps.recurring.destroy', $recurringTransaction->id) }}" 
+                        <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" 
                               method="POST" 
                               class="d-inline">
                             @csrf
@@ -210,7 +210,6 @@
                                 <span class="fw-medium">
                                     @if($recurringTransaction->end_date)
                                         {{ \Carbon\Carbon::parse($recurringTransaction->end_date)->format('d M Y') }}
-                                    @else
                                         <span class="text-success">Tidak Ada</span>
                                     @endif
                                 </span>
@@ -414,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const occurrencesContainer = document.getElementById('nextOccurrences');
         const recurringId = '{{ $recurringTransaction->id }}';
         
-        fetch('{{ route("apps.recurring.preview-occurrences", "") }}/' + recurringId)
+        fetch('{{ route("apps.recurrings.preview-occurrences", "") }}/' + recurringId)
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.occurrences) {
@@ -499,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 : 'Apakah Anda yakin ingin mengaktifkan transaksi ini?';
             
             if (confirm(message)) {
-                fetch('{{ route("apps.recurring.toggle-status", "") }}/' + id, {
+                fetch('{{ route("apps.recurrings.toggle-status", "") }}/' + id, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -546,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        fetch('{{ route("apps.recurring.preview-occurrences", "") }}/' + recurringId + '?count=20')
+        fetch('{{ route("apps.recurrings.preview-occurrences", "") }}/' + recurringId + '?count=20')
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.occurrences) {
