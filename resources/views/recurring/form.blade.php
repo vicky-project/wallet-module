@@ -111,13 +111,13 @@
             </p>
         </div>
         <div>
-            <a href="{{ route('wallet.recurring.index') }}" class="btn btn-outline-secondary btn-sm">
+            <a href="{{ route('apps.recurring.index') }}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
         </div>
     </div>
 
-    <form action="{{ isset($recurringTransaction) ? route('wallet.recurring.update', $recurringTransaction->id) : route('wallet.recurring.store') }}" 
+    <form action="{{ isset($recurringTransaction) ? route('apps.recurring.update', $recurringTransaction->id) : route('apps.recurring.store') }}" 
           method="POST" 
           id="recurringForm">
         @csrf
@@ -554,7 +554,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('wallet.recurring.destroy', $recurringTransaction->id) }}" method="POST">
+                <form action="{{ route('apps.recurring.destroy', $recurringTransaction->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Hapus</button>
@@ -874,7 +874,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 : 'Apakah Anda yakin ingin mengaktifkan transaksi ini?';
             
             if (confirm(message)) {
-                fetch('{{ route("wallet.recurring.toggle-status", "") }}/' + id, {
+                fetch('{{ secure_url(config("app.url") . "/apps/recurring/toggle-status") }}/' + id, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
