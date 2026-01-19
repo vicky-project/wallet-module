@@ -165,8 +165,8 @@
 
 @section('content')
 @include('wallet::partials.fab')
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="page-title mb-1">Transaksi Rutin</h1>
             <p class="text-muted mb-0">Kelola transaksi berulang secara otomatis</p>
@@ -184,8 +184,8 @@
         </div>
     </div>
 
-    <!-- Filters Card -->
-    <div class="card filter-card mb-3" id="filterCard">
+<!-- Filters Card -->
+<div class="card filter-card mb-3" id="filterCard">
         <div class="card-body">
             <form method="GET" action="{{ route('apps.recurrings.index') }}" id="filterForm">
                 <div class="row g-3">
@@ -239,8 +239,8 @@
         </div>
     </div>
 
-    <!-- Bulk Actions -->
-    <div class="bulk-actions" id="bulkActions">
+<!-- Bulk Actions -->
+<div class="bulk-actions" id="bulkActions">
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <span class="fw-medium" id="selectedCount">0 item dipilih</span>
@@ -262,10 +262,10 @@
         </div>
     </div>
 
-    <!-- Stats Overview -->
-    @if(isset($stats) && !empty($stats))
-    <div class="recurring-stats">
-        <div class="card">
+<!-- Stats Overview -->
+@if(isset($stats) && !empty($stats))
+  <div class="recurring-stats">
+    <div class="card">
             <div class="card-body py-3">
                 <div class="d-flex align-items-center">
                     <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
@@ -278,7 +278,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+    <div class="card">
             <div class="card-body py-3">
                 <div class="d-flex align-items-center">
                     <div class="bg-success bg-opacity-10 p-2 rounded me-3">
@@ -291,37 +291,37 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center">
-                    <div class="bg-warning bg-opacity-10 p-2 rounded me-3">
-                        <i class="bi bi-calendar-event text-warning"></i>
-                    </div>
-                    <div>
-                        <h5 class="mb-0">{{ $stats['due_soon'] ?? 0 }}</h5>
-                        <small class="text-muted">Akan Jatuh Tempo</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center">
-                    <div class="bg-info bg-opacity-10 p-2 rounded me-3">
-                        <i class="bi bi-cash-stack text-info"></i>
-                    </div>
-                    <div>
-                        <h5 class="mb-0 currency">{{ $stats['total_amount'] ?? 0 }}</h5>
-                        <small class="text-muted">Total Nilai</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Recurring Transactions List -->
     <div class="card">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-warning bg-opacity-10 p-2 rounded me-3">
+            <i class="bi bi-calendar-event text-warning"></i>
+          </div>
+          <div>
+            <h5 class="mb-0">{{ $stats['due_soon'] ?? 0 }}</h5>
+            <small class="text-muted">Akan Jatuh Tempo</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-info bg-opacity-10 p-2 rounded me-3">
+            <i class="bi bi-cash-stack text-info"></i>
+          </div>
+          <div>
+            <h5 class="mb-0 currency">@money($stats['total_amount'] ?? 0)</h5>
+            <small class="text-muted">Total Nilai</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+@endif
+
+<!-- Recurring Transactions List -->
+<div class="card">
         <div class="card-header bg-transparent border-0">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Daftar Transaksi Rutin</h5>
@@ -514,8 +514,8 @@
         </div>
     </div>
 
-    <!-- Upcoming Transactions Preview (Modal) -->
-    <div class="modal fade" id="occurrencesModal" tabindex="-1">
+<!-- Upcoming Transactions Preview (Modal) -->
+<div class="modal fade" id="occurrencesModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

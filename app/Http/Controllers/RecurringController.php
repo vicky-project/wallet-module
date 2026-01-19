@@ -38,7 +38,6 @@ class RecurringController extends Controller
 				$filters,
 				$perPage
 			);
-			dd($data);
 
 			return view("wallet::recurring.index", [
 				"recurringTransactions" => $data["transactions"],
