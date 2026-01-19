@@ -120,7 +120,7 @@ class BudgetController extends Controller
 			"total_transactions" => $transactions->total(),
 			"average_transaction" =>
 				$transactions->avg(
-					fn($transaction) => $transaction->getAmount()->toInt()
+					fn($transaction) => $transaction->amount->getAmount()->toInt()
 				) ?? 0,
 			"largest_transaction" => $transactions->max("amount") ?? 0,
 			"transactions_today" => $budget->category
