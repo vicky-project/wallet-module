@@ -311,7 +311,7 @@
             <i class="bi bi-cash-stack text-info"></i>
           </div>
           <div>
-            <h5 class="mb-0 currency">@money($stats['total_amount'] ?? 0)</h5>
+            <h5 class="mb-0">@money($stats['total_amount'] ?? 0)</h5>
             <small class="text-muted">Total Nilai</small>
           </div>
         </div>
