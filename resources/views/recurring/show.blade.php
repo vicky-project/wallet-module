@@ -32,7 +32,7 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
             <div class="btn-group">
-                <a href="{{ route('wallet.recurring.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
+                <a href="{{ route('apps.recurring.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
                     <i class="bi bi-pencil"></i>
                 </a>
                 <button class="btn btn-light btn-sm toggle-status-btn"
@@ -56,7 +56,7 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <form action="{{ route('wallet.recurring.destroy', $recurringTransaction->id) }}" 
+                        <form action="{{ route('apps.recurring.destroy', $recurringTransaction->id) }}" 
                               method="POST" 
                               class="d-inline">
                             @csrf
@@ -312,7 +312,7 @@
                 </div>
                 <div class="card-body pt-0">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('wallet.transactions.create') }}?recurring_id={{ $recurringTransaction->id }}" 
+                        <a href="{{ route('apps.transactions.create') }}?recurring_id={{ $recurringTransaction->id }}" 
                            class="btn btn-outline-primary">
                             <i class="bi bi-plus-circle me-2"></i> Buat Transaksi Manual
                         </a>
@@ -331,7 +331,7 @@
                             </button>
                         @endif
                         
-                        <a href="{{ route('wallet.recurring.edit', $recurringTransaction->id) }}" 
+                        <a href="{{ route('apps.recurring.edit', $recurringTransaction->id) }}" 
                            class="btn btn-outline-info">
                             <i class="bi bi-pencil me-2"></i> Edit Transaksi
                         </a>
@@ -363,7 +363,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('wallet.recurring.destroy', $recurringTransaction->id) }}" method="POST">
+                <form action="{{ route('apps.recurring.destroy', $recurringTransaction->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Hapus</button>
