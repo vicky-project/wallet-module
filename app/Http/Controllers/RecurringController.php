@@ -38,6 +38,7 @@ class RecurringController extends Controller
 				$filters,
 				$perPage
 			);
+			dd($data);
 
 			return view("wallet::recurring.index", [
 				"recurringTransactions" => $data["transactions"],
@@ -47,8 +48,7 @@ class RecurringController extends Controller
 		} catch (\Exception $e) {
 			return redirect()
 				->back()
-				->with(
-					"error",
+				->withErrors(
 					"Failed to load recurring transactions: " . $e->getMessage()
 				);
 		}
@@ -139,8 +139,8 @@ class RecurringController extends Controller
 			);
 		} catch (\Exception $e) {
 			return redirect()
-				->route("wallet.recurring.index")
-				->with("error", "Gagal memuat detail: " . $e->getMessage());
+				->route("appa.recurring.index")
+				->withErrors("Gagal memuat detail: " . $e->getMessage());
 		}
 	}
 
