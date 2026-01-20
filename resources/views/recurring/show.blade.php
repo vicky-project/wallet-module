@@ -41,7 +41,7 @@
       <button class="btn btn-transparent btn-sm toggle-status-btn" data-id="{{ $recurringTransaction->id }}" data-status="{{ $recurringTransaction->is_active ? 1 : 0 }}">
         <i class="bi bi-power"></i>
       </button>
-      <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
+      <button class="btn btn-transparent btn-sm" data-bs-toggle="dropdown">
         <i class="bi bi-three-dots-vertical"></i>
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
