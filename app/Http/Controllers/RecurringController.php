@@ -73,7 +73,7 @@ class RecurringController extends Controller
 			];
 
 			return view(
-				"wallet::recurring.create",
+				"wallet::recurring.form",
 				compact("accounts", "categories", "frequencies")
 			);
 		} catch (\Exception $e) {
@@ -171,7 +171,7 @@ class RecurringController extends Controller
 			];
 
 			return view(
-				"wallet::recurring.edit",
+				"wallet::recurring.form",
 				compact("recurringTransaction", "accounts", "categories", "frequencies")
 			);
 		} catch (\Exception $e) {
