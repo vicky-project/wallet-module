@@ -128,7 +128,9 @@
 
   <div class="row">
     <!-- Left Column: Basic Information -->
-    <div class="col-8 col-md-8 mb-3">
+    <div class="col-md-8 mb-3">
+      <div class="row">
+        <div class="col">
       <!-- Basic Information Section -->
       <div class="card mb-4">
         <div class="card-body">
@@ -248,7 +250,8 @@
           </div>
         </div>
       </div>
-
+        </div>
+        <div class="col">
       <!-- Recurrence Settings Section -->
       <div class="card mb-4">
         <div class="card-body">
@@ -367,10 +370,13 @@
           </div>
         </div>
       </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Right Column: Preview & Actions -->
-    <div class="col-4 col-md-4 mb-3">
+    <div class="col-md-4 mb-3">
       <!-- Preview Section -->
       <div class="card mb-4">
         <div class="card-body">
