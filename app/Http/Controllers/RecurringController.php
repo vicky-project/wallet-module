@@ -117,7 +117,7 @@ class RecurringController extends Controller
 	{
 		try {
 			$recurringTransaction = $this->recurringService->findRecurringTransaction(
-				$id
+				(int) $id
 			);
 
 			if (!$recurringTransaction) {
@@ -138,7 +138,7 @@ class RecurringController extends Controller
 			);
 		} catch (\Exception $e) {
 			return redirect()
-				->route("appa.recurring.index")
+				->route("apps.recurring.index")
 				->withErrors("Gagal memuat detail: " . $e->getMessage());
 		}
 	}
@@ -150,13 +150,13 @@ class RecurringController extends Controller
 	{
 		try {
 			$recurringTransaction = $this->recurringService->findRecurringTransaction(
-				$id
+				(int) $id
 			);
 
 			if (!$recurringTransaction) {
 				return redirect()
-					->route("wallet.recurring.index")
-					->with("error", "Transaksi rutin tidak ditemukan.");
+					->route("apps.recurring.index")
+					->withErrors("Transaksi rutin tidak ditemukan.");
 			}
 
 			$accounts = $this->accountService
@@ -178,8 +178,8 @@ class RecurringController extends Controller
 			);
 		} catch (\Exception $e) {
 			return redirect()
-				->route("wallet.recurring.index")
-				->with("error", "Gagal memuat form edit: " . $e->getMessage());
+				->route("apps.recurring.index")
+				->withErrors("Gagal memuat form edit: " . $e->getMessage());
 		}
 	}
 
@@ -190,13 +190,13 @@ class RecurringController extends Controller
 	{
 		try {
 			$recurringTransaction = $this->recurringService->findRecurringTransaction(
-				$id
+				(int) $id
 			);
 
 			if (!$recurringTransaction) {
 				return redirect()
-					->route("wallet.recurring.index")
-					->with("error", "Transaksi rutin tidak ditemukan.");
+					->route("apps.recurring.index")
+					->withErrors("Transaksi rutin tidak ditemukan.");
 			}
 
 			$data = $request->validated();
@@ -206,16 +206,13 @@ class RecurringController extends Controller
 			);
 
 			return redirect()
-				->route("wallet.recurring.index")
+				->route("apps.recurring.index")
 				->with("success", "Transaksi rutin berhasil diperbarui.");
 		} catch (\Exception $e) {
 			return redirect()
 				->back()
 				->withInput()
-				->with(
-					"error",
-					"Gagal memperbarui transaksi rutin: " . $e->getMessage()
-				);
+				->withErrors("Gagal memperbarui transaksi rutin: " . $e->getMessage());
 		}
 	}
 
@@ -231,8 +228,8 @@ class RecurringController extends Controller
 
 			if (!$recurringTransaction) {
 				return redirect()
-					->route("wallet.recurring.index")
-					->with("error", "Transaksi rutin tidak ditemukan.");
+					->route("apps.recurring.index")
+					->withErrors("Transaksi rutin tidak ditemukan.");
 			}
 
 			$this->recurringService->deleteRecurringTransaction(
@@ -240,12 +237,12 @@ class RecurringController extends Controller
 			);
 
 			return redirect()
-				->route("wallet.recurring.index")
+				->route("apps.recurring.index")
 				->with("success", "Transaksi rutin berhasil dihapus.");
 		} catch (\Exception $e) {
 			return redirect()
-				->route("wallet.recurring.index")
-				->with("error", "Gagal menghapus transaksi rutin: " . $e->getMessage());
+				->route("apps.recurring.index")
+				->withErrors("Gagal menghapus transaksi rutin: " . $e->getMessage());
 		}
 	}
 
@@ -301,12 +298,12 @@ class RecurringController extends Controller
 				count($result["errors"]);
 
 			return redirect()
-				->route("wallet.recurring.index")
+				->route("apps.recurring.index")
 				->with("success", $message);
 		} catch (\Exception $e) {
 			return redirect()
-				->route("wallet.recurring.index")
-				->with("error", "Gagal memproses transaksi rutin: " . $e->getMessage());
+				->route("apps.recurring.index")
+				->withErrors("Gagal memproses transaksi rutin: " . $e->getMessage());
 		}
 	}
 
