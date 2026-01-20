@@ -2,8 +2,8 @@
 
 @section('title', 'Detail Transaksi Rutin - ' . config('app.name', 'Vicky Server'))
 
-@us('Modules\Wallet\Enums\TransactionType')
-@us('Modules\Wallet\Enums\RecurringFreq')
+@use('Modules\Wallet\Enums\TransactionType')
+@use('Modules\Wallet\Enums\RecurringFreq')
 
 @section('content')
 @include('wallet::partials.fab')
