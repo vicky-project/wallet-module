@@ -151,19 +151,19 @@
               <label class="form-label">Tipe Transaksi *</label>
               <div class="row g-2">
                 <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_income" value="{{ TransactionType::INCOME->value }}" required @checked(old('type', $recurringTransaction->type ?? '') == TransactionType::INCOME->value)>
+                  <input type="radio" class="btn-check" name="type" id="type_income" value="{{ TransactionType::INCOME->value }}" required @checked(old('type', $recurringTransaction->type->value ?? '') == TransactionType::INCOME->value)>
                   <label class="btn btn-outline-success w-100" for="type_income">
                     <i class="bi bi-arrow-down-left me-1"></i> Pemasukan
                   </label>
                 </div>
                 <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_expense" value="{{ TransactionType::EXPENSE->value }}" @checked(old('type', $recurringTransaction->type ?? 'expense') == TransactionType::EXPENSE->value)>
+                  <input type="radio" class="btn-check" name="type" id="type_expense" value="{{ TransactionType::EXPENSE->value }}" @checked(old('type', $recurringTransaction->type->value ?? 'expense') == TransactionType::EXPENSE->value)>
                   <label class="btn btn-outline-danger w-100" for="type_expense">
                     <i class="bi bi-arrow-up-right me-1"></i> Pengeluaran
                   </label>
                 </div>
                 <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_transfer" value="{{ TransactionType::TRANSFER->value }}" @checked(old('type', $recurringTransaction->type) == TransactionType::TRANSFER->value)>
+                  <input type="radio" class="btn-check" name="type" id="type_transfer" value="{{ TransactionType::TRANSFER->value }}" @checked(old('type', $recurringTransaction->type->value ?? 'transfer') == TransactionType::TRANSFER->value)>
                   <label class="btn btn-outline-primary w-100" for="type_transfer">
                     <i class="bi bi-arrow-left-right me-1"></i> Transfer
                   </label>
