@@ -128,7 +128,7 @@
 
   <div class="row">
     <!-- Left Column: Basic Information -->
-    <div class="col-lg-8 mb-3">
+    <div class="col-md-8 mb-3">
       <!-- Basic Information Section -->
       <div class="card mb-4">
         <div class="card-body">
@@ -370,7 +370,7 @@
     </div>
 
     <!-- Right Column: Preview & Actions -->
-    <div class="col-lg-4 mb-3">
+    <div class="col-md-4 mb-3">
       <!-- Preview Section -->
       <div class="card mb-4">
         <div class="card-body">
