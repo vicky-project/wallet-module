@@ -119,7 +119,7 @@ class RecurringController extends Controller
 
 			if (!$recurringTransaction) {
 				return redirect()
-					->route("apps.recurring.index")
+					->route("apps.recurrings.index")
 					->withErrors("Transaksi rutin tidak ditemukan.");
 			}
 
