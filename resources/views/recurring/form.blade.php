@@ -130,9 +130,9 @@
     <!-- Left Column: Basic Information -->
     <div class="col-md-8 mb-3">
       <div class="row">
-        <div class="col-12">
-      <!-- Basic Information Section -->
-      <div class="card mb-4">
+        <div class="col-12 mb-2">
+          <!-- Basic Information Section -->
+          <div class="card mb-4">
         <div class="card-body">
           <div class="form-section">
             <h5 class="form-section-title">Informasi Dasar</h5>
@@ -251,9 +251,9 @@
         </div>
       </div>
         </div>
-        <div class="col-12">
-      <!-- Recurrence Settings Section -->
-      <div class="card mb-4">
+        <div class="col-12 mb-2">
+          <!-- Recurrence Settings Section -->
+          <div class="card mb-4">
         <div class="card-body">
           <div class="form-section">
             <h5 class="form-section-title">Pengaturan Pengulangan</h5>
@@ -377,8 +377,10 @@
 
     <!-- Right Column: Preview & Actions -->
     <div class="col-md-4 mb-3">
-      <!-- Preview Section -->
-      <div class="card mb-4">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <!-- Preview Section -->
+          <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title mb-3">Pratinjau Pengulangan</h5>
           <div id="occurrencePreview">
@@ -392,9 +394,10 @@
           </button>
         </div>
       </div>
-
-      <!-- Actions Section -->
-      <div class="card mb-4">
+        </div>
+        <div class="col-12 mb-2">
+          <!-- Actions Section -->
+          <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title mb-3">Aksi</h5>
           <div class="d-grid gap-2">
@@ -427,6 +430,8 @@
               </button>
             </div>
           @endif
+        </div>
+      </div>
         </div>
       </div>
 
