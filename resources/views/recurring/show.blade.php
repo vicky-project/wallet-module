@@ -4,392 +4,379 @@
 
 @section('content')
 @include('wallet::partials.fab')
-    <!-- Detail Header -->
-    <div class="detail-header">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1 class="mb-2">{{ $recurringTransaction->description }}</h1>
-                <div class="d-flex align-items-center flex-wrap gap-2">
-                    <span class="badge bg-{{ $recurringTransaction->type == 'income' ? 'success' : ($recurringTransaction->type == 'expense' ? 'danger' : 'primary') }} fs-6">
-                        {{ $recurringTransaction->type == 'income' ? 'Pemasukan' : ($recurringTransaction->type == 'expense' ? 'Pengeluaran' : 'Transfer') }}
-                    </span>
-                    <span class="badge bg-light text-dark fs-6">
-                        <i class="bi {{ $recurringTransaction->category->icon ?? 'bi-arrow-repeat' }} me-1"></i>
-                        {{ $recurringTransaction->category->name ?? 'N/A' }}
-                    </span>
-                    <span class="badge {{ $recurringTransaction->is_active ? 'bg-success' : 'bg-secondary' }} fs-6">
-                        <i class="bi {{ $recurringTransaction->is_active ? 'bi-check-circle' : 'bi-x-circle' }} me-1"></i>
-                        {{ $recurringTransaction->is_active ? 'Aktif' : 'Nonaktif' }}
-                    </span>
-                </div>
-            </div>
-            <div class="col-md-4 text-end">
-                <h2 class="fw-bold mb-0 currency">{{ $recurringTransaction->amount }}</h2>
-                <p class="mb-0 opacity-75">Per transaksi</p>
-            </div>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <div class="btn-group">
-                <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
-                    <i class="bi bi-pencil"></i>
-                </a>
-                <button class="btn btn-light btn-sm toggle-status-btn"
-                        data-id="{{ $recurringTransaction->id }}"
-                        data-status="{{ $recurringTransaction->is_active ? 1 : 0 }}">
-                    <i class="bi bi-power"></i>
-                </button>
-                <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
-                    <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a class="dropdown-item" href="#" id="previewScheduleBtn">
-                            <i class="bi bi-calendar-week me-2"></i> Lihat Jadwal
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" id="processNowBtn">
-                            <i class="bi bi-play-circle me-2"></i> Proses Sekarang
-                        </a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" 
-                              method="POST" 
-                              class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="dropdown-item text-danger delete-btn">
-                                <i class="bi bi-trash me-2"></i> Hapus
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<!-- Detail Header -->
+<div class="detail-header">
+  <div class="row align-items-center">
+    <div class="col-md-8">
+      <h1 class="mb-2">{{ $recurringTransaction->description }}</h1>
+      <div class="d-flex align-items-center flex-wrap gap-2">
+        <span class="badge bg-{{ $recurringTransaction->type == 'income' ? 'success' : ($recurringTransaction->type == 'expense' ? 'danger' : 'primary') }} fs-6">
+          {{ $recurringTransaction->type == 'income' ? 'Pemasukan' : ($recurringTransaction->type == 'expense' ? 'Pengeluaran' : 'Transfer') }}
+        </span>
+        <span class="badge bg-light text-dark fs-6">
+          <i class="bi {{ $recurringTransaction->category->icon ?? 'bi-arrow-repeat' }} me-1"></i>
+          {{ $recurringTransaction->category->name ?? 'N/A' }}
+        </span>
+        <span class="badge {{ $recurringTransaction->is_active ? 'bg-success' : 'bg-secondary' }} fs-6">
+          <i class="bi {{ $recurringTransaction->is_active ? 'bi-check-circle' : 'bi-x-circle' }} me-1"></i>
+          {{ $recurringTransaction->is_active ? 'Aktif' : 'Nonaktif' }}
+        </span>
+      </div>
     </div>
+    <div class="col-md-4 text-end">
+      <h2 class="fw-bold mb-0 currency">{{ $recurringTransaction->amount }}</h2>
+      <p class="mb-0 opacity-75">Per transaksi</p>
+    </div>
+  </div>
+        
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <div class="btn-group">
+      <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
+        <i class="bi bi-pencil"></i>
+      </a>
+      <button class="btn btn-light btn-sm toggle-status-btn" data-id="{{ $recurringTransaction->id }}" data-status="{{ $recurringTransaction->is_active ? 1 : 0 }}">
+        <i class="bi bi-power"></i>
+      </button>
+      <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
+        <i class="bi bi-three-dots-vertical"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" href="#" id="previewScheduleBtn">
+            <i class="bi bi-calendar-week me-2"></i> Lihat Jadwal
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="#" id="processNowBtn">
+            <i class="bi bi-play-circle me-2"></i> Proses Sekarang
+          </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" method="POST" class="d-inline">
+            @csrf
+            @method('DELETE')
+            <button type="button" class="dropdown-item text-danger delete-btn">
+              <i class="bi bi-trash me-2"></i> Hapus
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-    <!-- Stats Overview -->
-    <div class="detail-stats">
-        <div class="stat-card">
-            <div class="text-primary mb-2">
-                <i class="bi bi-arrow-repeat fs-1"></i>
-            </div>
-            <h3 class="mb-1">{{ $recurringTransaction->frequency }}</h3>
-            <p class="text-muted mb-0">Frekuensi</p>
-        </div>
+<!-- Stats Overview -->
+<div class="detail-stats">
+  <div class="stat-card">
+    <div class="text-primary mb-2">
+      <i class="bi bi-arrow-repeat fs-1"></i>
+    </div>
+    <h3 class="mb-1">{{ $recurringTransaction->frequency }}</h3>
+    <p class="text-muted mb-0">Frekuensi</p>
+  </div>
         
-        <div class="stat-card">
-            <div class="text-success mb-2">
-                <i class="bi bi-check-circle fs-1"></i>
-            </div>
-            <h3 class="mb-1">{{ $recurringTransaction->transactions_count ?? 0 }}</h3>
-            <p class="text-muted mb-0">Total Diproses</p>
-        </div>
+  <div class="stat-card">
+    <div class="text-success mb-2">
+      <i class="bi bi-check-circle fs-1"></i>
+    </div>
+    <h3 class="mb-1">{{ $recurringTransaction->transactions_count ?? 0 }}</h3>
+    <p class="text-muted mb-0">Total Diproses</p>
+  </div>
         
-        <div class="stat-card">
-            <div class="text-warning mb-2">
-                <i class="bi bi-calendar-event fs-1"></i>
+  <div class="stat-card">
+    <div class="text-warning mb-2">
+      <i class="bi bi-calendar-event fs-1"></i>
+    </div>
+    <h3 class="mb-1">
+      @if($recurringTransaction->remaining_occurrences)
+        {{ $recurringTransaction->remaining_occurrences }}
+      @else
+        ∞
+      @endif
+    </h3>
+    <p class="text-muted mb-0">Sisa Pengulangan</p>
+  </div>
+        
+  <div class="stat-card">
+    <div class="text-info mb-2">
+      <i class="bi bi-calendar-date fs-1"></i>
+    </div>
+    <h3 class="mb-1">
+      @php
+        $nextDate = $recurringTransaction->next_occurrence ?? \Carbon\Carbon::parse($recurringTransaction->start_date);
+        echo $nextDate->format('d M');
+      @endphp
+    </h3>
+    <p class="text-muted mb-0">Berikutnya</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Left Column: Information -->
+  <div class="col-lg-8">
+    <div class="row">
+      <!-- Transaction Information -->
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-info-circle me-2"></i> Informasi Transaksi
+            </h5>
+          </div>
+          <div class="card-body pt-0">
+            <div class="info-row">
+              <span class="text-muted">Akun</span>
+              <span class="fw-medium">
+                <i class="bi bi-wallet2 me-1"></i>
+                {{ $recurringTransaction->account->name ?? 'N/A' }}
+              </span>
             </div>
-            <h3 class="mb-1">
-                @if($recurringTransaction->remaining_occurrences)
-                    {{ $recurringTransaction->remaining_occurrences }}
-                @else
-                    ∞
+                            
+            @if($recurringTransaction->type == 'transfer' && $recurringTransaction->toAccount)
+              <div class="info-row">
+                <span class="text-muted">Akun Tujuan</span>
+                <span class="fw-medium">
+                  <i class="bi bi-arrow-right me-1"></i>
+                  {{ $recurringTransaction->toAccount->name }}
+                </span>
+              </div>
+            @endif
+                            
+            <div class="info-row">
+              <span class="text-muted">Kategori</span>
+              <span class="fw-medium">
+                <i class="bi {{ $recurringTransaction->category->icon ?? 'bi-tag' }} me-1"></i>
+                {{ $recurringTransaction->category->name ?? 'N/A' }}
+              </span>
+            </div>
+                            
+            <div class="info-row">
+              <span class="text-muted">Jumlah</span>
+              <span class="fw-bold currency">{{ $recurringTransaction->amount }}</span>
+            </div>
+                            
+            <div class="info-row">
+              <span class="text-muted">Deskripsi</span>
+              <span class="fw-medium">{{ $recurringTransaction->description }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recurrence Information -->
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-calendar3 me-2"></i> Informasi Pengulangan
+            </h5>
+          </div>
+          <div class="card-body pt-0">
+            <div class="info-row">
+              <span class="text-muted">Frekuensi</span>
+              <span class="fw-medium">
+                <span class="recurring-badge bg-primary text-white">
+                  {{ $recurringTransaction->frequency }}
+                </span>
+              </span>
+            </div>
+                            
+            <div class="info-row">
+              <span class="text-muted">Interval</span>
+              <span class="fw-medium">
+                Setiap {{ $recurringTransaction->interval }} 
+                {{ $recurringTransaction->frequency == 'daily' ? 'hari' : ($recurringTransaction->frequency == 'weekly' ? 'minggu' : ($recurringTransaction->frequency == 'monthly' ? 'bulan' : ($recurringTransaction->frequency == 'quarterly' ? 'triwulan' : 'tahun'))) }}
+              </span>
+            </div>
+                            
+            <div class="info-row">
+              <span class="text-muted">Dimulai</span>
+              <span class="fw-medium">
+                {{ \Carbon\Carbon::parse($recurringTransaction->start_date)->format('d M Y') }}
+              </span>
+            </div>
+                            
+            <div class="info-row">
+              <span class="text-muted">Berakhir</span>
+              <span class="fw-medium">
+                @if($recurringTransaction->end_date)
+                  {{ \Carbon\Carbon::parse($recurringTransaction->end_date)->format('d M Y') }}
+                  <span class="text-success">Tidak Ada</span>
                 @endif
-            </h3>
-            <p class="text-muted mb-0">Sisa Pengulangan</p>
-        </div>
-        
-        <div class="stat-card">
-            <div class="text-info mb-2">
-                <i class="bi bi-calendar-date fs-1"></i>
+              </span>
             </div>
-            <h3 class="mb-1">
-                @php
-                    $nextDate = $recurringTransaction->next_occurrence ?? \Carbon\Carbon::parse($recurringTransaction->start_date);
-                    echo $nextDate->format('d M');
-                @endphp
-            </h3>
-            <p class="text-muted mb-0">Berikutnya</p>
+                            
+            <div class="info-row">
+              <span class="text-muted">Dibuat</span>
+              <span class="fw-medium">
+                {{ $recurringTransaction->created_at->format('d M Y H:i') }}
+              </span>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Left Column: Information -->
-        <div class="col-lg-8">
-            <div class="row">
-                <!-- Transaction Information -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header bg-transparent border-0">
-                            <h5 class="card-title mb-0">
-                                <i class="bi bi-info-circle me-2"></i> Informasi Transaksi
-                            </h5>
+    <!-- Transaction History -->
+    <div class="card mt-4">
+      <div class="card-header bg-transparent border-0">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">
+            <i class="bi bi-clock-history me-2"></i> Riwayat Transaksi
+          </h5>
+          <span class="badge bg-primary">
+            {{ $relatedTransactions->total() }} transaksi
+          </span>
+        </div>
+      </div>
+      <div class="card-body pt-0">
+        @if($relatedTransactions->count() > 0)
+          <div class="transaction-history">
+            <div class="timeline">
+              @foreach($relatedTransactions as $transaction)
+                <div class="timeline-item">
+                  <div class="card mb-2">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <h6 class="mb-0">{{ $transaction->description }}</h6>
+                          <small class="text-muted">
+                            {{ $transaction->transaction_date->format('d M Y H:i') }}
+                          </small>
                         </div>
-                        <div class="card-body pt-0">
-                            <div class="info-row">
-                                <span class="text-muted">Akun</span>
-                                <span class="fw-medium">
-                                    <i class="bi bi-wallet2 me-1"></i>
-                                    {{ $recurringTransaction->account->name ?? 'N/A' }}
-                                </span>
-                            </div>
-                            
-                            @if($recurringTransaction->type == 'transfer' && $recurringTransaction->toAccount)
-                                <div class="info-row">
-                                    <span class="text-muted">Akun Tujuan</span>
-                                    <span class="fw-medium">
-                                        <i class="bi bi-arrow-right me-1"></i>
-                                        {{ $recurringTransaction->toAccount->name }}
-                                    </span>
-                                </div>
-                            @endif
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Kategori</span>
-                                <span class="fw-medium">
-                                    <i class="bi {{ $recurringTransaction->category->icon ?? 'bi-tag' }} me-1"></i>
-                                    {{ $recurringTransaction->category->name ?? 'N/A' }}
-                                </span>
-                            </div>
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Jumlah</span>
-                                <span class="fw-bold currency">{{ $recurringTransaction->amount }}</span>
-                            </div>
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Deskripsi</span>
-                                <span class="fw-medium">{{ $recurringTransaction->description }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recurrence Information -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header bg-transparent border-0">
-                            <h5 class="card-title mb-0">
-                                <i class="bi bi-calendar3 me-2"></i> Informasi Pengulangan
-                            </h5>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div class="info-row">
-                                <span class="text-muted">Frekuensi</span>
-                                <span class="fw-medium">
-                                    <span class="recurring-badge bg-primary text-white">
-                                        {{ $recurringTransaction->frequency }}
-                                    </span>
-                                </span>
-                            </div>
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Interval</span>
-                                <span class="fw-medium">
-                                    Setiap {{ $recurringTransaction->interval }} 
-                                    {{ $recurringTransaction->frequency == 'daily' ? 'hari' : 
-                                       ($recurringTransaction->frequency == 'weekly' ? 'minggu' : 
-                                       ($recurringTransaction->frequency == 'monthly' ? 'bulan' : 
-                                       ($recurringTransaction->frequency == 'quarterly' ? 'triwulan' : 'tahun'))) }}
-                                </span>
-                            </div>
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Dimulai</span>
-                                <span class="fw-medium">
-                                    {{ \Carbon\Carbon::parse($recurringTransaction->start_date)->format('d M Y') }}
-                                </span>
-                            </div>
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Berakhir</span>
-                                <span class="fw-medium">
-                                    @if($recurringTransaction->end_date)
-                                        {{ \Carbon\Carbon::parse($recurringTransaction->end_date)->format('d M Y') }}
-                                        <span class="text-success">Tidak Ada</span>
-                                    @endif
-                                </span>
-                            </div>
-                            
-                            <div class="info-row">
-                                <span class="text-muted">Dibuat</span>
-                                <span class="fw-medium">
-                                    {{ $recurringTransaction->created_at->format('d M Y H:i') }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Transaction History -->
-            <div class="card mt-4">
-                <div class="card-header bg-transparent border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-clock-history me-2"></i> Riwayat Transaksi
-                        </h5>
-                        <span class="badge bg-primary">
-                            {{ $relatedTransactions->total() }} transaksi
-                        </span>
-                    </div>
-                </div>
-                <div class="card-body pt-0">
-                    @if($relatedTransactions->count() > 0)
-                        <div class="transaction-history">
-                            <div class="timeline">
-                                @foreach($relatedTransactions as $transaction)
-                                    <div class="timeline-item">
-                                        <div class="card mb-2">
-                                            <div class="card-body">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h6 class="mb-0">{{ $transaction->description }}</h6>
-                                                        <small class="text-muted">
-                                                            {{ $transaction->transaction_date->format('d M Y H:i') }}
-                                                        </small>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <span class="fw-bold {{ $transaction->type == 'income' ? 'text-success' : 'text-danger' }} currency">
+                        <div class="text-end">
+                          <span class="fw-bold {{ $transaction->type == 'income' ? 'text-success' : 'text-danger' }} currency">
                                                             {{ $transaction->amount }}
                                                         </span>
-                                                        <br>
-                                                        <small class="text-muted">{{ $transaction->account->name ?? 'N/A' }}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
+                          <br>
+                          <small class="text-muted">{{ $transaction->account->name ?? 'N/A' }}</small>
                         </div>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ $relatedTransactions->links() }}
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <i class="bi bi-receipt text-muted" style="font-size: 2rem;"></i>
-                            <p class="mt-3 mb-2">Belum ada transaksi yang diproses</p>
-                            <small class="text-muted">Transaksi akan dibuat sesuai jadwal pengulangan</small>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Next Occurrences -->
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-calendar-week me-2"></i> Jadwal Berikutnya
-                    </h5>
-                </div>
-                <div class="card-body pt-0">
-                    <div id="nextOccurrences">
-                        <div class="text-center py-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              @endforeach
             </div>
-
-            <!-- Quick Actions -->
-            <div class="card mt-4">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-lightning me-2"></i> Aksi Cepat
-                    </h5>
-                </div>
-                <div class="card-body pt-0">
-                    <div class="d-grid gap-2">
-                        <a href="{{ route('apps.transactions.create') }}?recurring_id={{ $recurringTransaction->id }}" 
-                           class="btn btn-outline-primary">
-                            <i class="bi bi-plus-circle me-2"></i> Buat Transaksi Manual
-                        </a>
+          </div>
                         
-                        @if($recurringTransaction->is_active)
-                            <button class="btn btn-outline-warning toggle-status-btn"
-                                    data-id="{{ $recurringTransaction->id }}"
-                                    data-status="1">
-                                <i class="bi bi-power me-2"></i> Nonaktifkan
-                            </button>
-                        @else
-                            <button class="btn btn-outline-success toggle-status-btn"
-                                    data-id="{{ $recurringTransaction->id }}"
-                                    data-status="0">
-                                <i class="bi bi-power me-2"></i> Aktifkan
-                            </button>
-                        @endif
-                        
-                        <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" 
-                           class="btn btn-outline-info">
-                            <i class="bi bi-pencil me-2"></i> Edit Transaksi
-                        </a>
-                        
-                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <i class="bi bi-trash me-2"></i> Hapus Transaksi
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+          <!-- Pagination -->
+          <div class="d-flex justify-content-center mt-3">
+            {{ $relatedTransactions->links() }}
+          </div>
+        @else
+          <div class="text-center py-4">
+            <i class="bi bi-receipt text-muted" style="font-size: 2rem;"></i>
+            <p class="mt-3 mb-2">Belum ada transaksi yang diproses</p>
+            <small class="text-muted">Transaksi akan dibuat sesuai jadwal pengulangan</small>
+          </div>
+        @endif
+      </div>
     </div>
+  </div>
+
+  <!-- Right Column: Next Occurrences -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header bg-transparent border-0">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-calendar-week me-2"></i> Jadwal Berikutnya
+        </h5>
+      </div>
+      <div class="card-body pt-0">
+        <div id="nextOccurrences">
+          <div class="text-center py-3">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card mt-4">
+      <div class="card-header bg-transparent border-0">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-lightning me-2"></i> Aksi Cepat
+        </h5>
+      </div>
+      <div class="card-body pt-0">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create') }}?recurring_id={{ $recurringTransaction->id }}" class="btn btn-outline-primary">
+            <i class="bi bi-plus-circle me-2"></i> Buat Transaksi Manual
+          </a>
+                        
+          @if($recurringTransaction->is_active)
+            <button class="btn btn-outline-warning toggle-status-btn" data-id="{{ $recurringTransaction->id }}" data-status="1">
+              <i class="bi bi-power me-2"></i> Nonaktifkan
+            </button>
+          @else
+            <button class="btn btn-outline-success toggle-status-btn" data-id="{{ $recurringTransaction->id }}" data-status="0">
+              <i class="bi bi-power me-2"></i> Aktifkan
+            </button>
+          @endif
+                        
+          <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" class="btn btn-outline-info">
+            <i class="bi bi-pencil me-2"></i> Edit Transaksi
+          </a>
+                        
+          <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            <i class="bi bi-trash me-2"></i> Hapus Transaksi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Konfirmasi Hapus</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus transaksi rutin ini?</p>
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    <strong>Peringatan:</strong> Transaksi yang sudah diproses tidak akan terpengaruh, 
-                    tetapi transaksi mendatang tidak akan dibuat lagi.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Hapus</button>
-                </form>
-            </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus transaksi rutin ini?</p>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>Peringatan:</strong> Transaksi yang sudah diproses tidak akan terpengaruh, 
+            tetapi transaksi mendatang tidak akan dibuat lagi.
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" method="POST">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Schedule Preview Modal -->
 <div class="modal fade" id="scheduleModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Jadwal Pengulangan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="scheduleContent">
-                    <!-- Content will be loaded via AJAX -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Jadwal Pengulangan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="scheduleContent">
+          <!-- Content will be loaded via AJAX -->
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
