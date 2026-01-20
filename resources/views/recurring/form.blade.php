@@ -2,6 +2,9 @@
 
 @section('title', isset($recurringTransaction) ? 'Edit Transaksi Rutin' : 'Tambah Transaksi Rutin')
 
+@use('Modules\Wallet\Enums\TransactionType')
+@use('Modules\Wallet\Enums\RecurringFreq')
+
 @push('styles')
 <style>
     .frequency-options {
@@ -148,22 +151,19 @@
               <label class="form-label">Tipe Transaksi *</label>
               <div class="row g-2">
                 <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_income" value="income"
-                    {{ old('type', $recurringTransaction->type ?? '') == 'income' ? 'checked' : '' }} required>
+                  <input type="radio" class="btn-check" name="type" id="type_income" value="{{ TransactionType::INCOME->value }}" required @checked(old('type', $recurringTransaction->type ?? '') == TransactionType::INCOME->value)>
                   <label class="btn btn-outline-success w-100" for="type_income">
                     <i class="bi bi-arrow-down-left me-1"></i> Pemasukan
                   </label>
                 </div>
                 <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_expense" value="expense"
-                    {{ old('type', $recurringTransaction->type ?? 'expense') == 'expense' ? 'checked' : '' }}>
+                  <input type="radio" class="btn-check" name="type" id="type_expense" value="{{ TransactionType::EXPENSE->value }}" @checked(old('type', $recurringTransaction->type ?? 'expense') == TransactionType::EXPENSE->value)>
                   <label class="btn btn-outline-danger w-100" for="type_expense">
                     <i class="bi bi-arrow-up-right me-1"></i> Pengeluaran
                   </label>
                 </div>
                 <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_transfer" value="transfer"
-                    {{ old('type', $recurringTransaction->type ?? '') == 'transfer' ? 'checked' : '' }}>
+                  <input type="radio" class="btn-check" name="type" id="type_transfer" value="{{ TransactionType::TRANSFER->value }}" @checked(old('type', $recurringTransaction->type) == TransactionType::TRANSFER->value)>
                   <label class="btn btn-outline-primary w-100" for="type_transfer">
                     <i class="bi bi-arrow-left-right me-1"></i> Transfer
                   </label>
@@ -180,7 +180,7 @@
               <div class="amount-input">
                 <div class="input-group">
                   <span class="input-group-text">Rp</span>
-                  <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $recurringTransaction->amount ?? '') }}" min="100" step="100" required>
+                  <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $recurringTransaction->amount ?? '') }}" min="100" required>
                   @error('amount')
                     <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
@@ -194,8 +194,7 @@
               <select class="form-select @error('account_id') is-invalid @enderror" id="account_id" name="account_id" required>
                 <option value="">Pilih Akun</option>
                 @foreach($accounts as $account)
-                  <option value="{{ $account->id }}"
-                    {{ old('account_id', $recurringTransaction->account_id ?? '') == $account->id ? 'selected' : '' }}>
+                  <option value="{{ $account->id }}" @selected(old('account_id', $recurringTransaction->account_id) == $account->id)>
                     {{ $account->name }} ({{ $account->type }})
                   </option>
                 @endforeach
@@ -211,8 +210,7 @@
               <select class="form-select @error('to_account_id') is-invalid @enderror" id="to_account_id" name="to_account_id">
                 <option value="">Pilih Akun Tujuan</option>
                 @foreach($accounts as $account)
-                  <option value="{{ $account->id }}"
-                    {{ old('to_account_id', $recurringTransaction->to_account_id ?? '') == $account->id ? 'selected' : '' }}>
+                  <option value="{{ $account->id }}" @selected(old('to_account_id', $recurringTransaction->to_account_id) == $account->id)>
                     {{ $account->name }} ({{ $account->type }})
                   </option>
                 @endforeach
@@ -228,8 +226,7 @@
               <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
                 <option value="">Pilih Kategori</option>
                 @foreach($categories as $id => $name)
-                  <option value="{{ $id }}"
-                    {{ old('category_id', $recurringTransaction->category_id ?? '') == $id ? 'selected' : '' }}>
+                  <option value="{{ $id }}" @selected(old('category_id', $recurringTransaction->category_id ?? '') == $id)>
                     {{ $name }}
                   </option>
                 @endforeach
@@ -242,8 +239,7 @@
             <!-- Is Active -->
             <div class="col-md-6">
               <div class="form-check mt-4 pt-2">
-                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1"
-                  {{ old('is_active', $recurringTransaction->is_active ?? true) ? 'checked' : '' }}>
+                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $recurringTransaction->is_active ?? true))>
                 <label class="form-check-label" for="is_active">
                   Aktifkan transaksi ini
                 </label>
@@ -264,11 +260,11 @@
           <div class="mb-4">
             <label class="form-label">Frekuensi *</label>
             <div class="frequency-options">
-              @foreach(['daily' => 'Harian', 'weekly' => 'Mingguan', 'monthly' => 'Bulanan', 'quarterly' => 'Triwulan', 'yearly' => 'Tahunan'] as $value => $label)
-                <div class="frequency-option {{ old('frequency', $recurringTransaction->frequency ?? 'monthly') == $value ? 'active' : '' }}" data-frequency="{{ $value }}">
+              @foreach(RecurringFreq::cases() as $freq)
+                <div class="frequency-option {{ old('frequency', $recurringTransaction->frequency ?? RecurringFreq::MONTHLY->value) == $freq ? 'active' : '' }}" data-frequency="{{ $freq->value }}">
                   <i class="bi bi-{{ $value == 'daily' ? 'calendar-day' : ($value == 'weekly' ? 'calendar-week' : ($value == 'monthly' ? 'calendar-month' : ($value == 'quarterly' ? 'calendar-range' : 'calendar'))) }}"></i>
-                  <div class="fw-medium">{{ $label }}</div>
-                  <input type="radio" class="d-none" name="frequency" value="{{ $value }}"
+                  <div class="fw-medium">{{ $freq->label() }}</div>
+                  <input type="radio" class="d-none" name="frequency" value="{{ $freq->value }}"
                     {{ old('frequency', $recurringTransaction->frequency ?? 'monthly') == $value ? 'checked' : '' }} required>
                 </div>
               @endforeach

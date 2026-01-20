@@ -21,4 +21,16 @@ enum RecurringFreq: string
 			self::CUSTOM => "Kustom",
 		};
 	}
+
+	public function icon(): string
+	{
+		return match ($this) {
+			self::DAILY => "bi-calendar-day",
+			self::MONTHLY => "bi-calendar-month",
+			self::WEEKLY => "bi-calendar-week",
+			self::QUARTERLY => "bi-calendar-range",
+			self::YEARLY => "bi-calendar",
+			self::CUSTOM => "Kustom",
+		};
+	}
 }
