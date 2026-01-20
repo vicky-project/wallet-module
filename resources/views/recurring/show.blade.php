@@ -35,10 +35,10 @@
   <!-- Action Buttons -->
   <div class="action-buttons">
     <div class="btn-group">
-      <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" class="btn btn-light btn-sm">
+      <a href="{{ route('apps.recurrings.edit', $recurringTransaction->id) }}" class="btn btn-transparent btn-sm">
         <i class="bi bi-pencil"></i>
       </a>
-      <button class="btn btn-light btn-sm toggle-status-btn" data-id="{{ $recurringTransaction->id }}" data-status="{{ $recurringTransaction->is_active ? 1 : 0 }}">
+      <button class="btn btn-transparent btn-sm toggle-status-btn" data-id="{{ $recurringTransaction->id }}" data-status="{{ $recurringTransaction->is_active ? 1 : 0 }}">
         <i class="bi bi-power"></i>
       </button>
       <button class="btn btn-light btn-sm" data-bs-toggle="dropdown">
