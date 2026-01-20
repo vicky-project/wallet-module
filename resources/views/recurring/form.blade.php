@@ -120,7 +120,7 @@
   </div>
 </div>
 
-<form action="{{ isset($recurringTransaction) ? route('apps.recurring.update', $recurringTransaction->id) : route('apps.recurrings.store') }}" method="POST" id="recurringForm">
+<form action="{{ isset($recurringTransaction) ? route('apps.recurrings.update', $recurringTransaction->id) : route('apps.recurrings.store') }}" method="POST" id="recurringForm">
   @csrf
   @if(isset($recurringTransaction))
     @method('PUT')
