@@ -128,7 +128,7 @@
 
   <div class="row">
     <!-- Left Column: Basic Information -->
-    <div class="col-lg-8">
+    <div class="col-lg-8 mb-3">
       <!-- Basic Information Section -->
       <div class="card mb-4">
         <div class="card-body">
@@ -370,7 +370,7 @@
     </div>
 
     <!-- Right Column: Preview & Actions -->
-    <div class="col-lg-4">
+    <div class="col-lg-4 mb-3">
       <!-- Preview Section -->
       <div class="card mb-4">
         <div class="card-body">
@@ -388,7 +388,7 @@
       </div>
 
       <!-- Actions Section -->
-      <div class="card">
+      <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title mb-3">Aksi</h5>
           <div class="d-grid gap-2">
@@ -426,7 +426,7 @@
 
       <!-- Quick Stats -->
       @if(isset($recurringTransaction))
-        <div class="card mt-4">
+        <div class="card mb-4">
           <div class="card-body">
             <h5 class="card-title mb-3">Statistik</h5>
             <div class="row g-2">
