@@ -114,7 +114,8 @@ class RecurringController extends Controller
 	{
 		try {
 			$recurringTransaction = $this->recurringService->findRecurringTransaction(
-				(int) $id
+				(int) $id,
+				["account", "transactions_count"]
 			);
 
 			if (!$recurringTransaction) {

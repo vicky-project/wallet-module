@@ -206,8 +206,8 @@ class RecurringTransactionService
 		};
 	}
 
-	public function findRecurringTransaction(int $id)
+	public function findRecurringTransaction(int $id, array $with = [])
 	{
-		return $this->repository->find($id);
+		return $this->repository->find($id, $with);
 	}
 }

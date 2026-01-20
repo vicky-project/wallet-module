@@ -2,6 +2,9 @@
 
 @section('title', 'Detail Transaksi Rutin - ' . config('app.name', 'Vicky Server'))
 
+@us('Modules\Wallet\Enums\TransactionType')
+@us('Modules\Wallet\Enums\RecurringFreq')
+
 @section('content')
 @include('wallet::partials.fab')
 <!-- Detail Header -->
@@ -10,8 +13,8 @@
     <div class="col-md-8">
       <h1 class="mb-2">{{ $recurringTransaction->description }}</h1>
       <div class="d-flex align-items-center flex-wrap gap-2">
-        <span class="badge bg-{{ $recurringTransaction->type == 'income' ? 'success' : ($recurringTransaction->type == 'expense' ? 'danger' : 'primary') }} fs-6">
-          {{ $recurringTransaction->type == 'income' ? 'Pemasukan' : ($recurringTransaction->type == 'expense' ? 'Pengeluaran' : 'Transfer') }}
+        <span class="badge bg-{{ $recurringTransaction->type == TransactionType::INCOME ? 'success' : ($recurringTransaction->type == TransactionType::EXPENSE ? 'danger' : 'primary') }} fs-6">
+          {{ $recurringTransaction->type == TransactionType::INCOME ? 'Pemasukan' : ($recurringTransaction->type == TransactionType::EXPENSE ? 'Pengeluaran' : 'Transfer') }}
         </span>
         <span class="badge bg-light text-dark fs-6">
           <i class="bi {{ $recurringTransaction->category->icon ?? 'bi-arrow-repeat' }} me-1"></i>
@@ -73,7 +76,7 @@
     <div class="text-primary mb-2">
       <i class="bi bi-arrow-repeat fs-1"></i>
     </div>
-    <h3 class="mb-1">{{ $recurringTransaction->frequency }}</h3>
+    <h3 class="mb-1">{{ $recurringTransaction->frequency->label() }}</h3>
     <p class="text-muted mb-0">Frekuensi</p>
   </div>
         
@@ -134,7 +137,7 @@
               </span>
             </div>
                             
-            @if($recurringTransaction->type == 'transfer' && $recurringTransaction->toAccount)
+            @if($recurringTransaction->type == TransactionType::TRANSFER && $recurringTransaction->toAccount)
               <div class="info-row">
                 <span class="text-muted">Akun Tujuan</span>
                 <span class="fw-medium">
@@ -178,7 +181,7 @@
               <span class="text-muted">Frekuensi</span>
               <span class="fw-medium">
                 <span class="recurring-badge bg-primary text-white">
-                  {{ $recurringTransaction->frequency }}
+                  {{ $recurringTransaction->frequency->label() }}
                 </span>
               </span>
             </div>
@@ -187,7 +190,8 @@
               <span class="text-muted">Interval</span>
               <span class="fw-medium">
                 Setiap {{ $recurringTransaction->interval }} 
-                {{ $recurringTransaction->frequency == 'daily' ? 'hari' : ($recurringTransaction->frequency == 'weekly' ? 'minggu' : ($recurringTransaction->frequency == 'monthly' ? 'bulan' : ($recurringTransaction->frequency == 'quarterly' ? 'triwulan' : 'tahun'))) }}
+                {{ $recurringTransaction->frequency == RecurringFreq::DAILY ? 'hari' : ($recurringTransaction->frequency == RecurringFreq::WEEKLY ? 'minggu' : ($recurringTransaction->frequency == RecurringFreq::MONTHLY ? 'bulan' : ($recurringTransaction->frequency == RecurringFreq::QUARTERLY ? 'triwulan' : 'tahun'))) }}
+                {{ $recurringTransaction->frequency == RecurringFreq::DAILY ? 'hari' : ($recurringTransaction->frequency == RecurringFreq::WEEKLY ? 'minggu' : ($recurringTransaction->frequency == RecurringFreq::MONTHLY ? 'bulan' : ($recurringTransaction->frequency == RecurringFreq::QUARTERLY ? 'triwulan' : 'tahun'))) }}
               </span>
             </div>
                             
@@ -247,7 +251,7 @@
                           </small>
                         </div>
                         <div class="text-end">
-                          <span class="fw-bold {{ $transaction->type == 'income' ? 'text-success' : 'text-danger' }} currency">
+                          <span class="fw-bold {{ $transaction->type == TransactionType::INCOME ? 'text-success' : 'text-danger' }} currency">
                                                             {{ $transaction->amount }}
                                                         </span>
                           <br>
