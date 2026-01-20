@@ -262,10 +262,9 @@
             <div class="frequency-options">
               @foreach(RecurringFreq::cases() as $freq)
                 <div class="frequency-option {{ old('frequency', $recurringTransaction->frequency ?? RecurringFreq::MONTHLY->value) == $freq ? 'active' : '' }}" data-frequency="{{ $freq->value }}">
-                  <i class="bi bi-{{ $value == 'daily' ? 'calendar-day' : ($value == 'weekly' ? 'calendar-week' : ($value == 'monthly' ? 'calendar-month' : ($value == 'quarterly' ? 'calendar-range' : 'calendar'))) }}"></i>
+                  <i class="bi {{ $freq->icon() }}"></i>
                   <div class="fw-medium">{{ $freq->label() }}</div>
-                  <input type="radio" class="d-none" name="frequency" value="{{ $freq->value }}"
-                    {{ old('frequency', $recurringTransaction->frequency ?? 'monthly') == $value ? 'checked' : '' }} required>
+                  <input type="radio" class="d-none" name="frequency" value="{{ $freq->value }}" @checked(old('frequency', $recurringTransaction->frequency ?? 'monthly') == $freq->value) required>
                 </div>
               @endforeach
             </div>

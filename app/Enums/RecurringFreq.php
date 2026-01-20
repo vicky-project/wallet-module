@@ -29,8 +29,8 @@ enum RecurringFreq: string
 			self::MONTHLY => "bi-calendar-month",
 			self::WEEKLY => "bi-calendar-week",
 			self::QUARTERLY => "bi-calendar-range",
-			self::YEARLY => "bi-calendar",
-			self::CUSTOM => "Kustom",
+			self::YEARLY => "bi-calendar-year",
+			self::CUSTOM => "bi-calendar",
 		};
 	}
 }
