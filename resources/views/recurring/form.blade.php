@@ -111,13 +111,13 @@
     </p>
   </div>
   <div>
-    <a href="{{ route('apps.recurring.index') }}" class="btn btn-outline-secondary btn-sm">
+    <a href="{{ route('apps.recurrings.index') }}" class="btn btn-outline-secondary btn-sm">
       <i class="bi bi-arrow-left me-1"></i> Kembali
     </a>
   </div>
 </div>
 
-<form action="{{ isset($recurringTransaction) ? route('apps.recurring.update', $recurringTransaction->id) : route('apps.recurring.store') }}" method="POST" id="recurringForm">
+<form action="{{ isset($recurringTransaction) ? route('apps.recurring.update', $recurringTransaction->id) : route('apps.recurrings.store') }}" method="POST" id="recurringForm">
   @csrf
   @if(isset($recurringTransaction))
     @method('PUT')
@@ -401,7 +401,7 @@
               <i class="bi bi-save me-1"></i>
               {{ isset($recurringTransaction) ? 'Simpan Perubahan' : 'Simpan Transaksi Rutin' }}
             </button>
-            <a href="{{ route('wallet.recurring.index') }}" class="btn btn-outline-secondary">
+            <a href="{{ route('apps.recurrings.index') }}" class="btn btn-outline-secondary">
               <i class="bi bi-x-lg me-1"></i> Batal
             </a>
           </div>
@@ -409,7 +409,7 @@
           @if(isset($recurringTransaction))
             <hr class="my-3">
             <div class="d-grid gap-2">
-              <a href="{{ route('wallet.recurring.show', $recurringTransaction->id) }}" class="btn btn-outline-info">
+              <a href="{{ route('apps.recurrings.show', $recurringTransaction->id) }}" class="btn btn-outline-info">
                 <i class="bi bi-eye me-1"></i> Lihat Detail
               </a>
               @if($recurringTransaction->is_active)
@@ -479,7 +479,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <form action="{{ route('apps.recurring.destroy', $recurringTransaction->id) }}" method="POST">
+        <form action="{{ route('apps.recurrings.destroy', $recurringTransaction->id) }}" method="POST">
           @csrf
           @method('DELETE')
           <button type="submit" class="btn btn-danger">Hapus</button>
@@ -799,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 : 'Apakah Anda yakin ingin mengaktifkan transaksi ini?';
             
             if (confirm(message)) {
-                fetch('{{ secure_url(config("app.url") . "/apps/recurring/toggle-status") }}/' + id, {
+                fetch('{{ secure_url(config("app.url") . "/apps/recurrings/toggle-status") }}/' + id, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
