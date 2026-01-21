@@ -902,7 +902,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengekspor data');
+            alert('Terjadi kesalahan saat mengekspor data', error.message);
         });
     }
 });
