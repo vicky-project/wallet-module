@@ -300,6 +300,7 @@ class RecurringController extends Controller
 				->route("apps.recurrings.index")
 				->with("success", $message);
 		} catch (\Exception $e) {
+			dd($e);
 			return redirect()
 				->route("apps.recurrings.index")
 				->withErrors("Gagal memproses transaksi rutin: " . $e->getMessage());
