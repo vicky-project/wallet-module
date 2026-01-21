@@ -118,10 +118,10 @@
 
 <div class="row g-4">
   <!-- Left Column: Information -->
-  <div class="col-lg-8">
+  <div class="col-lg-8 mb-2">
     <div class="row">
       <!-- Transaction Information -->
-      <div class="col-md-6">
+      <div class="col-md-6 mb-2">
         <div class="card h-100">
           <div class="card-header bg-transparent border-0">
             <h5 class="card-title mb-0">
@@ -169,7 +169,7 @@
       </div>
 
       <!-- Recurrence Information -->
-      <div class="col-md-6">
+      <div class="col-md-6 mb-2">
         <div class="card h-100">
           <div class="card-header bg-transparent border-0">
             <h5 class="card-title mb-0">
@@ -224,7 +224,7 @@
     </div>
 
     <!-- Transaction History -->
-    <div class="card mt-4">
+    <div class="card mb-2">
       <div class="card-header bg-transparent border-0">
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="card-title mb-0">
@@ -281,7 +281,7 @@
   </div>
 
   <!-- Right Column: Next Occurrences -->
-  <div class="col-lg-4">
+  <div class="col-lg-4 mb-2">
     <div class="card">
       <div class="card-header bg-transparent border-0">
         <h5 class="card-title mb-0">
