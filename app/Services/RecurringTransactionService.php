@@ -210,4 +210,13 @@ class RecurringTransactionService
 	{
 		return $this->repository->find($id, $with);
 	}
+
+	public function toggleStatus(
+		RecurringTransaction $recurring
+	): RecurringTransaction {
+		$recurring->is_active = false;
+		$recurring->save();
+
+		return $recurring->refresh();
+	}
 }
