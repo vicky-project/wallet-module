@@ -111,16 +111,17 @@ class CategoryService
 				switch ($category->type) {
 					case CategoryType::EXPENSE:
 						$activeBudget = $category->getCurrentBudget();
-						$monthlyTotal = $activeBudget->spent->getAmount()->toInt();
+						$monthlyTotal = $activeBudget->spent->getMinorAmount()->toInt();
 						if ($activeBudget) {
 							$category->budget_usage_percentage =
 								$activeBudget->amount->getAmount()->toInt() > 0
 									? ($monthlyTotal /
-											$activeBudget->amount->getAmount()->toInt()) *
+											$activeBudget->amount->getMinorAmount()->toInt()) *
 										100
 									: 0;
 							$category->has_budget_exceeded =
-								$monthlyTotal > $activeBudget->amount->getAmount()->toInt();
+								$monthlyTotal >
+								$activeBudget->amount->getMinorAmount()->toInt();
 							$category->budget_limit = $activeBudget->amount;
 						} else {
 							$category->budget_usage_percentage = 0;
