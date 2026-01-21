@@ -17,13 +17,14 @@ class RecurringRepository extends BaseRepository
 		return ["upcoming" => $this->getUpcomingTransactions(7, $user)];
 	}
 
-	public function getUpcomingTransactions(int $days = 30): array
+	public function getUpcomingTransactions(int $days = 30, User $user): array
 	{
 		$upcoming = [];
 		$today = now();
 		$endDate = $today->copy()->addDays($days);
 
 		$recurringTransactions = RecurringTransaction::with(["account", "category"])
+			->where("user_id", $user->id)
 			->where("is_active", true)
 			->where("start_date", "<=", $endDate)
 			->where(function ($query) use ($today) {
