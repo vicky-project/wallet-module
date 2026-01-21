@@ -288,6 +288,7 @@ class RecurringController extends Controller
 	{
 		try {
 			$result = $this->recurringService->processDueRecurringTransactions();
+			dd($result);
 
 			$message =
 				"Diproses: {$result["processed"]}, " .
