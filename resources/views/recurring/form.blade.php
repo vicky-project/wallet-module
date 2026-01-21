@@ -254,122 +254,122 @@
         <div class="col-12 mb-2">
           <!-- Recurrence Settings Section -->
           <div class="card mb-4">
-        <div class="card-body">
-          <div class="form-section">
-            <h5 class="form-section-title">Pengaturan Pengulangan</h5>
-          </div>
-
-          <!-- Frequency Selection -->
-          <div class="mb-4">
-            <label class="form-label">Frekuensi *</label>
-            <div class="frequency-options">
-              @foreach(RecurringFreq::cases() as $freq)
-                <div class="frequency-option {{ old('frequency', $recurringTransaction->frequency ?? RecurringFreq::MONTHLY->value) == $freq ? 'active' : '' }}" data-frequency="{{ $freq->value }}">
-                  <i class="bi {{ $freq->icon() }}"></i>
-                  <div class="fw-medium">{{ $freq->label() }}</div>
-                  <input type="radio" class="d-none" name="frequency" value="{{ $freq->value }}" @checked(old('frequency', $recurringTransaction->frequency ?? 'monthly') == $freq->value) required>
-                </div>
-              @endforeach
-            </div>
-            @error('frequency')
-              <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
-          </div>
-
-          <!-- Interval -->
-          <div class="row mb-4">
-            <div class="col-md-6">
-              <label for="interval" class="form-label">Interval</label>
-              <div class="input-group">
-                <span class="input-group-text">Setiap</span>
-                <input type="number" class="form-control @error('interval') is-invalid @enderror" id="interval" name="interval" value="{{ old('interval', $recurringTransaction->interval ?? 1) }}" min="1" max="12">
-                <span class="input-group-text" id="interval_unit">bulan</span>
+            <div class="card-body">
+              <div class="form-section">
+                <h5 class="form-section-title">Pengaturan Pengulangan</h5>
               </div>
-              <small class="text-muted">Setiap berapa kali frekuensi terpilih</small>
-              @error('interval')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
-          </div>
 
-          <!-- Frequency Details -->
-          <div class="frequency-detail {{ old('frequency', $recurringTransaction->frequency ?? '') == 'weekly' ? 'active' : '' }}" id="weekly_detail">
-            <div class="row">
-              <div class="col-12">
-                <label class="form-label">Hari dalam Minggu *</label>
-                <div class="row g-2">
-                  @php
-                                            $days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-                  @endphp
-                  @foreach($days as $index => $day)
-                    <div class="col">
-                      <input type="radio" class="btn-check" name="day_of_week" id="day_of_week_{{ $index }}" value="{{ $index }}" {{ old('day_of_week', $recurringTransaction->day_of_week ?? date('w')) == $index ? 'checked' : '' }}>
-                      <label class="btn btn-outline-primary w-100" for="day_of_week_{{ $index }}">
-                        {{ substr($day, 0, 3) }}
-                      </label>
+              <!-- Frequency Selection -->
+              <div class="mb-4">
+                <label class="form-label">Frekuensi *</label>
+                <div class="frequency-options">
+                  @foreach(RecurringFreq::cases() as $freq)
+                    <div class="frequency-option {{ old('frequency', $recurringTransaction->frequency ?? RecurringFreq::MONTHLY->value) == $freq ? 'active' : '' }}" data-frequency="{{ $freq->value }}">
+                      <i class="bi {{ $freq->icon() }}"></i>
+                      <div class="fw-medium">{{ $freq->label() }}</div>
+                      <input type="radio" class="d-none" name="frequency" value="{{ $freq->value }}" @checked(old('frequency', $recurringTransaction->frequency ?? 'monthly') == $freq->value) required>
                     </div>
                   @endforeach
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="frequency-detail {{ in_array(old('frequency', $recurringTransaction->frequency ?? ''), ['monthly', 'quarterly']) ? 'active' : '' }}" id="monthly_detail">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="day_of_month" class="form-label">Hari dalam Bulan *</label>
-                <select class="form-select @error('day_of_month') is-invalid @enderror" id="day_of_month" name="day_of_month">
-                  <option value="">Pilih Hari</option>
-                  @for($i = 1; $i <= 31; $i++)
-                    <option value="{{ $i }}"
-                      {{ old('day_of_month', $recurringTransaction->day_of_month ?? date('d')) == $i ? 'selected' : '' }}>
-                      Hari ke-{{ $i }}
-                    </option>
-                  @endfor
-                  <option value="last" {{ old('day_of_month', $recurringTransaction->day_of_month ?? '') == 'last' ? 'selected' : '' }}>
-                    Hari Terakhir
-                  </option>
-                </select>
-                @error('day_of_month')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                @error('frequency')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
               </div>
+
+              <!-- Interval -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label for="interval" class="form-label">Interval</label>
+                  <div class="input-group">
+                    <span class="input-group-text">Setiap</span>
+                    <input type="number" class="form-control @error('interval') is-invalid @enderror" id="interval" name="interval" value="{{ old('interval', $recurringTransaction->interval ?? 1) }}" min="1" max="12">
+                    <span class="input-group-text" id="interval_unit">bulan</span>
+                  </div>
+                  <small class="text-muted">Setiap berapa kali frekuensi terpilih</small>
+                  @error('interval')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <!-- Frequency Details -->
+              <div class="frequency-detail {{ old('frequency', $recurringTransaction->frequency->value ?? '') == 'weekly' ? 'active' : '' }}" id="weekly_detail">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="form-label">Hari dalam Minggu *</label>
+                    <div class="row g-2">
+                      @php
+                      $days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                      @endphp
+                      @foreach($days as $index => $day)
+                        <div class="col">
+                          <input type="radio" class="btn-check" name="day_of_week" id="day_of_week_{{ $index }}" value="{{ $index }}" {{ old('day_of_week', $recurringTransaction->day_of_week ?? date('w')) == $index ? 'checked' : '' }}>
+                          <label class="btn btn-outline-primary w-100" for="day_of_week_{{ $index }}">
+                            {{ substr($day, 0, 3) }}
+                          </label>
+                        </div>
+                      @endforeach
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="frequency-detail {{ in_array(old('frequency', $recurringTransaction->frequency->value ?? ''), ['monthly', 'quarterly']) ? 'active' : '' }}" id="monthly_detail">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="day_of_month" class="form-label">Hari dalam Bulan *</label>
+                    <select class="form-select @error('day_of_month') is-invalid @enderror" id="day_of_month" name="day_of_month">
+                      <option value="">Pilih Hari</option>
+                      @for($i = 1; $i <= 31; $i++)
+                        <option value="{{ $i }}"
+                          {{ old('day_of_month', $recurringTransaction->day_of_month ?? date('d')) == $i ? 'selected' : '' }}>
+                          Hari ke-{{ $i }}
+                        </option>
+                      @endfor
+                      <option value="last" {{ old('day_of_month', $recurringTransaction->day_of_month ?? '') == 'last' ? 'selected' : '' }}>
+                        Hari Terakhir
+                      </option>
+                    </select>
+                    @error('day_of_month')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+
+              <!-- Date Range -->
+              <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                  <label for="start_date" class="form-label">Tanggal Mulai *</label>
+                  <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date', $recurringTransaction->start_date->format('Y-m-d') ?? date('Y-m-d')) }}" required>
+                  @error('start_date')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+
+                <div class="col-md-6">
+                  <label for="end_date" class="form-label">Tanggal Berakhir (Opsional)</label>
+                  <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $recurringTransaction->end_date->format('Y-m-d') ?? '') }}">
+                  <div class="form-text">Kosongkan untuk berjalan selamanya</div>
+                  @error('end_date')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+
+              <!-- Remaining Occurrences -->
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="remaining_occurrences" class="form-label">Jumlah Pengulangan (Opsional)</label>
+                  <input type="number" class="form-control @error('remaining_occurrences') is-invalid @enderror" id="remaining_occurrences" name="remaining_occurrences" value="{{ old('remaining_occurrences', $recurringTransaction->remaining_occurrences ?? '') }}" min="1">
+                  <div class="form-text">Jumlah pengulangan maksimum</div>
+                  @error('remaining_occurrences')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- Date Range -->
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="start_date" class="form-label">Tanggal Mulai *</label>
-              <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date', $recurringTransaction->start_date ?? date('Y-m-d')) }}" required>
-              @error('start_date')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
-
-            <div class="col-md-6">
-              <label for="end_date" class="form-label">Tanggal Berakhir (Opsional)</label>
-              <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $recurringTransaction->end_date ?? '') }}">
-              <div class="form-text">Kosongkan untuk berjalan selamanya</div>
-              @error('end_date')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
-          </div>
-
-          <!-- Remaining Occurrences -->
-          <div class="row mt-3">
-            <div class="col-md-6">
-              <label for="remaining_occurrences" class="form-label">Jumlah Pengulangan (Opsional)</label>
-              <input type="number" class="form-control @error('remaining_occurrences') is-invalid @enderror" id="remaining_occurrences" name="remaining_occurrences" value="{{ old('remaining_occurrences', $recurringTransaction->remaining_occurrences ?? '') }}" min="1">
-              <div class="form-text">Jumlah pengulangan maksimum</div>
-              @error('remaining_occurrences')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
-          </div>
-        </div>
-      </div>
         </div>
       </div>
 
