@@ -18,14 +18,12 @@ class RecurringTransactionService
 	public function getDashboardData(User $user, Carbon $now): array
 	{
 		try {
-			$data = $this->recurringRepository->getDashboardData($user, $now);
-			dd($data);
+			$data = $this->repository->getDashboardData($user, $now);
 
 			return [
 				"upcoming" => $data["upcoming"] ?? [],
 			];
 		} catch (\Exception $e) {
-			dd($e);
 			return ["upcoming" => []];
 		}
 	}
