@@ -32,8 +32,8 @@ class RecurringRepository extends BaseRepository
 			})
 			->get();
 
+		dd($recurringTransactions);
 		foreach ($recurringTransactions as $recurring) {
-			dd($recurring);
 			$nextDate = $recurring->getNextDueDate();
 			if ($nextDate && $nextDate->between($today, $endDate)) {
 				$upcoming[] = [
