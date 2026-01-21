@@ -19,6 +19,7 @@ class RecurringTransactionService
 	{
 		try {
 			$data = $this->recurringRepository->getDashboardData($user, $now);
+			dd($data);
 
 			return [
 				"upcoming" => $data["upcoming"] ?? [],
