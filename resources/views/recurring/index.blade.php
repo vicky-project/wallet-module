@@ -306,17 +306,17 @@
     <div class="col-md-6 mb-2">
       <div class="d-flex justify-content-between align-items-center gap-2">
         <button class="btn btn-sm btn-outline-secondary" id="bulkActivate">
-        <i class="bi bi-check-circle"></i> Aktifkan
-      </button>
+          <i class="bi bi-check-circle"></i> Aktifkan
+        </button>
         <button class="btn btn-sm btn-outline-secondary" id="bulkDeactivate">
-        <i class="bi bi-x-circle"></i> Nonaktifkan
-      </button>
+          <i class="bi bi-x-circle"></i> Nonaktifkan
+        </button>
         <button class="btn btn-sm btn-outline-danger" id="bulkDelete">
-        <i class="bi bi-trash"></i> Hapus
-      </button>
+          <i class="bi bi-trash"></i> Hapus
+        </button>
         <button class="btn btn-sm btn-outline-secondary" id="cancelBulk">
-        <i class="bi bi-x-lg"></i> Batal
-      </button>
+          <i class="bi bi-x-lg"></i> Batal
+        </button>
       </div>
     </div>
   </div>
