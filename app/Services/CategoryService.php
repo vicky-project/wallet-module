@@ -115,8 +115,8 @@ class CategoryService
 						if ($activeBudget) {
 							$category->budget_usage_percentage =
 								$activeBudget->amount->getAmount()->toInt() > 0
-									? ($monthlyTotal /
-											$activeBudget->amount->getAmount()->toInt()) *
+									? ($activeBudget->amount->getAmount()->toInt() /
+											$monthlyTotal) *
 										100
 									: 0;
 							$category->has_budget_exceeded =
