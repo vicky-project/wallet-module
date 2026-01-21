@@ -196,7 +196,7 @@
                   <select class="form-select @error('account_id') is-invalid @enderror" id="account_id" name="account_id" required>
                     <option value="">Pilih Akun</option>
                     @foreach($accounts as $account)
-                      <option value="{{ $account->id }}" @selected(old('account_id', $recurringTransaction->account_id) == $account->id)>
+                      <option value="{{ $account->id }}" @selected(old('account_id', isset($recurringTransaction) ? $recurringTransaction->account_id : '') == $account->id)>
                         {{ $account->name }} ({{ $account->type }})
                       </option>
                     @endforeach
@@ -212,7 +212,7 @@
                   <select class="form-select @error('to_account_id') is-invalid @enderror" id="to_account_id" name="to_account_id">
                     <option value="">Pilih Akun Tujuan</option>
                     @foreach($accounts as $account)
-                      <option value="{{ $account->id }}" @selected(old('to_account_id', $recurringTransaction->to_account_id) == $account->id)>
+                      <option value="{{ $account->id }}" @selected(old('to_account_id', isset($recurringTransaction) ? $recurringTransaction->to_account_id : '') == $account->id)>
                         {{ $account->name }} ({{ $account->type }})
                       </option>
                     @endforeach
@@ -226,13 +226,13 @@
                 <div class="col-md-6">
                   <label for="category_id" class="form-label">Kategori *</label>
                   <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
-                <option value="">Pilih Kategori</option>
-                @foreach($categories as $id => $name)
-                  <option value="{{ $id }}" @selected(old('category_id', $recurringTransaction->category_id ?? '') == $id)>
-                    {{ $name }}
-                  </option>
-                @endforeach
-              </select>
+                    <option value="">Pilih Kategori</option>
+                    @foreach($categories as $id => $name)
+                      <option value="{{ $id }}" @selected(old('category_id', isset($recurringTransaction) ? $recurringTransaction->category_id ?? '') == $id)>
+                        {{ $name }}
+                      </option>
+                    @endforeach
+                  </select>
                   @error('category_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
@@ -241,7 +241,7 @@
                 <!-- Is Active -->
                 <div class="col-md-6">
                   <div class="form-check mt-4 pt-2">
-                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $recurringTransaction->is_active ?? true))>
+                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', isset($recurringTransaction) ? $recurringTransaction->is_active ?? true))>
                     <label class="form-check-label" for="is_active">
                       Aktifkan transaksi ini
                     </label>
