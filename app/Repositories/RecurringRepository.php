@@ -41,8 +41,10 @@ class RecurringRepository extends BaseRepository
 					"amount" => $recurring->amount,
 					"description" => $recurring->description,
 					"frequency" => $recurring->getFrequencyLabel(),
-					"account" => $recurring->account->name ?? "N/A",
-					"category" => $recurring->category->name ?? "N/A",
+					"account" => $recurring->account ?? null,
+					"account_name" => $recurring->account->name ?? "N/A",
+					"category" => $recurring->category->name ?? null,
+					"category_icon" => $recurring->category->icon ?? null,
 					"days_until" => $today->diffInDays($nextDate),
 					"is_today" => $nextDate->isToday(),
 				];

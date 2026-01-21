@@ -531,11 +531,11 @@
                     </div>
                   </div>
                   <div class="text-end">
-                    <div class="fw-bold {{ $recurring['type'] == 'income' ? 'text-success' : 'text-danger' }} currency">
+                    <div class="fw-bold {{ $recurring['recurring']->type == 'income' ? 'text-success' : 'text-danger' }} currency">
                       {{ $recurring['amount'] }}
                       </div>
                     <small class="text-muted">
-                      {{ $recurring['formatted_next_date'] }}
+                      {{ $recurring['next_date'] }}
                       @if($recurring['days_until'] > 0)
                         <br><span class="text-info">({{ $recurring['days_until'] }} hari lagi)</span>
                       @endif
