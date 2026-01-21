@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         '<span class="badge bg-success">Hari Ini</span>' : 
                                                         isUpcoming ? 
                                                         '<span class="badge bg-primary">Berikutnya</span>' : 
-                                                        `<span class="badge bg-light text-dark">${occurrence.days_until} hari</span>`
+                                                        `<span class="badge bg-light text-dark">${occurrence.days_until}</span>`
                                                     }
                                                 </div>
                                             </div>

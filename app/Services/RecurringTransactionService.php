@@ -244,6 +244,8 @@ class RecurringTransactionService
 				"date_formatted" => $nextDate->format("Y-m-d"),
 				"day_name" => $nextDate->dayName,
 				"status" => $recurring->is_active ? "Active" : "Non Active",
+				"is_today" => $nextDate->isToday(),
+				"days_until" => $nextDate->diffForHumans(),
 			];
 			$currentDate = $nextDate;
 		}
