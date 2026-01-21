@@ -349,7 +349,7 @@
 
                 <div class="col-md-6">
                   <label for="end_date" class="form-label">Tanggal Berakhir (Opsional)</label>
-                  <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $recurringTransaction->end_date->format('Y-m-d') ?? '') }}">
+                  <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $recurringTransaction->end_date ?? '') }}">
                   <div class="form-text">Kosongkan untuk berjalan selamanya</div>
                   @error('end_date')
                     <div class="invalid-feedback">{{ $message }}</div>
