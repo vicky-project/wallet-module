@@ -293,7 +293,7 @@
 <!-- Charts and Main Content -->
 <div class="row g-4">
   <!-- Monthly Chart -->
-  <div class="col-md-8 mb-3">
+  <div class="col-md-8 mb-2">
     <div class="card h-100">
       <div class="card-header bg-transparent border-0 pb-2">
         <h5 class="card-title mb-0">Grafik Keuangan Bulan {{ now()->format('F') }}</h5>
@@ -308,7 +308,7 @@
   </div>
 
   <!-- Account Summary -->
-  <div class="col-md-4 mb-3">
+  <div class="col-md-4 mb-2">
     <div class="card h-100">
       <div class="card-header bg-transparent border-0 pb-2">
         <div class="d-flex justify-content-between align-items-center">

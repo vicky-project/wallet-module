@@ -522,7 +522,7 @@
         const refreshBtn = document.getElementById('refreshAccounts');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', function() {
-                window.location.reload();
+                window.location.href = '{{ route("apps.accounts.recalculate-all") }}';
             });
         }
         
