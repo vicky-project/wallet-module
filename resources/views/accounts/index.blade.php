@@ -347,9 +347,12 @@
           <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xlsx me-2"></i>Excel</a></li>
         </ul>
       </div>
-      <button class="btn btn-outline-secondary btn-sm" id="refreshAccounts">
-        <i class="bi bi-arrow-clockwise"></i>
-      </button>
+      <form method="POST" action="{{ route('apps.accounts.recalculate-all') }}">
+        @csrf
+        <button type="submit" class="btn btn-outline-secondary btn-sm" id="refreshAccounts">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </form>
     </div>
   </div>
         
@@ -515,14 +518,6 @@
         if (clearSearchBtn && searchInput) {
             clearSearchBtn.addEventListener('click', function() {
                 searchInput.value = '';
-            });
-        }
-        
-        // Refresh accounts button
-        const refreshBtn = document.getElementById('refreshAccounts');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', function() {
-                window.location.href = '{{ route("apps.accounts.recalculate-all") }}';
             });
         }
         
