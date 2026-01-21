@@ -214,7 +214,7 @@ class RecurringTransactionService
 	public function toggleStatus(
 		RecurringTransaction $recurring
 	): RecurringTransaction {
-		$recurring->is_active = false;
+		$recurring->is_active = !$recurring->is_active;
 		$recurring->save();
 
 		return $recurring->refresh();
