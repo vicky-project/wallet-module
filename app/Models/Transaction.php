@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Models;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -66,6 +67,7 @@ class Transaction extends Model
 
 			// Flush Cache
 			Cache::flush();
+			Artisan::call("optimize:clear");
 		});
 
 		static::updated(function ($transaction) {
@@ -86,6 +88,7 @@ class Transaction extends Model
 
 			// Flush Cache
 			Cache::flush();
+			Artisan::call("optimize:clear");
 		});
 
 		static::deleted(function ($transaction) {

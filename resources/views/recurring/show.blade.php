@@ -191,7 +191,6 @@
               <span class="fw-medium">
                 Setiap {{ $recurringTransaction->interval }} 
                 {{ $recurringTransaction->frequency == RecurringFreq::DAILY ? 'hari' : ($recurringTransaction->frequency == RecurringFreq::WEEKLY ? 'minggu' : ($recurringTransaction->frequency == RecurringFreq::MONTHLY ? 'bulan' : ($recurringTransaction->frequency == RecurringFreq::QUARTERLY ? 'triwulan' : 'tahun'))) }}
-                {{ $recurringTransaction->frequency == RecurringFreq::DAILY ? 'hari' : ($recurringTransaction->frequency == RecurringFreq::WEEKLY ? 'minggu' : ($recurringTransaction->frequency == RecurringFreq::MONTHLY ? 'bulan' : ($recurringTransaction->frequency == RecurringFreq::QUARTERLY ? 'triwulan' : 'tahun'))) }}
               </span>
             </div>
                             
@@ -224,7 +223,7 @@
     </div>
 
     <!-- Transaction History -->
-    <div class="card mb-2">
+    <div class="card my-2">
       <div class="card-header bg-transparent border-0">
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="card-title mb-0">

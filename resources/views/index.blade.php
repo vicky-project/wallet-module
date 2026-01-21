@@ -631,29 +631,29 @@
             <h5 class="card-title mb-0">Aktivitas Terbaru</h5>
           </div>
           <div class="card-body pt-0">
-                            @if(count($dashboardData['recent_activity']) > 0)
-                                @foreach($dashboardData['recent_activity'] as $activity)
-                                    <div class="transaction-item">
-                                        <div class="d-flex align-items-center">
-                                            <div class="transaction-icon bg-light text-dark me-3">
-                                                <i class="bi bi-clock-history"></i>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-0">{{ $activity->description }}</h6>
-                                                <small class="text-muted">
-                                                    {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="empty-state py-4">
-                                    <i class="bi bi-activity text-muted"></i>
-                                    <p class="mt-3 mb-2">Belum ada aktivitas</p>
-                                </div>
-                            @endif
-                        </div>
+            @if(count($dashboardData['recent_activity']) > 0)
+              @foreach($dashboardData['recent_activity'] as $activity)
+                <div class="transaction-item">
+                  <div class="d-flex align-items-center">
+                    <div class="transaction-icon bg-light text-dark me-3">
+                      <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-0">{{ $activity->description }}</h6>
+                      <small class="text-muted">
+                        {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            @else
+              <div class="empty-state py-4">
+                <i class="bi bi-activity text-muted"></i>
+                <p class="mt-3 mb-2">Belum ada aktivitas</p>
+              </div>
+            @endif
+          </div>
         </div>
       </div>
 
