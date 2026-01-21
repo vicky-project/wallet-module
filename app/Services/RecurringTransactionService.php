@@ -219,4 +219,45 @@ class RecurringTransactionService
 
 		return $recurring->refresh();
 	}
+
+	public function getNextOccurrences(
+		RecurringTransaction $recurring,
+		int $count = 10
+	): array {
+		$occurrences = [];
+		$currentDate = $recurring->last_processed
+			? Carbon::parse($recurring->last_processed)
+			: Carbon::parse($recurring->start_date);
+
+		for ($i = 0; $i < $count; $i++) {
+			//$nextDate = $this->calculateNextDate($currentDate, $recurring);
+			$nextDate = $recurring->getNextDueDate();
+
+			if (
+				$recurring->end_date &&
+				$nextDate->gt(Carbon::parse($recurring->end_date))
+			) {
+				break;
+			}
+
+			$occurrences[] = $nextDate->format("Y-m-d");
+			$currentDate = $nextDate;
+		}
+
+		return $occurrences;
+	}
+
+	private function calculateNextDate(
+		Carbon $currentDate,
+		RecurringTransaction $recurring
+	): Carbon {
+		return match ($recurring->frequency) {
+			"daily" => $currentDate->addDays($recurring->interval),
+			"weekly" => $currentDate->addWeeks($recurring->interval),
+			"monthly" => $currentDate->addMonths($recurring->interval),
+			"quarterly" => $currentDate->addMonths($recurring->interval * 3),
+			"yearly" => $currentDate->addYears($recurring->interval),
+			default => $currentDate->addDays($recurring->interval),
+		};
+	}
 }

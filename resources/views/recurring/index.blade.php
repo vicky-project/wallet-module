@@ -170,130 +170,127 @@
 @include('wallet::partials.fab')
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="page-title mb-1">Transaksi Rutin</h1>
-            <p class="text-muted mb-0">Kelola transaksi berulang secara otomatis</p>
-        </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" id="toggleFilters">
-                <i class="bi bi-funnel"></i> Filter
-            </button>
-            <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1" id="processDueBtn">
-                <i class="bi bi-play-circle"></i> Proses
-            </button>
-            <a href="{{ route('apps.recurrings.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
-                <i class="bi bi-plus-lg"></i> Tambah
-            </a>
-        </div>
-    </div>
+  <div>
+    <h1 class="page-title mb-1">Transaksi Rutin</h1>
+    <p class="text-muted mb-0">Kelola transaksi berulang secara otomatis</p>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1" id="toggleFilters">
+      <i class="bi bi-funnel"></i> Filter
+    </button>
+    <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1" id="processDueBtn">
+      <i class="bi bi-play-circle"></i> Proses
+    </button>
+    <a href="{{ route('apps.recurrings.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+      <i class="bi bi-plus-lg"></i> Tambah
+    </a>
+  </div>
+</div>
 
 <!-- Filters Card -->
 <div class="card filter-card mb-3" id="filterCard">
-        <div class="card-body">
-            <form method="GET" action="{{ route('apps.recurrings.index') }}" id="filterForm">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label small">Status</label>
-                        <select name="status" class="form-select form-select-sm">
-                            <option value="">Semua Status</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Nonaktif</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small">Tipe</label>
-                        <select name="type" class="form-select form-select-sm">
-                            <option value="">Semua Tipe</option>
-                            <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Pemasukan</option>
-                            <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Pengeluaran</option>
-                            <option value="transfer" {{ request('type') == 'transfer' ? 'selected' : '' }}>Transfer</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small">Frekuensi</label>
-                        <select name="frequency" class="form-select form-select-sm">
-                            <option value="">Semua Frekuensi</option>
-                            <option value="daily" {{ request('frequency') == 'daily' ? 'selected' : '' }}>Harian</option>
-                            <option value="weekly" {{ request('frequency') == 'weekly' ? 'selected' : '' }}>Mingguan</option>
-                            <option value="monthly" {{ request('frequency') == 'monthly' ? 'selected' : '' }}>Bulanan</option>
-                            <option value="quarterly" {{ request('frequency') == 'quarterly' ? 'selected' : '' }}>Triwulan</option>
-                            <option value="yearly" {{ request('frequency') == 'yearly' ? 'selected' : '' }}>Tahunan</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small">Pencarian</label>
-                        <input type="text" name="search" class="form-control form-control-sm" 
-                               placeholder="Cari deskripsi..." value="{{ request('search') }}">
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="reset" class="btn btn-sm btn-outline-secondary" id="resetFilters">
-                                Reset
-                            </button>
-                            <button type="submit" class="btn btn-sm btn-primary">
-                                Terapkan Filter
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+  <div class="card-body">
+    <form method="GET" action="{{ route('apps.recurrings.index') }}" id="filterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label small">Status</label>
+          <select name="status" class="form-select form-select-sm">
+            <option value="">Semua Status</option>
+            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
+            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Nonaktif</option>
+          </select>
         </div>
-    </div>
+        <div class="col-md-3">
+          <label class="form-label small">Tipe</label>
+          <select name="type" class="form-select form-select-sm">
+            <option value="">Semua Tipe</option>
+            @foreach(TransactionType::cases() as $type)
+              <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->label() }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Frekuensi</label>
+          <select name="frequency" class="form-select form-select-sm">
+            <option value="">Semua Frekuensi</option>
+            @foreach(RecurringFreq::cases() as $freq)
+              <option value="{{ $freq->value }}" @selected(request('frequency') == $freq->value)>{{ $freq->label() }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Pencarian</label>
+          <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari deskripsi..." value="{{ request('search') }}">
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="d-flex justify-content-end gap-2">
+            <button type="reset" class="btn btn-sm btn-outline-secondary" id="resetFilters">
+              Reset
+            </button>
+            <button type="submit" class="btn btn-sm btn-primary">
+              Terapkan Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- Bulk Actions -->
 <div class="bulk-actions" id="bulkActions">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <span class="fw-medium" id="selectedCount">0 item dipilih</span>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-secondary" id="bulkActivate">
-                    <i class="bi bi-check-circle"></i> Aktifkan
-                </button>
-                <button class="btn btn-sm btn-outline-secondary" id="bulkDeactivate">
-                    <i class="bi bi-x-circle"></i> Nonaktifkan
-                </button>
-                <button class="btn btn-sm btn-outline-danger" id="bulkDelete">
-                    <i class="bi bi-trash"></i> Hapus
-                </button>
-                <button class="btn btn-sm btn-outline-secondary" id="cancelBulk">
-                    <i class="bi bi-x-lg"></i> Batal
-                </button>
-            </div>
-        </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <span class="fw-medium" id="selectedCount">0 item dipilih</span>
     </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary" id="bulkActivate">
+        <i class="bi bi-check-circle"></i> Aktifkan
+      </button>
+      <button class="btn btn-sm btn-outline-secondary" id="bulkDeactivate">
+        <i class="bi bi-x-circle"></i> Nonaktifkan
+      </button>
+      <button class="btn btn-sm btn-outline-danger" id="bulkDelete">
+        <i class="bi bi-trash"></i> Hapus
+      </button>
+      <button class="btn btn-sm btn-outline-secondary" id="cancelBulk">
+        <i class="bi bi-x-lg"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Stats Overview -->
 @if(isset($stats) && !empty($stats))
   <div class="recurring-stats">
     <div class="card">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center">
-                    <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
-                        <i class="bi bi-arrow-repeat text-primary"></i>
-                    </div>
-                    <div>
-                        <h5 class="mb-0">{{ $stats['total'] ?? 0 }}</h5>
-                        <small class="text-muted">Total Transaksi Rutin</small>
-                    </div>
-                </div>
-            </div>
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+            <i class="bi bi-arrow-repeat text-primary"></i>
+          </div>
+          <div>
+            <h5 class="mb-0">{{ $stats['total'] ?? 0 }}</h5>
+            <small class="text-muted">Total Transaksi Rutin</small>
+          </div>
         </div>
+      </div>
+    </div>
     <div class="card">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center">
-                    <div class="bg-success bg-opacity-10 p-2 rounded me-3">
-                        <i class="bi bi-check-circle text-success"></i>
-                    </div>
-                    <div>
-                        <h5 class="mb-0">{{ $stats['active'] ?? 0 }}</h5>
-                        <small class="text-muted">Aktif</small>
-                    </div>
-                </div>
-            </div>
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-success bg-opacity-10 p-2 rounded me-3">
+            <i class="bi bi-check-circle text-success"></i>
+          </div>
+          <div>
+            <h5 class="mb-0">{{ $stats['active'] ?? 0 }}</h5>
+            <small class="text-muted">Aktif</small>
+          </div>
         </div>
+      </div>
+    </div>
     <div class="card">
       <div class="card-body py-3">
         <div class="d-flex align-items-center">
@@ -325,221 +322,208 @@
 
 <!-- Recurring Transactions List -->
 <div class="card">
-        <div class="card-header bg-transparent border-0">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Daftar Transaksi Rutin</h5>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="selectAll">
-                        <label class="form-check-label small" for="selectAll">Pilih Semua</label>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-download"></i> Ekspor
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#" id="exportJSON"><i class="bi bi-filetype-json"></i> JSON</a></li>
-                            <li><a class="dropdown-item" href="#" id="exportCSV"><i class="bi bi-filetype-csv"></i> CSV</a></li>
-                            <li><a class="dropdown-item" href="#" id="exportPDF"><i class="bi bi-filetype-pdf"></i> PDF</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+  <div class="card-header bg-transparent border-0">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">Daftar Transaksi Rutin</h5>
+      <div class="d-flex align-items-center gap-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="selectAll">
+          <label class="form-check-label small" for="selectAll">Pilih Semua</label>
         </div>
-        <div class="card-body pt-0">
-            @if($recurringTransactions->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th width="50"></th>
-                                <th>Deskripsi</th>
-                                <th>Tipe</th>
-                                <th>Frekuensi</th>
-                                <th>Jumlah</th>
-                                <th>Status</th>
-                                <th>Berikutnya</th>
-                                <th class="text-end">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($recurringTransactions as $recurring)
-                                <tr class="recurring-card {{ $recurring->type->value }}">
-                                    <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input recurring-checkbox" 
-                                                   type="checkbox" 
-                                                   value="{{ $recurring->id }}"
-                                                   data-recurring-id="{{ $recurring->id }}">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="rounded-circle p-2 me-3 bg-light">
-                                                <i class="bi {{ $recurring->category->icon ?? 'bi-arrow-repeat' }}"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">{{ $recurring->description }}</h6>
-                                                <small class="text-muted">
-                                                    {{ $recurring->account->name ?? 'N/A' }}
-                                                    @if($recurring->type == 'transfer' && $recurring->toAccount)
-                                                        → {{ $recurring->toAccount->name }}
-                                                    @endif
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ $recurring->type == TransactionType::INCOME ? 'success' : ($recurring->type == TransactionType::EXPENSE ? 'danger' : 'primary') }}-subtle text-{{ $recurring->type == TransactionType::INCOME ? 'success' : ($recurring->type == TransactionType::EXPENSE ? 'danger' : 'primary') }}">
-                                            {{ $recurring->type == TransactionType::INCOME ? 'Pemasukan' : ($recurring->type == TransactionType::EXPENSE ? 'Pengeluaran' : 'Transfer') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="frequency-badge frequency-{{ $recurring->frequency->value }}">
-                                            @if($recurring->interval > 1)
-                                                Setiap {{ $recurring->interval }} 
-                                            @endif
-                                            {{ $recurring->frequency == RecurringFreq::DAILY ? 'Hari' : 
-                                               ($recurring->frequency == RecurringFreq::WEEKLY ? 'Minggu' : 
-                                               ($recurring->frequency == RecurringFreq::MONTHLY ? 'Bulan' : 
-                                               ($recurring->frequency == RecurringFreq::QUARTERLY ? 'Triwulan' : 'Tahun'))) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold currency">{{ $recurring->amount }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="status-badge status-{{ $recurring->is_active ? 'active' : 'inactive' }}"></span>
-                                            <span>{{ $recurring->is_active ? 'Aktif' : 'Nonaktif' }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @php
-                                            $nextDate = $recurring->next_occurrence ?? \Carbon\Carbon::parse($recurring->start_date);
-                                            $now = \Carbon\Carbon::now();
-                                            $diffDays = $now->diffInDays($nextDate, false);
-                                        @endphp
-                                        @if($recurring->is_active)
-                                            <div class="next-occurrence">
-                                                <i class="bi bi-calendar3"></i>
-                                                {{ $nextDate->format('d M Y') }}
-                                                @if($diffDays >= 0)
-                                                    <small class="d-block text-muted">
-                                                        @if($diffDays == 0)
-                                                            <span class="text-success">Hari ini</span>
-                                                        @elseif($diffDays == 1)
-                                                            Besok
-                                                        @else
-                                                            {{ $diffDays }} hari lagi
-                                                        @endif
-                                                    </small>
-                                                @endif
-                                            </div>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                                                    type="button" 
-                                                    data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end action-dropdown">
-                                                <li>
-                                                    <a class="dropdown-item" href="{{ route('apps.recurrings.show', $recurring->id) }}">
-                                                        <i class="bi bi-eye me-2"></i> Detail
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="{{ route('apps.recurrings.edit', $recurring->id) }}">
-                                                        <i class="bi bi-pencil me-2"></i> Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item toggle-status-btn" 
-                                                            data-id="{{ $recurring->id }}"
-                                                            data-status="{{ $recurring->is_active ? 1 : 0 }}">
-                                                        <i class="bi bi-power me-2"></i>
-                                                        {{ $recurring->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item text-primary preview-occurrences-btn"
-                                                            data-id="{{ $recurring->id }}">
-                                                        <i class="bi bi-calendar-week me-2"></i>
-                                                        Preview Jadwal
-                                                    </button>
-                                                </li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li>
-                                                    <form action="{{ route('apps.recurrings.destroy', $recurring->id) }}" 
-                                                          method="POST" 
-                                                          class="d-inline delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" class="dropdown-item text-danger delete-btn">
-                                                            <i class="bi bi-trash me-2"></i> Hapus
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <div class="text-muted small">
-                        Menampilkan {{ $recurringTransactions->firstItem() }} - {{ $recurringTransactions->lastItem() }} 
-                        dari {{ $recurringTransactions->total() }} transaksi
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-download"></i> Ekspor
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" id="exportJSON"><i class="bi bi-filetype-json"></i> JSON</a></li>
+            <li><a class="dropdown-item" href="#" id="exportCSV"><i class="bi bi-filetype-csv"></i> CSV</a></li>
+            <li><a class="dropdown-item" href="#" id="exportPDF"><i class="bi bi-filetype-pdf"></i> PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body pt-0">
+    @if($recurringTransactions->count() > 0)
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th width="50"></th>
+              <th>Deskripsi</th>
+              <th>Tipe</th>
+              <th>Frekuensi</th>
+              <th>Jumlah</th>
+              <th>Status</th>
+              <th>Berikutnya</th>
+              <th class="text-end">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($recurringTransactions as $recurring)
+              <tr class="recurring-card {{ $recurring->type->value }}">
+                <td>
+                  <div class="form-check">
+                    <input class="form-check-input recurring-checkbox" type="checkbox" value="{{ $recurring->id }}" data-recurring-id="{{ $recurring->id }}">
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="rounded-circle p-2 me-3 bg-light">
+                      <i class="bi {{ $recurring->category->icon ?? 'bi-arrow-repeat' }}"></i>
                     </div>
                     <div>
-                        {{ $recurringTransactions->links() }}
+                      <h6 class="mb-0">{{ $recurring->description }}</h6>
+                      <small class="text-muted">
+                        {{ $recurring->account->name ?? 'N/A' }}
+                        @if($recurring->type == TransactionType::TRANSFER && $recurring->toAccount)
+                          → {{ $recurring->toAccount->name }}
+                        @endif
+                      </small>
                     </div>
-                </div>
-            @else
-                <div class="empty-state py-5 text-center">
-                    <i class="bi bi-arrow-repeat text-muted" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3 mb-2">Belum ada transaksi rutin</h5>
-                    <p class="text-muted mb-4">Mulai dengan membuat transaksi rutin pertama Anda</p>
-                    <a href="{{ route('apps.recurrings.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg me-2"></i> Tambah Transaksi Rutin
-                    </a>
-                </div>
-            @endif
+                  </div>
+                </td>
+                <td>
+                  <span class="badge bg-{{ $recurring->type == TransactionType::INCOME ? 'success' : ($recurring->type == TransactionType::EXPENSE ? 'danger' : 'primary') }}-subtle text-{{ $recurring->type == TransactionType::INCOME ? 'success' : ($recurring->type == TransactionType::EXPENSE ? 'danger' : 'primary') }}">
+                    {{ $recurring->type->label() }}
+                  </span>
+                </td>
+                <td>
+                  <span class="frequency-badge frequency-{{ $recurring->frequency->value }}">
+                    @if($recurring->interval > 1)
+                      Setiap {{ $recurring->interval }} 
+                    @endif
+                    {{ $recurring->frequency->label() }}
+                  </span>
+                </td>
+                <td>
+                  <div class="fw-bold currency">{{ $recurring->amount }}</div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="status-badge status-{{ $recurring->is_active ? 'active' : 'inactive' }}"></span>
+                    <span>{{ $recurring->is_active ? 'Aktif' : 'Nonaktif' }}</span>
+                  </div>
+                </td>
+                <td>
+                  @php
+                    $nextDate = $recurring->next_occurrence ?? \Carbon\Carbon::parse($recurring->start_date);
+                    $now = \Carbon\Carbon::now();
+                    $diffDays = $now->diffInDays($nextDate, false);
+                  @endphp
+                  @if($recurring->is_active)
+                    <div class="next-occurrence">
+                      <i class="bi bi-calendar3"></i>
+                      {{ $nextDate->format('d M Y') }}
+                      @if($diffDays >= 0)
+                        <small class="d-block text-muted">
+                          @if($diffDays == 0)
+                            <span class="text-success">Hari ini</span>
+                          @elseif($diffDays == 1)
+                            Besok
+                          @else
+                            {{ $diffDays }} hari lagi
+                          @endif
+                        </small>
+                      @endif
+                    </div>
+                  @else
+                    <span class="text-muted">-</span>
+                  @endif
+                </td>
+                <td class="text-end">
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end action-dropdown">
+                      <li>
+                        <a class="dropdown-item" href="{{ route('apps.recurrings.show', $recurring->id) }}">
+                          <i class="bi bi-eye me-2"></i> Detail
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="{{ route('apps.recurrings.edit', $recurring->id) }}">
+                          <i class="bi bi-pencil me-2"></i> Edit
+                        </a>
+                      </li>
+                      <li>
+                        <button class="dropdown-item toggle-status-btn" data-id="{{ $recurring->id }}" data-status="{{ $recurring->is_active ? 1 : 0 }}">
+                          <i class="bi bi-power me-2"></i>
+                          {{ $recurring->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item text-primary preview-occurrences-btn" data-id="{{ $recurring->id }}">
+                          <i class="bi bi-calendar-week me-2"></i>
+                          Preview Jadwal
+                        </button>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <form action="{{ route('apps.recurrings.destroy', $recurring->id) }}" method="POST" class="d-inline delete-form">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="dropdown-item text-danger delete-btn">
+                            <i class="bi bi-trash me-2"></i> Hapus
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="text-muted small">
+          Menampilkan {{ $recurringTransactions->firstItem() }} - {{ $recurringTransactions->lastItem() }} 
+          dari {{ $recurringTransactions->total() }} transaksi
         </div>
-    </div>
+        <div>
+          {{ $recurringTransactions->links() }}
+        </div>
+      </div>
+    @else
+      <div class="empty-state py-5 text-center">
+        <i class="bi bi-arrow-repeat text-muted" style="font-size: 3rem;"></i>
+        <h5 class="mt-3 mb-2">Belum ada transaksi rutin</h5>
+        <p class="text-muted mb-4">Mulai dengan membuat transaksi rutin pertama Anda</p>
+        <a href="{{ route('apps.recurrings.create') }}" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-2"></i> Tambah Transaksi Rutin
+        </a>
+      </div>
+    @endif
+  </div>
+</div>
 
 <!-- Upcoming Transactions Preview (Modal) -->
 <div class="modal fade" id="occurrencesModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Jadwal Transaksi Berikutnya</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="occurrencesContent">
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Jadwal Transaksi Berikutnya</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="occurrencesContent">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
             </div>
+          </div>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
     </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
