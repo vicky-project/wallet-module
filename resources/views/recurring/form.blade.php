@@ -182,7 +182,7 @@
                   <div class="amount-input">
                     <div class="input-group">
                       <span class="input-group-text">Rp</span>
-                      <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $recurringTransaction ? $recurringTransaction->amount->getAmount()->toInt() : '0') }}" min="100" required>
+                      <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', isset($recurringTransaction) ? $recurringTransaction->amount->getAmount()->toInt() : '0') }}" min="100" required>
                       @error('amount')
                         <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
