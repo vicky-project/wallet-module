@@ -299,23 +299,25 @@
 
 <!-- Bulk Actions -->
 <div class="bulk-actions" id="bulkActions">
-  <div class="d-flex justify-content-between align-items-center">
-    <div>
-      <span class="fw-medium" id="selectedCount">0 item dipilih</span>
+  <div class="row">
+    <div class="col-md-6 mb-2">
+    <span class="fw-medium" id="selectedCount">0 item dipilih</span>
     </div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-secondary" id="bulkActivate">
+    <div class="col-md-6 mb-2">
+      <div class="d-flex justify-content-between align-items-center gap-2">
+        <button class="btn btn-sm btn-outline-secondary" id="bulkActivate">
         <i class="bi bi-check-circle"></i> Aktifkan
       </button>
-      <button class="btn btn-sm btn-outline-secondary" id="bulkDeactivate">
+        <button class="btn btn-sm btn-outline-secondary" id="bulkDeactivate">
         <i class="bi bi-x-circle"></i> Nonaktifkan
       </button>
-      <button class="btn btn-sm btn-outline-danger" id="bulkDelete">
+        <button class="btn btn-sm btn-outline-danger" id="bulkDelete">
         <i class="bi bi-trash"></i> Hapus
       </button>
-      <button class="btn btn-sm btn-outline-secondary" id="cancelBulk">
+        <button class="btn btn-sm btn-outline-secondary" id="cancelBulk">
         <i class="bi bi-x-lg"></i> Batal
       </button>
+      </div>
     </div>
   </div>
 </div>
