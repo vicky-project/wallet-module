@@ -25,6 +25,7 @@ class RecurringTransactionService
 				"upcoming" => $data["upcoming"] ?? [],
 			];
 		} catch (\Exception $e) {
+			dd($e);
 			return ["upcoming" => []];
 		}
 	}
