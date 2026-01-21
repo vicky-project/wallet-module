@@ -230,8 +230,8 @@ class RecurringTransactionService
 			: Carbon::parse($recurring->start_date);
 
 		for ($i = 0; $i < $count; $i++) {
-			//$nextDate = $this->calculateNextDate($currentDate, $recurring);
-			$nextDate = $recurring->getNextDueDate();
+			$nextDate = $this->calculateNextDate($currentDate, $recurring);
+			//$nextDate = $recurring->getNextDueDate();
 
 			if (
 				$recurring->end_date &&
@@ -252,11 +252,13 @@ class RecurringTransactionService
 		RecurringTransaction $recurring
 	): Carbon {
 		return match ($recurring->frequency) {
-			"daily" => $currentDate->addDays($recurring->interval),
-			"weekly" => $currentDate->addWeeks($recurring->interval),
-			"monthly" => $currentDate->addMonths($recurring->interval),
-			"quarterly" => $currentDate->addMonths($recurring->interval * 3),
-			"yearly" => $currentDate->addYears($recurring->interval),
+			RecurringFreq::DAILY => $currentDate->addDays($recurring->interval),
+			RecurringFreq::WEEKLY => $currentDate->addWeeks($recurring->interval),
+			RecurringFreq::MONTHLY => $currentDate->addMonths($recurring->interval),
+			RecurringFreq::QUARTERLY => $currentDate->addMonths(
+				$recurring->interval * 3
+			),
+			RecurringFreq::YEARLY => $currentDate->addYears($recurring->interval),
 			default => $currentDate->addDays($recurring->interval),
 		};
 	}
