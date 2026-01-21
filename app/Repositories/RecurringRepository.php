@@ -45,7 +45,7 @@ class RecurringRepository extends BaseRepository
 					"account_name" => $recurring->account->name ?? "N/A",
 					"category" => $recurring->category->name ?? null,
 					"category_icon" => $recurring->category->icon ?? null,
-					"days_until" => $nextDate->diffForHumans(),
+					"days_until" => $nextDate->diffForHumans() ?? null,
 					"is_today" => $nextDate->isToday(),
 				];
 			}

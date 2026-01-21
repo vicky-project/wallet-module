@@ -536,10 +536,8 @@
                       </div>
                     <small class="text-muted">
                       {{ $recurring['next_date'] }}
-                      @if($recurring['days_until'] > 0)
-                        <br><span class="text-info">({{ $recurring['days_until'] }} hari lagi)</span>
-                      @else
-                        <br><span class="text-info">Hari ini</span>
+                      @if($recurring['days_until'])
+                        <br><span class="text-info">({{ $recurring['days_until'] }})</span>
                       @endif
                     </small>
                   </div>
