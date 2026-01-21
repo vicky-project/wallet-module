@@ -437,18 +437,18 @@
 
       <!-- Quick Stats -->
       @if(isset($recurringTransaction))
-        <div class="card mb-4">
+        <div class="card my-4">
           <div class="card-body">
             <h5 class="card-title mb-3">Statistik</h5>
             <div class="row g-2">
               <div class="col-6">
-                <div class="bg-light p-2 rounded text-center">
+                <div class="text-bg-light p-2 rounded text-center">
                   <div class="fw-bold">{{ $recurringTransaction->transactions_count ?? 0 }}</div>
                   <small class="text-muted">Total Diproses</small>
                 </div>
               </div>
               <div class="col-6">
-                <div class="bg-light p-2 rounded text-center">
+                <div class="text-bg-light p-2 rounded text-center">
                   <div class="fw-bold">
                     @if($recurringTransaction->remaining_occurrences)
                       {{ $recurringTransaction->remaining_occurrences }}
