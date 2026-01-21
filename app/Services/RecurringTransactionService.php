@@ -240,7 +240,11 @@ class RecurringTransactionService
 				break;
 			}
 
-			$occurrences[] = $nextDate->format("Y-m-d");
+			$occurrences[] = [
+				"date_formatted" => $nextDate->format("Y-m-d"),
+				"day_name" => $nextDate->getDay(),
+				"status" => $recurring->status,
+			];
 			$currentDate = $nextDate;
 		}
 
