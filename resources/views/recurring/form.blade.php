@@ -133,99 +133,99 @@
         <div class="col-12 mb-2">
           <!-- Basic Information Section -->
           <div class="card mb-4">
-        <div class="card-body">
-          <div class="form-section">
-            <h5 class="form-section-title">Informasi Dasar</h5>
-          </div>
-                        
-          <div class="row g-3">
-            <!-- Description -->
-            <div class="col-12">
-              <label for="description" class="form-label">Deskripsi *</label>
-              <input type="text" class="form-control @error('description') is-invalid @enderror" id="description" name="description" value="{{ old('description', $recurringTransaction->description ?? '') }}" placeholder="Contoh: Gaji bulanan, Tagihan listrik, dll." required>
-              @error('description')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
-
-            <!-- Type Selection -->
-            <div class="col-md-6">
-              <label class="form-label">Tipe Transaksi *</label>
-              <div class="row g-2">
-                <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_income" value="{{ TransactionType::INCOME->value }}" required @checked(old('type', $recurringTransaction->type->value ?? '') == TransactionType::INCOME->value)>
-                  <label class="btn btn-outline-success w-100" for="type_income">
-                    <i class="bi bi-arrow-down-left me-1"></i> Pemasukan
-                  </label>
-                </div>
-                <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_expense" value="{{ TransactionType::EXPENSE->value }}" @checked(old('type', $recurringTransaction->type->value ?? 'expense') == TransactionType::EXPENSE->value)>
-                  <label class="btn btn-outline-danger w-100" for="type_expense">
-                    <i class="bi bi-arrow-up-right me-1"></i> Pengeluaran
-                  </label>
-                </div>
-                <div class="col-4">
-                  <input type="radio" class="btn-check" name="type" id="type_transfer" value="{{ TransactionType::TRANSFER->value }}" @checked(old('type', $recurringTransaction->type->value ?? 'transfer') == TransactionType::TRANSFER->value)>
-                  <label class="btn btn-outline-primary w-100" for="type_transfer">
-                    <i class="bi bi-arrow-left-right me-1"></i> Transfer
-                  </label>
-                </div>
+            <div class="card-body">
+              <div class="form-section">
+                <h5 class="form-section-title">Informasi Dasar</h5>
               </div>
-              @error('type')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-              @enderror
-            </div>
-
-            <!-- Amount -->
-            <div class="col-md-6">
-              <label for="amount" class="form-label">Jumlah *</label>
-              <div class="amount-input">
-                <div class="input-group">
-                  <span class="input-group-text">Rp</span>
-                  <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $recurringTransaction->amount->getAmount()->toInt() ?? '0') }}" min="100" required>
-                  @error('amount')
+                        
+              <div class="row g-3">
+                <!-- Description -->
+                <div class="col-12">
+                  <label for="description" class="form-label">Deskripsi *</label>
+                  <input type="text" class="form-control @error('description') is-invalid @enderror" id="description" name="description" value="{{ old('description', $recurringTransaction->description ?? '') }}" placeholder="Contoh: Gaji bulanan, Tagihan listrik, dll." required>
+                  @error('description')
                     <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
                 </div>
-              </div>
-            </div>
 
-            <!-- Account -->
-            <div class="col-md-6">
-              <label for="account_id" class="form-label">Akun *</label>
-              <select class="form-select @error('account_id') is-invalid @enderror" id="account_id" name="account_id" required>
-                <option value="">Pilih Akun</option>
-                @foreach($accounts as $account)
-                  <option value="{{ $account->id }}" @selected(old('account_id', $recurringTransaction->account_id) == $account->id)>
-                    {{ $account->name }} ({{ $account->type }})
-                  </option>
-                @endforeach
-              </select>
-              @error('account_id')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
+                <!-- Type Selection -->
+                <div class="col-md-6">
+                  <label class="form-label">Tipe Transaksi *</label>
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <input type="radio" class="btn-check" name="type" id="type_income" value="{{ TransactionType::INCOME->value }}" required @checked(old('type', $recurringTransaction->type->value ?? '') == TransactionType::INCOME->value)>
+                      <label class="btn btn-outline-success w-100" for="type_income">
+                        <i class="bi bi-arrow-down-left me-1"></i> Pemasukan
+                      </label>
+                    </div>
+                    <div class="col-4">
+                      <input type="radio" class="btn-check" name="type" id="type_expense" value="{{ TransactionType::EXPENSE->value }}" @checked(old('type', $recurringTransaction->type->value ?? 'expense') == TransactionType::EXPENSE->value)>
+                      <label class="btn btn-outline-danger w-100" for="type_expense">
+                        <i class="bi bi-arrow-up-right me-1"></i> Pengeluaran
+                      </label>
+                    </div>
+                    <div class="col-4">
+                      <input type="radio" class="btn-check" name="type" id="type_transfer" value="{{ TransactionType::TRANSFER->value }}" @checked(old('type', $recurringTransaction->type->value ?? 'transfer') == TransactionType::TRANSFER->value)>
+                      <label class="btn btn-outline-primary w-100" for="type_transfer">
+                        <i class="bi bi-arrow-left-right me-1"></i> Transfer
+                      </label>
+                    </div>
+                  </div>
+                  @error('type')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                  @enderror
+                </div>
 
-            <!-- To Account (for transfer) -->
-            <div class="col-md-6" id="to_account_field" style="display: none;">
-              <label for="to_account_id" class="form-label">Akun Tujuan *</label>
-              <select class="form-select @error('to_account_id') is-invalid @enderror" id="to_account_id" name="to_account_id">
-                <option value="">Pilih Akun Tujuan</option>
-                @foreach($accounts as $account)
-                  <option value="{{ $account->id }}" @selected(old('to_account_id', $recurringTransaction->to_account_id) == $account->id)>
-                    {{ $account->name }} ({{ $account->type }})
-                  </option>
-                @endforeach
-              </select>
-              @error('to_account_id')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
+                <!-- Amount -->
+                <div class="col-md-6">
+                  <label for="amount" class="form-label">Jumlah *</label>
+                  <div class="amount-input">
+                    <div class="input-group">
+                      <span class="input-group-text">Rp</span>
+                      <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" value="{{ old('amount', $recurringTransaction ? $recurringTransaction->amount->getAmount()->toInt() : '0') }}" min="100" required>
+                      @error('amount')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                  </div>
+                </div>
 
-            <!-- Category -->
-            <div class="col-md-6">
-              <label for="category_id" class="form-label">Kategori *</label>
-              <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
+                <!-- Account -->
+                <div class="col-md-6">
+                  <label for="account_id" class="form-label">Akun *</label>
+                  <select class="form-select @error('account_id') is-invalid @enderror" id="account_id" name="account_id" required>
+                    <option value="">Pilih Akun</option>
+                    @foreach($accounts as $account)
+                      <option value="{{ $account->id }}" @selected(old('account_id', $recurringTransaction->account_id) == $account->id)>
+                        {{ $account->name }} ({{ $account->type }})
+                      </option>
+                    @endforeach
+                  </select>
+                  @error('account_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+
+                <!-- To Account (for transfer) -->
+                <div class="col-md-6" id="to_account_field" style="display: none;">
+                  <label for="to_account_id" class="form-label">Akun Tujuan *</label>
+                  <select class="form-select @error('to_account_id') is-invalid @enderror" id="to_account_id" name="to_account_id">
+                    <option value="">Pilih Akun Tujuan</option>
+                    @foreach($accounts as $account)
+                      <option value="{{ $account->id }}" @selected(old('to_account_id', $recurringTransaction->to_account_id) == $account->id)>
+                        {{ $account->name }} ({{ $account->type }})
+                      </option>
+                    @endforeach
+                  </select>
+                  @error('to_account_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-6">
+                  <label for="category_id" class="form-label">Kategori *</label>
+                  <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
                 <option value="">Pilih Kategori</option>
                 @foreach($categories as $id => $name)
                   <option value="{{ $id }}" @selected(old('category_id', $recurringTransaction->category_id ?? '') == $id)>
@@ -233,23 +233,23 @@
                   </option>
                 @endforeach
               </select>
-              @error('category_id')
-                <div class="invalid-feedback">{{ $message }}</div>
-              @enderror
-            </div>
+                  @error('category_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
+                </div>
 
-            <!-- Is Active -->
-            <div class="col-md-6">
-              <div class="form-check mt-4 pt-2">
-                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $recurringTransaction->is_active ?? true))>
-                <label class="form-check-label" for="is_active">
-                  Aktifkan transaksi ini
-                </label>
+                <!-- Is Active -->
+                <div class="col-md-6">
+                  <div class="form-check mt-4 pt-2">
+                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" @checked(old('is_active', $recurringTransaction->is_active ?? true))>
+                    <label class="form-check-label" for="is_active">
+                      Aktifkan transaksi ini
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
         </div>
         <div class="col-12 mb-2">
           <!-- Recurrence Settings Section -->
