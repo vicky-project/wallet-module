@@ -110,7 +110,7 @@ class CategoryService
 
 				switch ($category->type) {
 					case CategoryType::EXPENSE:
-						$monthlyTotal = $category->getExpenseTotal();
+						$monthlyTotal = (int) $category->getExpenseTotal();
 						$activeBudget = $category->getCurrentBudget();
 						if ($activeBudget) {
 							$category->budget_usage_percentage =
