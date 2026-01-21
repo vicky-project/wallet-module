@@ -2,6 +2,9 @@
 
 @section('title', 'Transaksi Rutin - ' . config('app.name', 'Vicky Server'))
 
+@use('Modules\Wallet\Enums\RecurringFreq')
+@use('Modules\Wallet\Enums\TransactionType')
+
 @push('styles')
 <style>
     .recurring-card {
@@ -361,7 +364,7 @@
                         </thead>
                         <tbody>
                             @foreach($recurringTransactions as $recurring)
-                                <tr class="recurring-card {{ $recurring->type }}">
+                                <tr class="recurring-card {{ $recurring->type->value }}">
                                     <td>
                                         <div class="form-check">
                                             <input class="form-check-input recurring-checkbox" 
@@ -387,19 +390,19 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="badge bg-{{ $recurring->type == 'income' ? 'success' : ($recurring->type == 'expense' ? 'danger' : 'primary') }}-subtle text-{{ $recurring->type == 'income' ? 'success' : ($recurring->type == 'expense' ? 'danger' : 'primary') }}">
-                                            {{ $recurring->type == 'income' ? 'Pemasukan' : ($recurring->type == 'expense' ? 'Pengeluaran' : 'Transfer') }}
+                                        <span class="badge bg-{{ $recurring->type == TransactionType::INCOME ? 'success' : ($recurring->type == TransactionType::EXPENSE ? 'danger' : 'primary') }}-subtle text-{{ $recurring->type == TransactionType::INCOME ? 'success' : ($recurring->type == TransactionType::EXPENSE ? 'danger' : 'primary') }}">
+                                            {{ $recurring->type == TransactionType::INCOME ? 'Pemasukan' : ($recurring->type == TransactionType::EXPENSE ? 'Pengeluaran' : 'Transfer') }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="frequency-badge frequency-{{ $recurring->frequency }}">
+                                        <span class="frequency-badge frequency-{{ $recurring->frequency->value }}">
                                             @if($recurring->interval > 1)
                                                 Setiap {{ $recurring->interval }} 
                                             @endif
-                                            {{ $recurring->frequency == 'daily' ? 'Hari' : 
-                                               ($recurring->frequency == 'weekly' ? 'Minggu' : 
-                                               ($recurring->frequency == 'monthly' ? 'Bulan' : 
-                                               ($recurring->frequency == 'quarterly' ? 'Triwulan' : 'Tahun'))) }}
+                                            {{ $recurring->frequency == RecurringFreq::DAILY ? 'Hari' : 
+                                               ($recurring->frequency == RecurringFreq::WEEKLY ? 'Minggu' : 
+                                               ($recurring->frequency == RecurringFreq::MONTHLY ? 'Bulan' : 
+                                               ($recurring->frequency == RecurringFreq::QUARTERLY ? 'Triwulan' : 'Tahun'))) }}
                                         </span>
                                     </td>
                                     <td>
