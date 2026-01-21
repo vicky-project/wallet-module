@@ -96,10 +96,6 @@ Route::middleware(["auth"])
 		Route::resource("budgets", BudgetController::class);
 
 		// Recurring routes
-		Route::get("recurrings/preview-occurrences/{id}", [
-			RecurringController::class,
-			"previewNextOccurrences",
-		])->name("recurrings.preview-occurrences");
 		Route::post("recurrings/bulk-update", [
 			RecurringController::class,
 			"bulkUpdate",
@@ -112,10 +108,14 @@ Route::middleware(["auth"])
 			RecurringController::class,
 			"export",
 		])->name("recurrings.export");
-		Route::post("recurrings/process-due", [
+		Route::get("recurrings/process-due", [
 			RecurringController::class,
 			"processDue",
 		])->name("recurrings.process-due");
+		Route::get("recurrings/preview-occurrences/{id}", [
+			RecurringController::class,
+			"previewNextOccurrences",
+		])->name("recurrings.preview-occurrences");
 		Route::post("recurrings/toggle-status/{id}", [
 			RecurringController::class,
 			"toggleStatus",
