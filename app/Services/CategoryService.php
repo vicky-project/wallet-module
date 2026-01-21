@@ -137,7 +137,7 @@ class CategoryService
 				}
 
 				$category->monthly_total = $monthlyTotal;
-				dd($category);
+
 				return $category;
 			});
 	}
