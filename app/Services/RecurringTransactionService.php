@@ -242,7 +242,7 @@ class RecurringTransactionService
 
 			$occurrences[] = [
 				"date_formatted" => $nextDate->format("Y-m-d"),
-				"day_name" => $nextDate->format("dddd"),
+				"day_name" => $nextDate->dayName,
 				"status" => $recurring->status,
 			];
 			$currentDate = $nextDate;
