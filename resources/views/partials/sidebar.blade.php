@@ -14,7 +14,7 @@
     </li>
     <li>
       <a href="{{ route('apps.accounts.index') }}" class="{{ request()->routeIs('apps.accounts.*') ? 'active' : '' }}">
-        <i class="bi bi-wallet2"></i> Accounts
+        <i class="bi bi-wallet"></i> Accounts
       </a>
     </li>
     <li>
