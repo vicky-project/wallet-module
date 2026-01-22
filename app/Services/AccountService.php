@@ -354,7 +354,7 @@ class AccountService
 			$query->where("id", "!=", $excludeId);
 		}
 
-		if (!$query->get()->exists()) {
+		if (!$query->exists()) {
 			$query->update(["is_default" => false]);
 		}
 	}
