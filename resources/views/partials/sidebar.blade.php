@@ -19,7 +19,7 @@
     </li>
     <li>
       <a href="{{ route('apps.transactions.index') }}" class="{{ request()->routeIs('apps.transactions.*') ? 'active' : '' }}">
-        <i class="bi bi-currency-dollar"></i> Transactions
+        <i class="bi bi-receipt"></i> Transactions
       </a>
     </li>
     <li>

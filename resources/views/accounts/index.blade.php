@@ -158,7 +158,7 @@
 <div class="row mb-4">
   <div class="col">
     <h2 class="page-title mb-2">
-      <i class="bi bi-wallet2 me-2"></i>Kelola Akun
+      <i class="bi bi-wallet me-2"></i>Kelola Akun
     </h2>
     <p class="text-muted mb-0">Kelola semua akun keuangan Anda di satu tempat. Pantau saldo, transaksi, dan kinerja akun.</p>
   </div>
@@ -246,7 +246,7 @@
           </div>
           <div class="col-auto">
             <div class="account-icon bg-primary bg-opacity-10 text-primary">
-              <i class="bi bi-wallet2"></i>
+              <i class="bi bi-wallet"></i>
             </div>
           </div>
         </div>
@@ -361,7 +361,7 @@
       <!-- Empty State -->
       <div class="empty-state">
         <div class="empty-state-icon">
-          <i class="bi bi-wallet2"></i>
+          <i class="bi bi-wallet"></i>
         </div>
         <h5 class="mb-3">Belum ada akun</h5>
         <p class="text-muted mb-4">Mulai dengan menambahkan akun keuangan pertama Anda untuk melacak pengeluaran dan pemasukan.</p>
