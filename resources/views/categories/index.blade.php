@@ -457,8 +457,7 @@
       <span class="badge bg-secondary ms-2">{{ $categories->total() }}</span>
     </h5>
     <div class="d-flex align-items-center">
-      <div class="input-group me-2" style="width: 150px;">
-        <span class="input-group-text"><i class="bi bi-list-check"></i></span>
+      <div class="input-group me-2" style="width: 100px;">
         <select class="form-select" id="bulkAction">
           <option value="">Bulk Action</option>
           <option value="activate">Aktifkan</option>
@@ -493,10 +492,10 @@
         <p class="text-muted mb-4">Mulai dengan menambahkan kategori pertama Anda untuk mengorganisir transaksi keuangan.</p>
         <div class="d-flex justify-content-center gap-2">
           <a href="{{ route('apps.categories.create') }}?type=expense" class="btn btn-danger">
-            <i class="bi bi-arrow-up-right me-2"></i>Tambah Pengeluaran
+            <i class="bi bi-arrow-up-right me-2"></i>Kategori Pengeluaran
           </a>
           <a href="{{ route('apps.categories.create') }}?type=income" class="btn btn-success">
-            <i class="bi bi-arrow-down-left me-2"></i>Tambah Pemasukan
+            <i class="bi bi-arrow-down-left me-2"></i>Kategori Pemasukan
           </a>
         </div>
       </div>
