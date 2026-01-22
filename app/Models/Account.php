@@ -73,6 +73,15 @@ class Account extends Model
 					->update(["is_default" => false]);
 			}
 		});
+
+		static::deleting(function ($account) {
+			if ($account->is_default) {
+				self::where("user_id", $account->user_id)
+					->where("id", "!=", $account->id)
+					->first()
+					->update(["is_default" => true]);
+			}
+		});
 	}
 
 	protected static function booted()
