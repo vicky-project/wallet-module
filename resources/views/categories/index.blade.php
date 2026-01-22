@@ -457,14 +457,16 @@
       <span class="badge bg-secondary ms-2">{{ $categories->total() }}</span>
     </h5>
     <div class="d-flex align-items-center">
-      <div class="input-group me-2" style="width: 100px;">
-        <select class="form-select" id="bulkAction">
-          <option value="">Bulk Action</option>
-          <option value="activate">Aktifkan</option>
-          <option value="deactivate">Nonaktifkan</option>
-          <option value="delete">Hapus</option>
-        </select>
-      </div>
+      @if($categories->count() > 0)
+        <div class="input-group me-2" style="width: 100px;">
+          <select class="form-select" id="bulkAction">
+            <option value="">Bulk Action</option>
+            <option value="activate">Aktifkan</option>
+            <option value="deactivate">Nonaktifkan</option>
+            <option value="delete">Hapus</option>
+          </select>
+        </div>
+      @endif
       <div class="dropdown me-2">
         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
           <i class="bi bi-download"></i>
