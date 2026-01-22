@@ -466,20 +466,20 @@
             <option value="delete">Hapus</option>
           </select>
         </div>
-      @endif
-      <div class="dropdown me-2">
-        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-download"></i>
+        <div class="dropdown me-2">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-download"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>CSV</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>PDF</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xlsx me-2"></i>Excel</a></li>
+          </ul>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" id="refreshCategories">
+          <i class="bi bi-arrow-clockwise"></i>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>CSV</a></li>
-          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>PDF</a></li>
-          <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-xlsx me-2"></i>Excel</a></li>
-        </ul>
-      </div>
-      <button class="btn btn-outline-secondary btn-sm" id="refreshCategories">
-        <i class="bi bi-arrow-clockwise"></i>
-      </button>
+      @endif
     </div>
   </div>
         
