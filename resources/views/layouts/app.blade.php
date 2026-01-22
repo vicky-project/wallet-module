@@ -297,7 +297,7 @@
         /* Floating Action Button (FAB) */
         .fab-container {
             position: fixed;
-            bottom: 60px;
+            bottom: 30px;
             right: 30px;
             z-index: 1080;
         }
@@ -460,7 +460,7 @@
         
         @media (max-width: 576px) {
             .fab-container {
-                bottom: 15px;
+                bottom: 60px;
                 right: 15px;
             }
             
