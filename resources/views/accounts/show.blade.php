@@ -477,7 +477,7 @@
 <style>
   @media (max-width: 576px) {
     .fab-container {
-      bottom: 70px;
+      bottom: 80px;
     }
   }
 </style>
