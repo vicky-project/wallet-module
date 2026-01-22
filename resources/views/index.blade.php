@@ -198,7 +198,7 @@
             <h3 class="mt-1 mb-0 fw-bold currency">{{ $dashboardData['total_balance'] }}</h3>
           </div>
           <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-            <i class="bi bi-wallet2"></i>
+            <i class="bi bi-wallet"></i>
           </div>
         </div>
         <div class="d-flex align-items-center mt-3">
@@ -275,7 +275,7 @@
             <h3 class="mt-1 mb-0 fw-bold">{{ number_format($dashboardData['budget_usage_percentage'], 1) }}%</h3>
           </div>
           <div class="stat-icon bg-warning bg-opacity-10 text-warning">
-            <i class="bi bi-pie-chart"></i>
+            <i class="bi bi-wallet-fill"></i>
           </div>
         </div>
         <div class="mt-3">
@@ -610,7 +610,7 @@
           </div>
         @empty
           <div class="empty-state py-4">
-            <i class="bi bi-tags text-muted"></i>
+            <i class="bi bi-chart-pie text-muted"></i>
             <p class="mt-3 mb-2">Belum ada kategori dengan pengeluaran</p>
             <a href="{{ route('apps.categories.create') }}" class="btn btn-sm btn-primary">
               <i class="bi bi-plus-lg me-1"></i> Tambah Kategori

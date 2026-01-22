@@ -10,7 +10,7 @@
 <div class="row mb-4">
   <div class="col">
     <h2 class="page-title mb-2">
-      <i class="bi bi-cash-coin me-2"></i>Kelola Budget
+      <i class="bi bi-wallet-fill me-2"></i>Kelola Budget
     </h2>
     <p class="text-muted mb-0">Kelola anggaran keuangan Anda. Pantau pengeluaran, atur periode, dan optimalkan pengelolaan uang.</p>
   </div>
@@ -200,7 +200,7 @@
       <!-- Empty State -->
       <div class="text-center py-5">
         <div class="mb-4">
-          <i class="bi bi-cash-coin display-1 text-muted"></i>
+          <i class="bi bi-wallet-fill display-1 text-muted"></i>
         </div>
         <h5 class="mb-3">Belum ada budget</h5>
         <p class="text-muted mb-4">Mulai dengan membuat budget pertama Anda untuk mengontrol pengeluaran.</p>

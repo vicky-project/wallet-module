@@ -366,7 +366,7 @@
           </div>
           <div class="col-auto">
             <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-              <i class="bi bi-tags"></i>
+              <i class="bi bi-chart-pie"></i>
             </div>
           </div>
         </div>
@@ -487,7 +487,7 @@
       <!-- Empty State -->
       <div class="empty-state">
         <div class="empty-state-icon">
-          <i class="bi bi-tags"></i>
+          <i class="bi bi-chart-pie"></i>
         </div>
         <h5 class="mb-3">Belum ada kategori</h5>
         <p class="text-muted mb-4">Mulai dengan menambahkan kategori pertama Anda untuk mengorganisir transaksi keuangan.</p>

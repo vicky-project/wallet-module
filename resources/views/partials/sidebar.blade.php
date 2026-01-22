@@ -29,7 +29,7 @@
     </li>
     <li>
       <a href="{{ route('apps.budgets.index') }}" class="{{ request()->routeIs('apps.budgets.*') ? 'active' : ''}}">
-        <i class="bi bi-calendar-month"></i> Budgets
+        <i class="bi bi-wallet-fill"></i> Budgets
       </a>
     </li>
     <li>
