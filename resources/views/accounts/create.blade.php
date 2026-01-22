@@ -15,7 +15,7 @@
       </div>
       <div>
         <h2 class="page-title mb-2">
-          <i class="bi bi-plus-circle text-primary me-2"></i>Tambah Akun Baru
+          <i class="bi bi-wallet2 text-primary me-2"></i>Tambah Akun Baru
         </h2>
         <p class="text-muted mb-0">
           Tambahkan akun keuangan baru untuk mulai melacak saldo dan transaksi.
