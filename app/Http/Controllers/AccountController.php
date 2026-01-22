@@ -63,6 +63,7 @@ class AccountController extends BaseController
 	{
 		try {
 			$user = $request->user();
+			dd($request->validated());
 			$account = $this->service->createAccount($user, $request->validated());
 
 			return redirect()

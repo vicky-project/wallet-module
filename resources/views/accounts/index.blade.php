@@ -389,7 +389,7 @@
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="account-icon me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                      <i class="{{ $account->icon }}"></i>
+                      <i class="bi {{ $account->icon }}"></i>
                     </div>
                     <div>
                       <strong class="d-block">{{ $account->name }}</strong>
