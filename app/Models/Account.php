@@ -76,10 +76,12 @@ class Account extends Model
 
 		static::deleting(function ($account) {
 			if ($account->is_default) {
-				self::where("user_id", $account->user_id)
+				$anotherAccount = self::where("user_id", $account->user_id)
 					->where("id", "!=", $account->id)
-					->first()
-					->update(["is_default" => true]);
+					->first();
+				if ($anotherAccount) {
+					$anotherAccount->update(["is_default" => true]);
+				}
 			}
 		});
 	}
