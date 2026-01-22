@@ -98,10 +98,10 @@
     <div class="col-md-6 mb-3">
       <label class="form-label">Icon</label>
       <div class="input-group">
-        <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly disabled>
+        <input type="text" class="form-control" name="icon" id="icon" value="bi-wallet" readonly>
         <input type="hidden" name="color" value="#3490dc" id="color-account">
         <div class="account-icon-preview" style="background-color: {{ old('color', $account->color ?? '#3490dc') }}20; color: {{ old('color', $account->color ?? '#3490dc') }}">
-          <i id="iconPreview" class="bi {{ old('icon', $account->icon ?? 'bi-wallet2') }}"></i>
+          <i id="iconPreview" class="bi {{ old('icon', $account->icon ?? 'bi-wallet') }}"></i>
         </div>
       </div>
       <small class="form-text text-muted">Icon dipilih otomatis ketika memilih type akun.</small>
