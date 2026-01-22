@@ -313,9 +313,6 @@
           <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
             <i class="bi bi-arrow-left-right me-1"></i>Transfer Dana
           </button>
-          <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#adjustBalanceModal">
-            <i class="bi bi-sliders me-1"></i>Adjust Saldo
-          </button>
           <form method="POST" action="{{ route('apps.accounts.recalculate', $account) }}">
             @csrf
             <button type="submit" class="btn btn-outline-info" onclick="return confirm('Hitung ulang saldo berdasarkan transaksi?')">
