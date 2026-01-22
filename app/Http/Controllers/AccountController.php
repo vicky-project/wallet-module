@@ -136,8 +136,6 @@ class AccountController extends BaseController
 	public function destroy(Account $account)
 	{
 		try {
-			$this->authorize("delete", $account);
-
 			// Check if account has transactions
 			if ($account->transactions()->exists()) {
 				return redirect()
