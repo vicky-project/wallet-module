@@ -460,7 +460,7 @@
         
         @media (max-width: 576px) {
             .fab-container {
-                bottom: 60px;
+                bottom: 15px;
                 right: 15px;
             }
             

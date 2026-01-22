@@ -472,3 +472,13 @@
     });
 </script>
 @endpush
+
+@push('styles')
+<style>
+  @media (max-width: 576px) {
+    .fab-container {
+      bottom: 70px;
+    }
+  }
+</style>
+@endpush
