@@ -34,7 +34,7 @@
               <!-- Type Selection -->
               <div class="form-section">
                 <div class="form-section-title">
-                  <i class="bi bi-tag"></i>
+                  <i class="bi bi-pie-chart"></i>
                   Tipe Kategori
                 </div>
                 <div class="d-flex type-switch mb-4">
@@ -163,7 +163,7 @@
                                     
                   <!-- Preview Icon -->
                   <div id="previewIconLarge" class="preview-icon" style="background-color: rgba(var(--bs-primary-rgb), 0.1); color: var(--bs-primary);">
-                    <i class="bi bi-{{ old('icon', $category->icon ?? 'tag') }}"></i>
+                    <i class="bi {{ old('icon', $category->icon ?? 'bi-pie-chart') }}"></i>
                   </div>
                                     
                   <!-- Preview Details -->

@@ -6,13 +6,13 @@
   <div class="d-flex">
     <!-- Input Text -->
     <div class="flex-grow-1 me-2">
-      <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', $category->icon ?? 'bi-tag') }}" placeholder="bi-cash-stack" readonly>
+      <input type="text" class="form-control @error('icon') is-invalid @enderror" id="icon" name="icon" value="{{ old('icon', $category->icon ?? 'bi-pie-chart') }}" placeholder="bi-pie-chart" readonly>
     </div>
         
     <!-- Tombol Dropdown -->
     <div class="dropdown">
       <button type="button" class="btn btn-outline-secondary dropdown-toggle" id="iconPickerButton" data-bs-toggle="dropdown" aria-expanded="false" style="min-width: 60px;">
-        <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'bi-tag' }}"></i>
+        <i id="selectedIconPreview" class="bi {{ $category->icon ?? 'pie-chart' }}"></i>
       </button>
             
       <!-- Simple Grid -->
