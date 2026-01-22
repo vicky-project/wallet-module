@@ -403,7 +403,7 @@
             </div>
             <div class="small text-muted">Usia Akun</div>
             <div class="fw-semibold">
-              {{ $account->created_at->diffInDays(now()) }} hari
+              {{ $account->created_at->diffForHumans() }}
             </div>
           </div>
                         
