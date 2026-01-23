@@ -183,7 +183,7 @@
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Daftar Transaksi</h5>
       <div class="d-flex justify-content-between align-items-center gap-2">
-        <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#filterModal">
+        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#filterModal">
           <i class="bi bi-funnel-fill"></i>
         </button>
         <div class="dropdown">
@@ -230,7 +230,7 @@
           <tbody>
             @foreach($transactions as $transaction)
               <tr class="transaction-{{ $transaction->type }}">
-                <td>
+                <td class="text-center">
                   <input type="checkbox" class="form-check-input transaction-check" value="{{ $transaction->id }}">
                 </td>
                 <td>
