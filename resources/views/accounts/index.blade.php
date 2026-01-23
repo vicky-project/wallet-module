@@ -169,71 +169,6 @@
   </div>
 </div>
 
-<!-- Filter Section -->
-<div class="card mb-4 filter-card" id="filterCard">
-  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-    <h5 class="mb-0">
-      <i class="bi bi-funnel me-2"></i>Filter Pencarian
-    </h5>
-    <i class="bi bi-chevron-down transition-rotate"></i>
-  </div>
-
-  <div class="collapse" id="filterCollapse">
-    <div class="card-body">
-      <form action="{{ route('apps.accounts.index') }}" method="GET" id="filterForm">
-        <div class="row g-3">
-          <!-- Type Filter -->
-          <div class="col-md-4">
-            <label for="type" class="form-label">Tipe Akun</label>
-            <select class="form-select" id="type" name="type">
-              <option value="">Semua Tipe</option>
-              @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
-                <option value="{{ $type->value }}" {{ request('type') == $type->value ? 'selected' : '' }}>
-                  {{ $type->label() }}
-                </option>
-              @endforeach
-            </select>
-          </div>
-
-          <!-- Status Filter -->
-          <div class="col-md-4">
-            <label for="is_active" class="form-label">Status</label>
-            <select class="form-select" id="is_active" name="is_active">
-              <option value="">Semua Status</option>
-              <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
-              <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
-            </select>
-          </div>
-
-          <!-- Search -->
-          <div class="col-md-4">
-            <label for="search" class="form-label">Cari</label>
-            <div class="input-group">
-              <input type="text" class="form-control" id="search" name="search" placeholder="Cari nama atau nomor akun..." value="{{ request('search') }}">
-              <button class="btn btn-outline-secondary" type="button" id="clearSearch">
-                <i class="bi bi-x"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mt-3">
-          <div class="col-12">
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary me-2">
-                <i class="bi bi-search me-1"></i>Terapkan Filter
-              </button>
-              <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-clockwise me-1"></i>Reset
-              </a>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Summary Cards -->
 <div class="row mb-4">
   <div class="col-xl-3 col-md-6 mb-4">
@@ -325,6 +260,71 @@
           </small>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Section -->
+<div class="card mb-4 filter-card" id="filterCard">
+  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+    <h5 class="mb-0">
+      <i class="bi bi-funnel me-2"></i>Filter Pencarian
+    </h5>
+    <i class="bi bi-chevron-down transition-rotate"></i>
+  </div>
+
+  <div class="collapse" id="filterCollapse">
+    <div class="card-body">
+      <form action="{{ route('apps.accounts.index') }}" method="GET" id="filterForm">
+        <div class="row g-3">
+          <!-- Type Filter -->
+          <div class="col-md-4">
+            <label for="type" class="form-label">Tipe Akun</label>
+            <select class="form-select" id="type" name="type">
+              <option value="">Semua Tipe</option>
+              @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
+                <option value="{{ $type->value }}" {{ request('type') == $type->value ? 'selected' : '' }}>
+                  {{ $type->label() }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="col-md-4">
+            <label for="is_active" class="form-label">Status</label>
+            <select class="form-select" id="is_active" name="is_active">
+              <option value="">Semua Status</option>
+              <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
+              <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
+            </select>
+          </div>
+
+          <!-- Search -->
+          <div class="col-md-4">
+            <label for="search" class="form-label">Cari</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="search" name="search" placeholder="Cari nama atau nomor akun..." value="{{ request('search') }}">
+              <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary me-2">
+                <i class="bi bi-search me-1"></i>Terapkan Filter
+              </button>
+              <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise me-1"></i>Reset
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

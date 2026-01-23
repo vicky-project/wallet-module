@@ -261,99 +261,6 @@
 </div>
 @endif
 
-<!-- Filter Section -->
-<div class="card mb-4 filter-card" id="filterCard">
-  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-    <h5 class="mb-0">
-      <i class="bi bi-funnel me-2"></i>Filter Pencarian
-    </h5>
-    <i class="bi bi-chevron-down transition-rotate"></i>
-  </div>
-
-  <div class="collapse" id="filterCollapse">
-    <div class="card-body">
-      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
-        <div class="row g-3">
-          <!-- Type Filter -->
-          <div class="col-md-4">
-            <label for="type" class="form-label">Tipe Kategori</label>
-            <select class="form-select" id="type" name="type">
-              <option value="">Semua Tipe</option>
-              @foreach(CategoryType::cases() as $type)
-              <option value="{{ $type->value}}" @selected(request('type') == $type->value)>{{ $type->name }}</option>
-              @endforeach
-            </select>
-          </div>
-
-          <!-- Status Filter -->
-          <div class="col-md-4">
-            <label for="is_active" class="form-label">Status</label>
-            <select class="form-select" id="is_active" name="is_active">
-              <option value="">Semua Status</option>
-              <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
-              <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
-            </select>
-          </div>
-
-          <!-- Budget Filter -->
-          <div class="col-md-4">
-            <label for="has_budget" class="form-label">Status Budget</label>
-            <select class="form-select" id="has_budget" name="has_budget">
-              <option value="">Semua</option>
-              <option value="1" {{ request('has_budget') === '1' ? 'selected' : '' }}>Memiliki Budget</option>
-              <option value="0" {{ request('has_budget') === '0' ? 'selected' : '' }}>Tanpa Budget</option>
-            </select>
-          </div>
-
-          <!-- Search -->
-          <div class="col-md-6">
-            <label for="search" class="form-label">Cari</label>
-            <div class="input-group">
-              <input type="text" class="form-control" id="search" name="search" placeholder="Cari nama atau deskripsi kategori..." value="{{ request('search') }}">
-              <button class="btn btn-outline-secondary" type="button" id="clearSearch">
-                <i class="bi bi-x"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Sort By -->
-          <div class="col-md-3">
-            <label for="sort_by" class="form-label">Urutkan Berdasarkan</label>
-            <select class="form-select" id="sort_by" name="sort_by">
-              <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Nama</option>
-              <option value="type" {{ request('sort_by') == 'type' ? 'selected' : '' }}>Tipe</option>
-              <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Tanggal Dibuat</option>
-              <option value="transactions_count" {{ request('sort_by') == 'transactions_count' ? 'selected' : '' }}>Jumlah Transaksi</option>
-            </select>
-          </div>
-
-          <!-- Sort Order -->
-          <div class="col-md-3">
-            <label for="sort_order" class="form-label">Urutan</label>
-            <select class="form-select" id="sort_order" name="sort_order">
-              <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Naik (A-Z)</option>
-              <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Turun (Z-A)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row mt-3">
-          <div class="col-12">
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary me-2">
-                <i class="bi bi-search me-1"></i>Terapkan Filter
-              </button>
-              <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-clockwise me-1"></i>Reset
-              </a>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Summary Cards -->
 <div class="row mb-4">
   <div class="col-xl-3 col-md-6 mb-4">
@@ -445,6 +352,99 @@
           </small>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Section -->
+<div class="card mb-4 filter-card" id="filterCard">
+  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+    <h5 class="mb-0">
+      <i class="bi bi-funnel me-2"></i>Filter Pencarian
+    </h5>
+    <i class="bi bi-chevron-down transition-rotate"></i>
+  </div>
+
+  <div class="collapse" id="filterCollapse">
+    <div class="card-body">
+      <form action="{{ route('apps.categories.index') }}" method="GET" id="filterForm">
+        <div class="row g-3">
+          <!-- Type Filter -->
+          <div class="col-md-4">
+            <label for="type" class="form-label">Tipe Kategori</label>
+            <select class="form-select" id="type" name="type">
+              <option value="">Semua Tipe</option>
+              @foreach(CategoryType::cases() as $type)
+              <option value="{{ $type->value}}" @selected(request('type') == $type->value)>{{ $type->name }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="col-md-4">
+            <label for="is_active" class="form-label">Status</label>
+            <select class="form-select" id="is_active" name="is_active">
+              <option value="">Semua Status</option>
+              <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
+              <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
+            </select>
+          </div>
+
+          <!-- Budget Filter -->
+          <div class="col-md-4">
+            <label for="has_budget" class="form-label">Status Budget</label>
+            <select class="form-select" id="has_budget" name="has_budget">
+              <option value="">Semua</option>
+              <option value="1" {{ request('has_budget') === '1' ? 'selected' : '' }}>Memiliki Budget</option>
+              <option value="0" {{ request('has_budget') === '0' ? 'selected' : '' }}>Tanpa Budget</option>
+            </select>
+          </div>
+
+          <!-- Search -->
+          <div class="col-md-6">
+            <label for="search" class="form-label">Cari</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="search" name="search" placeholder="Cari nama atau deskripsi kategori..." value="{{ request('search') }}">
+              <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sort By -->
+          <div class="col-md-3">
+            <label for="sort_by" class="form-label">Urutkan Berdasarkan</label>
+            <select class="form-select" id="sort_by" name="sort_by">
+              <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Nama</option>
+              <option value="type" {{ request('sort_by') == 'type' ? 'selected' : '' }}>Tipe</option>
+              <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Tanggal Dibuat</option>
+              <option value="transactions_count" {{ request('sort_by') == 'transactions_count' ? 'selected' : '' }}>Jumlah Transaksi</option>
+            </select>
+          </div>
+
+          <!-- Sort Order -->
+          <div class="col-md-3">
+            <label for="sort_order" class="form-label">Urutan</label>
+            <select class="form-select" id="sort_order" name="sort_order">
+              <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>Naik (A-Z)</option>
+              <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Turun (Z-A)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary me-2">
+                <i class="bi bi-search me-1"></i>Terapkan Filter
+              </button>
+              <a href="{{ route('apps.categories.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise me-1"></i>Reset
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

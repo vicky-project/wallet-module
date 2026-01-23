@@ -213,7 +213,7 @@
         <table class="table table-hover mb-0">
           <thead class="table-dark">
             <tr>
-              <th width="50">
+              <th width="50" class="text-center">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="selectAll">
                   <label class="form-check-label" for="selectAll">All</label>
