@@ -120,96 +120,6 @@
   </div>
 </div>
 
-<!-- Filter Card -->
-<div class="card border-0 shadow-sm mb-4" id="filterCard">
-  <div class="card-header cursor-pointer d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-    <h5 class="mb-0">
-      <i class="bi bi-funnel me-2"></i>Filter Pencarian
-    </h5>
-    <i class="bi bi-chevron-down transition-rotate"></i>
-  </div>
-  <div class="collapse" id="filterCollapse">
-    <div class="card-body">
-      <form method="GET" action="{{ route('apps.transactions.index') }}" id="filterForm">
-        <div class="row g-3">
-          <div class="col-md-3">
-            <label for="type" class="form-label">Jenis</label>
-            <select name="type" id="type" class="form-select">
-              <option value="">Semua Jenis</option>
-              @foreach(TransactionType::cases() as $type)
-                <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->label() }}</option>
-              @endforeach
-            </select>
-          </div>
-                
-          <div class="col-md-3">
-            <label for="account_id" class="form-label">Akun</label>
-            <select name="account_id" id="account_id" class="form-select select2">
-              <option value="">Semua Akun</option>
-              @foreach($accounts as $account)
-                <option value="{{ $account->id }}" @selected(request('account_id') == $account->id)>
-                  {{ $account->name }}
-                </option>
-              @endforeach
-            </select>
-          </div>
-                
-          <div class="col-md-3">
-            <label for="category_id" class="form-label">Kategori</label>
-            <select name="category_id" id="category_id" class="form-select select2">
-              <option value="">Semua Kategori</option>
-              @foreach($categories as $category)
-                <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
-                  {{ $category->name }}
-                </option>
-              @endforeach
-            </select>
-          </div>
-                
-          <div class="col-md-3">
-            <label for="payment_method" class="form-label">Metode Pembayaran</label>
-            <select name="payment_method" id="payment_method" class="form-select">
-              <option value="">Semua Metode</option>
-              @foreach(PaymentMethod::cases() as $payment)
-                <option value="{{ $payment->value }}" @selected(request('payment_method') == $payment->value)>{{ $payment->label() }}</option>
-              @endforeach
-            </select>
-           </div>
-                
-          <div class="col-md-6">
-            <label for="description" class="form-label">Keterangan / Catatan</label>
-            <input type="text" name="description" id="description" class="form-control" placeholder="Cari dalam keterangan atau catatan..." value="{{ request('description') }}">
-          </div>
-                
-          <div class="col-md-3">
-            <label for="start_date" class="form-label">Dari Tanggal</label>
-            <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-          </div>
-                
-          <div class="col-md-3">
-            <label for="end_date" class="form-label">Sampai Tanggal</label>
-            <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-          </div>
-                
-          <div class="col-md-12">
-            <div class="d-flex justify-content-end gap-2">
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel me-2"></i> Terapkan Filter
-              </button>
-              <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-x-circle me-2"></i> Reset
-              </a>
-              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
-                <i class="bi bi-download me-2"></i> Export
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Summary Stats -->
 <div class="row mb-4">
   <div class="col-md-4 mb-3">
@@ -272,6 +182,10 @@
   <div class="card-header text-bg-white border-0">
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Daftar Transaksi</h5>
+      <div>
+        <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#filterModal">
+          <i class="bi bi-funnel-fill"></i>
+        </button>
         <div class="dropdown">
           <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
@@ -289,6 +203,7 @@
             </li>
           </ul>
         </div>
+      </div>
     </div>
   </div>
     
@@ -587,6 +502,102 @@
         </div>
       </div>
     @endif
+  </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Filter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ route('apps.transactions.index') }}" method="GET">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+            <label for="type" class="form-label">Jenis</label>
+            <select name="type" id="type" class="form-select">
+              <option value="">Semua Jenis</option>
+              @foreach(TransactionType::cases() as $type)
+                <option value="{{ $type->value }}" @selected(request('type') == $type->value)>{{ $type->label() }}</option>
+              @endforeach
+            </select>
+          </div>
+                
+            <div class="col-md-3">
+            <label for="account_id" class="form-label">Akun</label>
+            <select name="account_id" id="account_id" class="form-select select2">
+              <option value="">Semua Akun</option>
+              @foreach($accounts as $account)
+                <option value="{{ $account->id }}" @selected(request('account_id') == $account->id)>
+                  {{ $account->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+                
+            <div class="col-md-3">
+            <label for="category_id" class="form-label">Kategori</label>
+            <select name="category_id" id="category_id" class="form-select select2">
+              <option value="">Semua Kategori</option>
+              @foreach($categories as $category)
+                <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
+                  {{ $category->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+                
+            <div class="col-md-3">
+            <label for="payment_method" class="form-label">Metode Pembayaran</label>
+            <select name="payment_method" id="payment_method" class="form-select">
+              <option value="">Semua Metode</option>
+              @foreach(PaymentMethod::cases() as $payment)
+                <option value="{{ $payment->value }}" @selected(request('payment_method') == $payment->value)>{{ $payment->label() }}</option>
+              @endforeach
+            </select>
+           </div>
+                
+            <div class="col-md-6">
+            <label for="description" class="form-label">Keterangan / Catatan</label>
+            <input type="text" name="description" id="description" class="form-control" placeholder="Cari dalam keterangan atau catatan..." value="{{ request('description') }}">
+          </div>
+                
+            <div class="col-md-3">
+            <label for="start_date" class="form-label">Dari Tanggal</label>
+            <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
+          </div>
+                
+            <div class="col-md-3">
+            <label for="end_date" class="form-label">Sampai Tanggal</label>
+            <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
+          </div>
+                
+            <div class="col-md-12">
+            <div class="d-flex justify-content-end gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-funnel me-2"></i> Terapkan Filter
+              </button>
+              <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-2"></i> Reset
+              </a>
+              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+                <i class="bi bi-download me-2"></i> Export
+              </button>
+            </div>
+          </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-warning">
+            <i class="bi bi-funnel-fill me-2"></i> Apply Filter
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
