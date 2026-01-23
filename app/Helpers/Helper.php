@@ -143,8 +143,6 @@ class Helper
 			"bi-box2-fill",
 			"bi-box2-heart",
 			"bi-box2-heart-fill",
-			"bi-box-steam",
-			"bi-box-steam-fill",
 			"bi-briefcase",
 			"bi-briefcase-fill",
 			"bi-building",
