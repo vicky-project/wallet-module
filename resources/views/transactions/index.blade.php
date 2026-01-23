@@ -576,17 +576,6 @@
           </div>
                 
             <div class="col-md-12">
-            <div class="d-flex justify-content-end gap-2">
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel me-2"></i> Terapkan Filter
-              </button>
-              <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-x-circle me-2"></i> Reset
-              </a>
-              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
-                <i class="bi bi-download me-2"></i> Export
-              </button>
-            </div>
           </div>
           </div>
         </div>
