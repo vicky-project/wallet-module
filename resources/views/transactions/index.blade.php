@@ -182,7 +182,7 @@
   <div class="card-header text-bg-white border-0">
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Daftar Transaksi</h5>
-      <div>
+      <div class="d-flex justify-content-between align-items-center gap-2">
         <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#filterModal">
           <i class="bi bi-funnel-fill"></i>
         </button>
