@@ -259,7 +259,7 @@
     </div>
         
     <!-- Accounts Card -->
-    <div class="card">
+    <div class="card mb-4">
       <div class="card-header">
         <h5 class="mb-0">
           <i class="bi bi-wallet me-2"></i>Akun Terkait
@@ -415,7 +415,7 @@
           <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
             <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
           </a>
-                    
+
           <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
             <i class="bi bi-files me-2"></i>Duplikat Budget
           </button>
@@ -433,38 +433,37 @@
 <div class="modal fade" id="duplicateModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Duplikat Budget</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
       <form action="{{ route('apps.budgets.store', $budget) }}" method="POST">
         @csrf
-        <div class="modal-header">
-          <h5 class="modal-title">Duplikat Budget</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
         <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="duplicate_name" class="form-label">Nama Budget Baru</label>
-                        <input type="text" class="form-control" id="duplicate_name" name="name" 
-                               value="{{ $budget->name ? $budget->name . ' (Salinan)' : $budget->category->name . ' (Salinan)' }}" required>
-                        <div class="form-text">
-                            Berikan nama untuk budget duplikat.
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="duplicate_settings" name="duplicate_settings" checked>
-                            <label class="form-check-label" for="duplicate_settings">
-                                Salin semua pengaturan
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="duplicate_next_period" name="duplicate_next_period">
-                            <label class="form-check-label" for="duplicate_next_period">
-                                Buat untuk periode berikutnya
-                            </label>
-                        </div>
-                    </div>
-                </div>
+          <div class="mb-3">
+            <label for="duplicate_name" class="form-label">Nama Budget Baru</label>
+            <input type="text" class="form-control" id="duplicate_name" name="name" value="{{ $budget->name ? $budget->name . ' (Salinan)' : $budget->category->name . ' (Salinan)' }}" required>
+            <small class="form-text">
+              Berikan nama untuk budget duplikat.
+            </small>
+          </div>
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="duplicate_settings" name="duplicate_settings" checked>
+              <label class="form-check-label" for="duplicate_settings">
+                Salin semua pengaturan
+              </label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="duplicate_next_period" name="duplicate_next_period">
+              <label class="form-check-label" for="duplicate_next_period">
+                Buat untuk periode berikutnya
+              </label>
+            </div>
+          </div>
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
           <button type="submit" class="btn btn-primary">
