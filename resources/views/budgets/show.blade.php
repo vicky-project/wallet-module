@@ -296,30 +296,6 @@
         @endif
       </div>
     </div>
-        
-    <!-- Quick Actions -->
-    <div class="card mt-4">
-      <div class="card-header">
-        <h5 class="mb-0">
-          <i class="bi bi-lightning me-2"></i>Aksi Cepat
-        </h5>
-      </div>
-      <div class="card-body">
-        <div class="d-grid gap-2">
-          <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
-            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
-          </a>
-                    
-          <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
-            <i class="bi bi-files me-2"></i>Duplikat Budget
-          </button>
-                    
-          <a href="{{ route('apps.budgets.index', $budget) }}" class="btn btn-outline-info" onclick="return confirm('Buat budget untuk periode berikutnya?')">
-            <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
-          </a>
-        </div>
-      </div>
-    </div>
   </div>
     
   <!-- Right Column: Transactions & Statistics -->
@@ -386,7 +362,7 @@
     </div>
         
     <!-- Statistics Card -->
-    <div class="card">
+    <div class="card mb-4">
       <div class="card-header">
         <h5 class="mb-0">
           <i class="bi bi-graph-up me-2"></i>Statistik Budget
@@ -419,6 +395,34 @@
           <div class="chart-container">
             <canvas id="dailyUsageChart"></canvas>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row my-2">
+  <div class="col-md-12 my-2">
+    <!-- Quick Actions -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-lightning me-2"></i>Aksi Cepat
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+          </a>
+                    
+          <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
+            <i class="bi bi-files me-2"></i>Duplikat Budget
+          </button>
+                    
+          <a href="{{ route('apps.budgets.index', $budget) }}" class="btn btn-outline-info" onclick="return confirm('Buat budget untuk periode berikutnya?')">
+            <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
+          </a>
         </div>
       </div>
     </div>

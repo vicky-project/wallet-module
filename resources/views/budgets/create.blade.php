@@ -415,7 +415,7 @@
                 <div class="account-select-item" data-id="{{ $account->id }}">
                   <div class="d-flex align-items-center">
                     <div class="account-icon-small me-3" style="background-color: {{ $account->color }}20; color: {{ $account->color }}">
-                      <i class="bi bi-{{ $account->icon }}"></i>
+                      <i class="bi {{ $account->icon }}"></i>
                     </div>
                     <div class="flex-grow-1">
                       <div class="fw-semibold">{{ $account->name }}</div>
