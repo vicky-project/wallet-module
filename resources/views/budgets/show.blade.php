@@ -185,7 +185,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row mb-4">
   <!-- Left Column: Details & Accounts -->
   <div class="col-md-4 mb-3">
     <!-- Details Card -->
@@ -401,8 +401,8 @@
   </div>
 </div>
 
-<div class="row my-2">
-  <div class="col-md-12 my-2">
+<div class="row mb-4">
+  <div class="col-md-12 mb-3">
     <!-- Quick Actions -->
     <div class="card mt-4">
       <div class="card-header">
