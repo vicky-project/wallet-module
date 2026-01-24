@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Models;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,6 +57,23 @@ class Budget extends Model
 		"days_left",
 		"daily_budget",
 	];
+
+	public static function booted()
+	{
+		static::created(function ($budget) {
+			Cache::flush();
+			self::updateSpentAmount();
+		});
+
+		static::updated(function ($budget) {
+			Cache::flush();
+			self::updateSpentAmount();
+		});
+
+		static::deleted(function ($budget) {
+			Cache::flush();
+		});
+	}
 
 	/**
 	 * Relationship with user
