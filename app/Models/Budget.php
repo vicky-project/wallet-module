@@ -62,12 +62,12 @@ class Budget extends Model
 	{
 		static::created(function ($budget) {
 			Cache::flush();
-			self::updateSpentAmount();
+			$budget->updateSpentAmount();
 		});
 
 		static::updated(function ($budget) {
 			Cache::flush();
-			self::updateSpentAmount();
+			$budget->updateSpentAmount();
 		});
 
 		static::deleted(function ($budget) {
