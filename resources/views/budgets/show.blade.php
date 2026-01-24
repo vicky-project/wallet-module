@@ -401,6 +401,34 @@
   </div>
 </div>
 
+<div class="row my-4">
+  <div class="col-md-12 mb-3">
+    <!-- Quick Actions -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-lightning me-2"></i>Aksi Cepat
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create', ['budget_id' => $budget->id]) }}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+          </a>
+
+          <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
+            <i class="bi bi-files me-2"></i>Duplikat Budget
+          </button>
+                    
+          <a href="{{ route('apps.budgets.index', $budget) }}" class="btn btn-outline-info" onclick="return confirm('Buat budget untuk periode berikutnya?')">
+            <i class="bi bi-calendar-plus me-2"></i>Buat Periode Berikutnya
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Duplicate Modal -->
 <div class="modal fade" id="duplicateModal" tabindex="-1">
