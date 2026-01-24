@@ -119,7 +119,7 @@ class BudgetController extends Controller
 
 		$chart = null;
 		if ($budget->accounts->isNotEmpty()) {
-			$chart = $query->whereIn("accounts_id", $budget->accounts->pluck("id"));
+			$chart = $query->whereIn("account_id", $budget->accounts->pluck("id"));
 		}
 
 		$chart = $chart
