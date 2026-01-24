@@ -69,8 +69,7 @@
 
 <!-- Action Buttons -->
 <div class="row mb-4">
-  <div class="col-12">
-  </div>
+  <div class="col-md-12">
     <div class="d-flex justify-content-between align-items-center">
       <div>
         <a href="{{ route('apps.budgets.index') }}" class="btn btn-outline-secondary">
@@ -122,6 +121,7 @@
         </ul>
       </div>
     </div>
+  </div>
 </div>
 
 <!-- Stats Cards -->
@@ -401,7 +401,7 @@
   </div>
 </div>
 
-<div class="row mb-4">
+<div class="row my-4">
   <div class="col-md-12 mb-3">
     <!-- Quick Actions -->
     <div class="card mt-4">
