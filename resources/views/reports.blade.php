@@ -168,31 +168,31 @@
 
 <!-- Charts Row 1: Trend Chart -->
 <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="bi bi-graph-up me-2"></i>Trend Pendapatan vs Pengeluaran
-                        </h5>
-                        <div class="chart-toolbar">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-secondary active" onclick="toggleChartType('line')">
-                                    <i class="bi bi-graph-up"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary" onclick="toggleChartType('bar')">
-                                    <i class="bi bi-bar-chart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-graph-up me-2"></i>Trend Pendapatan vs Pengeluaran
+        </h5>
+        <div class="chart-toolbar">
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-outline-secondary active" onclick="toggleChartType('line')">
+              <i class="bi bi-graph-up"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="toggleChartType('bar')">
+              <i class="bi bi-bar-chart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
                         <div class="chart-container">
                             <canvas id="incomeExpenseChart"></canvas>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+    </div>
+  </div>
+</div>
 
 <!-- Charts Row 2: Category & Account -->
 <div class="row mb-4">
