@@ -53,8 +53,8 @@
     </div>
         
     <div class="col-md-4 text-center text-md-end position-relative z-1">
-      <div class="mb-3">
-        <div class="display-5 fw-bold text-white me-2">@money($budget->remaining)</div>
+      <div class="mb-3 me-2">
+        <div class="display-5 fw-bold text-white">@money($budget->remaining)</div>
         <div class="text-white-75">SISA BUDGET</div>
       </div>
       <div class="d-flex justify-content-center justify-content-md-end">
@@ -160,7 +160,7 @@
     
   <div class="col-xl-3 col-md-6 mb-4">
     <div class="stat-card">
-      <div class="stat-value text-info">@money($budget->remaining * 100)</div>
+      <div class="stat-value text-info">@money($budget->remaining)</div>
       <div class="stat-label">SISA BUDGET</div>
       <div class="mt-3">
         <small class="text-muted">
