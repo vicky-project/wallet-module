@@ -366,7 +366,6 @@ class BudgetService
 			$endDate
 		);
 
-		dd($dailySpent);
 		return $this->formatChartData($dailySpent, $startDate, $endDate, $budget);
 	}
 
