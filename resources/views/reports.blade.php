@@ -216,12 +216,12 @@
             
   <div class="col-md-6">
     <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-wallet me-2"></i>Distribusi Saldo Akun
-                        </h5>
-                    </div>
-                    <div class="card-body">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-wallet me-2"></i>Distribusi Saldo Akun
+        </h5>
+      </div>
+      <div class="card-body">
                         <div class="chart-container">
                             <canvas id="accountBalanceChart"></canvas>
                         </div>
@@ -229,7 +229,7 @@
                             <!-- Legend will be populated dynamically -->
                         </div>
                     </div>
-                </div>
+    </div>
   </div>
 </div>
 
@@ -356,8 +356,6 @@
                 const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     credentials: 'include'
