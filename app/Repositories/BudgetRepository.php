@@ -763,6 +763,7 @@ class BudgetRepository extends BaseRepository
 			->groupBy("date")
 			->orderBy("date")
 			->get()
+			->dd()
 			->keyBy("date")
 			->toArray();
 	}
