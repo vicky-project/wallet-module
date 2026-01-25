@@ -748,7 +748,7 @@ class BudgetRepository extends BaseRepository
 		Budget $budget,
 		Carbon $startDate,
 		Carbon $endDate
-	) {
+	): array {
 		$query = $budget->category
 			->transactions()
 			->expense()

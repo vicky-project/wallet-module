@@ -348,7 +348,7 @@ class BudgetService
 		Budget $budget,
 		?Carbon $startDate = null,
 		?Carbon $endDate = null
-	) {
+	): array {
 		$startDate = $startDate ?? Carbon::now();
 		$endDate = $endDate ?? Carbon::now()->subDays(6);
 
@@ -360,12 +360,77 @@ class BudgetService
 			$endDate = $budget->end_date;
 		}
 
-		$budgetData = $this->budgetRepository->getBudgetData(
+		$dailySpent = $this->budgetRepository->getBudgetData(
 			$budget,
 			$startDate,
 			$endDate
 		);
+		return $this->formatChartData($dailySpent, $startDate, $endDate, $budget);
+	}
 
-		dd($budgetData);
+	private function formatChartData(
+		array $dailySpent,
+		Carbon $startDate,
+		Carbon $endDate,
+		Budget $budget
+	): array {
+		$labels = [];
+		$data = [];
+
+		$currentDate = $startDate->copy();
+		$dayNames = ["Ming", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+		while ($currentDate <= $endDate) {
+			$dayIndex = $currentDate->dayOfWeek;
+			$dayName = $dayNames[$dayIndex];
+
+			$labels[] = $dayName . " (" . $currentDate->format("d/m") . ")";
+
+			$dateString = $currentDate->toDateString();
+			$amount = isset($dailySpent[$dateString])
+				? $dailySpent[$dateString]["total"]
+				: 0;
+			$data[] = (int) $amount;
+
+			$currentDate->addDay();
+		}
+
+		$daysInPeriod = $budget->days_left > 0 ? $budget->days_left : 1;
+		$dailyBudgetTarget =
+			(int) ($budget->amount->getAmount()->toInt() / $daysInPeriod);
+
+		return [
+			"labels" => $labels,
+			"datasets" => [
+				[
+					"label" => "Pengeluaran Harian",
+					"data" => $data,
+					"backgroundColor" => "rgba(13, 110, 253, 0.1)",
+					"borderColor" => "rgba(13, 110, 253, 1)",
+					"borderWidth" => 2,
+					"fill" => true,
+					"tension" => 0.4,
+				],
+				[
+					"label" => "Target Budget harian",
+					"data" => array_fill(0, count($labels), $dailyBudgetTarget),
+					"borderColor" => "rgba(40, 167, 69, 0.7)",
+					"borderWidth" => 1.5,
+					"borderDash" => [5, 5],
+					"fill" => false,
+					"pointRadius" => 0,
+					"tension" => 0,
+				],
+			],
+			"budget_info" => [
+				"total_budget" => $budget->amount->getAmount()->toInt(),
+				"total_spent" => $budget->spent->getAmount()->toInt(),
+				"remaining" => $budget->remaining,
+				"usage_percentage" => $budget->usage_percentage,
+				"daily_budget" => (int) $budget->daily_budget,
+				"period_label" => $budget->period_label,
+				"days_left" => $budget->days_left,
+			],
+		];
 	}
 }
