@@ -253,7 +253,7 @@ class Budget extends Model
 			return 0;
 		}
 
-		return $this->remaining / $this->days_left;
+		return $this->remaining / 100 / $this->days_left;
 	}
 
 	/**
