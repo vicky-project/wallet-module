@@ -186,10 +186,10 @@
         </div>
       </div>
       <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="incomeExpenseChart"></canvas>
-                        </div>
-                    </div>
+        <div class="chart-container">
+          <canvas id="incomeExpenseChart"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 </div>

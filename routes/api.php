@@ -7,7 +7,6 @@ use Modules\Wallet\Http\Controllers\ReportController;
 
 Route::prefix("apps")
 	->name("apps.")
-	->middleware(["auth:api"])
 	->group(function () {
 		Route::prefix("reports")->group(function () {
 			Route::get("dashboard-summary", [
