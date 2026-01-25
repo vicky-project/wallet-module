@@ -3,10 +3,26 @@
 use Illuminate\Support\Facades\Route;
 
 use Modules\Wallet\Http\Controllers\BudgetController;
+use Modules\Wallet\Http\Controllers\ReportController;
 
 Route::prefix("apps")
 	->name("apps.")
+	->middleware(["auth:api"])
 	->group(function () {
+		Route::prefix("reports")->group(function () {
+			Route::get("dashboard-summary", [
+				ReportController::class,
+				"dashboardSummary",
+			]);
+			Route::get("monthly/{year}/{month}", [
+				ReportController::class,
+				"monthlyReport",
+			]);
+			Route::get("yearly/{year}", [ReportController::class, "yearlyReport"]);
+			Route::get("custom", [ReportController::class, "customReport"]);
+			Route::post("export", [ReportController::class, "exportReport"]);
+		});
+
 		Route::post("budgets/bulk-update", [
 			BudgetController::class,
 			"bulkUpdate",
