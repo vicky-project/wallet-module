@@ -5,6 +5,7 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Modules\Wallet\Models\Account;
 use Modules\Wallet\Services\ReportService;
 
 class ReportController extends Controller
@@ -17,9 +18,11 @@ class ReportController extends Controller
 		$this->middleware("auth");
 	}
 
-	public function index()
+	public function index(Request $request)
 	{
-		return view("wallet::reports");
+		$user = $request->user();
+		$accounts = Account::where("user_id", $user->id)->get();
+		return view("wallet::reports", compact("accounts"));
 	}
 
 	public function dashboardSummary(Request $request): JsonResponse
