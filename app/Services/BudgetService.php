@@ -349,8 +349,8 @@ class BudgetService
 		?Carbon $startDate = null,
 		?Carbon $endDate = null
 	): array {
-		$startDate = $startDate ?? Carbon::now();
-		$endDate = $endDate ?? Carbon::now()->subDays(6);
+		$startDate = $startDate ?? Carbon::now()->subDays(6);
+		$endDate = $endDate ?? Carbon::now();
 
 		if ($startDate < $budget->start_date) {
 			$startDate = $budget->start_date;
