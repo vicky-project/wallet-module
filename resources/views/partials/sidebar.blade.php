@@ -38,7 +38,7 @@
       </a>
     </li>
     <li>
-      <a href="#">
+      <a href="{{ route('apps.reports') }}" class="{{ request()->routeIs('apps.reports') }}">
         <i class="bi bi-graph-up"></i> Laporan
       </a>
     </li>

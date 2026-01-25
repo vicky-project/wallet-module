@@ -7,6 +7,7 @@ use Modules\Wallet\Http\Controllers\CategoryController;
 use Modules\Wallet\Http\Controllers\DashboardController;
 use Modules\Wallet\Http\Controllers\BudgetController;
 use Modules\Wallet\Http\Controllers\RecurringController;
+use Modules\Wallet\Http\Controllers\ReportController;
 
 Route::middleware(["auth"])
 	->prefix("apps")
@@ -121,4 +122,7 @@ Route::middleware(["auth"])
 			"toggleStatus",
 		])->name("recurrings.toggle-status");
 		Route::resource("recurrings", RecurringController::class);
+
+		// Report routes
+		Route::get("reports", [ReportController::class, "index"])->name("reports");
 	});
