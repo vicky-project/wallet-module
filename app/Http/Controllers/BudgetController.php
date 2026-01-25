@@ -103,32 +103,19 @@ class BudgetController extends Controller
 		// Load relationships
 		$budget->load(["category", "accounts", "user"]);
 
-		$query = $budget->category
+		// Get transactions for this budget period
+		$transactions = $budget->category
 			->transactions()
 			->expense()
 			->whereBetween("transaction_date", [
 				$budget->start_date,
 				$budget->end_date,
-			]);
-
-		// Get transactions for this budget period
-		$transactions = $query
+			])
 			->with("account")
 			->orderBy("transaction_date", "desc")
 			->paginate(20);
 
-		$chart = null;
-		if ($budget->accounts->isNotEmpty()) {
-			$chart = $query->whereIn("account_id", $budget->accounts->pluck("id"));
-		}
-
-		$chart = $chart
-			->selectRaw("DATE(transaction_date) as date, SUM(amount) as total")
-			->groupBy("date")
-			->orderBy("date")
-			->get()
-			->keyBy("date")
-			->toArray();
+		$chart = $this->budgetService->getBudgetData($budget);
 
 		// Get budget statistics
 		$stats = [
@@ -138,8 +125,14 @@ class BudgetController extends Controller
 					fn($transaction) => $transaction->amount->getMinorAmount()->toInt()
 				) ?? 0,
 			"largest_transaction" => $transactions->max("amount") ?? 0,
-			"transactions_today" => $query
+			"transactions_today" => $budget->category
+				->transactions()
+				->expense()
 				->whereDate("transaction_date", today())
+				->whereBetween("transaction_date", [
+					$budget->start_date,
+					$budget->end_date,
+				])
 				->count(),
 		];
 

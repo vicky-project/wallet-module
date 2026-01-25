@@ -343,4 +343,21 @@ class BudgetService
 	{
 		return $this->budgetRepository->calculateNextPeriod($budget);
 	}
+
+	public function getChartData(
+		Budget $budget,
+		?Carbon $startDate = null,
+		?Carbon $endDate = null
+	) {
+		$startDate = $startDate ?? Carbon::now();
+		$endDate = $endDate ?? Carbon::now()->subDays(6);
+
+		$budgetData = $this->budgetRepository->getBudgetData(
+			$budget,
+			$startDate,
+			$endDate
+		);
+
+		dd($budgetData);
+	}
 }

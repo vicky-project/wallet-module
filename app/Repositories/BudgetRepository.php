@@ -743,4 +743,27 @@ class BudgetRepository extends BaseRepository
 
 		return $success;
 	}
+
+	public function getBudgetData(
+		Budget $budget,
+		Carbon $startDate,
+		Carbon $endDate
+	) {
+		$query = $budget->category
+			->transactions()
+			->expense()
+			->whereBetween("transaction_date", [$startDate, $endDate]);
+
+		if ($budget->accounts->isNotEmpty()) {
+			$query->whereIn("account_id", $budget->accounts->pluck("id"));
+		}
+
+		return $query
+			->selectRaw("DATE(transaction_date) as date, SUM(amount) as total")
+			->groupBy("date")
+			->orderBy("date")
+			->get()
+			->keyBy("date")
+			->toArray();
+	}
 }
