@@ -91,21 +91,31 @@ class Transaction extends Model
 		static::deleted(function ($transaction) {
 			// Restore balances when deleted
 			if ($transaction->type === TransactionType::INCOME) {
-				$transaction->account->balance->minus(
+				$account = $transaction->account()->first();
+				$account->balance = $account->balance->minus(
 					$transaction->amount->getMinorAmount()->toInt()
 				);
+				$account->save();
 			} elseif ($transaction->type === TransactionType::EXPENSE) {
-				$transaction->account->balance->plus(
+				$account = $transaction->account()->first();
+				$account->balance = $account->balance->plus(
 					$transaction->amount->getMinorAmount()->toInt()
 				);
+				$account->save();
 			} elseif ($transaction->type === TransactionType::TRANSFER) {
-				$transaction->account->balance->plus(
+				$account = $transaction->account()->first();
+				$account->balance = $account->balance->plus(
 					$transaction->amount->getMinorAmount()->toInt()
 				);
+
+				$account->save();
 				if ($transaction->toAccount) {
-					$transaction->toAccount->balance->minus(
+					$toAccount = $transaction->toAccount()->first();
+					$toAccount->balance = $transaction->toAccount->minus(
 						$transaction->amount->getMinorAmount()->toInt()
 					);
+
+					$toAccount->save();
 				}
 			}
 
