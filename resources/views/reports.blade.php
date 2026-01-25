@@ -259,18 +259,18 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-calendar-week me-2"></i>Aktivitas Transaksi per Hari
-                        </h5>
-                    </div>
+        <h5 class="mb-0">
+          <i class="bi bi-calendar-week me-2"></i>Aktivitas Transaksi per Hari
+        </h5>
+      </div>
       <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="transactionActivityChart"></canvas>
-                        </div>
-                        <div class="row mt-3" id="activity-summary">
-                            <!-- Activity summary will be populated dynamically -->
-                        </div>
-                    </div>
+        <div class="chart-container">
+          <canvas id="transactionActivityChart"></canvas>
+        </div>
+        <div class="row mt-3" id="activity-summary">
+          <!-- Activity summary will be populated dynamically -->
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -359,7 +359,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    credentials: 'include'
+                    method: 'POST'
                 });
                 
                 if (!response.ok) {

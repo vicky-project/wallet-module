@@ -11,7 +11,7 @@ Route::prefix("apps")
 		Route::prefix("reports")
 			->middleware("auth:web")
 			->group(function () {
-				Route::get("dashboard-summary", [
+				Route::post("dashboard-summary", [
 					ReportController::class,
 					"dashboardSummary",
 				]);
