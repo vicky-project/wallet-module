@@ -7,11 +7,11 @@
   <div class="col-12">
     <div class="d-flex justify-content-between align-items-center">
       <div>
-                        <h1 class="h3 mb-2">
-                            <i class="bi bi-bar-chart-line me-2"></i>Laporan Keuangan
-                        </h1>
-                        <p class="text-muted mb-0">Analisis dan visualisasi data keuangan Anda</p>
-                    </div>
+        <h1 class="h3 mb-2">
+          <i class="bi bi-bar-chart-line me-2"></i>Laporan Keuangan
+        </h1>
+        <p class="text-muted mb-0">Analisis dan visualisasi data keuangan Anda</p>
+      </div>
       <div class="d-flex gap-2">
         <button class="btn btn-outline-primary" onclick="exportReport()">
           <i class="bi bi-download me-1"></i>Ekspor
