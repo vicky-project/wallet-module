@@ -29,21 +29,25 @@ class ReportController extends Controller
 
 	public function dashboardSummary(Request $request): JsonResponse
 	{
-		$request->validate([
-			"start_date" => "nullable|date",
-			"end_date" => "nullable|date|after_or_equal:start_date",
-			"account_id" => "nullable|exists:accounts,id",
-		]);
+		try {
+			$request->validate([
+				"start_date" => "nullable|date",
+				"end_date" => "nullable|date|after_or_equal:start_date",
+				"account_id" => "nullable|exists:accounts,id",
+			]);
 
-		$data = $this->reportService->getDashboardSummary(
-			auth()->id(),
-			$request->only(["start_date", "end_date", "account_id"])
-		);
+			$data = $this->reportService->getDashboardSummary(
+				auth()->id(),
+				$request->only(["start_date", "end_date", "account_id"])
+			);
 
-		return response()->json([
-			"success" => true,
-			"data" => $data,
-		]);
+			return response()->json([
+				"success" => true,
+				"data" => $data,
+			]);
+		} catch (\Exception $e) {
+			dd($e);
+		}
 	}
 
 	public function monthlyReport(
