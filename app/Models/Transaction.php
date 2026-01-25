@@ -55,6 +55,11 @@ class Transaction extends Model
 				$transaction->uuid = \Illuminate\Support\Str::uuid();
 			}
 		});
+	}
+
+	public static function booted()
+	{
+		parent::booted();
 
 		static::created(function ($transaction) {
 			// Update account balance
@@ -119,6 +124,7 @@ class Transaction extends Model
 
 			// Flush Cache
 			Cache::flush();
+			Artisan::call("optimize:clear");
 		});
 	}
 
