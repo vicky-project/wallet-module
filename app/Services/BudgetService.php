@@ -387,7 +387,7 @@ class BudgetService
 			$labels[] = $dayName . " (" . $currentDate->format("d/m") . ")";
 
 			$dateString = $currentDate->toDateString();
-			$amount = $this->budgetRepository
+			$data[] = $this->budgetRepository
 				->toMoney(
 					isset($dailySpent[$dateString])
 						? $dailySpent[$dateString]["total"]
@@ -395,7 +395,6 @@ class BudgetService
 				)
 				->getAmount()
 				->toInt();
-			$data[] = (int) $amount;
 
 			$currentDate->addDay();
 		}
