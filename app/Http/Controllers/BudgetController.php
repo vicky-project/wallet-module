@@ -136,11 +136,9 @@ class BudgetController extends Controller
 				->count(),
 		];
 
-		dd($budget, $transactions, $stats, $chart);
-
 		return view(
 			"wallet::budgets.show",
-			compact("budget", "transactions", "stats")
+			compact("budget", "transactions", "stats", "chart")
 		);
 	}
 

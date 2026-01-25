@@ -457,16 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (chartCtx) {
         // Sample data - in production, fetch this from API
         const dailyData = {
-            labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-            datasets: [{
-                label: 'Pengeluaran Harian',
-                data: [150000, 230000, 180000, 320000, 280000, 450000, 120000],
-                backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                borderColor: 'rgba(13, 110, 253, 1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
+            labels: @json($chart["labels"]),
+            datasets: @json($chart["datasets"])
         };
         
         new Chart(chartCtx, {
