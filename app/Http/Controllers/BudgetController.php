@@ -116,7 +116,6 @@ class BudgetController extends Controller
 			->paginate(20);
 
 		$chart = $this->budgetService->getChartData($budget);
-		dd($chart);
 
 		// Get budget statistics
 		$stats = [
