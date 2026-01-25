@@ -27,6 +27,9 @@
             <span class="period-badge me-2 mb-1">
               <i class="bi bi-clock me-1"></i>{{ $budget->days_left }} hari lagi
             </span>
+            <span class="period-badge me-2 mb-1">
+              <i class="bi bi-calendar-range me-1"></i>{{ $budget->start_date->format('d M') }} - {{ $budget->end_date->format('d M Y') }}
+            </span>
           </div>
         </div>
       </div>
@@ -119,67 +122,6 @@
             </form>
           </li>
         </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Stats Cards -->
-<div class="row mb-4">
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="stat-card">
-      <div class="stat-value">@money($budget->amount->getMinorAmount()->toInt())</div>
-      <div class="stat-label">TOTAL BUDGET</div>
-      <div class="mt-3">
-        <small class="text-muted">
-          <i class="bi bi-calendar-range me-1"></i>
-          {{ $budget->start_date->format('d M') }} - {{ $budget->end_date->format('d M Y') }}
-        </small>
-      </div>
-    </div>
-  </div>
-    
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="stat-card">
-      <div class="stat-value {{ $budget->is_over_budget ? 'text-danger' : 'text-success' }}">
-        @money($budget->spent->getMinorAmount()->toInt())
-      </div>
-      <div class="stat-label">TOTAL TERPAKAI</div>
-      <div class="mt-3">
-        <div class="d-flex align-items-center">
-          <span class="usage-indicator 
-            @if($budget->is_over_budget) usage-high
-            @elseif($budget->usage_percentage >= 80) usage-medium
-            @else usage-low @endif">
-          </span>
-          <small class="text-muted">{{ number_format($budget->usage_percentage, 1) }}% dari budget</small>
-        </div>
-      </div>
-    </div>
-  </div>
-    
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="stat-card">
-      <div class="stat-value text-info">@money($budget->remaining)</div>
-      <div class="stat-label">SISA BUDGET</div>
-      <div class="mt-3">
-        <small class="text-muted">
-          <i class="bi bi-calendar-day me-1"></i>
-          {{ $budget->days_left }} hari tersisa
-        </small>
-      </div>
-    </div>
-  </div>
-    
-  <div class="col-xl-3 col-md-6 mb-4">
-    <div class="stat-card">
-      <div class="stat-value text-warning">@money($budget->daily_budget * 100)</div>
-      <div class="stat-label">RATA-RATA HARIAN</div>
-      <div class="mt-3">
-        <small class="text-muted">
-          <i class="bi bi-graph-up me-1"></i>
-          Rekomendasi harian
-        </small>
       </div>
     </div>
   </div>
