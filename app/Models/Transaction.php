@@ -121,7 +121,7 @@ class Transaction extends Model
 
 			// Update budget spent
 			if ($transaction->type === TransactionType::EXPENSE) {
-				$transaction->updateBudgetSpent(remove: true);
+				$transaction->updateBudgetSpent();
 			}
 		});
 
@@ -311,23 +311,19 @@ class Transaction extends Model
 		$this->updateAccountBalance();
 	}
 
-	public function updateBudgetSpent($remove = false)
+	public function updateBudgetSpent()
 	{
 		// Find active budget for this category in current period
 		$now = $this->transaction_date ?? now();
 		$budget = Budget::where("category_id", $this->category_id)
-			->where("user_id", $this->user_id)
-			->where("is_active", true)
+			->forUser($this->user_id)
+			->active()
 			->whereDate("start_date", "<=", $now)
 			->whereDate("end_date", ">=", $now)
 			->first();
 
 		if ($budget) {
-			if ($remove) {
-				$budget->spent->minus($this->amount->getAmount()->toInt());
-			} else {
-				$budget->spent->plus($this->amount->getAmount()->toInt());
-			}
+			$budget->updateSpentAmount();
 		}
 	}
 
