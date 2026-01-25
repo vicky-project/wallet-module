@@ -196,8 +196,8 @@
 
 <!-- Charts Row 2: Category & Account -->
 <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card h-100">
+  <div class="col-md-6">
+    <div class="card h-100">
                     <div class="card-header">
                         <h5 class="mb-0">
                             <i class="bi bi-pie-chart me-2"></i>Pengeluaran per Kategori
@@ -212,9 +212,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+  </div>
             
-            <div class="col-md-6">
+  <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-header">
                         <h5 class="mb-0">
@@ -231,7 +231,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+</div>
 
 <!-- Charts Row 3: Budget Analysis -->
 <div class="row mb-4">
@@ -356,7 +356,8 @@
                 const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`, {
                     headers: {
                         'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 });
                 
