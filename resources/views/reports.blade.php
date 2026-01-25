@@ -198,12 +198,12 @@
 <div class="row mb-4">
   <div class="col-md-6">
     <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-pie-chart me-2"></i>Pengeluaran per Kategori
-                        </h5>
-                    </div>
-                    <div class="card-body">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-pie-chart me-2"></i>Pengeluaran per Kategori
+        </h5>
+      </div>
+      <div class="card-body">
                         <div class="chart-container">
                             <canvas id="expenseCategoryChart"></canvas>
                         </div>
@@ -211,7 +211,7 @@
                             <!-- Legend will be populated dynamically -->
                         </div>
                     </div>
-                </div>
+    </div>
   </div>
             
   <div class="col-md-6">
@@ -355,6 +355,7 @@
                 const queryString = new URLSearchParams(filters).toString();
                 const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`, {
                     headers: {
+                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
