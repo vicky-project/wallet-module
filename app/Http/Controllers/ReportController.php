@@ -15,7 +15,6 @@ class ReportController extends Controller
 	public function __construct(ReportService $reportService)
 	{
 		$this->reportService = $reportService;
-		$this->middleware("auth");
 	}
 
 	public function index(Request $request)

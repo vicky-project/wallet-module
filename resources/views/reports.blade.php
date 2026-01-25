@@ -204,13 +204,13 @@
         </h5>
       </div>
       <div class="card-body">
-                        <div class="chart-container">
+        <div class="chart-container">
                             <canvas id="expenseCategoryChart"></canvas>
                         </div>
-                        <div class="mt-3" id="category-legend">
+        <div class="mt-3" id="category-legend">
                             <!-- Legend will be populated dynamically -->
                         </div>
-                    </div>
+      </div>
     </div>
   </div>
             
