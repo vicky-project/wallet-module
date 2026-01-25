@@ -115,7 +115,7 @@ class BudgetController extends Controller
 			->orderBy("transaction_date", "desc")
 			->paginate(20);
 
-		$chart = $this->budgetService->getBudgetData($budget);
+		$chart = $this->budgetService->getChartData($budget);
 
 		// Get budget statistics
 		$stats = [
