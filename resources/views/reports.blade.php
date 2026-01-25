@@ -101,68 +101,68 @@
             
   <div class="col-md-3">
     <div class="card stat-card border-start border-danger border-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="text-muted mb-2">Total Pengeluaran</h6>
-                                <h3 class="mb-0" id="total-expense">Rp 0</h3>
-                                <small class="text-muted" id="expense-count">0 transaksi</small>
-                            </div>
-                            <div class="stat-icon bg-danger bg-opacity-10">
-                                <i class="bi bi-arrow-down-circle fs-4 text-danger"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Total Pengeluaran</h6>
+            <h3 class="mb-0" id="total-expense">Rp 0</h3>
+            <small class="text-muted" id="expense-count">0 transaksi</small>
+          </div>
+          <div class="stat-icon bg-danger bg-opacity-10">
+            <i class="bi bi-arrow-down-circle fs-4 text-danger"></i>
+          </div>
+        </div>
+        <div class="mt-3">
                             <span class="badge bg-danger bg-opacity-10 text-danger summary-badge">
                                 <i class="bi bi-arrow-down me-1"></i>100%
                             </span>
                         </div>
-                    </div>
-                </div>
+      </div>
+    </div>
   </div>
             
   <div class="col-md-3">
     <div class="card stat-card border-start border-primary border-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="text-muted mb-2">Saldo Bersih</h6>
-                                <h3 class="mb-0" id="net-flow">Rp 0</h3>
-                                <small class="text-muted" id="net-flow-label">Arus Kas</small>
-                            </div>
-                            <div class="stat-icon bg-primary bg-opacity-10">
-                                <i class="bi bi-cash-stack fs-4 text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="badge bg-primary bg-opacity-10 text-primary summary-badge">
-                                <i class="bi bi-graph-up me-1"></i>100%
-                            </span>
-                        </div>
-                    </div>
-                </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Saldo Bersih</h6>
+            <h3 class="mb-0" id="net-flow">Rp 0</h3>
+            <small class="text-muted" id="net-flow-label">Arus Kas</small>
+          </div>
+          <div class="stat-icon bg-primary bg-opacity-10">
+            <i class="bi bi-cash-stack fs-4 text-primary"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <span class="badge bg-primary bg-opacity-10 text-primary summary-badge">
+            <i class="bi bi-graph-up me-1"></i>100%
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
             
   <div class="col-md-3">
     <div class="card stat-card border-start border-purple border-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="text-muted mb-2">Total Transfer</h6>
-                                <h3 class="mb-0" id="total-transfer">Rp 0</h3>
-                                <small class="text-muted">Antar Akun</small>
-                            </div>
-                            <div class="stat-icon" style="background-color: rgba(139, 92, 246, 0.1);">
-                                <i class="bi bi-arrow-left-right fs-4" style="color: #8b5cf6;"></i>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="badge summary-badge" style="background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
-                                <i class="bi bi-repeat me-1"></i>100%
-                            </span>
-                        </div>
-                    </div>
-                </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Total Transfer</h6>
+            <h3 class="mb-0" id="total-transfer">Rp 0</h3>
+            <small class="text-muted">Antar Akun</small>
+          </div>
+          <div class="stat-icon" style="background-color: rgba(139, 92, 246, 0.1);">
+            <i class="bi bi-arrow-left-right fs-4" style="color: #8b5cf6;"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <span class="badge summary-badge" style="background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+            <i class="bi bi-repeat me-1"></i>100%
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -353,7 +353,7 @@
 
             try {
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await fetch(`/api/reports/dashboard-summary?${queryString}`, {
+                const response = await fetch(`{{ config('app.url') }}/api/reports/dashboard-summary?${queryString}`, {
                     headers: {
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
@@ -763,7 +763,7 @@
                 };
                 
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await fetch(`/api/reports/export?${queryString}`, {
+                const response = await fetch(`{{ config('app.url') }}/api/reports/export?${queryString}`, {
                     headers: {
                         'Accept': 'application/json'
                     }
@@ -801,9 +801,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             initDateInputs();
             applyFilters(); // Load initial data
-            
-            // Set up periodic refresh (every 5 minutes)
-            setInterval(refreshCharts, 300000);
         });
     </script>
 @endpush
