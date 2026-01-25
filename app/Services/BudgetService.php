@@ -352,6 +352,14 @@ class BudgetService
 		$startDate = $startDate ?? Carbon::now();
 		$endDate = $endDate ?? Carbon::now()->subDays(6);
 
+		if ($startDate < $budget->start_date) {
+			$startDate = $budget->start_date;
+		}
+
+		if ($endDate > $budget->end_date) {
+			$endDate = $budget->end_date;
+		}
+
 		$budgetData = $this->budgetRepository->getBudgetData(
 			$budget,
 			$startDate,
