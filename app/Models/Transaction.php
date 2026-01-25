@@ -69,10 +69,6 @@ class Transaction extends Model
 			if ($transaction->type === TransactionType::EXPENSE) {
 				$transaction->updateBudgetSpent();
 			}
-
-			// Flush Cache
-			Cache::flush();
-			Artisan::call("optimize:clear");
 		});
 
 		static::updated(function ($transaction) {
@@ -90,10 +86,6 @@ class Transaction extends Model
 			) {
 				$transaction->updateBudgetSpent();
 			}
-
-			// Flush Cache
-			Cache::flush();
-			Artisan::call("optimize:clear");
 		});
 
 		static::deleted(function ($transaction) {
@@ -121,11 +113,11 @@ class Transaction extends Model
 			if ($transaction->type === TransactionType::EXPENSE) {
 				$transaction->updateBudgetSpent(remove: true);
 			}
-
-			// Flush Cache
-			Cache::flush();
-			Artisan::call("optimize:clear");
 		});
+
+		// Flush Cache
+		Cache::flush();
+		Artisan::call("optimize:clear");
 	}
 
 	// Relationships
