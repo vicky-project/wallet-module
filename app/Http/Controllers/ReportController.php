@@ -21,7 +21,10 @@ class ReportController extends Controller
 	public function index(Request $request)
 	{
 		$user = $request->user();
-		$accounts = Account::where("user_id", $user->id)->get();
+		$accounts = Account::where("user_id", $user->id)
+			->active()
+			->orderBy("name")
+			->get(["id", "name", "balance"]);
 		return view("wallet::reports", compact("accounts"));
 	}
 
