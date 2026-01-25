@@ -19,7 +19,7 @@
           <h1 class="h2 mb-1">{{ $budget->name ?: $budget->category->name }}</h1>
           <div class="d-flex align-items-center flex-wrap">
             <span class="period-badge me-2 mb-1">
-              <i class="bi bi-{{ $budget->category->icon }} me-1"></i>{{ $budget->category->name }}
+              <i class="bi {{ $budget->category->icon }} me-1"></i>{{ $budget->category->name }}
             </span>
             <span class="period-badge me-2 mb-1">
               <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type->value) }}
@@ -54,7 +54,7 @@
         
     <div class="col-md-4 text-center text-md-end position-relative z-1">
       <div class="mb-3">
-        <div class="display-5 fw-bold text-white">@money($budget->remaining * 100)</div>
+        <div class="display-5 fw-bold text-white me-2">@money($budget->remaining)</div>
         <div class="text-white-75">SISA BUDGET</div>
       </div>
       <div class="d-flex justify-content-center justify-content-md-end">

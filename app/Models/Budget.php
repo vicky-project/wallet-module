@@ -145,7 +145,8 @@ class Budget extends Model
 	{
 		return max(
 			0,
-			$this->amount->getAmount()->toInt() - $this->spent->getAmount()->toInt()
+			$this->amount->getMinorAmount()->toInt() -
+				$this->spent->getMinorAmount()->toInt()
 		);
 	}
 
