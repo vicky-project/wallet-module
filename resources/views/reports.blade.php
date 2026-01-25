@@ -353,13 +353,14 @@
 
             try {
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`, {
+                const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary`, {
                     headers: {
                       'accept': 'application/json',
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     method: 'POST'
+                    body: json.stringify(filters)
                 });
                 
                 if (!response.ok) {
