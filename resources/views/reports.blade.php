@@ -360,7 +360,7 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     method: 'POST',
-                    body: json.stringify(filters)
+                    body: JSON.stringify(filters)
                 });
                 
                 if (!response.ok) {
