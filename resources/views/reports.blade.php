@@ -359,7 +359,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    method: 'POST'
+                    method: 'POST',
                     body: json.stringify(filters)
                 });
                 
