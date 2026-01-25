@@ -222,13 +222,13 @@
         </h5>
       </div>
       <div class="card-body">
-                        <div class="chart-container">
+        <div class="chart-container">
                             <canvas id="accountBalanceChart"></canvas>
                         </div>
-                        <div class="mt-3" id="account-legend">
+        <div class="mt-3" id="account-legend">
                             <!-- Legend will be populated dynamically -->
                         </div>
-                    </div>
+      </div>
     </div>
   </div>
 </div>
@@ -376,7 +376,7 @@
                 }
             } catch (error) {
                 console.error('Error loading report data:', error);
-                alert('Gagal memuat data laporan. Silakan coba lagi.');
+                alert('Gagal memuat data laporan. Silakan coba lagi.', error.message);
             } finally {
                 hideLoading();
             }
