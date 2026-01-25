@@ -238,18 +238,18 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-currency-exchange me-2"></i>Analisis Anggaran vs Realisasi
-                        </h5>
-                    </div>
+        <h5 class="mb-0">
+          <i class="bi bi-currency-exchange me-2"></i>Analisis Anggaran vs Realisasi
+        </h5>
+      </div>
       <div class="card-body">
-                        <div class="chart-container">
+        <div class="chart-container">
                             <canvas id="budgetChart"></canvas>
                         </div>
-                        <div class="row mt-3" id="budget-summary">
+        <div class="row mt-3" id="budget-summary">
                             <!-- Budget summary will be populated dynamically -->
                         </div>
-                    </div>
+      </div>
     </div>
   </div>
 </div>
@@ -376,7 +376,7 @@
                 }
             } catch (error) {
                 console.error('Error loading report data:', error);
-                alert('Gagal memuat data laporan. Silakan coba lagi. ' + JSON.stringify(error));
+                alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message + error.statusCode);
             } finally {
                 hideLoading();
             }
