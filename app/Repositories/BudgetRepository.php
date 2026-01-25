@@ -757,6 +757,7 @@ class BudgetRepository extends BaseRepository
 		if ($budget->accounts->isNotEmpty()) {
 			$query->whereIn("account_id", $budget->accounts->pluck("id"));
 		}
+		dd($query->get());
 
 		return $query
 			->selectRaw("DATE(transaction_date) as date, SUM(amount) as total")
