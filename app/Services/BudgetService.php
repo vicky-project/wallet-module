@@ -391,7 +391,8 @@ class BudgetService
 				->toMoney(
 					isset($dailySpent[$dateString])
 						? $dailySpent[$dateString]["total"]
-						: 0
+						: 0,
+					isInteger: false
 				)
 				->getAmount()
 				->toInt();
