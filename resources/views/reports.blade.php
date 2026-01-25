@@ -1,7 +1,7 @@
 @extends('wallet::layouts.app')
 
 @section('content')
-@include('wallet::partilas.fab')
+@include('wallet::partials.fab')
 <div class="row mb-4">
   <div class="col-12">
     <div class="card">
