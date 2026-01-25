@@ -208,14 +208,14 @@
           <canvas id="expenseCategoryChart"></canvas>
         </div>
         <div class="mt-3" id="category-legend">
-                            <!-- Legend will be populated dynamically -->
-                        </div>
+          <!-- Legend will be populated dynamically -->
+        </div>
       </div>
     </div>
   </div>
             
   <div class="col-md-6">
-                <div class="card h-100">
+    <div class="card h-100">
                     <div class="card-header">
                         <h5 class="mb-0">
                             <i class="bi bi-wallet me-2"></i>Distribusi Saldo Akun
@@ -230,12 +230,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+  </div>
 </div>
 
 <!-- Charts Row 3: Budget Analysis -->
 <div class="row mb-4">
-            <div class="col-12">
+  <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">
@@ -252,11 +252,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+</div>
 
 <!-- Charts Row 4: Transaction Activity -->
 <div class="row">
-            <div class="col-12">
+  <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">
@@ -273,7 +273,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+</div>
 
 <!-- Loading Spinner -->
 <div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -359,7 +359,8 @@
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
+                    },
+                    credentials: 'include'
                 });
                 
                 if (!response.ok) {

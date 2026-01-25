@@ -9,7 +9,7 @@ Route::prefix("apps")
 	->name("apps.")
 	->group(function () {
 		Route::prefix("reports")
-			->middleware("auth")
+			->middleware("auth:web")
 			->group(function () {
 				Route::get("dashboard-summary", [
 					ReportController::class,
