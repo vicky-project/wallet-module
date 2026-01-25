@@ -13,7 +13,6 @@ use Modules\Wallet\Enums\PeriodType;
 use Modules\Wallet\Enums\CategoryType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class BudgetService
 {
@@ -388,9 +387,14 @@ class BudgetService
 			$labels[] = $dayName . " (" . $currentDate->format("d/m") . ")";
 
 			$dateString = $currentDate->toDateString();
-			$amount = isset($dailySpent[$dateString])
-				? $dailySpent[$dateString]["total"]
-				: 0;
+			$amount = $this->budgetRepository
+				->toMoney(
+					isset($dailySpent[$dateString])
+						? $dailySpent[$dateString]["total"]
+						: 0
+				)
+				->getAmount()
+				->toInt();
 			$data[] = (int) $amount;
 
 			$currentDate->addDay();
