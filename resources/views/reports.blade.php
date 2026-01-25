@@ -244,11 +244,11 @@
       </div>
       <div class="card-body">
         <div class="chart-container">
-                            <canvas id="budgetChart"></canvas>
-                        </div>
+          <canvas id="budgetChart"></canvas>
+        </div>
         <div class="row mt-3" id="budget-summary">
-                            <!-- Budget summary will be populated dynamically -->
-                        </div>
+          <!-- Budget summary will be populated dynamically -->
+        </div>
       </div>
     </div>
   </div>
@@ -257,13 +257,13 @@
 <!-- Charts Row 4: Transaction Activity -->
 <div class="row">
   <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
+    <div class="card">
+      <div class="card-header">
                         <h5 class="mb-0">
                             <i class="bi bi-calendar-week me-2"></i>Aktivitas Transaksi per Hari
                         </h5>
                     </div>
-                    <div class="card-body">
+      <div class="card-body">
                         <div class="chart-container">
                             <canvas id="transactionActivityChart"></canvas>
                         </div>
@@ -271,8 +271,8 @@
                             <!-- Activity summary will be populated dynamically -->
                         </div>
                     </div>
-                </div>
-            </div>
+    </div>
+  </div>
 </div>
 
 <!-- Loading Spinner -->
@@ -355,6 +355,7 @@
                 const queryString = new URLSearchParams(filters).toString();
                 const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`, {
                     headers: {
+                      'accept': 'application/json',
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
