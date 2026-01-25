@@ -597,7 +597,7 @@
                       </span>
                     </div>
                     <small class="text-muted d-block mt-1">
-                      Sisa: {{ Helper::formatMoney(Helper::toMoney($category->budgets->first->remaining ?? 0)) }}
+                      Sisa: {{ Helper::formatMoney(Helper::toMoney($category->budgets->first()->remaining ?? 0)) }}
                     </small>
                   @else
                     <div class="text-muted">
