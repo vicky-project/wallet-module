@@ -353,7 +353,7 @@
 
             try {
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await fetch(`{{ config('app.url') }}/api/reports/dashboard-summary?${queryString}`, {
+                const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`, {
                     headers: {
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
