@@ -12,7 +12,7 @@
             <input type="text" class="form-control form-control-sm" id="date-range" placeholder="Pilih Periode">
             <div class="input-group-append">
               <button class="btn btn-outline-secondary" type="button" onclick="updateCharts()">
-                <i class="fas fa-sync-alt"></i>
+                <i class="bi bi-sync"></i>
               </button>
             </div>
           </div>
@@ -189,7 +189,7 @@
                             <small>${summary.income_count} transaksi</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-arrow-up fa-2x"></i>
+                            <i class="bi bi-arrow-up"></i>
                         </div>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                             <small>${summary.expense_count} transaksi</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-arrow-down fa-2x"></i>
+                            <i class="bi bi-arrow-down"></i>
                         </div>
                     </div>
                 </div>
@@ -217,7 +217,7 @@
                             <small>Arus Kas</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-balance-scale fa-2x"></i>
+                            <i class="bi bi-balance-scale"></i>
                         </div>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
                             <small>Total Transfer</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-exchange-alt fa-2x"></i>
+                            <i class="bi bi-exchange-alt"></i>
                         </div>
                     </div>
                 </div>
