@@ -22,13 +22,10 @@
               <i class="bi {{ $budget->category->icon }} me-1"></i>{{ $budget->category->name }}
             </span>
             <span class="period-badge me-2 mb-1">
-              <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type->value) }}
+              <i class="bi bi-calendar me-1"></i>{{ ucfirst($budget->period_type->label()) }} ({{ $budget->start_date->format('d M') }} - {{ $budget->end_date->format('d M Y') }})
             </span>
             <span class="period-badge me-2 mb-1">
               <i class="bi bi-clock me-1"></i>{{ $budget->days_left }} hari lagi
-            </span>
-            <span class="period-badge me-2 mb-1">
-              <i class="bi bi-calendar-range me-1"></i>{{ $budget->start_date->format('d M') }} - {{ $budget->end_date->format('d M Y') }}
             </span>
           </div>
         </div>
