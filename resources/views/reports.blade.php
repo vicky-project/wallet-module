@@ -401,7 +401,7 @@
 
         // Apply filters and update charts
         async function applyFilters() {
-            showLoading();
+            //showLoading();
             
             const filters = {
                 start_date: document.getElementById('start-date').value,
