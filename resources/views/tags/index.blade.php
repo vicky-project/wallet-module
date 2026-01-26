@@ -177,10 +177,10 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-                <h5 class="card-title mb-0">Daftar Tags</h5>
-            </div>
+        <h5 class="card-title mb-0">Daftar Tags</h5>
+      </div>
       <div class="card-body">
-                @if($tags->isEmpty())
+        @if($tags->isEmpty())
                     <div class="text-center py-5">
                         <i class="bi bi-tags" style="font-size: 4rem; color: #dee2e6;"></i>
                         <h4 class="mt-3">Belum ada tag</h4>
@@ -189,7 +189,7 @@
                             <i class="bi bi-plus-circle me-1"></i> Buat Tag Pertama
                         </a>
                     </div>
-                @else
+        @else
                     <div class="row" id="tagsContainer">
                         @foreach($tags as $tag)
                             <div class="col-md-4 col-lg-3 mb-4 tag-item" 
@@ -298,8 +298,8 @@
                             </nav>
                         </div>
                     @endif
-                @endif
-            </div>
+        @endif
+      </div>
     </div>
   </div>
     

@@ -144,7 +144,7 @@
                     </div>
                     
                     <!-- Preview Section -->
-                    <div class="card bg-light mb-4">
+                    <div class="card text-bg-light mb-4">
                         <div class="card-header">
                             <h6 class="mb-0">Preview Tag</h6>
                         </div>
