@@ -157,10 +157,13 @@ class ReportRepository
 			} else {
 				$labels[] = $row->period;
 			}
-			$incomeData[] = Money::of($row->income)
+			$incomeData[] = Money::of($row->income, config("wallet.default_currency"))
 				->getAmount()
 				->toInt();
-			$expenseData[] = Money::of($row->expense)
+			$expenseData[] = Money::of(
+				$row->expense,
+				config("wallet.default_currency")
+			)
 				->getAmount()
 				->toInt();
 		}
