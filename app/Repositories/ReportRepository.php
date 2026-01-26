@@ -63,8 +63,6 @@ class ReportRepository
 			->where("type", "transfer")
 			->sum("amount");
 
-		dd($data);
-
 		return [
 			"total_income" => (int) ($data->total_income ?? 0),
 			"total_expense" => (int) ($data->total_expense ?? 0),
