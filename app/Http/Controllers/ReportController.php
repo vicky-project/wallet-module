@@ -40,7 +40,6 @@ class ReportController extends Controller
 				auth()->id(),
 				$request->only(["start_date", "end_date", "account_id"])
 			);
-			dd($data);
 
 			return response()->json([
 				"success" => true,
