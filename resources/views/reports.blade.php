@@ -450,42 +450,42 @@
       document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
             
       document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow);
-            document.getElementById('total-transfer').textContent = summary.total_transfer;
+      document.getElementById('total-transfer').textContent = summary.total_transfer;
             
-            // Update progress badges
-            const total = summary.total_income + summary.total_expense;
-            if (total > 0) {
-                const incomePercent = Math.round((summary.total_income / total) * 100);
-                const expensePercent = Math.round((summary.total_expense / total) * 100);
+      // Update progress badges
+      const total = summary.total_income + summary.total_expense;
+      if (total > 0) {
+        const incomePercent = Math.round((summary.total_income / total) * 100);
+        const expensePercent = Math.round((summary.total_expense / total) * 100);
                 
-                document.querySelector('#summary-cards .col-md-3:nth-child(1) .summary-badge').innerHTML = 
-                    `<i class="bi bi-arrow-up me-1"></i>${incomePercent}%`;
-                document.querySelector('#summary-cards .col-md-3:nth-child(2) .summary-badge').innerHTML = 
-                    `<i class="bi bi-arrow-down me-1"></i>${expensePercent}%`;
+        document.querySelector('#summary-cards .col-md-3:nth-child(1) .summary-badge').innerHTML = 
+          `<i class="bi bi-arrow-up me-1"></i>${incomePercent}%`;
+        document.querySelector('#summary-cards .col-md-3:nth-child(2) .summary-badge').innerHTML = 
+          `<i class="bi bi-arrow-down me-1"></i>${expensePercent}%`;
                 
-                // Update net flow label
-                const netLabel = summary.net_flow >= 0 ? 'Surplus' : 'Defisit';
-                document.getElementById('net-flow-label').textContent = netLabel;
+        // Update net flow label
+        const netLabel = summary.net_flow >= 0 ? 'Surplus' : 'Defisit';
+        document.getElementById('net-flow-label').textContent = netLabel;
                 
-                // Update net flow color
-                const netCard = document.querySelector('#summary-cards .col-md-3:nth-child(3) .card');
-                const netIcon = document.querySelector('#summary-cards .col-md-3:nth-child(3) .stat-icon');
-                const netBadge = document.querySelector('#summary-cards .col-md-3:nth-child(3) .summary-badge');
+        // Update net flow color
+        const netCard = document.querySelector('#summary-cards .col-md-3:nth-child(3) .card');
+        const netIcon = document.querySelector('#summary-cards .col-md-3:nth-child(3) .stat-icon');
+        const netBadge = document.querySelector('#summary-cards .col-md-3:nth-child(3) .summary-badge');
                 
-                if (summary.net_flow >= 0) {
-                    netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-success border-4');
-                    netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
-                    netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-success');
-                    netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
-                    netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-success');
-                } else {
-                    netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-danger border-4');
-                    netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
-                    netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-danger');
-                    netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
-                    netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-danger');
-                }
-            }
+        if (summary.net_flow >= 0) {
+          netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-success border-4');
+          netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
+          netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-success');
+          netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
+          netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-success');
+        } else {
+          netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-danger border-4');
+          netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
+          netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-danger');
+          netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
+          netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-danger');
+        }
+      }
     }
 
         // Update all charts
