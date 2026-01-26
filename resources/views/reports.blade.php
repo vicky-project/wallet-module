@@ -441,15 +441,15 @@
       }
     }
 
-        // Update summary cards
-        function updateSummaryCards(summary) {
-            document.getElementById('total-income').textContent = summary.total_income;
-            document.getElementById('income-count').textContent = `${summary.income_count} transaksi`;
+    // Update summary cards
+    function updateSummaryCards(summary) {
+      document.getElementById('total-income').textContent = summary.total_income;
+      document.getElementById('income-count').textContent = `${summary.income_count} transaksi`;
             
-            document.getElementById('total-expense').textContent = summary.total_expense;
-            document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
+      document.getElementById('total-expense').textContent = summary.total_expense;
+      document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
             
-            document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow);
+      document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow);
             document.getElementById('total-transfer').textContent = summary.total_transfer;
             
             // Update progress badges
@@ -486,7 +486,7 @@
                     netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-danger');
                 }
             }
-        }
+    }
 
         // Update all charts
         function updateCharts(data) {
@@ -829,11 +829,13 @@
                 });
                 
                 if (!response.ok) {
+                  hideLoading();
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
+                hideLoading();
                 if (data.success) {
                     // Create download link
                     const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
@@ -848,7 +850,6 @@
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
                 }
-                hideLoading();
             } catch (error) {
               hideLoading();
                 console.error('Error exporting report:', error);
