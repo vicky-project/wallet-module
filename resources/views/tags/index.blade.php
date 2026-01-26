@@ -26,10 +26,10 @@
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
-                <a class="dropdown-item" href="{{ route('apps.reports.tags') }}">
-                    <i class="bi bi-graph-up me-2"></i> Laporan Tag
-                </a>
-            </li>
+          <a class="dropdown-item" href="{{ route('apps.reports.tags') }}">
+            <i class="bi bi-graph-up me-2"></i> Laporan Tag
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -38,8 +38,8 @@
 <div class="row">
     <!-- Statistics Cards -->
     <div class="col-12 mb-4">
-        <div class="row">
-            <div class="col-md-3 mb-3">
+      <div class="row">
+        <div class="col-md-3 mb-3">
                 <div class="card stat-card h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -57,7 +57,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3 mb-3">
+        <div class="col-md-3 mb-3">
                 <div class="card stat-card h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -86,7 +86,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3 mb-3">
+        <div class="col-md-3 mb-3">
                 <div class="card stat-card h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -104,7 +104,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3 mb-3">
+        <div class="col-md-3 mb-3">
                 <div class="card stat-card h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -121,7 +121,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+      </div>
     </div>
     
     <!-- Search and Filters -->

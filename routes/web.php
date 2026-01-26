@@ -125,6 +125,9 @@ Route::middleware(["auth"])
 		Route::resource("recurrings", RecurringController::class);
 
 		// Report routes
+		Route::get("reports/tags", [ReportController::class, "reportTag"])->name(
+			"reports.tags"
+		);
 		Route::get("reports", [ReportController::class, "index"])->name("reports");
 
 		// Tag routes
