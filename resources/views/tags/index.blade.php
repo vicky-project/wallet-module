@@ -40,22 +40,22 @@
     <div class="col-12 mb-4">
       <div class="row">
         <div class="col-md-3 mb-3">
-                <div class="card stat-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
+          <div class="card stat-card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
                                 <h6 class="text-muted mb-2">Total Tag</h6>
                                 <h3 class="mb-0">{{ $stats['total_tags'] }}</h3>
                             </div>
-                            <div class="avatar-sm">
+                <div class="avatar-sm">
                                 <span class="avatar-title bg-primary rounded-circle">
                                     <i class="bi bi-tags"></i>
                                 </span>
                             </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+          </div>
+        </div>
             
         <div class="col-md-3 mb-3">
                 <div class="card stat-card h-100">
@@ -190,7 +190,7 @@
                         <i class="bi bi-tags" style="font-size: 4rem; color: #dee2e6;"></i>
                         <h4 class="mt-3">Belum ada tag</h4>
                         <p class="text-muted">Mulai dengan membuat tag pertama Anda</p>
-                        <a href="{{ route('tags.create') }}" class="btn btn-primary">
+                        <a href="{{ route('apps.tags.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-1"></i> Buat Tag Pertama
                         </a>
                     </div>
@@ -359,7 +359,7 @@
                             $size = 14 + ($tag->transactions_count * 2);
                             $size = min($size, 48);
                         @endphp
-                        <a href="{{ route('tags.show', $tag) }}" 
+                        <a href="{{ route('apps.tags.show', $tag) }}" 
                            class="badge-tag d-inline-block m-1"
                            style="font-size: {{ $size }}px; 
                                   background-color: {{ $tag->color }}20; 
