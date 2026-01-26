@@ -360,7 +360,7 @@
         
         // Handle unauthorized access
         if (response.status === 401) {
-          window.location.href = '/login';
+          window.location.href = '{{ route("login") }}';
           throw new Error('Unauthorized - Redirecting to login');
         }
         
