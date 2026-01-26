@@ -187,7 +187,7 @@
       </div>
       <div class="card-body">
         <div class="chart-container">
-          <canvas id="incomeExpenseChart" class="placeholder-glow">
+          <canvas id="incomeExpenseChart">
             <span class="placeholder col-12"></span>
           </canvas>
         </div>
@@ -403,7 +403,7 @@
 
         // Apply filters and update charts
         async function applyFilters() {
-            //showLoading();
+            showLoading();
             
             const filters = {
                 start_date: document.getElementById('start-date').value,
@@ -431,6 +431,7 @@
                     throw new Error(result.message || 'Failed to load data');
                 }
             } catch (error) {
+                hideLoading();
                 console.error('Error loading report data:', error);
                 alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message);
             } finally {
