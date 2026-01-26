@@ -66,11 +66,18 @@ class ReportRepository
 		return [
 			"total_income" => (int) ($data->total_income ?? 0),
 			"total_expense" => (int) ($data->total_expense ?? 0),
-			"net_flow" => Money::of(
+			"net_flow" => Money::ofMinor(
 				(int) ($data->total_income ?? 0),
 				config("wallet.default_currency", "USD")
 			)
-				->minus((int) ($data->total_expense ?? 0))
+				->minus(
+					Money::ofMinor(
+						(int) ($data->total_expense ?? 0),
+						config("wallet.default_currency")
+					)
+						->getAmount()
+						->toInt()
+				)
 				->getAmount()
 				->toInt(),
 			"income_count" => (int) ($data->income_count ?? 0),
