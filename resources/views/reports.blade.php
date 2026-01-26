@@ -311,12 +311,12 @@
       document.getElementById('end-date').value = formatDate(today);
     }
 
-        function formatDate(date) {
+    function formatDate(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
-        }
+    }
 
         // Format currency
         function formatCurrency(value) {
@@ -417,6 +417,7 @@
                 const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
                 
                 if (!response.ok) {
+                    hideLoading();
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -428,6 +429,7 @@
                     updateSummaryCards(reportData.financial_summary);
                     updateCharts(reportData);
                 } else {
+                    hideLoading();
                     throw new Error(result.message || 'Failed to load data');
                 }
             } catch (error) {
