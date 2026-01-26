@@ -339,6 +339,8 @@
             if (loadingModal) {
                 loadingModal.hide();
             }
+            
+            loadingModal = null;
         }
         
         // Custom fetch dengan authentication
