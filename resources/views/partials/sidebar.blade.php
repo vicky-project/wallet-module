@@ -38,6 +38,11 @@
       </a>
     </li>
     <li>
+      <a href="{{ route('apps.tags.index') }}" class="{{ request()->routeIs('apps.tags.*') ? 'active' : ''}}">
+        <i class="bi bi-tags"></i> Tags
+      </a>
+    </li>
+    <li>
       <a href="{{ route('apps.reports') }}" class="{{ request()->routeIs('apps.reports') }}">
         <i class="bi bi-graph-up"></i> Laporan
       </a>
