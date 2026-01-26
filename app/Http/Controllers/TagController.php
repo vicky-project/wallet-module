@@ -4,6 +4,7 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Tag;
 
 class TagController extends Controller

@@ -7,31 +7,30 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
   <div class="btn-toolbar mb-2 mb-md-0">
     <div class="btn-group">
-        <a href="{{ route('apps.tags.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-1"></i> Tambah Tag
-        </a>
-        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" 
-                data-bs-toggle="dropdown">
-            <span class="visually-hidden">Toggle Dropdown</span>
-        </button>
-        <ul class="dropdown-menu">
-            <li>
+      <a href="{{ route('apps.tags.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Tambah Tag
+      </a>
+      <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
                 <a class="dropdown-item" href="#tagCloudModal" data-bs-toggle="modal">
                     <i class="bi bi-cloud-fill me-2"></i> Tag Cloud
                 </a>
             </li>
-            <li>
+        <li>
                 <a class="dropdown-item" href="#mergeTagsModal" data-bs-toggle="modal">
                     <i class="bi bi-merge me-2"></i> Gabungkan Tag
                 </a>
             </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
                 <a class="dropdown-item" href="{{ route('apps.reports.tags') }}">
                     <i class="bi bi-graph-up me-2"></i> Laporan Tag
                 </a>
             </li>
-        </ul>
+      </ul>
     </div>
   </div>
 </div>
