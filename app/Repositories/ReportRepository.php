@@ -66,7 +66,8 @@ class ReportRepository
 			"total_income" => (int) ($data->total_income ?? 0),
 			"total_expense" => (int) ($data->total_expense ?? 0),
 			"net_flow" =>
-				(int) ($data->total_income ?? 0) - (int) ($data->total_expense ?? 0),
+				(int) ($data->total_income ?? 0) -
+				(int) ($data->total_expense ?? 0) / 100,
 			"income_count" => (int) ($data->income_count ?? 0),
 			"expense_count" => (int) ($data->expense_count ?? 0),
 			"total_transfer" => (int) $totalTransfer,

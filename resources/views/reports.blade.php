@@ -740,24 +740,24 @@
                               usagePercentage >= 70 ? 'bi-exclamation-circle' : 'bi-check-circle';
             
             summaryContainer.innerHTML = `
-                <div class="col-md-4">
-                    <div class="card border-0 bg-light">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 text-bg-light">
                         <div class="card-body text-center">
                             <h3 class="text-primary">${formatCurrency(summary.total_budget)}</h3>
                             <p class="text-muted mb-0">Total Anggaran</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card border-0 bg-light">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 text-bg-light">
                         <div class="card-body text-center">
                             <h3 class="text-${statusColor}">${formatCurrency(summary.total_spent)}</h3>
                             <p class="text-muted mb-0">Total Terpakai</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card border-0 bg-light">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 text-bg-light">
                         <div class="card-body text-center">
                             <h3 class="text-success">${formatCurrency(summary.total_remaining)}</h3>
                             <p class="text-muted mb-0">Sisa Anggaran</p>
