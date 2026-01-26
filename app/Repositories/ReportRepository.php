@@ -157,8 +157,12 @@ class ReportRepository
 			} else {
 				$labels[] = $row->period;
 			}
-			$incomeData[] = (int) $row->income;
-			$expenseData[] = (int) $row->expense;
+			$incomeData[] = Money::of($row->income)
+				->getAmount()
+				->toInt();
+			$expenseData[] = Money::of($row->expense)
+				->getAmount()
+				->toInt();
 		}
 
 		return [
