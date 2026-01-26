@@ -253,6 +253,16 @@
               </div>
             </div>
           </div>
+          
+          <!-- Tags -->
+          <div class="form-section">
+            <h5 class="form-section-title">Tags Available</h5>
+            <div class="row">
+              <div class="col-md-12">
+                @include('wallet::partials.tag-input', ['selectedTags' => isset($transaction) ? $transaction->tags : collect()])
+              </div>
+            </div>
+          </div>
                     
           <!-- Additional Information -->
           <div class="form-section">
@@ -392,6 +402,40 @@
 
 @push('scripts')
 <script>
+  async function loadTags() {
+    try {
+      const res = await fecth(`{{ route('apps.tags.for-transaction') }}?` + new URLSearchParams({
+        selected: document.getElementById('tagIdsInput')?.value || ''
+      }));
+      
+      const html = await res.text();
+      
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      const tagInput = tempDiv.querySelector('#tagInputContainer');
+      
+      if(tagInput) {
+        const existingTagInput = document.querySelector('#tagInputContainer');
+        existingTagInput?.parentNode?.replaceChild(tagInput, existingTagInput);
+        
+        // Reinitialize scripts
+        const scripts = tempDiv.querySelectorAll('script');
+        scripts.forEach(script => {
+          const newScript = document.createElement('script');
+          if(script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          
+          document.body.appendChild(newScript);
+        });
+      }
+    } catch (error) {
+      console.error('Error loading tags:', error);
+    }
+  }
+  
     document.addEventListener('DOMContentLoaded', function() {
         // Elements
         const typeBadges = document.querySelectorAll('.transaction-type-badge');
@@ -405,6 +449,13 @@
         const amountHelp = document.getElementById('amountHelp');
         const budgetInfo = document.getElementById('budgetInfo');
         const budgetMessage = document.getElementById('budgetMessage');
+        
+        // Initialize tag input
+        if(typeof window.allTags === 'undefined') {
+          window.allTags = [];
+        }
+        
+        loadTags();
         
         // Toggle recurring options
         const isRecurring = document.getElementById('is_recurring');

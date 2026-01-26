@@ -488,8 +488,8 @@
       }
     }
 
-        // Update all charts
-        function updateCharts(data) {
+    // Update all charts
+    function updateCharts(data) {
             // Destroy existing charts
             Object.values(charts).forEach(chart => {
                 if (chart) chart.destroy();
@@ -519,8 +519,8 @@
             updateBudgetSummary(data.budget_analysis);
         }
 
-        // Create line chart
-        function createLineChart(canvasId, chartData, type = 'line') {
+    // Create line chart
+    function createLineChart(canvasId, chartData, type = 'line') {
             const ctx = document.getElementById(canvasId).getContext('2d');
             return new Chart(ctx, {
                 type: type,
@@ -577,8 +577,8 @@
             });
         }
 
-        // Create doughnut chart
-        function createDoughnutChart(canvasId, chartData) {
+    // Create doughnut chart
+    function createDoughnutChart(canvasId, chartData) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             return new Chart(ctx, {
                 type: 'doughnut',
@@ -610,8 +610,8 @@
             });
         }
 
-        // Create bar chart
-        function createBarChart(canvasId, chartData) {
+    // Create bar chart
+    function createBarChart(canvasId, chartData) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             return new Chart(ctx, {
                 type: 'bar',
@@ -650,8 +650,8 @@
             });
         }
 
-        // Update category legend
-        function updateCategoryLegend(chartData) {
+    // Update category legend
+    function updateCategoryLegend(chartData) {
             const legendContainer = document.getElementById('category-legend');
             if (!chartData.labels || chartData.labels.length === 0) {
                 legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
@@ -689,8 +689,8 @@
             legendContainer.innerHTML = legendHtml;
         }
 
-        // Update account legend
-        function updateAccountLegend(chartData) {
+    // Update account legend
+    function updateAccountLegend(chartData) {
             const legendContainer = document.getElementById('account-legend');
             if (!chartData.labels || chartData.labels.length === 0) {
                 legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data akun</p>';
@@ -728,8 +728,8 @@
             legendContainer.innerHTML = legendHtml;
         }
 
-        // Update budget summary
-        function updateBudgetSummary(chartData) {
+    // Update budget summary
+    function updateBudgetSummary(chartData) {
             const summaryContainer = document.getElementById('budget-summary');
             if (!chartData.summary) {
                 summaryContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data anggaran</p>';
@@ -785,8 +785,8 @@
             `;
         }
 
-        // Toggle chart type
-        function toggleChartType(type) {
+    // Toggle chart type
+    function toggleChartType(type) {
             document.getElementById('chart-type').value = type;
             
             // Update button states
@@ -806,27 +806,27 @@
             }
         }
 
-        // Refresh charts
-        function refreshCharts() {
-            applyFilters();
-        }
+    // Refresh charts
+    function refreshCharts() {
+      applyFilters();
+    }
 
-        // Export report
-        async function exportReport() {
-            showLoading();
+    // Export report
+    async function exportReport() {
+      showLoading();
             
-            try {
-                const filters = {
-                    start_date: document.getElementById('start-date').value,
-                    end_date: document.getElementById('end-date').value,
-                    account_id: document.getElementById('account-filter').value
-                };
+      try {
+        const filters = {
+          start_date: document.getElementById('start-date').value,
+          end_date: document.getElementById('end-date').value,
+          account_id: document.getElementById('account-filter').value
+        };
                 
-                const queryString = new URLSearchParams(filters).toString();
-                const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/export`, {
-                    method: 'POST',
-                    body: JSON.stringify(filters)
-                });
+        const queryString = new URLSearchParams(filters).toString();
+        const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/export`, {
+          method: 'POST',
+          body: JSON.stringify(filters)
+        });
                 
                 if (!response.ok) {
                   hideLoading();
@@ -850,14 +850,14 @@
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
                 }
-            } catch (error) {
-              hideLoading();
-                console.error('Error exporting report:', error);
-                alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
-            } finally {
-                hideLoading();
-            }
-        }
+      } catch (error) {
+        hideLoading();
+        console.error('Error exporting report:', error);
+        alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
+      } finally {
+        hideLoading();
+      }
+    }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -875,14 +875,14 @@
 @push('styles')
     <style>
         .stat-card {
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
             border: none;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
         .stat-icon {
@@ -899,6 +899,16 @@
             height: 300px;
         }
         
+/* Chart tooltips */
+.chartjs-tooltip {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 12px !important;
+    font-size: 14px;
+}
+
         .summary-badge {
             font-size: 0.875rem;
             padding: 0.25rem 0.5rem;
@@ -926,17 +936,98 @@
         
         @media (max-width: 768px) {
             .chart-container {
-                height: 250px;
+                height: 250px !important;
+            }
+            
+            .filter-section .col-md-3 {
+              margin-bottom: 1rem;
+            }
+            
+            .stat-card .card-body {
+              padding: 1rem;
             }
             
             .stat-icon {
-                width: 40px;
-                height: 40px;
+                width: 36px !important;
+                height: 36px !important;
+            }
+            
+            .stat-icon i {
+              font-size: 1.25rem !important;
             }
             
             .date-range-input {
                 max-width: 100%;
             }
+        }
+        
+        @media (max-width: 576px) {
+          .chart-container {
+            height: 200px !important;
+          }
+    
+          .card-header h5 {
+            font-size: 1rem;
+          }
+    
+          #summary-cards .col-md-3 {
+            margin-bottom: 1rem;
+          }
+        }
+
+        /* Dark mode support (optional) */
+        @media (prefers-color-scheme: dark) {
+          .card {
+            background-color: #2d3748;
+            border-color: #4a5568;
+          }
+    
+          .card-header {
+            background-color: #374151;
+            border-color: #4a5568;
+          }
+    
+          .text-muted {
+            color: #9ca3af !important;
+          }
+    
+          .filter-section {
+            background: #374151;
+          }
+    
+          .form-control, .form-select {
+            background-color: #4a5568;
+            border-color: #6b7280;
+            color: #e5e7eb;
+          }
+    
+          .form-control:focus, .form-select:focus {
+            background-color: #4a5568;
+            border-color: #3b82f6;
+            color: #e5e7eb;
+          }
+    
+          .input-group-text {
+            background-color: #6b7280;
+            border-color: #6b7280;
+            color: #e5e7eb;
+          }
+        }
+        /* Custom styles for reporting dashboard */
+
+
+        /* Loading animation */
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+
+        .loading-pulse {
+          animation: pulse 1.5s ease-in-out   infinite;
         }
     </style>
 @endpush

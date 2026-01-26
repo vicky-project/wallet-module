@@ -8,6 +8,7 @@ use Modules\Wallet\Http\Controllers\DashboardController;
 use Modules\Wallet\Http\Controllers\BudgetController;
 use Modules\Wallet\Http\Controllers\RecurringController;
 use Modules\Wallet\Http\Controllers\ReportController;
+use Modules\Wallet\Http\Controllers\TagController;
 
 Route::middleware(["auth"])
 	->prefix("apps")
@@ -125,4 +126,20 @@ Route::middleware(["auth"])
 
 		// Report routes
 		Route::get("reports", [ReportController::class, "index"])->name("reports");
+
+		// Tag routes
+		Route::resource("tags", TagController::class);
+		Route::post("tags/merge", [TagController::class, "merge"])->name(
+			"tags.merge"
+		);
+		Route::post("tags/bulk-assign", [TagController::class, "bulkAssign"])->name(
+			"tags.bulk.assign"
+		);
+		Route::post("tags/bulk-remove", [TagController::class, "bulkRemove"])->name(
+			"tags.bulk.remove"
+		);
+		Route::get("tags/for-transaction", [
+			TagController::class,
+			"getTagsForTransaction",
+		])->name("tags.for-transaction");
 	});

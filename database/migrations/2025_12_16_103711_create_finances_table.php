@@ -207,6 +207,8 @@ return new class extends Migration {
 			$table->string("name");
 			$table->string("color", 7)->default("#6c757d");
 			$table->string("icon")->nullable();
+			$table->integer("cached_count")->default(0);
+			$table->timestamp("cached_at")->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 
@@ -227,6 +229,8 @@ return new class extends Migration {
 			$table->timestamps();
 
 			$table->unique(["transaction_id", "tag_id"]);
+			$table->index(["tag_id", "created_at"]);
+			$table->index(["transaction_id", "created_at"]);
 		});
 	}
 
