@@ -318,15 +318,15 @@
       return `${year}-${month}-${day}`;
     }
 
-        // Format currency
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(value);
-        }
+    // Format currency
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }).format(value);
+    }
 
         // Show loading modal
         function showLoading() {
@@ -859,7 +859,12 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initDateInputs();
-            applyFilters(); // Load initial data
+            try {
+              applyFilters(); // Load initial data
+            } catch (error) {
+              console.error(error)
+              alert(error.message);
+            }
         });
     </script>
 @endpush
