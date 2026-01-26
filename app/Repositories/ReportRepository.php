@@ -8,6 +8,7 @@ use Modules\Wallet\Models\Category;
 use Modules\Wallet\Models\Budget;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Brick\Money\Money;
 
 class ReportRepository
 {
@@ -67,8 +68,9 @@ class ReportRepository
 		return [
 			"total_income" => (int) ($data->total_income ?? 0),
 			"total_expense" => (int) ($data->total_expense ?? 0),
-			"net_flow" =>
-				(int) ($data->total_income ?? 0) - (int) ($data->total_expense ?? 0),
+			"net_flow" => Money::ofMinor($data->total_income ?? 0)->minus(
+				(int) ($data->total_expense ?? 0)
+			),
 			"income_count" => (int) ($data->income_count ?? 0),
 			"expense_count" => (int) ($data->expense_count ?? 0),
 			"total_transfer" => (int) $totalTransfer,
