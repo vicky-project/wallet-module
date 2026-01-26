@@ -298,6 +298,7 @@
     let charts = {};
     let reportData = {};
     let loadingModal = null;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
 
     // Initialize date inputs
     function initDateInputs() {
@@ -339,6 +340,62 @@
                 loadingModal.hide();
             }
         }
+        
+        // Custom fetch dengan authentication
+    async function authFetch(url, options = {}) {
+      const defaultOptions = {
+        credentials: 'same-origin', // Mengirim session cookies
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      };
+
+      const mergedOptions = { ...defaultOptions, ...options };
+      
+      try {
+        const response = await fetch(url, mergedOptions);
+        
+        // Handle unauthorized access
+        if (response.status === 401) {
+          window.location.href = '/login';
+          throw new Error('Unauthorized - Redirecting to login');
+        }
+        
+        // Handle session timeout or CSRF token mismatch
+        if (response.status === 419) {
+          // Try to get new CSRF token
+          await getNewCsrfToken();
+          // Retry request with new token
+          mergedOptions.headers['X-CSRF-TOKEN'] = csrfToken;
+          return fetch(url, mergedOptions);
+        }
+        
+        return response;
+      } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+      }
+    }
+
+    // Get new CSRF token jika expired
+    async function getNewCsrfToken() {
+      try {
+        const response = await fetch('/sanctum/csrf-cookie', {
+          credentials: 'same-origin'
+        });
+        
+        if (response.ok) {
+          // CSRF token sudah otomatis di-set di cookie
+          // Kita bisa reload halaman atau lanjutkan dengan token baru
+          console.log('CSRF token refreshed');
+        }
+      } catch (error) {
+        console.error('Failed to refresh CSRF token:', error);
+      }
+    }
 
         // Apply filters and update charts
         async function applyFilters() {
@@ -353,15 +410,7 @@
 
             try {
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await fetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary`, {
-                    headers: {
-                      'accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    method: 'POST',
-                    body: JSON.stringify(filters)
-                });
+                const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -378,7 +427,7 @@
                 }
             } catch (error) {
                 console.error('Error loading report data:', error);
-                alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message + error.statusCode);
+                alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message);
             } finally {
                 hideLoading();
             }
@@ -766,10 +815,9 @@
                 };
                 
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await fetch(`{{ config('app.url') }}/api/reports/export?${queryString}`, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                const response = await authFetch(`{{ config('app.url') }}/api/reports/export`, {
+                    method: 'POST',
+                    body: JSON.stringify(filters)
                 });
                 
                 if (!response.ok) {
