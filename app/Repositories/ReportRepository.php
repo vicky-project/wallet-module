@@ -157,12 +157,15 @@ class ReportRepository
 			} else {
 				$labels[] = $row->period;
 			}
-			$incomeData[] = Money::of($row->income, config("wallet.default_currency"))
+			$incomeData[] = Money::ofMinor(
+				$row->income,
+				config("wallet.default_currency", "USD")
+			)
 				->getAmount()
 				->toInt();
-			$expenseData[] = Money::of(
+			$expenseData[] = Money::ofMinor(
 				$row->expense,
-				config("wallet.default_currency")
+				config("wallet.default_currency", "USD")
 			)
 				->getAmount()
 				->toInt();
