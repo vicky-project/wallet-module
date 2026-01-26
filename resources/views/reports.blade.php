@@ -436,14 +436,14 @@
 
         // Update summary cards
         function updateSummaryCards(summary) {
-            document.getElementById('total-income').textContent = formatCurrency(summary.total_income);
+            document.getElementById('total-income').textContent = summary.total_income;
             document.getElementById('income-count').textContent = `${summary.income_count} transaksi`;
             
-            document.getElementById('total-expense').textContent = formatCurrency(summary.total_expense);
+            document.getElementById('total-expense').textContent = summary.total_expense;
             document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
             
-            document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow);
-            document.getElementById('total-transfer').textContent = formatCurrency(summary.total_transfer);
+            document.getElementById('net-flow').textContent = summary.net_flow;
+            document.getElementById('total-transfer').textContent = summary.total_transfer;
             
             // Update progress badges
             const total = summary.total_income + summary.total_expense;
