@@ -69,7 +69,10 @@ class ReportRepository
 			"net_flow" => Money::ofMinor(
 				(int) ($data->total_income ?? 0),
 				config("wallet.default_currency", "USD")
-			)->minus((int) ($data->total_expense ?? 0)),
+			)
+				->minus((int) ($data->total_expense ?? 0))
+				->getAmount()
+				->toInt(),
 			"income_count" => (int) ($data->income_count ?? 0),
 			"expense_count" => (int) ($data->expense_count ?? 0),
 			"total_transfer" => (int) $totalTransfer,
