@@ -113,10 +113,10 @@
           </div>
         </div>
         <div class="mt-3">
-                            <span class="badge bg-danger bg-opacity-10 text-danger summary-badge">
-                                <i class="bi bi-arrow-down me-1"></i>100%
-                            </span>
-                        </div>
+          <span class="badge bg-danger bg-opacity-10 text-danger summary-badge">
+            <i class="bi bi-arrow-down me-1"></i>100%
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -312,10 +312,10 @@
     }
 
     function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
 
         // Format currency
@@ -850,7 +850,7 @@
                 }
             } catch (error) {
                 console.error('Error exporting report:', error);
-                alert('Gagal mengekspor laporan. Silakan coba lagi.');
+                alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
             } finally {
                 hideLoading();
             }
