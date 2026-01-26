@@ -663,7 +663,7 @@
                 const color = colors[index] || '#cccccc';
                 
                 legendHtml += `
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-3">
                         <div class="d-flex align-items-center mb-2">
                             <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
                             <div class="flex-grow-1">
@@ -702,7 +702,7 @@
                 const color = colors[index] || '#cccccc';
                 
                 legendHtml += `
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-3">
                         <div class="d-flex align-items-center mb-2">
                             <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
                             <div class="flex-grow-1">
@@ -861,15 +861,6 @@
 
 @push('styles')
     <style>
-        :root {
-            --bs-primary: #3b82f6;
-            --bs-success: #10b981;
-            --bs-danger: #ef4444;
-            --bs-warning: #f59e0b;
-            --bs-info: #06b6d4;
-            --bs-purple: #8b5cf6;
-        }
-        
         .card-header {
             background-color: #f8f9fa;
             border-bottom: 1px solid #e9ecef;
