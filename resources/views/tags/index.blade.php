@@ -15,15 +15,15 @@
       </button>
       <ul class="dropdown-menu">
         <li>
-                <a class="dropdown-item" href="#tagCloudModal" data-bs-toggle="modal">
-                    <i class="bi bi-cloud-fill me-2"></i> Tag Cloud
-                </a>
-            </li>
+          <a class="dropdown-item" href="#tagCloudModal" data-bs-toggle="modal">
+            <i class="bi bi-cloud-fill me-2"></i> Tag Cloud
+          </a>
+        </li>
         <li>
-                <a class="dropdown-item" href="#mergeTagsModal" data-bs-toggle="modal">
-                    <i class="bi bi-merge me-2"></i> Gabungkan Tag
-                </a>
-            </li>
+          <a class="dropdown-item" href="#mergeTagsModal" data-bs-toggle="modal">
+            <i class="bi bi-merge me-2"></i> Gabungkan Tag
+          </a>
+        </li>
         <li><hr class="dropdown-divider"></li>
         <li>
                 <a class="dropdown-item" href="{{ route('apps.reports.tags') }}">

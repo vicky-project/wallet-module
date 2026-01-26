@@ -54,7 +54,7 @@ class TagController extends Controller
 		}
 
 		return view(
-			"tags.index",
+			"wallet::tags.index",
 			compact("tags", "stats", "recentlyUsedTags", "popularTags")
 		);
 	}
@@ -64,7 +64,7 @@ class TagController extends Controller
 	 */
 	public function create(): View
 	{
-		return view("tags.form");
+		return view("wallet::tags.form");
 	}
 
 	/**
@@ -80,7 +80,7 @@ class TagController extends Controller
 
 		$similarTags = $tag->getSimilarTags();
 
-		return view("tags.form", compact("tag", "similarTags"));
+		return view("wallet::tags.form", compact("tag", "similarTags"));
 	}
 
 	/**
@@ -145,7 +145,7 @@ class TagController extends Controller
 			->get();
 
 		return view(
-			"tags.show",
+			"wallet::tags.show",
 			compact("tag", "transactions", "monthlyUsage", "categoryDistribution")
 		);
 	}
@@ -170,6 +170,6 @@ class TagController extends Controller
 			$selectedTags = collect();
 		}
 
-		return view("components.tag-input", compact("tags", "selectedTags"));
+		return view("wallet::partials.tag-input", compact("tags", "selectedTags"));
 	}
 }
