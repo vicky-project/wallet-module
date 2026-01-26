@@ -419,7 +419,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                  console.log(result.data)
+                    hideLoading();
                     reportData = result.data;
                     updateSummaryCards(reportData.financial_summary);
                     updateCharts(reportData);
