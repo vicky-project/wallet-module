@@ -24,7 +24,7 @@ class ReportService
 			$params = array_merge(["user_id" => $userId], $filters);
 
 			$financialSummary = $this->reportRepository->getFinancialSummary($params);
-			dd($financialSummary);
+
 			$incomeExpenseTrend = $this->reportRepository->getIncomeExpenseTrend(
 				$params
 			);
