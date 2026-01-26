@@ -861,11 +861,6 @@
 
 @push('styles')
     <style>
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
         .stat-card {
             transition: transform 0.2s;
             border: none;
