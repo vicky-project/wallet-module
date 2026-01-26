@@ -2,13 +2,14 @@
 
 @section('title', isset($tag) ? 'Edit Tag' : 'Tambah Tag Baru')
 
-@section('actions')
-    <a href="{{ route('tags.index') }}" class="btn btn-secondary">
+@section('content')
+@include('wallet::partials.fab')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
         <i class="bi bi-arrow-left me-1"></i> Kembali
     </a>
-@endsection
+</div>
 
-@section('content')
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
@@ -19,7 +20,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form action="{{ isset($tag) ? route('tags.update', $tag) : route('tags.store') }}" 
+                <form action="{{ isset($tag) ? route('apps.tags.update', $tag) : route('apps.tags.store') }}" 
                       method="POST" 
                       id="tagForm">
                     @csrf
@@ -173,7 +174,7 @@
                     </div>
                     
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('tags.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
                             <i class="bi bi-x-circle me-1"></i> Batal
                         </a>
                         <button type="submit" class="btn btn-primary">
@@ -199,7 +200,7 @@
                     </p>
                     <div class="tag-cloud">
                         @foreach($similarTags as $similarTag)
-                            <a href="{{ route('tags.show', $similarTag) }}" 
+                            <a href="{{ route('apps.tags.show', $similarTag) }}" 
                                class="badge badge-light d-inline-flex align-items-center mb-2 me-2"
                                style="border: 1px solid #dee2e6;">
                                 <span class="color-dot me-1" 
