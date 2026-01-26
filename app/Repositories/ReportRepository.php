@@ -229,8 +229,13 @@ class ReportRepository
 
 		foreach ($results as $index => $item) {
 			$labels[] = $item->category->name ?? "Tidak Berkategori";
-			$data[] = (int) $item->total;
-			$backgroundColors[] = $colors[$index % count($colors)];
+			$data[] = Money::ofMinor(
+				$item->total,
+				config("wallet.default_currency", "USD")
+			)
+				->getAmount()
+				->toInt();
+			$backgroundColors[] = $colors[($index % count($colors)) - 1];
 		}
 
 		// Add "Other" category if there are more categories
@@ -243,7 +248,12 @@ class ReportRepository
 
 		if ($otherTotal > 0) {
 			$labels[] = "Lainnya";
-			$data[] = (int) $otherTotal;
+			$data[] = Money::ofMinor(
+				$otherTotal,
+				config("wallet.default_currency", "USD")
+			)
+				->getAmount()
+				->toInt();
 			$backgroundColors[] = "#9ca3af";
 		}
 
@@ -296,8 +306,8 @@ class ReportRepository
 
 		foreach ($budgets as $budget) {
 			$labels[] = $budget->category->name ?? "Tidak Berkategori";
-			$budgetAmount = $budget->amount->getMinorAmount()->toInt();
-			$spentAmount = $budget->spent->getMinorAmount()->toInt();
+			$budgetAmount = $budget->amount->getAmount()->toInt();
+			$spentAmount = $budget->spent->getAmount()->toInt();
 
 			$budgetData[] = $budgetAmount;
 			$spentData[] = $spentAmount;
@@ -360,7 +370,7 @@ class ReportRepository
 
 		foreach ($accounts as $account) {
 			$labels[] = $account->name;
-			$balanceData[] = $account->balance->getMinorAmount()->toInt();
+			$balanceData[] = $account->balance->getAmount()->toInt();
 			$backgroundColors[] = $account->color;
 		}
 
