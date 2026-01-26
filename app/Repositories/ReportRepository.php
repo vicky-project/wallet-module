@@ -235,7 +235,7 @@ class ReportRepository
 			)
 				->getAmount()
 				->toInt();
-			$backgroundColors[] = $colors[($index % count($colors)) - 1];
+			$backgroundColors[] = $colors[$index % count($colors)];
 		}
 
 		// Add "Other" category if there are more categories
