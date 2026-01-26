@@ -77,7 +77,7 @@
 <!-- Summary Cards -->
 <div class="row mb-4" id="summary-cards">
   <!-- Cards will be populated by JavaScript -->
-  <div class="col-md-3">
+  <div class="col-md-3 mb-3">
     <div class="card stat-card border-start border-success border-4">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -99,7 +99,7 @@
     </div>
   </div>
             
-  <div class="col-md-3">
+  <div class="col-md-3 mb-3">
     <div class="card stat-card border-start border-danger border-4">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -121,7 +121,7 @@
     </div>
   </div>
             
-  <div class="col-md-3">
+  <div class="col-md-3 mb-3">
     <div class="card stat-card border-start border-primary border-4">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -143,7 +143,7 @@
     </div>
   </div>
             
-  <div class="col-md-3">
+  <div class="col-md-3 mb-3">
     <div class="card stat-card border-start border-purple border-4">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -196,7 +196,7 @@
 
 <!-- Charts Row 2: Category & Account -->
 <div class="row mb-4">
-  <div class="col-md-6">
+  <div class="col-md-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         <h5 class="mb-0">
@@ -214,7 +214,7 @@
     </div>
   </div>
             
-  <div class="col-md-6">
+  <div class="col-md-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         <h5 class="mb-0">
@@ -442,7 +442,7 @@
             document.getElementById('total-expense').textContent = summary.total_expense;
             document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
             
-            document.getElementById('net-flow').textContent = summary.net_flow;
+            document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow);
             document.getElementById('total-transfer').textContent = summary.total_transfer;
             
             // Update progress badges
