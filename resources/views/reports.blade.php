@@ -328,24 +328,24 @@
         }).format(value);
     }
 
-        // Show loading modal
-        function showLoading() {
-            if (!loadingModal) {
-                loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-            }
-            loadingModal.show();
-        }
+    // Show loading modal
+    function showLoading() {
+      if (!loadingModal) {
+        loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+      }
+      loadingModal.show();
+    }
 
-        // Hide loading modal
-        function hideLoading() {
-            if (loadingModal) {
-                loadingModal.hide();
-            }
+    // Hide loading modal
+    function hideLoading() {
+      if (loadingModal) {
+        loadingModal.hide();
+      }
             
-            loadingModal = null;
-        }
+      loadingModal = null;
+    }
         
-        // Custom fetch dengan authentication
+    // Custom fetch dengan authentication
     async function authFetch(url, options = {}) {
       const defaultOptions = {
         credentials: 'same-origin', // Mengirim session cookies
@@ -401,45 +401,45 @@
       }
     }
 
-        // Apply filters and update charts
-        async function applyFilters() {
-            showLoading();
+    // Apply filters and update charts
+    async function applyFilters() {
+      showLoading();
             
-            const filters = {
-                start_date: document.getElementById('start-date').value,
-                end_date: document.getElementById('end-date').value,
-                account_id: document.getElementById('account-filter').value,
-                group_by: document.getElementById('time-group').value
-            };
+      const filters = {
+        start_date: document.getElementById('start-date').value,
+        end_date: document.getElementById('end-date').value,
+        account_id: document.getElementById('account-filter').value,
+        group_by: document.getElementById('time-group').value
+      };
 
-            try {
-                const queryString = new URLSearchParams(filters).toString();
-                const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
+      try {
+        const queryString = new URLSearchParams(filters).toString();
+        const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
                 
-                if (!response.ok) {
-                    hideLoading();
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    hideLoading();
-                    reportData = result.data;
-                    updateSummaryCards(reportData.financial_summary);
-                    updateCharts(reportData);
-                } else {
-                    hideLoading();
-                    throw new Error(result.message || 'Failed to load data');
-                }
-            } catch (error) {
-                hideLoading();
-                console.error('Error loading report data:', error);
-                alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message);
-            } finally {
-                hideLoading();
-            }
+        if (!response.ok) {
+          hideLoading();
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+                
+        const result = await response.json();
+                
+        if (result.success) {
+          hideLoading();
+          reportData = result.data;
+          updateSummaryCards(reportData.financial_summary);
+          updateCharts(reportData);
+        } else {
+          hideLoading();
+          throw new Error(result.message || 'Failed to load data');
+        }
+      } catch (error) {
+        hideLoading();
+        console.error('Error loading report data:', error);
+        alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message);
+      } finally {
+        hideLoading();
+      }
+    }
 
         // Update summary cards
         function updateSummaryCards(summary) {
@@ -848,7 +848,9 @@
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
                 }
+                hideLoading();
             } catch (error) {
+              hideLoading();
                 console.error('Error exporting report:', error);
                 alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
             } finally {
