@@ -21,7 +21,7 @@
         </li>
         <li>
           <a class="dropdown-item" href="#mergeTagsModal" data-bs-toggle="modal">
-            <i class="bi bi-merge me-2"></i> Gabungkan Tag
+            <i class="bi bi-intersect me-2"></i> Gabungkan Tag
           </a>
         </li>
         <li><hr class="dropdown-divider"></li>
@@ -181,123 +181,110 @@
       </div>
       <div class="card-body">
         @if($tags->isEmpty())
-                    <div class="text-center py-5">
-                        <i class="bi bi-tags" style="font-size: 4rem; color: #dee2e6;"></i>
-                        <h4 class="mt-3">Belum ada tag</h4>
-                        <p class="text-muted">Mulai dengan membuat tag pertama Anda</p>
-                        <a href="{{ route('apps.tags.create') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-1"></i> Buat Tag Pertama
-                        </a>
-                    </div>
+          <div class="text-center py-5">
+            <i class="bi bi-tags" style="font-size: 4rem; color: #dee2e6;"></i>
+            <h4 class="mt-3">Belum ada tag</h4>
+            <p class="text-muted">Mulai dengan membuat tag pertama Anda</p>
+            <a href="{{ route('apps.tags.create') }}" class="btn btn-primary">
+              <i class="bi bi-plus-circle me-1"></i> Buat Tag Pertama
+            </a>
+          </div>
         @else
-                    <div class="row" id="tagsContainer">
-                        @foreach($tags as $tag)
-                            <div class="col-md-4 col-lg-3 mb-4 tag-item" 
-                                 data-usage="{{ $tag->usage_count }}" 
-                                 data-name="{{ strtolower($tag->name) }}"
-                                 data-created="{{ $tag->created_at->timestamp }}">
-                                <div class="card h-100 tag-card">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="color-dot me-2" 
-                                                      style="background-color: {{ $tag->color }};"></span>
-                                                <h5 class="card-title mb-0">{{ $tag->name }}</h5>
-                                            </div>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-link text-muted" 
-                                                        type="button" 
-                                                        data-bs-toggle="dropdown">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item" 
-                                                           href="{{ route('apps.tags.show', $tag) }}">
-                                                            <i class="bi bi-eye me-2"></i> Lihat Detail
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" 
-                                                           href="{{ route('apps.tags.edit', $tag) }}">
-                                                            <i class="bi bi-pencil me-2"></i> Edit
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <button class="dropdown-item text-danger" 
-                                                                onclick="confirmDelete({{ $tag->id }}, '{{ $tag->name }}')">
-                                                            <i class="bi bi-trash me-2"></i> Hapus
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <span class="badge rounded-pill" 
-                                                  style="background-color: {{ $tag->color }}20; color: {{ $tag->color }};">
-                                                <i class="bi bi-tag-fill me-1"></i>
-                                                {{ $tag->usage_count }} transaksi
-                                            </span>
-                                            @if($tag->icon)
-                                                <span class="badge bg-light text-dark ms-1">
-                                                    <i class="bi bi-{{ $tag->icon }}"></i>
-                                                </span>
-                                            @endif
-                                        </div>
-                                        
-                                        <div class="small text-muted mb-2">
-                                            <i class="bi bi-calendar3 me-1"></i>
-                                            Dibuat: {{ $tag->created_at->translatedFormat('d M Y') }}
-                                        </div>
-                                        
-                                        <div class="tag-transactions-preview">
-                                            <small class="text-muted">Transaksi terbaru:</small>
-                                            <div class="mt-2">
-                                                @php
-                                                    $recentTransactions = $tag->transactions()
-                                                        ->latest()
-                                                        ->limit(3)
-                                                        ->get();
-                                                @endphp
-                                                
-                                                @if($recentTransactions->isEmpty())
-                                                    <div class="text-muted small">Belum ada transaksi</div>
-                                                @else
-                                                    @foreach($recentTransactions as $transaction)
-                                                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
-                                                            <div class="text-truncate" style="max-width: 70%;">
-                                                                {{ $transaction->description }}
-                                                            </div>
-                                                            <div class="text-end">
-                                                                <small class="fw-bold {{ $transaction->type === 'expense' ? 'text-danger' : 'text-success' }}">
-                                                                    {{ $transaction->type === 'expense' ? '-' : '+' }}{{ formatCurrency($transaction->amount) }}
-                                                                </small>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer bg-transparent border-top-0 pt-0">
-                                        <a href="{{ route('apps.tags.show', $tag) }}" class="btn btn-sm btn-outline-primary w-100">
-                                            <i class="bi bi-arrow-right me-1"></i> Lihat Semua
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+          <div class="row" id="tagsContainer">
+            @foreach($tags as $tag)
+              <div class="col-md-4 col-lg-3 mb-4 tag-item" data-usage="{{ $tag->usage_count }}" data-name="{{ strtolower($tag->name) }}" data-created="{{ $tag->created_at->timestamp }}">
+                <div class="card h-100 tag-card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <div class="d-flex align-items-center">
+                        <span class="color-dot me-2" style="background-color: {{ $tag->color }};"></span>
+                        <h5 class="card-title mb-0">{{ $tag->name }}</h5>
+                      </div>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item" href="{{ route('apps.tags.show', $tag) }}">
+                              <i class="bi bi-eye me-2"></i> Lihat Detail
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="{{ route('apps.tags.edit', $tag) }}">
+                              <i class="bi bi-pencil me-2"></i> Edit
+                            </a>
+                          </li>
+                          <li>
+                            <button class="dropdown-item text-danger" onclick="confirmDelete({{ $tag->id }}, '{{ $tag->name }}')">
+                              <i class="bi bi-trash me-2"></i> Hapus
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
+                                        
+                    <div class="mb-3">
+                      <span class="badge rounded-pill" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }};">
+                        <i class="bi bi-tag-fill me-1"></i>
+                        {{ $tag->usage_count }} transaksi
+                      </span>
+                      @if($tag->icon)
+                        <span class="badge bg-light text-dark ms-1">
+                          <i class="bi {{ $tag->icon }}"></i>
+                        </span>
+                      @endif
+                    </div>
+                                        
+                    <div class="small text-muted mb-2">
+                      <i class="bi bi-calendar3 me-1"></i>
+                      Dibuat: {{ $tag->created_at->translatedFormat('d M Y') }}
+                    </div>
+                                        
+                    <div class="tag-transactions-preview">
+                      <small class="text-muted">Transaksi terbaru:</small>
+                      <div class="mt-2">
+                        @php
+                        $recentTransactions = $tag->transactions()->latest()->limit(3)->get();
+                        @endphp
+                        
+                        @if($recentTransactions->isEmpty())
+                          <div class="text-muted small">Belum ada transaksi</div>
+                        @else
+                          @foreach($recentTransactions as $transaction)
+                            <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                              <div class="text-truncate" style="max-width: 70%;">
+                                {{ $transaction->description }}
+                              </div>
+                              <div class="text-end">
+                                <small class="fw-bold {{ $transaction->type === 'expense' ? 'text-danger' : 'text-success' }}">
+                                  {{ $transaction->type === 'expense' ? '-' : '+' }}{{ formatCurrency($transaction->amount) }}
+                                </small>
+                              </div>
+                            </div>
+                          @endforeach
+                        @endif
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer bg-transparent border-top-0 pt-0">
+                    <a href="{{ route('apps.tags.show', $tag) }}" class="btn btn-sm btn-outline-primary w-100">
+                      <i class="bi bi-arrow-right me-1"></i> Lihat Semua
+                    </a>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          </div>
                     
-                    <!-- Pagination -->
-                    @if($tags->hasPages())
-                        <div class="d-flex justify-content-center mt-4">
-                            <nav aria-label="Tags pagination">
-                                {{ $tags->links() }}
-                            </nav>
-                        </div>
-                    @endif
+          <!-- Pagination -->
+          @if($tags->hasPages())
+            <div class="d-flex justify-content-center mt-4">
+              <nav aria-label="Tags pagination">
+                {{ $tags->links() }}
+              </nav>
+            </div>
+          @endif
         @endif
       </div>
     </div>
@@ -305,144 +292,137 @@
     
   <!-- Recently Used Tags -->
   <div class="col-12 mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-clock-history me-2"></i> Tag Baru-baru Ini Digunakan
-                </h5>
-            </div>
-            <div class="card-body">
-                @if($recentlyUsedTags->isEmpty())
-                    <div class="text-center py-3">
-                        <p class="text-muted mb-0">Belum ada tag yang digunakan baru-baru ini</p>
-                    </div>
-                @else
-                    <div class="tag-cloud">
-                        @foreach($recentlyUsedTags as $tag)
-                            <a href="{{ route('apps.tags.show', $tag) }}" 
-                               class="badge-tag d-inline-flex align-items-center"
-                               style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }};">
-                                <span class="color-dot me-1" style="background-color: {{ $tag->color }};"></span>
-                                {{ $tag->name }}
-                                <span class="badge bg-light text-dark ms-2">
-                                    {{ $tag->transactions_count }}
-                                </span>
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        </div>
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-clock-history me-2"></i> Tag Baru-baru Ini Digunakan
+        </h5>
+      </div>
+      <div class="card-body">
+        @if($recentlyUsedTags->isEmpty())
+          <div class="text-center py-3">
+            <p class="text-muted mb-0">Belum ada tag yang digunakan baru-baru ini</p>
+          </div>
+        @else
+          <div class="tag-cloud">
+            @foreach($recentlyUsedTags as $tag)
+              <a href="{{ route('apps.tags.show', $tag) }}" class="badge-tag d-inline-flex align-items-center" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }};">
+                <span class="color-dot me-1" style="background-color: {{ $tag->color }};"></span>
+                {{ $tag->name }}
+                <span class="badge bg-light text-dark ms-2">
+                  {{ $tag->transactions_count }}
+                </span>
+              </a>
+            @endforeach
+          </div>
+        @endif
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Tag Cloud Modal -->
 <div class="modal fade" id="tagCloudModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Tag Cloud</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center">
-                    <canvas id="tagCloudChart" class="chart-container"></canvas>
-                </div>
-                <div class="tag-cloud text-center mt-4" id="tagCloudContainer">
-                    @foreach($popularTags as $tag)
-                        @php
-                            $size = 14 + ($tag->transactions_count * 2);
-                            $size = min($size, 48);
-                        @endphp
-                        <a href="{{ route('apps.tags.show', $tag) }}" 
-                           class="badge-tag d-inline-block m-1"
-                           style="font-size: {{ $size }}px; 
-                                  background-color: {{ $tag->color }}20; 
-                                  color: {{ $tag->color }}; 
-                                  padding: {{ $size/8 }}px {{ $size/4 }}px;">
-                            {{ $tag->name }}
-                        </a>
-                    @endforeach
-                </div>
-            </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tag Cloud</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <canvas id="tagCloudChart" class="chart-container"></canvas>
         </div>
+        <div class="tag-cloud text-center mt-4" id="tagCloudContainer">
+          @foreach($popularTags as $tag)
+            @php
+              $size = 14 + ($tag->transactions_count * 2);
+              $size = min($size, 48);
+            @endphp
+            <a href="{{ route('apps.tags.show', $tag) }}" class="badge-tag d-inline-block m-1" style="font-size: {{ $size }}px; background-color: {{ $tag->color }}20; color: {{ $tag->color }}; padding: {{ $size/8 }}px {{ $size/4 }}px;">
+              {{ $tag->name }}
+            </a>
+          @endforeach
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Merge Tags Modal -->
 <div class="modal fade" id="mergeTagsModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Gabungkan Tag</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ route('apps.tags.merge') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Semua transaksi dari tag sumber akan dipindahkan ke tag target, dan tag sumber akan dihapus.
-                    </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Gabungkan Tag</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ route('apps.tags.merge') }}" method="POST">
+        @csrf
+        <div class="modal-body">
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            Semua transaksi dari tag sumber akan dipindahkan ke tag target, dan tag sumber akan dihapus.
+          </div>
                     
-                    <div class="mb-3">
-                        <label class="form-label">Tag Sumber</label>
-                        <select class="form-select" name="source_tag_id" required>
-                            <option value="">Pilih tag sumber</option>
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}">
-                                    {{ $tag->name }} ({{ $tag->usage_count }} transaksi)
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+          <div class="mb-3">
+            <label class="form-label">Tag Sumber</label>
+            <select class="form-select" name="source_tag_id" required>
+              <option value="">Pilih tag sumber</option>
+              @foreach($tags as $tag)
+                <option value="{{ $tag->id }}">
+                  {{ $tag->name }} ({{ $tag->usage_count }} transaksi)
+                </option>
+              @endforeach
+            </select>
+          </div>
                     
-                    <div class="mb-3">
-                        <label class="form-label">Tag Target</label>
-                        <select class="form-select" name="target_tag_id" required>
-                            <option value="">Pilih tag target</option>
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}">
-                                    {{ $tag->name }} ({{ $tag->usage_count }} transaksi)
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Gabungkan Tag</button>
-                </div>
-            </form>
+          <div class="mb-3">
+            <label class="form-label">Tag Target</label>
+            <select class="form-select" name="target_tag_id" required>
+              <option value="">Pilih tag target</option>
+              @foreach($tags as $tag)
+                <option value="{{ $tag->id }}">
+                  {{ $tag->name }} ({{ $tag->usage_count }} transaksi)
+                </option>
+              @endforeach
+            </select>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Gabungkan Tag</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteTagModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Hapus Tag</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus Tag</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
                 <p>Apakah Anda yakin ingin menghapus tag "<span id="tagNameToDelete"></span>"?</p>
                 <div class="alert alert-warning">
                     <i class="bi bi-exclamation-triangle me-2"></i>
                     Tag akan dihapus dari semua transaksi yang menggunakannya.
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form id="deleteTagForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Hapus</button>
-                </form>
-            </div>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form id="deleteTagForm" method="POST">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 @push('scripts')
