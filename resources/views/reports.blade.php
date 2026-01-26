@@ -823,7 +823,7 @@
                 };
                 
                 const queryString = new URLSearchParams(filters).toString();
-                const response = await authFetch(`{{ config('app.url') }}/api/reports/export`, {
+                const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/export`, {
                     method: 'POST',
                     body: JSON.stringify(filters)
                 });
