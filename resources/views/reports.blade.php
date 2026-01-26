@@ -187,7 +187,9 @@
       </div>
       <div class="card-body">
         <div class="chart-container">
-          <canvas id="incomeExpenseChart"></canvas>
+          <canvas id="incomeExpenseChart" class="placeholder-glow">
+            <span class="placeholder col-12"></span>
+          </canvas>
         </div>
       </div>
     </div>
