@@ -168,29 +168,26 @@
     @if(isset($similarTags) && $similarTags->isNotEmpty())
       <div class="card mt-4">
         <div class="card-header">
-                    <h6 class="mb-0">
-                        <i class="bi bi-lightbulb me-2"></i> Tag Serupa
-                    </h6>
-                </div>
+          <h6 class="mb-0">
+            <i class="bi bi-lightbulb me-2"></i> Tag Serupa
+          </h6>
+        </div>
         <div class="card-body">
-                    <p class="text-muted small mb-3">
-                        Berikut adalah tag dengan nama atau warna yang mirip:
-                    </p>
-                    <div class="tag-cloud">
-                        @foreach($similarTags as $similarTag)
-                            <a href="{{ route('apps.tags.show', $similarTag) }}" 
-                               class="badge badge-light d-inline-flex align-items-center mb-2 me-2"
-                               style="border: 1px solid #dee2e6;">
-                                <span class="color-dot me-1" 
-                                      style="background-color: {{ $similarTag->color }};"></span>
-                                {{ $similarTag->name }}
-                                <span class="badge bg-secondary ms-2">
-                                    {{ $similarTag->usage_count }}
-                                </span>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
+          <p class="text-muted small mb-3">
+            Berikut adalah tag dengan nama atau warna yang mirip:
+          </p>
+          <div class="tag-cloud">
+            @foreach($similarTags as $similarTag)
+              <a href="{{ route('apps.tags.show', $similarTag) }}" class="badge badge-light d-inline-flex align-items-center mb-2 me-2" style="border: 1px solid #dee2e6;">
+                <span class="color-dot me-1" style="background-color: {{ $similarTag->color }};"></span>
+                {{ $similarTag->name }}
+                <span class="badge bg-secondary ms-2">
+                  {{ $similarTag->usage_count }}
+                </span>
+              </a>
+            @endforeach
+          </div>
+        </div>
       </div>
     @endif
   </div>
