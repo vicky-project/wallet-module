@@ -2,28 +2,26 @@
 
 @section('title', 'Detail Tag: ' . $tag->name)
 
-@section('actions')
-    <div class="btn-group">
-        <a href="{{ route('tags.edit', $tag) }}" class="btn btn-warning">
-            <i class="bi bi-pencil me-1"></i> Edit
-        </a>
-        <button type="button" 
-                class="btn btn-warning dropdown-toggle dropdown-toggle-split" 
-                data-bs-toggle="dropdown">
-            <span class="visually-hidden">Toggle Dropdown</span>
-        </button>
-        <ul class="dropdown-menu">
-            <li>
-                <button class="dropdown-item text-danger" 
-                        onclick="confirmDelete({{ $tag->id }}, '{{ $tag->name }}')">
-                    <i class="bi bi-trash me-2"></i> Hapus
-                </button>
-            </li>
-        </ul>
-    </div>
-@endsection
-
 @section('content')
+@include('wallet::partials.fab')
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <div class="btn-group">
+    <a href="{{ route('tags.edit', $tag) }}" class="btn btn-warning">
+      <i class="bi bi-pencil me-1"></i> Edit
+    </a>
+    <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+      <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu">
+      <li>
+        <button class="dropdown-item text-danger" onclick="confirmDelete({{ $tag->id }}, '{{ $tag->name }}')">
+          <i class="bi bi-trash me-2"></i> Hapus
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+
 <div class="row">
     <!-- Tag Info -->
     <div class="col-md-4 mb-4">

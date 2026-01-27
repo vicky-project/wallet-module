@@ -1,46 +1,80 @@
-<div class="tag-input-container mb-3" id="tagInputContainer">
-  <label class="form-label">Tags</label>
+<div class="tag-input-component" id="tagInputComponent" data-transaction-id="{{ $transaction->id ?? null }}">
+    <!-- Hidden input untuk menyimpan tag IDs -->
+  <input type="hidden" name="tag_ids" id="tagIdsInput" value="{{ $selectedTags->pluck('id')->join(',') }}">
     
-  <!-- Selected Tags Display -->
-  <div class="selected-tags mb-3">
-    @if(isset($selectedTags) && $selectedTags->isNotEmpty())
-      @foreach($selectedTags as $tag)
-        <span class="tag-pill" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }};">
-          @if($tag->icon)
-            <i class="bi bi-{{ $tag->icon }} me-1"></i>
-          @endif
-          {{ $tag->name }}
-          <span class="tag-pill-remove" onclick="removeTag({{ $tag->id }})">
-            <i class="bi bi-x"></i>
-          </span>
-        </span>
-      @endforeach
-    @else
-      <div class="text-muted">
-        <i class="bi bi-tags me-1"></i> Tidak ada tag yang dipilih
+  <!-- Bagian 1: Tag yang Sudah Dipilih -->
+  <div class="mb-4">
+    <label class="form-label fw-semibold mb-3">
+      <i class="bi bi-tags-fill me-2"></i>Tag untuk Transaksi Ini
+      <span class="badge bg-primary ms-2" id="selectedTagCount">
+        {{ $selectedTags->count() }}
+      </span>
+    </label>
+        
+    <div id="selectedTagsContainer" class="selected-tags-container border rounded p-3 bg-light">
+      @if($selectedTags->isNotEmpty())
+        <div class="d-flex flex-wrap gap-2" id="selectedTagsList">
+          @foreach($selectedTags as $tag)
+            <span class="selected-tag badge d-flex align-items-center py-2 px-3" data-tag-id="{{ $tag->id }}" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }}; cursor: pointer;">
+              @if($tag->icon)
+                <i class="bi bi-{{ $tag->icon }} me-2"></i>
+              @endif
+              {{ $tag->name }}
+              <i class="bi bi-x ms-2"></i>
+            </span>
+          @endforeach
+        </div>
+      @else
+        <div class="text-center py-2" id="noSelectedTagsMessage">
+          <i class="bi bi-tag text-muted me-2"></i>
+          <span class="text-muted">Belum ada tag yang dipilih.</span>
+          <br>
+          <small class="text-muted">Klik tag di bawah untuk menambahkannya</small>
+        </div>
+      @endif
+    </div>
+  </div>
+    
+  <!-- Bagian 2: Tag yang Tersedia -->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <label class="form-label fw-semibold mb-0">
+        <i class="bi bi-tag me-2"></i>Tag yang Tersedia
+      </label>
+      <div class="d-flex gap-2">
+        <input type="text" class="form-control form-control-sm" id="tagSearchInput" placeholder="Cari tag..." style="width: 150px;">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="clearSearchBtn">
+          <i class="bi bi-x"></i>
+        </button>
       </div>
-    @endif
+    </div>
+        
+    <div id="availableTagsContainer" class="available-tags-container">
+      <!-- Tag akan diload via JavaScript -->
+      <div class="text-center py-3">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2 text-muted">Memuat tag...</span>
+      </div>
+    </div>
   </div>
     
-  <!-- Hidden input for form submission -->
-  <input type="hidden" name="tag_ids" id="tagIdsInput" value="{{ isset($selectedTags) ? $selectedTags->pluck('id')->join(',') : '' }}">
-    
-  <!-- Search and Add Interface -->
-  <div class="input-group">
-    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-      <i class="bi bi-plus-lg"></i> Tambah Tag
-    </button>
-    <input type="text" class="form-control" id="tagSearchInput" placeholder="Cari tag..." autocomplete="off">
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#createTagModal">
-      <i class="bi bi-plus-circle"></i> Baru
-    </button>
-  </div>
-    
-  <!-- Search Results Dropdown -->
-  <div class="dropdown-menu dropdown-menu-tags p-2 w-100" id="tagSearchResults" style="display: none; max-height: 300px; overflow-y: auto;">
-    <div class="list-group" id="tagResultsList"></div>
-    <div class="text-center py-2" id="noTagsFound" style="display: none;">
-      <small class="text-muted">Tidak ada tag ditemukan</small>
+  <!-- Bagian 3: Link untuk Membuat Tag Baru (jika tidak ada tag sama sekali) -->
+  <div id="noTagsMessage" class="alert alert-info" style="display: none;">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+      <div>
+        <h6 class="alert-heading mb-1">Belum ada tag yang tersedia</h6>
+        <p class="mb-0">
+          Buat tag terlebih dahulu untuk mengkategorikan transaksi Anda.
+        </p>
+      </div>
+    </div>
+    <div class="mt-3">
+      <a href="{{ route('apps.tags.create') }}" class="btn btn-sm btn-info" target="_blank">
+        <i class="bi bi-plus-circle me-1"></i> Buat Tag Baru
+      </a>
     </div>
   </div>
 </div>
@@ -48,226 +82,400 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Elemen DOM
+        const tagInputComponent = document.getElementById('tagInputComponent');
+        const selectedTagsContainer = document.getElementById('selectedTagsContainer');
+        const selectedTagsList = document.getElementById('selectedTagsList');
+        const noSelectedTagsMessage = document.getElementById('noSelectedTagsMessage');
+        const availableTagsContainer = document.getElementById('availableTagsContainer');
         const tagSearchInput = document.getElementById('tagSearchInput');
-        const tagResultsList = document.getElementById('tagResultsList');
-        const tagSearchResults = document.getElementById('tagSearchResults');
-        const noTagsFound = document.getElementById('noTagsFound');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
         const tagIdsInput = document.getElementById('tagIdsInput');
-        const tagInputContainer = document.getElementById('tagInputContainer');
-        const createTagForm = document.getElementById('createTagForm');
+        const selectedTagCount = document.getElementById('selectedTagCount');
+        const noTagsMessage = document.getElementById('noTagsMessage');
         
+        // State
         let allTags = [];
-        let selectedTagIds = tagIdsInput.value ? tagIdsInput.value.split(',').map(Number) : [];
-        let debounceTimer;
+        let selectedTagIds = tagIdsInput.value ? tagIdsInput.value.split(',').map(id => parseInt(id)) : [];
+        let transactionId = tagInputComponent.dataset.transactionId;
+        let isLoading = false;
+        let currentSearch = '';
         
-        // Fetch all tags on page load
+        // Fetch semua tag dari server
         async function fetchAllTags() {
             try {
+                isLoading = true;
                 const response = await fetch('{{ secure_url(config("app.url") . "/apps/tags") }}?json=true', {
-                  'Accept': 'application/json'
-                });
-                const data = await response.json();
-                allTags = data.data || [];
-            } catch (error) {
-                console.error('Error fetching tags:', error.message);
-            }
-        }
-        
-        // Search tags
-        tagSearchInput.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(searchTags, 300);
-        });
-        
-        tagSearchInput.addEventListener('focus', function() {
-            searchTags();
-            tagSearchResults.style.display = 'block';
-        });
-        
-        function searchTags() {
-            const searchTerm = tagSearchInput.value.toLowerCase().trim();
-            
-            if (!searchTerm) {
-                tagSearchResults.style.display = 'none';
-                return;
-            }
-            
-            const filteredTags = allTags.filter(tag => 
-                !selectedTagIds.includes(tag.id) &&
-                tag.name.toLowerCase().includes(searchTerm)
-            );
-            
-            displaySearchResults(filteredTags);
-        }
-        
-        function displaySearchResults(tags) {
-            tagResultsList.innerHTML = '';
-            
-            if (tags.length === 0) {
-                noTagsFound.style.display = 'block';
-                return;
-            }
-            
-            noTagsFound.style.display = 'none';
-            
-            tags.forEach(tag => {
-                const tagElement = document.createElement('div');
-                tagElement.className = 'tag-option list-group-item list-group-item-action';
-                tagElement.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <span class="color-dot" style="background-color: ${tag.color};"></span>
-                        <div class="flex-grow-1">
-                            <strong>${tag.name}</strong>
-                            <div class="small text-muted">
-                                <i class="bi bi-${tag.icon || 'tag'} me-1"></i>
-                                ${tag.transactions_count || 0} transaksi
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary" 
-                                onclick="selectTag(${tag.id})">
-                            <i class="bi bi-plus"></i>
-                        </button>
-                    </div>
-                `;
-                tagResultsList.appendChild(tagElement);
-            });
-            
-            tagSearchResults.style.display = 'block';
-        }
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!tagInputContainer.contains(event.target)) {
-                tagSearchResults.style.display = 'none';
-            }
-        });
-        
-        // Create new tag
-        createTagForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('newTagName').value;
-            const color = document.getElementById('newTagColor').value;
-            const icon = document.getElementById('newTagIcon').value;
-            
-            try {
-                const response = await fetch('{{ secure_url(config("app.url")."/apps/tags") }}', {
-                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ name, color, icon })
+                    }
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
-                    
-                    // Add the new tag to allTags and select it
-                    allTags.push(data.data);
-                    selectTag(data.data.id);
-                    
-                    // Reset form and close modal
-                    createTagForm.reset();
-                    document.getElementById('newTagColor').value = '#0d6efd';
-                    bootstrap.Modal.getInstance(document.getElementById('createTagModal')).hide();
-                    
-                    // Show success message
-                    showAlert('Tag berhasil dibuat!', 'success');
-                } else {
-                    throw new Error('Gagal membuat tag');
+                    allTags = data.data || [];
+                    renderAvailableTags();
+                    checkIfNoTags();
                 }
             } catch (error) {
-                console.error('Error creating tag:', error);
-                showAlert('Gagal membuat tag', 'danger');
+                console.error('Error fetching tags:', error);
+                showAlert('Gagal memuat tag', 'danger');
+            } finally {
+                isLoading = false;
             }
-        });
+        }
         
-        // Initialize
-        fetchAllTags();
-    });
-    
-    // Global functions
-    window.selectTag = function(tagId) {
-        const selectedTagIds = document.getElementById('tagIdsInput').value 
-            ? document.getElementById('tagIdsInput').value.split(',').map(Number) 
-            : [];
-        
-        if (!selectedTagIds.includes(tagId)) {
-            selectedTagIds.push(tagId);
-            document.getElementById('tagIdsInput').value = selectedTagIds.join(',');
+        // Render tag yang tersedia
+        function renderAvailableTags() {
+            // Filter tag yang belum dipilih
+            let filteredTags = allTags.filter(tag => !selectedTagIds.includes(tag.id));
             
-            // Find the tag in allTags
-            const tag = window.allTags?.find(t => t.id === tagId);
-            if (tag) {
-                // Add tag to display
-                const tagPill = document.createElement('span');
-                tagPill.className = 'tag-pill';
-                tagPill.style.cssText = `background-color: ${tag.color}20; 
-                                         color: ${tag.color};
-                                         border: 1px solid ${tag.color};`;
-                tagPill.innerHTML = `
-                    ${tag.icon ? `<i class="bi bi-${tag.icon} me-1"></i>` : ''}
-                    ${tag.name}
-                    <span class="tag-pill-remove" onclick="removeTag(${tagId})">
-                        <i class="bi bi-x"></i>
-                    </span>
+            // Filter berdasarkan search
+            if (currentSearch) {
+                const searchTerm = currentSearch.toLowerCase();
+                filteredTags = filteredTags.filter(tag => 
+                    tag.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (filteredTags.length === 0) {
+                if (currentSearch) {
+                    availableTagsContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="bi bi-search text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">Tidak ada tag yang cocok dengan pencarian</p>
+                        </div>
+                    `;
+                } else {
+                    availableTagsContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="bi bi-tags text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">Semua tag sudah dipilih</p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+            
+            // Grup tag berdasarkan huruf pertama
+            const groupedTags = {};
+            filteredTags.forEach(tag => {
+                const firstLetter = tag.name.charAt(0).toUpperCase();
+                if (!groupedTags[firstLetter]) {
+                    groupedTags[firstLetter] = [];
+                }
+                groupedTags[firstLetter].push(tag);
+            });
+            
+            // Sort letters alphabetically
+            const sortedLetters = Object.keys(groupedTags).sort();
+            
+            let html = '<div class="available-tags-grid">';
+            
+            sortedLetters.forEach(letter => {
+                html += `
+                    <div class="mb-3">
+                        <div class="letter-header mb-2">
+                            <span class="badge bg-secondary">${letter}</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
                 `;
                 
-                const selectedTagsDiv = document.querySelector('.selected-tags');
-                const noTagsMessage = selectedTagsDiv.querySelector('.text-muted');
-                if (noTagsMessage) {
-                    noTagsMessage.remove();
+                groupedTags[letter].forEach(tag => {
+                    const usageCount = tag.usage_count || tag.transactions_count || 0;
+                    html += `
+                        <span class="available-tag badge d-flex align-items-center py-2 px-3" 
+                              data-tag-id="${tag.id}"
+                              style="background-color: ${tag.color}15; 
+                                     color: ${tag.color};
+                                     border: 1px dashed ${tag.color};
+                                     cursor: pointer;"
+                              title="Klik untuk menambahkan tag">
+                            @if(isset($tag->icon))
+                                <i class="bi bi-${tag.icon} me-2"></i>
+                            @endif
+                            ${tag.name}
+                            <span class="badge bg-light text-dark ms-2">
+                                ${usageCount}
+                            </span>
+                        </span>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            availableTagsContainer.innerHTML = html;
+            
+            // Tambahkan event listener untuk tag yang tersedia
+            document.querySelectorAll('.available-tag').forEach(tagElement => {
+                tagElement.addEventListener('click', () => addTag(tagElement.dataset.tagId));
+            });
+        }
+        
+        // Tambah tag ke transaksi
+        function addTag(tagId) {
+            if (selectedTagIds.includes(parseInt(tagId))) {
+                return; // Tag sudah dipilih
+            }
+            
+            // Tambahkan ke selectedTagIds
+            selectedTagIds.push(parseInt(tagId));
+            updateTagIdsInput();
+            updateSelectedTagsDisplay();
+            renderAvailableTags();
+            
+            // Jika ada transactionId, simpan ke server
+            //if (transactionId) {
+            //    saveTagToTransaction(tagId);
+            //}
+        }
+        
+        // Hapus tag dari transaksi
+        function removeTag(tagId) {
+            selectedTagIds = selectedTagIds.filter(id => id !== parseInt(tagId));
+            updateTagIdsInput();
+            updateSelectedTagsDisplay();
+            renderAvailableTags();
+            
+            // Jika ada transactionId, hapus dari server
+            //if (transactionId) {
+            //    removeTagFromTransaction(tagId);
+            //}
+        }
+        
+        // Update tampilan tag yang dipilih
+        function updateSelectedTagsDisplay() {
+            // Update counter
+            selectedTagCount.textContent = selectedTagIds.length;
+            
+            if (selectedTagIds.length === 0) {
+                if (!noSelectedTagsMessage) {
+                    selectedTagsContainer.innerHTML = `
+                        <div class="text-center py-2" id="noSelectedTagsMessage">
+                            <i class="bi bi-tag text-muted me-2"></i>
+                            <span class="text-muted">Belum ada tag yang dipilih.</span>
+                            <br>
+                            <small class="text-muted">Klik tag di bawah untuk menambahkannya</small>
+                        </div>
+                    `;
+                } else {
+                    noSelectedTagsMessage.style.display = 'block';
                 }
-                selectedTagsDiv.appendChild(tagPill);
+                return;
+            }
+            
+            // Sembunyikan pesan "no tags"
+            if (noSelectedTagsMessage) {
+                noSelectedTagsMessage.style.display = 'none';
+            }
+            
+            // Buat list tag yang dipilih
+            let html = '<div class="d-flex flex-wrap gap-2" id="selectedTagsList">';
+            
+            selectedTagIds.forEach(tagId => {
+                const tag = allTags.find(t => t.id === tagId);
+                if (tag) {
+                    html += `
+                        <span class="selected-tag badge d-flex align-items-center py-2 px-3" 
+                              data-tag-id="${tag.id}"
+                              style="background-color: ${tag.color}20; 
+                                     color: ${tag.color};
+                                     border: 1px solid ${tag.color};
+                                     cursor: pointer;"
+                              title="Klik untuk menghapus tag">
+                            @if(isset($tag->icon))
+                                <i class="bi bi-${tag.icon} me-2"></i>
+                            @endif
+                            ${tag.name}
+                            <i class="bi bi-x ms-2"></i>
+                        </span>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            selectedTagsContainer.innerHTML = html;
+            
+            // Tambahkan event listener untuk tag yang dipilih
+            document.querySelectorAll('.selected-tag').forEach(tagElement => {
+                tagElement.addEventListener('click', () => removeTag(tagElement.dataset.tagId));
+            });
+        }
+        
+        // Update input hidden
+        function updateTagIdsInput() {
+            tagIdsInput.value = selectedTagIds.join(',');
+        }
+        
+        // Simpan tag ke transaksi (untuk edit form)
+        async function saveTagToTransaction(tagId) {
+            try {
+                const response = await fetch(`/api/transactions/${transactionId}/tags`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ tag_id: tagId })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to save tag');
+                }
+            } catch (error) {
+                console.error('Error saving tag:', error);
             }
         }
         
-        // Hide search results
-        document.getElementById('tagSearchResults').style.display = 'none';
-        document.getElementById('tagSearchInput').value = '';
-    };
-    
-    window.removeTag = function(tagId) {
-        let selectedTagIds = document.getElementById('tagIdsInput').value 
-            ? document.getElementById('tagIdsInput').value.split(',').map(Number) 
-            : [];
-        
-        selectedTagIds = selectedTagIds.filter(id => id !== tagId);
-        document.getElementById('tagIdsInput').value = selectedTagIds.join(',');
-        
-        // Remove tag from display
-        const tagPill = document.querySelector(`.tag-pill-remove[onclick="removeTag(${tagId})"]`)?.parentElement;
-        if (tagPill) {
-            tagPill.remove();
+        // Hapus tag dari transaksi (untuk edit form)
+        async function removeTagFromTransaction(tagId) {
+            try {
+                const response = await fetch(`/api/transactions/${transactionId}/tags/${tagId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to remove tag');
+                }
+            } catch (error) {
+                console.error('Error removing tag:', error);
+            }
         }
         
-        // Show "no tags" message if empty
-        const selectedTagsDiv = document.querySelector('.selected-tags');
-        if (selectedTagsDiv.children.length === 0) {
-            const noTagsMessage = document.createElement('div');
-            noTagsMessage.className = 'text-muted';
-            noTagsMessage.innerHTML = '<i class="bi bi-tags me-1"></i> Tidak ada tag yang dipilih';
-            selectedTagsDiv.appendChild(noTagsMessage);
+        // Cek jika tidak ada tag sama sekali
+        function checkIfNoTags() {
+            if (allTags.length === 0 && selectedTagIds.length === 0) {
+                noTagsMessage.style.display = 'block';
+                availableTagsContainer.style.display = 'none';
+            } else {
+                noTagsMessage.style.display = 'none';
+                availableTagsContainer.style.display = 'block';
+            }
         }
-    };
-    
-    window.showAlert = function(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}-fill me-2"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
         
-        const container = document.querySelector('.container-fluid');
-        container.insertBefore(alertDiv, container.firstChild);
+        // Show alert message
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alertDiv.innerHTML = `
+                <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}-fill me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            tagInputComponent.insertBefore(alertDiv, tagInputComponent.firstChild);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
         
-        setTimeout(() => {
-            const bsAlert = new bootstrap.Alert(alertDiv);
-            bsAlert.close();
-        }, 3000);
-    };
+        // Event listeners untuk pencarian
+        tagSearchInput.addEventListener('input', function() {
+            currentSearch = this.value.trim();
+            renderAvailableTags();
+        });
+        
+        clearSearchBtn.addEventListener('click', function() {
+            tagSearchInput.value = '';
+            currentSearch = '';
+            renderAvailableTags();
+        });
+        
+        // Inisialisasi
+        fetchAllTags();
+        
+        // Jika ada selected tags dari server, update display
+        if (selectedTagIds.length > 0) {
+            // Kita perlu menunggu allTags diload dulu
+            const checkTagsLoaded = setInterval(() => {
+                if (allTags.length > 0 || !isLoading) {
+                    clearInterval(checkTagsLoaded);
+                    updateSelectedTagsDisplay();
+                }
+            }, 100);
+        }
+    });
 </script>
+
+<style>
+    .tag-input-component {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+    }
+    
+    .selected-tags-container {
+        min-height: 80px;
+        transition: all 0.3s ease;
+    }
+    
+    .selected-tag {
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+    
+    .selected-tag:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        opacity: 0.9;
+    }
+    
+    .selected-tag .bi-x {
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+    
+    .selected-tag:hover .bi-x {
+        opacity: 1;
+    }
+    
+    .available-tag {
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+    
+    .available-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        background-color: inherit !important;
+        border-style: solid !important;
+    }
+    
+    .letter-header {
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 0.25rem;
+    }
+    
+    .available-tags-grid {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .tag-input-component {
+            padding: 1rem;
+        }
+        
+        .selected-tag, .available-tag {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem !important;
+        }
+    }
+</style>
 @endpush

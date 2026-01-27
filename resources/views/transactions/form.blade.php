@@ -259,7 +259,10 @@
             <h5 class="form-section-title">Tags Available</h5>
             <div class="row">
               <div class="col-md-12">
-                @include('wallet::partials.tag-input', ['selectedTags' => isset($transaction) ? $transaction->tags : collect()])
+                @include('wallet::partials.tag-input', [
+                'selectedTags' => isset($transaction) ? $transaction->tags : collect(),
+                'transaction' => $transaction ?? null
+                ])
               </div>
             </div>
           </div>
@@ -444,40 +447,6 @@
 
 @push('scripts')
 <script>
-  async function loadTags() {
-    try {
-      const res = await fetch(`{{ secure_url(config('app.url') . '/apps/tags/for-transaction') }}?` + new URLSearchParams({
-        selected: document.getElementById('tagIdsInput')?.value || ''
-      }));
-      
-      const html = await res.text();
-      
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      const tagInput = tempDiv.querySelector('#tagInputContainer');
-      
-      if(tagInput) {
-        const existingTagInput = document.querySelector('#tagInputContainer');
-        existingTagInput?.parentNode?.replaceChild(tagInput, existingTagInput);
-        
-        // Reinitialize scripts
-        const scripts = tempDiv.querySelectorAll('script');
-        scripts.forEach(script => {
-          const newScript = document.createElement('script');
-          if(script.src) {
-            newScript.src = script.src;
-          } else {
-            newScript.textContent = script.textContent;
-          }
-          
-          document.body.appendChild(newScript);
-        });
-      }
-    } catch (error) {
-      console.error('Error loading tags:', error);
-    }
-  }
-  
   function updateFrequencyFields() {
     const frequencySelect = document.getElementById('frequency');
     const frequency = frequencySelect.value;
@@ -730,8 +699,6 @@
         if(typeof window.allTags === 'undefined') {
           window.allTags = [];
         }
-        
-        loadTags();
         
         // Toggle recurring options
         const isRecurring = document.getElementById('is_recurring');
