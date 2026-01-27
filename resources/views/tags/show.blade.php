@@ -265,6 +265,14 @@
 
 @push('scripts')
 <script>
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+      }).format(amount);
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
         // Monthly Usage Chart
         const monthlyCtx = document.getElementById('monthlyUsageChart');
@@ -411,14 +419,6 @@
             console.error('Error:', error);
             alert('Terjadi kesalahan saat menghapus tag');
         }
-    }
-    
-    function formatCurrency(amount) {
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
-      }).format(amount);
     }
 </script>
 @endpush
