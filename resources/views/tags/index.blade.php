@@ -145,19 +145,6 @@
                   Unused
                 </button>
               </div>
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                  <i class="bi bi-sort-down"></i> Urutkan
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item sort-option" href="#" data-sort="name">Nama A-Z</a></li>
-                  <li><a class="dropdown-item sort-option" href="#" data-sort="name_desc">Nama Z-A</a></li>
-                  <li><a class="dropdown-item sort-option" href="#" data-sort="usage">Penggunaan Terbanyak</a></li>
-                  <li><a class="dropdown-item sort-option" href="#" data-sort="usage_desc">Penggunaan Tersedikit</a></li>
-                  <li><a class="dropdown-item sort-option" href="#" data-sort="recent">Terbaru</a></li>
-                  <li><a class="dropdown-item sort-option" href="#" data-sort="oldest">Terlama</a></li>
-                </ul>
-              </div>
             </div>
           </div>
         </div>
@@ -170,6 +157,19 @@
     <div class="card">
       <div class="card-header">
         <h5 class="card-title mb-0">Daftar Tags</h5>
+        <div class="dropdown ms-auto">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-sort-down"></i> Urutkan
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item sort-option" href="#" data-sort="name">Nama A-Z</a></li>
+                  <li><a class="dropdown-item sort-option" href="#" data-sort="name_desc">Nama Z-A</a></li>
+                  <li><a class="dropdown-item sort-option" href="#" data-sort="usage">Penggunaan Terbanyak</a></li>
+                  <li><a class="dropdown-item sort-option" href="#" data-sort="usage_desc">Penggunaan Tersedikit</a></li>
+                  <li><a class="dropdown-item sort-option" href="#" data-sort="recent">Terbaru</a></li>
+                  <li><a class="dropdown-item sort-option" href="#" data-sort="oldest">Terlama</a></li>
+                </ul>
+              </div>
       </div>
       <div class="card-body">
         @if($tags->isEmpty())
