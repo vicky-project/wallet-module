@@ -85,7 +85,7 @@
         </div>
                 
         <div class="mt-4">
-          <a href="{{ route('transactions.index', ['tag' => $tag->id]) }}" class="btn btn-outline-primary w-100">
+          <a href="{{ route('apps.transactions.index', ['tag' => $tag->id]) }}" class="btn btn-outline-primary w-100">
             <i class="bi bi-arrow-right-circle me-1"></i> Lihat Semua Transaksi
           </a>
         </div>
@@ -112,8 +112,8 @@
         <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
         <div class="dropdown">
           <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-filter"></i> Filter
-                    </button>
+            <i class="bi bi-filter"></i> Filter
+          </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">Semua</a></li>
             <li><a class="dropdown-item" href="#">Minggu ini</a></li>
@@ -389,10 +389,10 @@
     });
     
     function confirmDelete(tagId, tagName) {
-        const modal = new bootstrap.Modal(document.getElementById('deleteTagModal'));
-        document.getElementById('tagNameToDelete').textContent = tagName;
-        document.getElementById('deleteTagForm').action = `{{ config('app.url')}}/apps/tags/${tagId}`;
-        modal.show();
+      const modal = new bootstrap.Modal(document.getElementById('deleteTagModal'));
+      document.getElementById('tagNameToDelete').textContent = tagName;
+      document.getElementById('deleteTagForm').action = `{{ config('app.url')}}/apps/tags/${tagId}`;
+      modal.show();
     }
     
     async function removeTagFromTransaction(transactionId, tagId) {
@@ -401,7 +401,7 @@
       }
         
       try {
-            const response = await fetch(`{{ config('app.url') }}/apps/transactions/${transactionId}/tags/${tagId}`, {
+        const response = await fetch(`{{ config('app.url') }}/apps/transactions/${transactionId}/tags/${tagId}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -409,12 +409,12 @@
                 }
             });
             
-            if (response.ok) {
-                location.reload();
-            } else {
-                const data = await response.json();
-                alert(data.message || 'Terjadi kesalahan');
-            }
+        if (response.ok) {
+          location.reload();
+        } else {
+          const data = await response.json();
+          alert(data.message || 'Terjadi kesalahan');
+        }
       } catch (error) {
             console.error('Error:', error);
             alert('Terjadi kesalahan saat menghapus tag');
