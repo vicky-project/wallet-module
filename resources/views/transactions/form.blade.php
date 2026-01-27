@@ -745,6 +745,7 @@
         accountSelect.addEventListener('change', updateAccountBalance);
         toAccountSelect.addEventListener('change', updateAccountBalance);
         
+        if(categorySelect) {
         categorySelect.addEventListener('change', function() {
             const categoryId = this.value;
             const amount = parseInt(amountInput.value) || 0;
@@ -754,6 +755,7 @@
                 checkBudget(categoryId, amount, date);
             }
         });
+        }
         
         amountInput.addEventListener('input', function() {
             const amount = parseInt(this.value) || 0;
