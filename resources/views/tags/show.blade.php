@@ -6,7 +6,7 @@
 
 @section('content')
 @include('wallet::partials.fab')
-<div class="d-flex justify-content-between align-items-center mb-2">
+<div class="d-flex justify-content-between align-items-center mb-4">
   <div class="btn-group">
     <a href="{{ route('apps.tags.edit', $tag) }}" class="btn btn-warning">
       <i class="bi bi-pencil me-1"></i> Edit
@@ -32,7 +32,7 @@
         <div class="mb-4">
           <span class="badge rounded-pill" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 2px solid {{ $tag->color }}; font-size: 1.25rem; padding: 0.75rem 1.5rem;">
             @if($tag->icon)
-              <i class="bi bi-{{ $tag->icon }} me-2"></i>
+              <i class="bi {{ $tag->icon }} me-2"></i>
             @endif
             {{ $tag->name }}
           </span>
@@ -106,7 +106,7 @@
   </div>
     
   <!-- Transactions -->
-  <div class="col-md-8">
+  <div class="col-md-8 mb-4">
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
@@ -211,7 +211,7 @@
         
     <!-- Statistics -->
     <div class="row mt-4">
-      <div class="col-md-6">
+      <div class="col-md-6 mb-3">
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">Statistik Pengeluaran</h6>
@@ -221,7 +221,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 mb-3">
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">Distribusi Kategori</h6>
@@ -402,12 +402,12 @@
         
       try {
         const response = await fetch(`{{ config('app.url') }}/apps/transactions/${transactionId}/tags/${tagId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
                 }
-            });
+        });
             
         if (response.ok) {
           location.reload();
