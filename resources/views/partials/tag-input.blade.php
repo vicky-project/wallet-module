@@ -96,7 +96,7 @@
         
         // State
         let allTags = [];
-        let selectedTagIds = tagIdsInput.value ? tagIdsInput.value.split(',').map(id => parseInt(id)) : [];
+        let selectedTagIds = tagIdsInput.value ? tagIdsInput.value.split(',').map(id => parseInt(id)) : Array.from([]);
         let transactionId = tagInputComponent.dataset.transactionId;
         let isLoading = false;
         let currentSearch = '';

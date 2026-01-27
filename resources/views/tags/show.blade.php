@@ -76,18 +76,17 @@
                     
           @if($tag->icon)
             <div class="mb-2">
-                            <i class="bi bi-{{ $tag->icon }} me-2 text-muted"></i>
-                            <strong>Ikon:</strong> {{ $tag->icon }}
-                        </div>
+              <i class="bi bi-{{ $tag->icon }} me-2 text-muted"></i>
+              <strong>Ikon:</strong> {{ $tag->icon }}
+            </div>
           @endif
         </div>
                 
         <div class="mt-4">
-                    <a href="{{ route('transactions.index', ['tag' => $tag->id]) }}" 
-                       class="btn btn-outline-primary w-100">
-                        <i class="bi bi-arrow-right-circle me-1"></i> Lihat Semua Transaksi
-                    </a>
-                </div>
+          <a href="{{ route('transactions.index', ['tag' => $tag->id]) }}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-arrow-right-circle me-1"></i> Lihat Semua Transaksi
+          </a>
+        </div>
       </div>
     </div>
         
