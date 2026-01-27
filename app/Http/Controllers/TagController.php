@@ -309,4 +309,9 @@ class TagController extends Controller
 
 		return view("wallet::partials.tag-input", compact("tags", "selectedTags"));
 	}
+
+	public function trash(Request $request)
+	{
+		dd("Trash");
+	}
 }

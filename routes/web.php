@@ -132,6 +132,9 @@ Route::middleware(["auth"])
 
 		// Tag routes
 		Route::resource("tags", TagController::class);
+		Route::get("tags/trash", [TagController::class, "trash"])->name(
+			"tags.trash"
+		);
 		Route::post("tags/merge", [TagController::class, "merge"])->name(
 			"tags.merge"
 		);
