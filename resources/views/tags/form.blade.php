@@ -75,28 +75,26 @@
               <span class="input-group-text">
                 <i id="iconPreview" class="bi bi-tag"></i>
               </span>
-                            <select class="form-select @error('icon') is-invalid @enderror" 
-                                    id="icon" 
-                                    name="icon">
-                                <option value="">Pilih ikon</option>
-                                @foreach([
-                                    'tag' => 'Tag',
-                                    'tag-fill' => 'Tag (fill)',
-                                    'cart' => 'Keranjang',
-                                    'cart-fill' => 'Keranjang (fill)',
-                                    'car-front' => 'Mobil',
-                                    'car-front-fill' => 'Mobil (fill)',
-                                    'cup' => 'Cangkir',
-                                    'cup-fill' => 'Cangkir (fill)',
-                                    'house' => 'Rumah',
-                                    'house-fill' => 'Rumah (fill)',
-                                    'heart' => 'Hati',
-                                    'heart-fill' => 'Hati (fill)',
-                                    'bag' => 'Tas',
-                                    'bag-fill' => 'Tas (fill)',
-                                    'film' => 'Film',
-                                    'film-fill' => 'Film (fill)',
-                                    'book' => 'Buku',
+              <select class="form-select @error('icon') is-invalid @enderror" id="icon" name="icon">
+                <option value="">Pilih ikon</option>
+                @foreach([
+                  'tag' => 'Tag',
+                  'tag-fill' => 'Tag (fill)',
+                  'cart' => 'Keranjang',
+                  'cart-fill' => 'Keranjang (fill)',
+                  'car-front' => 'Mobil',
+                  'car-front-fill' => 'Mobil (fill)',
+                  'cup' => 'Cangkir',
+                  'cup-fill' => 'Cangkir (fill)',
+                  'house' => 'Rumah',
+                  'house-fill' => 'Rumah (fill)',
+                  'heart' => 'Hati',
+                  'heart-fill' => 'Hati (fill)',
+                  'bag' => 'Tas',
+                  'bag-fill' => 'Tas (fill)',
+                  'film' => 'Film',
+                  'film-fill' => 'Film (fill)',
+                  'book' => 'Buku',
                                     'book-fill' => 'Buku (fill)',
                                     'gift' => 'Hadiah',
                                     'gift-fill' => 'Hadiah (fill)',
@@ -119,12 +117,12 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
-                        @error('icon')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Pilih ikon dari Bootstrap Icons</small>
-                    </div>
+            </div>
+            @error('icon')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+            <small class="text-muted">Pilih ikon dari Bootstrap Icons</small>
+          </div>
                     
           <!-- Preview Section -->
           <div class="card bg-text-light mb-4">
