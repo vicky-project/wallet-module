@@ -130,7 +130,7 @@
         function renderAvailableTags() {
             // Filter tag yang belum dipilih
             console.log(typeof allTags);
-            let filteredTags = allTags.filter(tag => !selectedTagIds.includes(tag.id));
+            let filteredTags = Array.from(allTags).filter(tag => !selectedTagIds.includes(tag.id));
             
             // Filter berdasarkan search
             if (currentSearch) {

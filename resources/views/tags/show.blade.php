@@ -27,21 +27,16 @@
   <div class="col-md-4 mb-4">
     <div class="card">
       <div class="card-body text-center">
-                <div class="mb-4">
-                    <span class="badge rounded-pill" 
-                          style="background-color: {{ $tag->color }}20; 
-                                 color: {{ $tag->color }};
-                                 border: 2px solid {{ $tag->color }};
-                                 font-size: 1.25rem;
-                                 padding: 0.75rem 1.5rem;">
-                        @if($tag->icon)
-                            <i class="bi bi-{{ $tag->icon }} me-2"></i>
-                        @endif
-                        {{ $tag->name }}
-                    </span>
-                </div>
+        <div class="mb-4">
+          <span class="badge rounded-pill" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 2px solid {{ $tag->color }}; font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+            @if($tag->icon)
+              <i class="bi bi-{{ $tag->icon }} me-2"></i>
+            @endif
+            {{ $tag->name }}
+          </span>
+        </div>
                 
-                <div class="row mb-3">
+        <div class="row mb-3">
                     <div class="col-6">
                         <div class="stat-box">
                             <h3 class="text-primary">{{ $tag->transactions_count }}</h3>
@@ -58,7 +53,7 @@
                     </div>
                 </div>
                 
-                <div class="text-start">
+        <div class="text-start">
                     <div class="mb-2">
                         <i class="bi bi-palette me-2 text-muted"></i>
                         <strong>Warna:</strong> 
@@ -87,13 +82,13 @@
                     @endif
                 </div>
                 
-                <div class="mt-4">
+        <div class="mt-4">
                     <a href="{{ route('transactions.index', ['tag' => $tag->id]) }}" 
                        class="btn btn-outline-primary w-100">
                         <i class="bi bi-arrow-right-circle me-1"></i> Lihat Semua Transaksi
                     </a>
                 </div>
-            </div>
+      </div>
     </div>
         
     <!-- Monthly Usage -->
