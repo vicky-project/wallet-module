@@ -259,7 +259,7 @@
             <h5 class="form-section-title">Tags Available</h5>
             <div class="row">
               <div class="col-md-12">
-                @include('wallet::partials.tag-input', ['selectedTags' => isset($transaction) ? $transaction->tags : collect()])
+
               </div>
             </div>
           </div>
