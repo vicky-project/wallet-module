@@ -74,7 +74,7 @@
 <div class="row justify-content-center">
   <div class="col-lg-10 mb-3">
     <!-- Transaction Header -->
-    <div class="card transaction-detail-card mb-4">
+    <div class="card transaction-detail-card">
       <div class="card-body text-center">
         <div class="transaction-icon-large bg-{{ $transaction->type->color() }} mb-3">
           <i class="bi {{ $transaction->type->icon() }} text-light"></i>
@@ -116,9 +116,9 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-6 mb-3">
     <!-- Transaction Details -->
-    <div class="card transaction-detail-card mb-4">
+    <div class="card transaction-detail-card">
       <div class="card-body">
         <h5 class="card-title mb-4">Informasi Transaksi</h5>
                     
@@ -210,7 +210,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6 mb-3">
     <!-- Action Buttons -->
     <div class="card transaction-detail-card">
       <div class="card-body">
