@@ -783,7 +783,7 @@
         }
         
         // Form validation
-        document.getElementById('transactionForm').addEventListener('submit', (e) => submitForm(e) );
+        document.getElementById('transactionForm')?.addEventListener('submit', (e) => submitForm(e) );
         
         // Initialize form
         const initialType = typeInput.value;
