@@ -144,6 +144,9 @@
                 <button class="btn btn-outline-secondary" data-filter="unused">
                   Unused
                 </button>
+                <a class="btn btn-outline-danger" role="button">
+                  <i class="bi bi-trash2"></i>
+                </a>
               </div>
             </div>
           </div>
@@ -156,8 +159,9 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h5 class="card-title mb-0">Daftar Tags</h5>
-        <div class="dropdown ms-auto">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">Daftar Tags</h5>
+          <div class="dropdown ms-auto">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                   <i class="bi bi-sort-down"></i> Urutkan
                 </button>
@@ -170,6 +174,7 @@
                   <li><a class="dropdown-item sort-option" href="#" data-sort="oldest">Terlama</a></li>
                 </ul>
               </div>
+        </div>
       </div>
       <div class="card-body">
         @if($tags->isEmpty())
