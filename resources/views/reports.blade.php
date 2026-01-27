@@ -276,20 +276,6 @@
     </div>
   </div>
 </div>
-
-<!-- Loading Spinner -->
-<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0">
-      <div class="modal-body text-center py-5">
-        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        <h5 class="mb-0">Memuat data laporan...</h5>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection
 
 @push('scripts')
@@ -299,7 +285,6 @@
     // Global variables
     let charts = {};
     let reportData = {};
-    let loadingModal = null;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
 
     // Initialize date inputs
@@ -326,23 +311,6 @@
           minimumFractionDigits: 0,
           maximumFractionDigits: 0
         }).format(value);
-    }
-
-    // Show loading modal
-    function showLoading() {
-      if (!loadingModal) {
-        loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-      }
-      loadingModal.show();
-    }
-
-    // Hide loading modal
-    function hideLoading() {
-      if (loadingModal) {
-        loadingModal.hide();
-      }
-            
-      loadingModal = null;
     }
         
     // Custom fetch dengan authentication
@@ -403,8 +371,6 @@
 
     // Apply filters and update charts
     async function applyFilters() {
-      showLoading();
-            
       const filters = {
         start_date: document.getElementById('start-date').value,
         end_date: document.getElementById('end-date').value,
@@ -417,27 +383,21 @@
         const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
                 
         if (!response.ok) {
-          hideLoading();
           throw new Error(`HTTP error! status: ${response.status}`);
         }
                 
         const result = await response.json();
                 
         if (result.success) {
-          hideLoading();
           reportData = result.data;
           updateSummaryCards(reportData.financial_summary);
           updateCharts(reportData);
         } else {
-          hideLoading();
           throw new Error(result.message || 'Failed to load data');
         }
       } catch (error) {
-        hideLoading();
         console.error('Error loading report data:', error);
         alert('Gagal memuat data laporan. Silakan coba lagi. ' + error.message);
-      } finally {
-        hideLoading();
       }
     }
 
@@ -813,8 +773,6 @@
 
     // Export report
     async function exportReport() {
-      showLoading();
-            
       try {
         const filters = {
           start_date: document.getElementById('start-date').value,
@@ -829,13 +787,11 @@
         });
                 
                 if (!response.ok) {
-                  hideLoading();
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
-                hideLoading();
                 if (data.success) {
                     // Create download link
                     const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
@@ -851,11 +807,8 @@
                     window.URL.revokeObjectURL(url);
                 }
       } catch (error) {
-        hideLoading();
         console.error('Error exporting report:', error);
         alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
-      } finally {
-        hideLoading();
       }
     }
 

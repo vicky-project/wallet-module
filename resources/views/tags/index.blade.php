@@ -124,8 +124,8 @@
           <div class="col-md-6">
             <div class="input-group">
               <span class="input-group-text">
-                                <i class="bi bi-search"></i>
-                            </span>
+                <i class="bi bi-search"></i>
+              </span>
               <input type="text" class="form-control" id="searchTags" placeholder="Cari tag...">
               <button class="btn btn-outline-secondary" type="button">
                 <i class="bi bi-funnel"></i> Filter
