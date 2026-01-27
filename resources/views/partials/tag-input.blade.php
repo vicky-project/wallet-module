@@ -45,48 +45,6 @@
   </div>
 </div>
 
-<!-- Create Tag Modal -->
-<div class="modal fade" id="createTagModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Buat Tag Baru</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form id="createTagForm">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Nama Tag</label>
-            <input type="text" class="form-control" id="newTagName" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Warna</label>
-            <input type="color" class="form-control form-control-color" id="newTagColor" value="#0d6efd">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Ikon (Opsional)</label>
-            <select class="form-select" id="newTagIcon">
-              <option value="">Pilih ikon</option>
-              <option value="tag">Tag</option>
-              <option value="cart">Keranjang</option>
-              <option value="car-front">Mobil</option>
-              <option value="cup">Cangkir</option>
-              <option value="house">Rumah</option>
-              <option value="heart">Hati</option>
-              <option value="bag">Tas</option>
-              <option value="film">Film</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {

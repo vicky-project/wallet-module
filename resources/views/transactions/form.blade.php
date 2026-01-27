@@ -259,55 +259,7 @@
             <h5 class="form-section-title">Tags Available</h5>
             <div class="row">
               <div class="col-md-12">
-                @php
-                  $selectedTags = isset($transaction) ? $transaction->tags : collect();
-                @endphp
-                <div class="tag-input-container mb-3" id="tagInputContainer">
-                  <label class="form-label">Tags</label>
-    
-                  <!-- Selected Tags Display -->
-                  <div class="selected-tags mb-3">
-                    @if(isset($selectedTags) && $selectedTags->isNotEmpty())
-                      @foreach($selectedTags as $tag)
-        <span class="tag-pill" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}; border: 1px solid {{ $tag->color }};">
-          @if($tag->icon)
-            <i class="bi bi-{{ $tag->icon }} me-1"></i>
-          @endif
-          {{ $tag->name }}
-          <span class="tag-pill-remove" onclick="removeTag({{ $tag->id }})">
-            <i class="bi bi-x"></i>
-          </span>
-        </span>
-      @endforeach
-    @else
-      <div class="text-muted">
-        <i class="bi bi-tags me-1"></i> Tidak ada tag yang dipilih
-      </div>
-    @endif
-  </div>
-    
-                  <!-- Hidden input for form submission -->
-                  <input type="hidden" name="tag_ids" id="tagIdsInput" value="{{ isset($selectedTags) ? $selectedTags->pluck('id')->join(',') : '' }}">
-    
-                  <!-- Search and Add Interface -->
-                  <div class="input-group">
-    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-      <i class="bi bi-plus-lg"></i> Tambah Tag
-    </button>
-    <input type="text" class="form-control" id="tagSearchInput" placeholder="Cari tag..." autocomplete="off">
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#createTagModal">
-      <i class="bi bi-plus-circle"></i> Baru
-    </button>
-  </div>
-    
-                  <!-- Search Results Dropdown -->
-                  <div class="dropdown-menu dropdown-menu-tags p-2 w-100" id="tagSearchResults" style="display: none; max-height: 300px; overflow-y: auto;">
-    <div class="list-group" id="tagResultsList"></div>
-    <div class="text-center py-2" id="noTagsFound" style="display: none;">
-      <small class="text-muted">Tidak ada tag ditemukan</small>
-    </div>
-  </div>
-                </div>
+                @include('wallet::partials.tag-input', ['selectedTags' => isset($transaction) ? $transaction->tags : collect()])
               </div>
             </div>
           </div>
@@ -445,6 +397,48 @@
       </div>
     </div>
   @endif
+</div>
+
+<!-- Create Tag Modal -->
+<div class="modal fade" id="createTagModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Buat Tag Baru</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="createTagForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nama Tag</label>
+            <input type="text" class="form-control" id="newTagName" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Warna</label>
+            <input type="color" class="form-control form-control-color" id="newTagColor" value="#0d6efd">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ikon (Opsional)</label>
+            <select class="form-select" id="newTagIcon">
+              <option value="">Pilih ikon</option>
+              <option value="tag">Tag</option>
+              <option value="cart">Keranjang</option>
+              <option value="car-front">Mobil</option>
+              <option value="cup">Cangkir</option>
+              <option value="house">Rumah</option>
+              <option value="heart">Hati</option>
+              <option value="bag">Tas</option>
+              <option value="film">Film</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 @endsection
 
