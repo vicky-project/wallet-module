@@ -75,7 +75,7 @@
   <div class="col-lg-8">
     <!-- Transaction Header -->
     <div class="card transaction-detail-card mb-4">
-      <div class="card-body text-center py-4">
+      <div class="card-body text-center">
         <div class="transaction-icon-large bg-{{ $transaction->type->color() }} mb-3">
           <i class="bi {{ $transaction->type->icon() }} text-light"></i>
         </div>
