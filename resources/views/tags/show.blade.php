@@ -9,7 +9,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div class="btn-group">
     <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary" role="button">
-      <i class="bi bi-arrow-left"></i>
+      <i class="bi bi-arrow-left me-1"></i>
       Back
     </a>
     <a href="{{ route('apps.tags.edit', $tag) }}" class="btn btn-warning" role="button">

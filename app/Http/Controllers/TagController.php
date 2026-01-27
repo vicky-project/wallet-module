@@ -124,7 +124,7 @@ class TagController extends Controller
 		cache()->forget("tag_{$tag->id}_usage_count");
 
 		return redirect()
-			->route()
+			->route("apps.tags.index")
 			->with("success", "Tag berhasil diperbarui");
 	}
 
@@ -215,7 +215,7 @@ class TagController extends Controller
 		cache()->forget("user_{$user->id}_tags");
 
 		return redirect()
-			->route("app.tags.index")
+			->route("apps.tags.index")
 			->with("success", "Tag berhasil dihapus");
 	}
 
