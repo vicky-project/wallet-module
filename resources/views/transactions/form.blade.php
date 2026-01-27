@@ -455,7 +455,7 @@
           window.allTags = [];
         }
         
-        loadTags();
+        //loadTags();
         
         // Toggle recurring options
         const isRecurring = document.getElementById('is_recurring');
