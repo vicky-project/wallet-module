@@ -37,21 +37,21 @@
         </div>
                 
         <div class="row mb-3">
-                    <div class="col-6">
-                        <div class="stat-box">
-                            <h3 class="text-primary">{{ $tag->transactions_count }}</h3>
-                            <small class="text-muted">Total Transaksi</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="stat-box">
-                            <h3 class="text-success">
-                                {{ formatCurrency($transactions->sum('amount')) }}
-                            </h3>
-                            <small class="text-muted">Total Nilai</small>
-                        </div>
-                    </div>
-                </div>
+          <div class="col-6">
+            <div class="stat-box">
+              <h3 class="text-primary">{{ $tag->transactions_count }}</h3>
+              <small class="text-muted">Total Transaksi</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="stat-box">
+              <h3 class="text-success">
+                {{ formatCurrency($transactions->sum('amount')) }}
+              </h3>
+              <small class="text-muted">Total Nilai</small>
+            </div>
+          </div>
+        </div>
                 
         <div class="text-start">
                     <div class="mb-2">
