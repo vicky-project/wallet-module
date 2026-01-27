@@ -129,6 +129,7 @@
         // Render tag yang tersedia
         function renderAvailableTags() {
             // Filter tag yang belum dipilih
+            console.log(typeof allTags);
             let filteredTags = allTags.filter(tag => !selectedTagIds.includes(tag.id));
             
             // Filter berdasarkan search
@@ -416,7 +417,6 @@
         border: 1px solid #dee2e6;
         border-radius: 0.5rem;
         padding: 1.5rem;
-        background-color: #f8f9fa;
     }
     
     .selected-tags-container {

@@ -23,10 +23,10 @@
 </div>
 
 <div class="row">
-    <!-- Tag Info -->
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
+  <!-- Tag Info -->
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <div class="card-body text-center">
                 <div class="mb-4">
                     <span class="badge rounded-pill" 
                           style="background-color: {{ $tag->color }}20; 
@@ -94,10 +94,10 @@
                     </a>
                 </div>
             </div>
-        </div>
+    </div>
         
-        <!-- Monthly Usage -->
-        <div class="card mt-4">
+    <!-- Monthly Usage -->
+    <div class="card mt-4">
             <div class="card-header">
                 <h6 class="mb-0">Penggunaan Bulanan</h6>
             </div>
@@ -107,10 +107,10 @@
                 </div>
             </div>
         </div>
-    </div>
+  </div>
     
-    <!-- Transactions -->
-    <div class="col-md-8">
+  <!-- Transactions -->
+  <div class="col-md-8">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
