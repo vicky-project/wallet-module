@@ -2,6 +2,8 @@
 
 @section('title', 'Detail Tag: ' . $tag->name)
 
+@use('Modules\Wallet\Enums\TransactionType')
+
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -134,80 +136,74 @@
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Deskripsi</th>
-                                    <th>Kategori</th>
-                                    <th class="text-end">Jumlah</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Deskripsi</th>
+                  <th>Kategori</th>
+                  <th class="text-end">Jumlah</th>
+                  <th class="text-center">Aksi</th>
+                </tr>
+              </thead>
               <tbody>
-                                @foreach($transactions as $transaction)
-                                    <tr>
-                                        <td>
-                                            <small class="text-muted">
-                                                {{ $transaction->transaction_date->translatedFormat('d M Y') }}
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 me-2">
-                                                    @if($transaction->type === 'expense')
-                                                        <span class="badge bg-danger">Pengeluaran</span>
-                                                    @else
-                                                        <span class="badge bg-success">Pemasukan</span>
-                                                    @endif
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    {{ Str::limit($transaction->description, 50) }}
-                                                    @if($transaction->notes)
-                                                        <small class="text-muted d-block">
-                                                            {{ Str::limit($transaction->notes, 30) }}
-                                                        </small>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-dark">
-                                                {{ $transaction->category->name }}
-                                            </span>
-                                        </td>
-                                        <td class="text-end fw-bold 
-                                            {{ $transaction->type === 'expense' ? 'text-danger' : 'text-success' }}">
-                                            {{ $transaction->type === 'expense' ? '-' : '+' }}
-                                            {{ formatCurrency($transaction->amount) }}
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="{{ route('transactions.show', $transaction) }}" 
-                                                   class="btn btn-outline-primary">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('transactions.edit', $transaction) }}" 
-                                                   class="btn btn-outline-warning">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" 
-                                                        class="btn btn-outline-danger"
-                                                        onclick="removeTagFromTransaction({{ $transaction->id }}, {{ $tag->id }})"
-                                                        title="Hapus tag ini dari transaksi">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
+                @foreach($transactions as $transaction)
+                  <tr>
+                    <td>
+                      <small class="text-muted">
+                        {{ $transaction->transaction_date->translatedFormat('d M Y') }}
+                      </small>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-2">
+                          @if($transaction->type === TransactionType::EXPENSE)
+                            <span class="badge bg-danger">Pengeluaran</span>
+                          @else
+                            <span class="badge bg-success">Pemasukan</span>
+                          @endif
+                        </div>
+                        <div class="flex-grow-1">
+                          {{ Str::limit($transaction->description, 50) }}
+                          @if($transaction->notes)
+                            <small class="text-muted d-block">
+                              {{ Str::limit($transaction->notes, 30) }}
+                            </small>
+                          @endif
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark">
+                        {{ $transaction->category->name }}
+                      </span>
+                    </td>
+                    <td class="text-end fw-bold {{ $transaction->type === TransactionType::EXPENSE ? 'text-danger' : 'text-success' }}">
+                      {{ $transaction->type === TransactionType::EXPENSE ? '-' : '+' }}
+                      {{ formatCurrency($transaction->amount->getAmount()->toInt()) }}
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm">
+                        <a href="{{ route('apps.transactions.show', $transaction) }}" class="btn btn-outline-primary">
+                          <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{{ route('apps.transactions.edit', $transaction) }}" class="btn btn-outline-warning">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                        <button type="button" class="btn btn-outline-danger" onclick="removeTagFromTransaction({{ $transaction->id }}, {{ $tag->id }})" title="Hapus tag ini dari transaksi">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
             </table>
           </div>
                     
           <!-- Pagination -->
           @if($transactions->hasPages())
             <div class="d-flex justify-content-center mt-4">
-                            {{ $transactions->links('vendor.pagination.bootstrap-5') }}
-                        </div>
+              {{ $transactions->links() }}
+            </div>
           @endif
         @endif
       </div>
@@ -215,55 +211,55 @@
         
     <!-- Statistics -->
     <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title">Statistik Pengeluaran</h6>
-                        <div class="chart-container">
-                            <canvas id="expenseChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">Statistik Pengeluaran</h6>
+            <div class="chart-container">
+              <canvas id="expenseChart"></canvas>
             </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title">Distribusi Kategori</h6>
-                        <div class="chart-container">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">Distribusi Kategori</h6>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteTagModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Hapus Tag</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus tag "<span id="tagNameToDelete"></span>"?</p>
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Tag akan dihapus dari semua transaksi yang menggunakannya.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form id="deleteTagForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Hapus</button>
-                </form>
-            </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus Tag</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus tag "<span id="tagNameToDelete"></span>"?</p>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Tag akan dihapus dari semua transaksi yang menggunakannya.
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form id="deleteTagForm" method="POST">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 @push('scripts')
@@ -313,8 +309,8 @@
                 labels: ['Pengeluaran', 'Pemasukan'],
                 datasets: [{
                     data: [
-                        {{ $transactions->where('type', 'expense')->sum('amount') }},
-                        {{ $transactions->where('type', 'income')->sum('amount') }}
+                        {{ $transactions->where('type', TransactionType::EXPENSE)->sum('amount') }},
+                        {{ $transactions->where('type', TransactionType::INCOME)->sum('amount') }}
                     ],
                     backgroundColor: [
                         'rgba(220, 53, 69, 0.8)',
@@ -386,7 +382,7 @@
     function confirmDelete(tagId, tagName) {
         const modal = new bootstrap.Modal(document.getElementById('deleteTagModal'));
         document.getElementById('tagNameToDelete').textContent = tagName;
-        document.getElementById('deleteTagForm').action = `/tags/${tagId}`;
+        document.getElementById('deleteTagForm').action = `{{ config('app.url')}}/apps/tags/${tagId}`;
         modal.show();
     }
     
@@ -396,7 +392,7 @@
         }
         
         try {
-            const response = await fetch(`/transactions/${transactionId}/tags/${tagId}`, {
+            const response = await fetch(`{{ config('app.url') }}/apps/transactions/${transactionId}/tags/${tagId}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -415,6 +411,14 @@
             alert('Terjadi kesalahan saat menghapus tag');
         }
     }
+    
+    const formatCurrency = function(amount) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(amount);
+    };
 </script>
 @endpush
 @endsection
