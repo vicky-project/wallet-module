@@ -24,7 +24,7 @@
   </div>
 </div>
 
-<div class="row mb-3">
+<div class="row mb-2">
   <!-- Tag Info -->
   <div class="col-md-4 mb-4">
     <div class="card">
@@ -78,7 +78,7 @@
                     
           @if($tag->icon)
             <div class="mb-2">
-              <i class="bi bi-{{ $tag->icon }} me-2 text-muted"></i>
+              <i class="bi {{ $tag->icon }} me-2 text-muted"></i>
               <strong>Ikon:</strong> {{ $tag->icon }}
             </div>
           @endif
@@ -199,7 +199,7 @@
   </div>
 </div>
 
-<div class="row mb-3">
+<div class="row mb-2">
   <div class="col-md-4 mb-4">
     <!-- Monthly Usage -->
     <div class="card mt-4">
@@ -279,20 +279,20 @@
     }
     
     document.addEventListener('DOMContentLoaded', function() {
-        // Monthly Usage Chart
-        const monthlyCtx = document.getElementById('monthlyUsageChart');
-        if (monthlyCtx) {
-            const monthlyData = {
-                labels: @json($monthlyUsage->pluck('month_label')),
-                datasets: [{
-                    label: 'Jumlah Transaksi',
-                    data: @json($monthlyUsage->pluck('count')),
-                    backgroundColor: 'rgba(13, 110, 253, 0.2)',
-                    borderColor: 'rgba(13, 110, 253, 1)',
-                    borderWidth: 2,
-                    tension: 0.4
-                }]
-            };
+      // Monthly Usage Chart
+      const monthlyCtx = document.getElementById('monthlyUsageChart');
+      if (monthlyCtx) {
+        const monthlyData = {
+          labels: @json($monthlyUsage->pluck('month_label')),
+          datasets: [{
+            label: 'Jumlah Transaksi',
+            data: @json($monthlyUsage->pluck('count')),
+            backgroundColor: 'rgba(13, 110, 253, 0.2)',
+            borderColor: 'rgba(13, 110, 253, 1)',
+            borderWidth: 2,
+            tension: 0.4
+          }]
+        };
             
             new Chart(monthlyCtx, {
                 type: 'line',
