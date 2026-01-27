@@ -399,12 +399,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus tag "<span id="tagNameToDelete"></span>"?</p>
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Tag akan dihapus dari semua transaksi yang menggunakannya.
-                </div>
-            </div>
+        <p>Apakah Anda yakin ingin menghapus tag "<span id="tagNameToDelete"></span>"?</p>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Tag akan dihapus dari semua transaksi yang menggunakannya.
+        </div>
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
         <form id="deleteTagForm" method="POST">
