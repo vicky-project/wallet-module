@@ -106,9 +106,9 @@
   <!-- Transactions -->
   <div class="col-md-8">
     <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
-                <div class="dropdown">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
+        <div class="dropdown">
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
                             type="button" 
                             data-bs-toggle="dropdown">
@@ -121,8 +121,8 @@
                         <li><a class="dropdown-item" href="#">Tahun ini</a></li>
                     </ul>
                 </div>
-            </div>
-            <div class="card-body">
+      </div>
+      <div class="card-body">
                 @if($transactions->isEmpty())
                     <div class="text-center py-4">
                         <i class="bi bi-receipt" style="font-size: 3rem; color: #dee2e6;"></i>
@@ -213,7 +213,7 @@
                     @endif
                 @endif
             </div>
-        </div>
+    </div>
         
     <!-- Statistics -->
     <div class="row mt-4">

@@ -114,7 +114,7 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    allTags = data.data || [];
+                    allTags = data.data.data || [];
                     renderAvailableTags();
                     checkIfNoTags();
                 }
