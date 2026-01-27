@@ -5,30 +5,28 @@
 @section('content')
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Kembali
-    </a>
+  <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
+    <i class="bi bi-arrow-left me-1"></i> Kembali
+  </a>
 </div>
 
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-tag-fill me-2"></i>
                     {{ isset($tag) ? 'Edit Tag' : 'Tambah Tag Baru' }}
                 </h5>
             </div>
-            <div class="card-body">
-                <form action="{{ isset($tag) ? route('apps.tags.update', $tag) : route('apps.tags.store') }}" 
-                      method="POST" 
-                      id="tagForm">
-                    @csrf
-                    @if(isset($tag))
-                        @method('PUT')
-                    @endif
+      <div class="card-body">
+        <form action="{{ isset($tag) ? route('apps.tags.update', $tag) : route('apps.tags.store') }}" method="POST" id="tagForm">
+          @csrf
+          @if(isset($tag))
+            @method('PUT')
+          @endif
                     
-                    <div class="mb-3">
+          <div class="mb-3">
                         <label for="name" class="form-label">Nama Tag <span class="text-danger">*</span></label>
                         <input type="text" 
                                class="form-control @error('name') is-invalid @enderror" 
@@ -43,7 +41,7 @@
                         <small class="text-muted">Nama harus unik dan deskriptif</small>
                     </div>
                     
-                    <div class="mb-3">
+          <div class="mb-3">
                         <label for="color" class="form-label">Warna Tag <span class="text-danger">*</span></label>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -86,7 +84,7 @@
                         </div>
                     </div>
                     
-                    <div class="mb-3">
+          <div class="mb-3">
                         <label for="icon" class="form-label">Ikon (Opsional)</label>
                         <div class="input-group">
                             <span class="input-group-text">
@@ -143,37 +141,35 @@
                         <small class="text-muted">Pilih ikon dari Bootstrap Icons</small>
                     </div>
                     
-                    <!-- Preview Section -->
-                    <div class="card text-bg-light mb-4">
-                        <div class="card-header">
-                            <h6 class="mb-0">Preview Tag</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex flex-wrap gap-3 align-items-center">
-                                <!-- Tag Preview -->
-                                <div>
-                                    <p class="small text-muted mb-1">Tampilan Tag:</p>
-                                    <span class="badge rounded-pill" id="tagPreview">
-                                        <i class="bi me-1" id="previewIcon"></i>
-                                        <span id="previewName">Nama Tag</span>
-                                    </span>
-                                </div>
+          <!-- Preview Section -->
+          <div class="card bg-text-light mb-4">
+            <div class="card-header">
+              <h6 class="mb-0">Preview Tag</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-3 align-items-center">
+                <!-- Tag Preview -->
+                <div>
+                  <p class="small text-muted mb-1">Tampilan Tag:</p>
+                  <span class="badge rounded-pill" id="tagPreview">
+                    <i class="bi me-1" id="previewIcon"></i>
+                    <span id="previewName">Nama Tag</span>
+                  </span>
+                </div>
                                 
-                                <!-- Color Preview -->
-                                <div>
-                                    <p class="small text-muted mb-1">Warna:</p>
-                                    <div class="d-flex align-items-center">
-                                        <div class="color-preview me-2" 
-                                             id="colorPreview" 
-                                             style="width: 30px; height: 30px; border-radius: 4px;"></div>
-                                        <span id="colorHex">#0d6efd</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Color Preview -->
+                <div>
+                  <p class="small text-muted mb-1">Warna:</p>
+                  <div class="d-flex align-items-center">
+                    <div class="color-preview me-2" id="colorPreview" style="width: 30px; height: 30px; border-radius: 4px;"></div>
+                    <span id="colorHex">#0d6efd</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
                     
-                    <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between">
                         <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
                             <i class="bi bi-x-circle me-1"></i> Batal
                         </a>
@@ -182,13 +178,13 @@
                             {{ isset($tag) ? 'Perbarui' : 'Simpan' }}
                         </button>
                     </div>
-                </form>
-            </div>
-        </div>
+        </form>
+      </div>
+    </div>
         
-        <!-- Suggestions Card -->
-        @if(isset($similarTags) && $similarTags->isNotEmpty())
-            <div class="card mt-4">
+    <!-- Suggestions Card -->
+    @if(isset($similarTags) && $similarTags->isNotEmpty())
+      <div class="card mt-4">
                 <div class="card-header">
                     <h6 class="mb-0">
                         <i class="bi bi-lightbulb me-2"></i> Tag Serupa
@@ -214,9 +210,10 @@
                     </div>
                 </div>
             </div>
-        @endif
-    </div>
+    @endif
+  </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
@@ -305,4 +302,3 @@
     });
 </script>
 @endpush
-@endsection
