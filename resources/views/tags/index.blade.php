@@ -47,10 +47,8 @@
                 <h6 class="text-muted mb-2">Total Tag</h6>
                 <h3 class="mb-0">{{ $stats['total_tags'] }}</h3>
               </div>
-              <div class="avatar-sm">
-                <span class="stat-icon bg-primary bg-opacity-10 text-primary">
-                  <i class="bi bi-tags"></i>
-                </span>
+              <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-tags"></i>
               </div>
             </div>
           </div>
@@ -76,10 +74,8 @@
                   {{ $stats['most_used_tag']->transactions_count ?? 0 }} transaksi
                 </small>
               </div>
-              <div class="avatar-sm">
-                <span class="avatar-title bg-success rounded-circle">
-                  <i class="bi bi-star-fill"></i>
-                </span>
+              <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-star-fill"></i>
               </div>
             </div>
           </div>
@@ -94,10 +90,8 @@
                 <h6 class="text-muted mb-2">Tag Baru (30 hari)</h6>
                 <h3 class="mb-0">{{ $stats['new_tags_last_30_days'] ?? 0 }}</h3>
               </div>
-              <div class="avatar-sm">
-                <span class="avatar-title bg-info rounded-circle">
-                  <i class="bi bi-clock-history"></i>
-                </span>
+              <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="bi bi-clock-history"></i>
               </div>
             </div>
           </div>
@@ -112,10 +106,8 @@
                 <h6 class="text-muted mb-2">Tag Tidak Terpakai</h6>
                 <h3 class="mb-0">{{ $stats['unused_tags'] ?? 0 }}</h3>
               </div>
-              <div class="avatar-sm">
-                <span class="avatar-title bg-warning rounded-circle">
-                  <i class="bi bi-exclamation-triangle"></i>
-                </span>
+              <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="bi bi-exclamation-triangle"></i>
               </div>
             </div>
           </div>
