@@ -11,7 +11,7 @@
       </span>
     </label>
         
-    <div id="selectedTagsContainer" class="selected-tags-container border rounded p-3 bg-text-light">
+    <div id="selectedTagsContainer" class="selected-tags-container border rounded p-3 text-bg-light">
       @if($selectedTags->isNotEmpty())
         <div class="d-flex flex-wrap gap-2" id="selectedTagsList">
           @foreach($selectedTags as $tag)

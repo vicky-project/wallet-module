@@ -69,10 +69,10 @@
           </div>
                     
           <div class="mb-2">
-                        <i class="bi bi-clock me-2 text-muted"></i>
-                        <strong>Diperbarui:</strong> 
-                        {{ $tag->updated_at->translatedFormat('d F Y H:i') }}
-                    </div>
+            <i class="bi bi-clock me-2 text-muted"></i>
+            <strong>Diperbarui:</strong> 
+              {{ $tag->updated_at->translatedFormat('d F Y H:i') }}
+          </div>
                     
           @if($tag->icon)
             <div class="mb-2">
