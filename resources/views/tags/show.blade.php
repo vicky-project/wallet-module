@@ -92,20 +92,20 @@
         
     <!-- Monthly Usage -->
     <div class="card mt-4">
-            <div class="card-header">
-                <h6 class="mb-0">Penggunaan Bulanan</h6>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="monthlyUsageChart"></canvas>
-                </div>
-            </div>
+      <div class="card-header">
+        <h6 class="mb-0">Penggunaan Bulanan</h6>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="monthlyUsageChart"></canvas>
         </div>
+      </div>
+    </div>
   </div>
     
   <!-- Transactions -->
   <div class="col-md-8">
-        <div class="card">
+    <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
                 <div class="dropdown">
@@ -215,8 +215,8 @@
             </div>
         </div>
         
-        <!-- Statistics -->
-        <div class="row mt-4">
+    <!-- Statistics -->
+    <div class="row mt-4">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -238,7 +238,7 @@
                 </div>
             </div>
         </div>
-    </div>
+  </div>
 </div>
 
 <!-- Delete Confirmation Modal -->
