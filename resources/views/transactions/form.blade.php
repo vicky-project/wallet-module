@@ -446,7 +446,7 @@
 <script>
   async function loadTags() {
     try {
-      const res = await fetch(`{{ route('apps.tags.for-transaction') }}?` + new URLSearchParams({
+      const res = await fetch(`{{ secure_url(config('app.url') . '/apps/tags/for-transaction') }}?` + new URLSearchParams({
         selected: document.getElementById('tagIdsInput')?.value || ''
       }));
       
