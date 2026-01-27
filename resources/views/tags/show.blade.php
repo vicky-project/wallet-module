@@ -54,33 +54,33 @@
         </div>
                 
         <div class="text-start">
-                    <div class="mb-2">
-                        <i class="bi bi-palette me-2 text-muted"></i>
-                        <strong>Warna:</strong> 
-                        <span class="badge" style="background-color: {{ $tag->color }};">
-                            {{ $tag->color }}
-                        </span>
-                    </div>
+          <div class="mb-2">
+            <i class="bi bi-palette me-2 text-muted"></i>
+            <strong>Warna:</strong> 
+            <span class="badge" style="background-color: {{ $tag->color }};">
+              {{ $tag->color }}
+            </span>
+          </div>
                     
-                    <div class="mb-2">
-                        <i class="bi bi-calendar me-2 text-muted"></i>
-                        <strong>Dibuat:</strong> 
-                        {{ $tag->created_at->translatedFormat('d F Y') }}
-                    </div>
+          <div class="mb-2">
+            <i class="bi bi-calendar me-2 text-muted"></i>
+            <strong>Dibuat:</strong> 
+            {{ $tag->created_at->translatedFormat('d F Y') }}
+          </div>
                     
-                    <div class="mb-2">
+          <div class="mb-2">
                         <i class="bi bi-clock me-2 text-muted"></i>
                         <strong>Diperbarui:</strong> 
                         {{ $tag->updated_at->translatedFormat('d F Y H:i') }}
                     </div>
                     
-                    @if($tag->icon)
-                        <div class="mb-2">
+          @if($tag->icon)
+            <div class="mb-2">
                             <i class="bi bi-{{ $tag->icon }} me-2 text-muted"></i>
                             <strong>Ikon:</strong> {{ $tag->icon }}
                         </div>
-                    @endif
-                </div>
+          @endif
+        </div>
                 
         <div class="mt-4">
                     <a href="{{ route('transactions.index', ['tag' => $tag->id]) }}" 
