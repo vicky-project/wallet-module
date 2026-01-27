@@ -6,7 +6,7 @@
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-2">
   <div class="btn-group">
-    <a href="{{ route('tags.edit', $tag) }}" class="btn btn-warning">
+    <a href="{{ route('apps.tags.edit', $tag) }}" class="btn btn-warning">
       <i class="bi bi-pencil me-1"></i> Edit
     </a>
     <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
@@ -123,13 +123,13 @@
       <div class="card-body">
         @if($transactions->isEmpty())
           <div class="text-center py-4">
-                        <i class="bi bi-receipt" style="font-size: 3rem; color: #dee2e6;"></i>
-                        <h5 class="mt-3">Belum ada transaksi</h5>
-                        <p class="text-muted">Tag ini belum digunakan pada transaksi apapun</p>
-                        <a href="{{ route('transactions.create') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-1"></i> Buat Transaksi
-                        </a>
-                    </div>
+            <i class="bi bi-receipt" style="font-size: 3rem; color: #dee2e6;"></i>
+            <h5 class="mt-3">Belum ada transaksi</h5>
+            <p class="text-muted">Tag ini belum digunakan pada transaksi apapun</p>
+            <a href="{{ route('apps.transactions.create') }}" class="btn btn-primary">
+              <i class="bi bi-plus-circle me-1"></i> Buat Transaksi
+            </a>
+          </div>
         @else
           <div class="table-responsive">
                         <table class="table table-hover">
