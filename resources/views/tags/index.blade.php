@@ -48,7 +48,7 @@
                 <h3 class="mb-0">{{ $stats['total_tags'] }}</h3>
               </div>
               <div class="avatar-sm">
-                <span class="avatar-title bg-primary rounded-circle">
+                <span class="bg-primary rounded-circle">
                   <i class="bi bi-tags"></i>
                 </span>
               </div>
