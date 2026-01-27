@@ -436,7 +436,242 @@
     }
   }
   
-    document.addEventListener('DOMContentLoaded', function() {
+  function updateFrequencyFields() {
+    const frequencySelect = document.getElementById('frequency');
+    const frequency = frequencySelect.value;
+    const frequencyFields = document.getElementById('frequencyFields');
+        
+    let html = '';
+        
+    switch(frequency) {
+      case 'weekly':
+        html = `
+          <div class="form-group">
+            <label for="day_of_week">Day of Week</label>
+            <select name="day_of_week" id="day_of_week" class="form-control">
+              <option value="0">Sunday</option>
+              <option value="1">Monday</option>
+              <option value="2">Tuesday</option>
+              <option value="3">Wednesday</option>
+              <option value="4">Thursday</option>
+              <option value="5">Friday</option>
+              <option value="6">Saturday</option>
+            </select>
+          </div>
+        `;
+        break;
+                
+      case 'monthly':
+      case 'quarterly':
+        html = `
+          <div class="form-group">
+            <label for="day_of_month">Day of Month</label>
+            <input type="number" name="day_of_month" id="day_of_month" class="form-control" min="1" max="31">
+          </div>
+        `;
+        break;
+
+      case 'custom':
+        html = `
+          <div class="form-group">
+            <label for="custom_schedule">Custom Schedule (YYYY-MM-DD)</label>
+            <textarea name="custom_schedule" id="custom_schedule" class="form-control" rows="3" placeholder="Enter dates separated by commas or new lines&#10;Example: 2024-01-15, 2024-02-15, 2024-03-15"></textarea>
+            <small class="form-text text-muted">Enter specific dates for the transaction to occur</small>
+          </div>
+        `;
+        break;
+    }
+        
+    frequencyFields.innerHTML = html;
+  }
+  
+  // Filter categories based on transaction type
+  function filterCategories(type) {
+    const categorySelect = document.getElementById('category_id');
+    const categoryOptions = categorySelect.options;
+            
+    for (let i = 0; i < categoryOptions.length; i++) {
+      const option = categoryOptions[i];
+      if (option.value === '') continue;
+                
+      const categoryType = option.dataset.type;
+                
+      if (type === 'transfer') {
+        // Show all categories for transfer
+        option.style.display = '';
+      } else {
+        // Show only matching categories
+        option.style.display = (categoryType === type) ? '' : 'none';
+      }
+    }
+            
+    // Reset selection if current selection doesn't match
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    if (selectedOption && selectedOption.style.display === 'none') {
+      categorySelect.value = '';
+      categorySelect.dispatchEvent(new Event('change'));
+    }
+  }
+        
+  // Update account balance display
+  function updateAccountBalance() {
+    const accountSelect = document.getElementById('account_id');
+    const accountOption = accountSelect.options[accountSelect.selectedIndex];
+    if (accountOption && accountOption.value) {
+      const balance = parseInt(accountOption.dataset.balance) || 0;
+      document.getElementById('accountBalance').textContent = `Saldo saat ini: Rp ${balance.toLocaleString('id-ID')}`;
+    } else {
+      document.getElementById('accountBalance').textContent = '';
+    }
+    
+    const toAccountSelect = document.getElementById('to_account_id');
+    const toAccountOption = toAccountSelect.options[toAccountSelect.selectedIndex];
+    if (toAccountOption && toAccountOption.value) {
+      const toBalance = parseInt(toAccountOption.dataset.balance) || 0;
+      document.getElementById('toAccountBalance').textContent = `Saldo saat ini: Rp ${toBalance.toLocaleString('id-ID')}`;
+    } else {
+      document.getElementById('toAccountBalance').textContent = '';
+    }
+  }
+  
+  function amountHelpText(amount) {
+    const amountHelp = document.getElementById('amountHelp');
+    if (amount > 0) {
+      amountHelp.textContent = `Rp ${amount.toLocaleString('id-ID')}`;
+    } else {
+      amountHelp.textContent = '';
+    }
+  }
+  
+  function submitForm(e) {
+    const typeInput = document.getElementById('type');
+    const amountInput = document.getElementById('amount');
+    const accountSelect = document.getElementById('account_id');
+    const toAccountSelect = document.getElementById('to_account_id');
+    
+    const type = typeInput.value;
+    const amount = parseInt(amountInput.value) || 0;
+    const accountId = accountSelect.value;
+    const toAccountId = toAccountSelect.value;
+            
+    // Get account balance
+    const accountOption = accountSelect.options[accountSelect.selectedIndex];
+    const accountBalance = parseInt(accountOption?.dataset.balance) || 0;
+            
+    // Validate minimum amount
+    if (amount < 1) {
+      e.preventDefault();
+      alert('Jumlah transaksi harus lebih dari 0.');
+      return;
+    }
+            
+    // Validate account selection
+    if (!accountId) {
+      e.preventDefault();
+      alert('Harap pilih akun.');
+      return;
+    }
+
+    // Check balance for expense or transfer
+    if ((type === '{{ TransactionType::EXPENSE->value }}' || type === '{{ TransactionType::TRANSFER->value }}') && amount > accountBalance) {
+      e.preventDefault();
+      alert('Saldo akun tidak mencukupi untuk transaksi ini.');
+      return;
+    }
+            
+    // Validate to account for transfer
+    if (type === '{{ TransactionType::TRANSFER->value }}') {
+      if (!toAccountId) {
+        e.preventDefault();
+        alert('Harap pilih akun tujuan untuk transfer.');
+        return;
+      }
+                
+      if (accountId === toAccountId) {
+        e.preventDefault();
+        alert('Tidak dapat transfer ke akun yang sama.');
+        return;
+      }
+    }
+            
+    // Validate category
+    if (!categorySelect.value) {
+      e.preventDefault();
+      alert('Harap pilih kategori.');
+      return;
+    }
+  }
+  
+  function renderBudgetTextInfo(data, amount) {
+    let message = '';
+    const usage = Math.round((data.current_spent + amount) / data.budget_amount * 100);
+
+    if (data.current_spent + amount > data.budget_amount) {
+      message = `
+      <div class="text-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Peringatan:</strong> Anggaran akan terlampaui!
+        <br>
+        <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
+      </div>
+      `;
+    } else if (usage >= 80) {
+      message = `
+      <div class="text-warning">
+        <i class="bi bi-exclamation-circle me-2"></i>
+        <strong>Perhatian:</strong> Anggaran hampir habis.
+        <br>
+        <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
+      </div>
+      `;
+    } else {
+      message = `
+      <div class="text-success">
+        <i class="bi bi-check-circle me-2"></i>
+        <strong>Anggaran tersedia:</strong> ${data.formatted_budget_amount}
+        <br>
+        <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
+      </div>
+      `;
+    }
+    
+    return message;
+  }
+  
+  // Check budget when category is selected
+  function checkBudget(categoryId, amount, date) {
+    if (!categoryId || !amount) return;
+    
+    const budgetInfo = document.getElementById('budgetInfo');
+    const budgetMessage = document.getElementById('budgetMessage');
+            
+    fetch("{{ secure_url(config('app.url')) }}/apps/transactions/check-budget", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({
+        category_id: categoryId,
+        amount: amount,
+        date: date
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.has_budget) {
+          budgetInfo.style.display = 'block';
+          budgetMessage.innerHTML = renderBudgetTextInfo(data, amount);
+        } else {
+          budgetInfo.style.display = 'none';
+        }
+      })
+        .catch(error => {
+          console.error('Error checking budget:', error);
+        });
+  }
+        
+  document.addEventListener('DOMContentLoaded', function() {
         // Elements
         const typeBadges = document.querySelectorAll('.transaction-type-badge');
         const typeInput = document.getElementById('type');
@@ -446,7 +681,6 @@
         const toAccountSelect = document.getElementById('to_account_id');
         const categorySelect = document.getElementById('category_id');
         const amountInput = document.getElementById('amount');
-        const amountHelp = document.getElementById('amountHelp');
         const budgetInfo = document.getElementById('budgetInfo');
         const budgetMessage = document.getElementById('budgetMessage');
         
@@ -469,53 +703,6 @@
         frequencySelect.addEventListener('change', updateFrequencyFields);
         updateFrequencyFields();
         
-        function updateFrequencyFields() {
-          const frequency = frequencySelect.value;
-          const frequencyFields = document.getElementById('frequencyFields');
-        
-          let html = '';
-        
-          switch(frequency) {
-            case 'weekly':
-              html = `
-                <div class="form-group">
-                  <label for="day_of_week">Day of Week</label>
-                  <select name="day_of_week" id="day_of_week" class="form-control">
-                    <option value="0">Sunday</option>
-                    <option value="1">Monday</option>
-                    <option value="2">Tuesday</option>
-                    <option value="3">Wednesday</option>
-                    <option value="4">Thursday</option>
-                    <option value="5">Friday</option>
-                    <option value="6">Saturday</option>
-                  </select>
-                </div>
-              `;
-              break;
-                
-            case 'monthly':
-            case 'quarterly':
-              html = `
-                <div class="form-group">
-                  <label for="day_of_month">Day of Month</label>
-                  <input type="number" name="day_of_month" id="day_of_month" class="form-control" min="1" max="31">
-                </div>
-                `;
-              break;
-                
-            case 'custom':
-              html = `
-                <div class="form-group">
-                  <label for="custom_schedule">Custom Schedule (YYYY-MM-DD)</label>
-                  <textarea name="custom_schedule" id="custom_schedule" class="form-control" rows="3" placeholder="Enter dates separated by commas or new lines&#10;Example: 2024-01-15, 2024-02-15, 2024-03-15"></textarea>
-                  <small class="form-text text-muted">Enter specific dates for the transaction to occur</small>
-                </div>
-                `;
-              break;
-          }
-        
-          frequencyFields.innerHTML = html;
-        }
         
         // Transaction type selection
         typeBadges.forEach(badge => {
@@ -554,117 +741,6 @@
             updateAccountBalance();
         }
         
-        // Filter categories based on transaction type
-        function filterCategories(type) {
-            const categoryOptions = categorySelect.options;
-            
-            for (let i = 0; i < categoryOptions.length; i++) {
-                const option = categoryOptions[i];
-                if (option.value === '') continue;
-                
-                const categoryType = option.dataset.type;
-                
-                if (type === 'transfer') {
-                    // Show all categories for transfer
-                    option.style.display = '';
-                } else {
-                    // Show only matching categories
-                    option.style.display = (categoryType === type) ? '' : 'none';
-                }
-            }
-            
-            // Reset selection if current selection doesn't match
-            const selectedOption = categorySelect.options[categorySelect.selectedIndex];
-            if (selectedOption && selectedOption.style.display === 'none') {
-                categorySelect.value = '';
-                categorySelect.dispatchEvent(new Event('change'));
-            }
-        }
-        
-        // Update account balance display
-        function updateAccountBalance() {
-            const accountOption = accountSelect.options[accountSelect.selectedIndex];
-            if (accountOption && accountOption.value) {
-                const balance = parseInt(accountOption.dataset.balance) || 0;
-                document.getElementById('accountBalance').textContent = 
-                    `Saldo saat ini: Rp ${balance.toLocaleString('id-ID')}`;
-            } else {
-                document.getElementById('accountBalance').textContent = '';
-            }
-            
-            const toAccountOption = toAccountSelect.options[toAccountSelect.selectedIndex];
-            if (toAccountOption && toAccountOption.value) {
-                const toBalance = parseInt(toAccountOption.dataset.balance) || 0;
-                document.getElementById('toAccountBalance').textContent = 
-                    `Saldo saat ini: Rp ${toBalance.toLocaleString('id-ID')}`;
-            } else {
-                document.getElementById('toAccountBalance').textContent = '';
-            }
-        }
-        
-        // Check budget when category is selected
-        function checkBudget(categoryId, amount, date) {
-            if (!categoryId || !amount) return;
-            
-            fetch("{{ secure_url(config('app.url')) }}/apps/transactions/check-budget", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    category_id: categoryId,
-                    amount: amount,
-                    date: date
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.has_budget) {
-                    budgetInfo.style.display = 'block';
-                    
-                    let message = '';
-                    const usage = Math.round((data.current_spent + amount) / data.budget_amount * 100);
-                    
-                    if (data.current_spent + amount > data.budget_amount) {
-                        message = `
-                            <div class="text-danger">
-                                <i class="bi bi-exclamation-triangle me-2"></i>
-                                <strong>Peringatan:</strong> Anggaran akan terlampaui!
-                                <br>
-                                <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
-                            </div>
-                        `;
-                    } else if (usage >= 80) {
-                        message = `
-                            <div class="text-warning">
-                                <i class="bi bi-exclamation-circle me-2"></i>
-                                <strong>Perhatian:</strong> Anggaran hampir habis.
-                                <br>
-                                <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
-                            </div>
-                        `;
-                    } else {
-                        message = `
-                            <div class="text-success">
-                                <i class="bi bi-check-circle me-2"></i>
-                                <strong>Anggaran tersedia:</strong> ${data.formatted_budget_amount}
-                                <br>
-                                <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
-                            </div>
-                        `;
-                    }
-                    
-                    budgetMessage.innerHTML = message;
-                } else {
-                    budgetInfo.style.display = 'none';
-                }
-            })
-            .catch(error => {
-                console.error('Error checking budget:', error);
-            });
-        }
-        
         // Event Listeners
         accountSelect.addEventListener('change', updateAccountBalance);
         toAccountSelect.addEventListener('change', updateAccountBalance);
@@ -692,77 +768,17 @@
             amountHelpText(amount);
         });
         
-        
-        function amountHelpText(amount) {
-            if (amount > 0) {
-                amountHelp.textContent = `Rp ${amount.toLocaleString('id-ID')}`;
-            } else {
-                amountHelp.textContent = '';
-            }
-        }
         // Form validation
-        document.getElementById('transactionForm').addEventListener('submit', function(e) {
-            const type = typeInput.value;
-            const amount = parseInt(amountInput.value) || 0;
-            const accountId = accountSelect.value;
-            const toAccountId = toAccountSelect.value;
-            
-            // Get account balance
-            const accountOption = accountSelect.options[accountSelect.selectedIndex];
-            const accountBalance = parseInt(accountOption?.dataset.balance) || 0;
-            
-            // Validate minimum amount
-            if (amount < 1) {
-                e.preventDefault();
-                alert('Jumlah transaksi harus lebih dari 0.');
-                return;
-            }
-            
-            // Validate account selection
-            if (!accountId) {
-                e.preventDefault();
-                alert('Harap pilih akun.');
-                return;
-            }
-            
-            // Check balance for expense or transfer
-            if ((type === 'expense' || type === 'transfer') && amount > accountBalance) {
-                e.preventDefault();
-                alert('Saldo akun tidak mencukupi untuk transaksi ini.');
-                return;
-            }
-            
-            // Validate to account for transfer
-            if (type === 'transfer') {
-                if (!toAccountId) {
-                    e.preventDefault();
-                    alert('Harap pilih akun tujuan untuk transfer.');
-                    return;
-                }
-                
-                if (accountId === toAccountId) {
-                    e.preventDefault();
-                    alert('Tidak dapat transfer ke akun yang sama.');
-                    return;
-                }
-            }
-            
-            // Validate category
-            if (!categorySelect.value) {
-                e.preventDefault();
-                alert('Harap pilih kategori.');
-                return;
-            }
-        });
+        document.getElementById('transactionForm').addEventListener('submit', (e) => submitForm(e) );
         
         // Initialize form
         const initialType = typeInput.value;
         updateFormForType(initialType);
         
         // Trigger initial budget check if editing
-        @if($transaction && $transaction->type == 'expense')
+        @if($transaction && $transaction->type == TransactionType::EXPENSE)
             const initialCategoryId = '{{ $transaction->category_id }}';
-            const initialAmount = {{ $transaction->amount }};
+            const initialAmount = {{ $transaction->amount->getAmount()->toInt() }};
             const initialDate = '{{ $transaction->transaction_date->format("Y-m-d\TH:i") }}';
             
             if (initialCategoryId && initialAmount > 0) {
