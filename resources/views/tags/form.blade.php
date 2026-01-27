@@ -14,11 +14,11 @@
   <div class="col-md-8">
     <div class="card">
       <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-tag-fill me-2"></i>
-                    {{ isset($tag) ? 'Edit Tag' : 'Tambah Tag Baru' }}
-                </h5>
-            </div>
+        <h5 class="card-title mb-0">
+          <i class="bi bi-tag-fill me-2"></i>
+          {{ isset($tag) ? 'Edit Tag' : 'Tambah Tag Baru' }}
+        </h5>
+      </div>
       <div class="card-body">
         <form action="{{ isset($tag) ? route('apps.tags.update', $tag) : route('apps.tags.store') }}" method="POST" id="tagForm">
           @csrf
@@ -70,11 +70,11 @@
           </div>
                     
           <div class="mb-3">
-                        <label for="icon" class="form-label">Ikon (Opsional)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i id="iconPreview" class="bi bi-tag"></i>
-                            </span>
+            <label for="icon" class="form-label">Ikon (Opsional)</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i id="iconPreview" class="bi bi-tag"></i>
+              </span>
                             <select class="form-select @error('icon') is-invalid @enderror" 
                                     id="icon" 
                                     name="icon">

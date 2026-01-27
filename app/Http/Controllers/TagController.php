@@ -46,7 +46,7 @@ class TagController extends Controller
 
 		$popularTags = Tag::getPopularTags($user->id, 20);
 
-		if ($request->wantsJson()) {
+		if ($request->wantsJson() || $request->json) {
 			return response()->json([
 				"data" => $tags,
 				"stats" => $stats,
