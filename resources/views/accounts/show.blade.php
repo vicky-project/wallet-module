@@ -147,7 +147,7 @@
 
 <!-- Stats Cards -->
 <div class="row mb-4">
-  <div class="col-md-3 mb-3">
+  <div class="col-md-6 mb-3">
     <div class="card detail-card border-start border-success border-4">
       <div class="card-body">
         <div class="d-flex align-items-center">
@@ -166,7 +166,7 @@
     </div>
   </div>
         
-  <div class="col-md-3 mb-3">
+  <div class="col-md-6 mb-3">
     <div class="card detail-card border-start border-danger border-4">
       <div class="card-body">
         <div class="d-flex align-items-center">
@@ -185,7 +185,7 @@
     </div>
   </div>
         
-  <div class="col-md-3 mb-3">
+  <div class="col-md-6 mb-3">
     <div class="card detail-card border-start border-info border-4">
       <div class="card-body">
         <div class="d-flex align-items-center">
@@ -211,7 +211,7 @@
     </div>
   </div>
         
-  <div class="col-md-3 mb-3">
+  <div class="col-md-6 mb-3">
     <div class="card detail-card border-start border-primary border-4">
       <div class="card-body">
         <div class="d-flex align-items-center">
