@@ -48,7 +48,7 @@
           <div class="col-6">
             <div class="stat-box">
               <h3 class="text-success">
-                {{ formatCurrency($transactions->sum('amount')) }}
+                @money($transactions->sum('amount'))
               </h3>
               <small class="text-muted">Total Nilai</small>
             </div>
@@ -178,7 +178,7 @@
                     </td>
                     <td class="text-end fw-bold {{ $transaction->type === TransactionType::EXPENSE ? 'text-danger' : 'text-success' }}">
                       {{ $transaction->type === TransactionType::EXPENSE ? '-' : '+' }}
-                      {{ formatCurrency($transaction->amount->getAmount()->toInt()) }}
+                      @money($transaction->amount->getAmount()->toInt())
                     </td>
                     <td class="text-center">
                       <div class="btn-group btn-group-sm">
