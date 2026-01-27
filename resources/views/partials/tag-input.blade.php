@@ -119,7 +119,7 @@
         // Fetch all tags on page load
         async function fetchAllTags() {
             try {
-                const response = await fetch('{{ route("tags.index") }}?json=true');
+                const response = await fetch('{{ route("apps.tags.index") }}?json=true');
                 const data = await response.json();
                 allTags = data.data || [];
             } catch (error) {
@@ -205,7 +205,7 @@
             const icon = document.getElementById('newTagIcon').value;
             
             try {
-                const response = await fetch('{{ route("tags.store") }}', {
+                const response = await fetch('{{ route("apps.tags.store") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

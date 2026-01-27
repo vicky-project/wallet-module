@@ -68,6 +68,28 @@ class TagController extends Controller
 	}
 
 	/**
+	 * Store a new tag
+	 */
+	public function store(TagRequest $request)
+	{
+		$user = $request->user();
+
+		$tag = Tag::create([
+			"user_id" => $user->id,
+			"name" => $request->name,
+			"color" => $request->color,
+			"icon" => $request->icon,
+		]);
+
+		// Clear cache
+		cache()->forget("user_{$user->id}_tags");
+
+		return redirect()
+			->route("apps.tags.index")
+			->with("success", "Tag berhasil dibuat");
+	}
+
+	/**
 	 * Show the form for editing the specified tag.
 	 */
 	public function edit(Request $request, $id): View
@@ -81,6 +103,28 @@ class TagController extends Controller
 		$similarTags = $tag->getSimilarTags();
 
 		return view("wallet::tags.form", compact("tag", "similarTags"));
+	}
+
+	/**
+	 * Update tag
+	 */
+	public function update(TagRequest $request, Tag $tag)
+	{
+		$user = $request->user();
+
+		$tag->update([
+			"name" => $request->name,
+			"color" => $request->color,
+			"icon" => $request->icon,
+		]);
+
+		// Clear cache
+		cache()->forget("user_{$user->id}_tags");
+		cache()->forget("tag_{$tag->id}_usage_count");
+
+		return redirect()
+			->route()
+			->with("success", "Tag berhasil diperbarui");
 	}
 
 	/**
@@ -147,6 +191,106 @@ class TagController extends Controller
 		return view(
 			"wallet::tags.show",
 			compact("tag", "transactions", "monthlyUsage", "categoryDistribution")
+		);
+	}
+
+	/**
+	 * Delete tag (soft delete)
+	 */
+	public function destroy(Request $request, Tag $tag)
+	{
+		$user = $request->user();
+
+		// Check if tag is used in transactions
+		if ($tag->transactions()->count() > 0) {
+			return back()->withErrors(
+				"Tidak dapat menghapus tag yang masih digunakan dalam transaksi"
+			);
+		}
+
+		$tag->delete();
+
+		// Clear cache
+		cache()->forget("user_{$user->id}_tags");
+
+		return redirect()
+			->route("app.tags.index")
+			->with("success", "Tag berhasil dihapus");
+	}
+
+	/**
+	 * Force delete tag
+	 */
+	public function forceDestroy(Request $request, $id)
+	{
+		$user = $request->user();
+
+		$tag = Tag::forUser($user->id)
+			->withTrashed()
+			->findOrFail($id);
+
+		// Remove all tag associations first
+		$tag->transactions()->detach();
+
+		$tag->forceDelete();
+
+		// Clear cache
+		cache()->forget("user_{$user->id}_tags");
+
+		return back()->with("success", "Tag berhasil dihapus permanen");
+	}
+
+	/**
+	 * Restore deleted tag
+	 */
+	public function restore(Request $request, $id)
+	{
+		$user = $request->user();
+
+		$tag = Tag::forUser($user->id)
+			->withTrashed()
+			->findOrFail($id);
+
+		$tag->restore();
+
+		// Clear cache
+		cache()->forget("user_{$user->id}_tags");
+
+		return back()->with("success", "Tag berhasil dipulihkan");
+	}
+
+	/**
+	 * Merge tags
+	 */
+	public function merge(Request $request): JsonResponse
+	{
+		$request->validate([
+			"source_tag_id" => "required|exists:tags,id",
+			"target_tag_id" => "required|exists:tags,id|different:source_tag_id",
+		]);
+
+		$user = $request->user();
+
+		$sourceTag = Tag::forUser($user->id)->findOrFail($request->source_tag_id);
+		$targetTag = Tag::forUser($user->id)->findOrFail($request->target_tag_id);
+
+		if ($sourceTag->mergeInto($targetTag)) {
+			// Clear cache
+			cache()->forget("user_{$user->id}_tags");
+
+			return response()->json([
+				"success" => true,
+				"message" => "Tag berhasil digabungkan",
+				"data" => $targetTag->loadCount("transactions"),
+			]);
+		}
+
+		return response()->json(
+			[
+				"success" => false,
+				"message" => "Gagal menggabungkan tag",
+			],
+			422
 		);
 	}
 

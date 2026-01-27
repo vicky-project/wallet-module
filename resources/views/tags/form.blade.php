@@ -27,62 +27,47 @@
           @endif
                     
           <div class="mb-3">
-                        <label for="name" class="form-label">Nama Tag <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('name') is-invalid @enderror" 
-                               id="name" 
-                               name="name" 
-                               value="{{ old('name', $tag->name ?? '') }}" 
-                               required
-                               placeholder="Contoh: Makanan, Transportasi, Hiburan">
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">Nama harus unik dan deskriptif</small>
-                    </div>
+            <label for="name" class="form-label">Nama Tag <span class="text-danger">*</span></label>
+            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $tag->name ?? '') }}" required placeholder="Contoh: Makanan, Transportasi, Hiburan">
+            @error('name')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            <small class="text-muted">Nama harus unik dan deskriptif</small>
+          </div>
                     
           <div class="mb-3">
-                        <label for="color" class="form-label">Warna Tag <span class="text-danger">*</span></label>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="color" 
-                                       class="form-control form-control-color @error('color') is-invalid @enderror" 
-                                       id="color" 
-                                       name="color" 
-                                       value="{{ old('color', $tag->color ?? '#0d6efd') }}"
-                                       title="Pilih warna">
-                                @error('color')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <div class="color-presets">
-                                    <p class="mb-2 small text-muted">Preset warna:</p>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @foreach([
-                                            '#0d6efd' => 'Biru',
-                                            '#dc3545' => 'Merah',
-                                            '#198754' => 'Hijau',
-                                            '#ffc107' => 'Kuning',
-                                            '#6f42c1' => 'Ungu',
-                                            '#fd7e14' => 'Oranye',
-                                            '#20c997' => 'Teal',
-                                            '#6c757d' => 'Abu-abu',
-                                            '#0dcaf0' => 'Cyan',
-                                            '#6610f2' => 'Indigo'
-                                        ] as $color => $label)
-                                            <button type="button" 
-                                                    class="btn btn-sm color-preset-btn" 
-                                                    style="background-color: {{ $color }}; border-color: {{ $color }};"
-                                                    data-color="{{ $color }}"
-                                                    title="{{ $label }}">
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <label for="color" class="form-label">Warna Tag <span class="text-danger">*</span></label>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="color" class="form-control form-control-color @error('color') is-invalid @enderror" id="color" name="color" value="{{ old('color', $tag->color ?? '#0d6efd') }}" title="Pilih warna">
+                @error('color')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+              <div class="col-md-6">
+                <div class="color-presets">
+                  <p class="mb-2 small text-muted">Preset warna:</p>
+                  <div class="d-flex flex-wrap gap-2">
+                    @foreach([
+                      '#0d6efd' => 'Biru',
+                      '#dc3545' => 'Merah',
+                      '#198754' => 'Hijau',
+                      '#ffc107' => 'Kuning',
+                      '#6f42c1' => 'Ungu',
+                      '#fd7e14' => 'Oranye',
+                      '#20c997' => 'Teal',
+                      '#6c757d' => 'Abu-abu',
+                      '#0dcaf0' => 'Cyan',
+                      '#6610f2' => 'Indigo'
+                    ] as $color => $label)
+                      <button type="button" class="btn btn-md color-preset-btn" style="background-color: {{ $color }}; border-color: {{ $color }};" data-color="{{ $color }}" title="{{ $label }}">
+                      </button>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
                     
           <div class="mb-3">
                         <label for="icon" class="form-label">Ikon (Opsional)</label>
@@ -170,14 +155,14 @@
           </div>
                     
           <div class="d-flex justify-content-between">
-                        <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle me-1"></i> Batal
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle me-1"></i>
-                            {{ isset($tag) ? 'Perbarui' : 'Simpan' }}
-                        </button>
-                    </div>
+            <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary">
+              <i class="bi bi-x-circle me-1"></i> Batal
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-circle me-1"></i>
+              {{ isset($tag) ? 'Perbarui' : 'Simpan' }}
+            </button>
+          </div>
         </form>
       </div>
     </div>
