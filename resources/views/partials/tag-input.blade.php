@@ -151,7 +151,7 @@
             const icon = document.getElementById('newTagIcon').value;
             
             try {
-                const response = await fetch('{{ route("apps.tags.store") }}', {
+                const response = await fetch('{{ secure_url(config("app.url")."/apps/tags") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

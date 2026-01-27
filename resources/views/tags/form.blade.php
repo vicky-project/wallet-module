@@ -107,10 +107,10 @@
                   'lightning-fill' => 'Petir (fill)',
                   'droplet' => 'Tetes',
                   'droplet-fill' => 'Tetes (fill)',
-                                    'music-note' => 'Musik',
-                                    'music-note-fill' => 'Musik (fill)'
-                                ] as $icon => $label)
-                                    <option value="{{ $icon }}" 
+                  'music-note' => 'Musik',
+                  'music-note-fill' => 'Musik (fill)'
+                ] as $icon => $label)
+                  <option value="{{ $icon }}" 
                                             {{ old('icon', $tag->icon ?? '') == $icon ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
