@@ -131,10 +131,10 @@ Route::middleware(["auth"])
 		Route::get("reports", [ReportController::class, "index"])->name("reports");
 
 		// Tag routes
-		Route::resource("tags", TagController::class);
 		Route::get("tags/trash", [TagController::class, "trash"])->name(
 			"tags.trash"
 		);
+		Route::resource("tags", TagController::class);
 		Route::post("tags/merge", [TagController::class, "merge"])->name(
 			"tags.merge"
 		);

@@ -17,6 +17,10 @@
       <i class="bi bi-file-earmark-text fab-report"></i>
       <span class="fab-label">Laporan</span>
     </a>
+    <a href="#" class="fab-item" id="fabUpload">
+      <i class="bi bi-cloud-upload fab-upload"></i>
+      <span class="fab-label">Upload</span>
+    </a>
   </div>
   <button class="fab-main" id="fabMain">
     <i class="bi bi-plus-lg" id="fabIcon"></i>
@@ -33,6 +37,7 @@
   const fabExpense = document.getElementById('fabExpense');
   const fabRecurring = document.getElementById('fabRecurring');
   const fabReport = document.getElementById('fabReport');
+  const fabUpload= document.getElementById('fabUpload');
   
   // FAB Toggle Functionality
   function toggleFabMenu() {
@@ -70,7 +75,7 @@
   });
 
   // Tutup FAB Menu ketika klik item menu
-  [fabIncome, fabExpense, fabRecurring, fabReport].forEach(item => {
+  [fabIncome, fabExpense, fabRecurring, fabReport, fabUpload].forEach(item => {
     item.addEventListener('click', function(e) {
       e.stopPropagation();
       const action = this.id.replace('fab', '').toLowerCase();
@@ -96,6 +101,10 @@
           break;
         case 'report':
           window.location.href = '{{ route("apps.reports") }}';
+          break;
+        case 'upload':
+          alert('Upload feature is coming soon.');
+          // window.location.href = '';
           break;
       }
     });
