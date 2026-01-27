@@ -8,7 +8,11 @@
 @include('wallet::partials.fab')
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div class="btn-group">
-    <a href="{{ route('apps.tags.edit', $tag) }}" class="btn btn-warning">
+    <a href="{{ route('apps.tags.index') }}" class="btn btn-secondary" role="button">
+      <i class="bi bi-arrow-left"></i>
+      Back
+    </a>
+    <a href="{{ route('apps.tags.edit', $tag) }}" class="btn btn-warning" role="button">
       <i class="bi bi-pencil me-1"></i> Edit
     </a>
     <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
@@ -293,104 +297,104 @@
             tension: 0.4
           }]
         };
-            
-            new Chart(monthlyCtx, {
-                type: 'line',
-                data: monthlyData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        }
-                    }
+
+        new Chart(monthlyCtx, {
+          type: 'line',
+          data: monthlyData,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  precision: 0
                 }
-            });
-        }
+              }
+            }
+          }
+        });
+      }
         
-        // Expense Chart
-        const expenseCtx = document.getElementById('expenseChart');
-        if (expenseCtx) {
-            const expenseData = {
-                labels: ['Pengeluaran', 'Pemasukan'],
-                datasets: [{
-                    data: [
-                        {{ $transactions->where('type', TransactionType::EXPENSE)->sum('amount') }},
-                        {{ $transactions->where('type', TransactionType::INCOME)->sum('amount') }}
-                    ],
-                    backgroundColor: [
-                        'rgba(220, 53, 69, 0.8)',
-                        'rgba(25, 135, 84, 0.8)'
-                    ]
-                }]
-            };
-            
-            new Chart(expenseCtx, {
-                type: 'pie',
-                data: expenseData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${formatCurrency(context.raw)}`;
-                                }
-                            }
-                        }
-                    }
+      // Expense Chart
+      const expenseCtx = document.getElementById('expenseChart');
+      if (expenseCtx) {
+        const expenseData = {
+          labels: ['Pengeluaran', 'Pemasukan'],
+          datasets: [{
+            data: [
+              {{ $transactions->where('type', TransactionType::EXPENSE)->sum('amount') }},
+              {{ $transactions->where('type', TransactionType::INCOME)->sum('amount') }}
+            ],
+            backgroundColor: [
+              'rgba(220, 53, 69, 0.8)',
+              'rgba(25, 135, 84, 0.8)'
+            ]
+          }]
+        };
+
+        new Chart(expenseCtx, {
+          type: 'pie',
+          data: expenseData,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `${context.label}: ${formatCurrency(context.raw)}`;
+                  }
                 }
-            });
-        }
+              }
+            }
+          }
+        });
+      }
         
-        // Category Chart
-        const categoryCtx = document.getElementById('categoryChart');
-        if (categoryCtx) {
-            const categoryData = {
-                labels: @json($categoryDistribution->pluck('category_name')),
-                datasets: [{
-                    data: @json($categoryDistribution->pluck('total')),
-                    backgroundColor: [
-                        'rgba(13, 110, 253, 0.8)',
-                        'rgba(111, 66, 193, 0.8)',
-                        'rgba(253, 126, 20, 0.8)',
-                        'rgba(32, 201, 151, 0.8)',
-                        'rgba(220, 53, 69, 0.8)'
-                    ]
-                }]
-            };
-            
-            new Chart(categoryCtx, {
-                type: 'doughnut',
-                data: categoryData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${formatCurrency(context.raw)}`;
-                                }
-                            }
-                        }
-                    }
+      // Category Chart
+      const categoryCtx = document.getElementById('categoryChart');
+      if (categoryCtx) {
+        const categoryData = {
+          labels: @json($categoryDistribution->pluck('category_name')),
+          datasets: [{
+            data: @json($categoryDistribution->pluck('total')),
+            backgroundColor: [
+              'rgba(13, 110, 253, 0.8)',
+              'rgba(111, 66, 193, 0.8)',
+              'rgba(253, 126, 20, 0.8)',
+              'rgba(32, 201, 151, 0.8)',
+              'rgba(220, 53, 69, 0.8)'
+            ]
+          }]
+        };
+
+        new Chart(categoryCtx, {
+          type: 'doughnut',
+          data: categoryData,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `${context.label}: ${formatCurrency(context.raw)}`;
+                  }
                 }
-            });
-        }
+              }
+            }
+          }
+        });
+      }
     });
     
     function confirmDelete(tagId, tagName) {
