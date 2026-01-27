@@ -72,7 +72,7 @@
 </div>
     
 <div class="row justify-content-center">
-  <div class="col-lg-8">
+  <div class="col-lg-10 mb-3">
     <!-- Transaction Header -->
     <div class="card transaction-detail-card mb-4">
       <div class="card-body text-center">
@@ -112,7 +112,11 @@
         </p>
       </div>
     </div>
-            
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
     <!-- Transaction Details -->
     <div class="card transaction-detail-card mb-4">
       <div class="card-body">
@@ -205,7 +209,8 @@
         </div>
       </div>
     </div>
-            
+  </div>
+  <div class="col-md-6">
     <!-- Action Buttons -->
     <div class="card transaction-detail-card">
       <div class="card-body">
