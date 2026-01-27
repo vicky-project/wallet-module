@@ -92,7 +92,7 @@
           window.location.href = '{{ route("apps.transactions.create", ["type" => "expense"]) }}';
           break;
         case 'recurring':
-          /window.location.href = '{{ route("apps.recurrings.index") }}';
+          window.location.href = '{{ route("apps.recurrings.index") }}';
           break;
         case 'report':
           window.location.href = '{{ route("apps.reports") }}';
