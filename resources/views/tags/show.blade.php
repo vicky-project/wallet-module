@@ -109,18 +109,16 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Transaksi dengan Tag Ini</h5>
         <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
-                            type="button" 
-                            data-bs-toggle="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         <i class="bi bi-filter"></i> Filter
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Semua</a></li>
-                        <li><a class="dropdown-item" href="#">Minggu ini</a></li>
-                        <li><a class="dropdown-item" href="#">Bulan ini</a></li>
-                        <li><a class="dropdown-item" href="#">Tahun ini</a></li>
-                    </ul>
-                </div>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Semua</a></li>
+            <li><a class="dropdown-item" href="#">Minggu ini</a></li>
+            <li><a class="dropdown-item" href="#">Bulan ini</a></li>
+            <li><a class="dropdown-item" href="#">Tahun ini</a></li>
+          </ul>
+        </div>
       </div>
       <div class="card-body">
                 @if($transactions->isEmpty())
