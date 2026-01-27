@@ -311,10 +311,10 @@
         <!-- Quick Actions -->
         <div class="d-flex flex-wrap gap-2 mt-4">
           <a href="{{ route('apps.accounts.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Kembali
+            <i class="bi bi-arrow-left me-1"></i> Kembali
           </a>
           <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-outline-warning">
-            <i class="bi bi-pencil"></i> Edit
+            <i class="bi bi-pencil me-1"></i> Edit
           </a>
           <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
             <i class="bi bi-arrow-left-right me-1"></i>Transfer Dana
@@ -462,14 +462,4 @@
         }
     });
 </script>
-@endpush
-
-@push('styles')
-<style>
-  @media (max-width: 576px) {
-    .fab-container {
-      bottom: 80px;
-    }
-  }
-</style>
 @endpush
