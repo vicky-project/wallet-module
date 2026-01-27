@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Routing\Controller;
 use Modules\Wallet\Models\Tag;
+use Modules\Wallet\Http\Requests\TagRequest;
 
 class TagController extends Controller
 {

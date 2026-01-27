@@ -121,8 +121,8 @@
         </div>
       </div>
       <div class="card-body">
-                @if($transactions->isEmpty())
-                    <div class="text-center py-4">
+        @if($transactions->isEmpty())
+          <div class="text-center py-4">
                         <i class="bi bi-receipt" style="font-size: 3rem; color: #dee2e6;"></i>
                         <h5 class="mt-3">Belum ada transaksi</h5>
                         <p class="text-muted">Tag ini belum digunakan pada transaksi apapun</p>
@@ -130,8 +130,8 @@
                             <i class="bi bi-plus-circle me-1"></i> Buat Transaksi
                         </a>
                     </div>
-                @else
-                    <div class="table-responsive">
+        @else
+          <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -203,14 +203,14 @@
                         </table>
                     </div>
                     
-                    <!-- Pagination -->
-                    @if($transactions->hasPages())
-                        <div class="d-flex justify-content-center mt-4">
+          <!-- Pagination -->
+          @if($transactions->hasPages())
+            <div class="d-flex justify-content-center mt-4">
                             {{ $transactions->links('vendor.pagination.bootstrap-5') }}
                         </div>
-                    @endif
-                @endif
-            </div>
+          @endif
+        @endif
+      </div>
     </div>
         
     <!-- Statistics -->
