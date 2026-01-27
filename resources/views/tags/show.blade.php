@@ -24,7 +24,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row mb-3">
   <!-- Tag Info -->
   <div class="col-md-4 mb-4">
     <div class="card">
@@ -88,18 +88,6 @@
           <a href="{{ route('apps.transactions.index', ['tag' => $tag->id]) }}" class="btn btn-outline-primary w-100">
             <i class="bi bi-arrow-right-circle me-1"></i> Lihat Semua Transaksi
           </a>
-        </div>
-      </div>
-    </div>
-        
-    <!-- Monthly Usage -->
-    <div class="card mt-4">
-      <div class="card-header">
-        <h6 class="mb-0">Penggunaan Bulanan</h6>
-      </div>
-      <div class="card-body">
-        <div class="chart-container">
-          <canvas id="monthlyUsageChart"></canvas>
         </div>
       </div>
     </div>
@@ -208,7 +196,24 @@
         @endif
       </div>
     </div>
-        
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-4 mb-4">
+    <!-- Monthly Usage -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h6 class="mb-0">Penggunaan Bulanan</h6>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="monthlyUsageChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8 mb-4">
     <!-- Statistics -->
     <div class="row mt-4">
       <div class="col-md-6 mb-3">
@@ -406,7 +411,7 @@
           headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json'
-                }
+          }
         });
             
         if (response.ok) {
@@ -416,9 +421,9 @@
           alert(data.message || 'Terjadi kesalahan');
         }
       } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus tag');
-        }
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menghapus tag');
+      }
     }
 </script>
 @endpush
