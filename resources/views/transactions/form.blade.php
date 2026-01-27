@@ -696,16 +696,21 @@
         const recurringOptions = document.getElementById('recurringOptions');
         const frequencySelect = document.getElementById('frequency');
     
+        if(isRecurring) {
         isRecurring.addEventListener('change', function () {
           recurringOptions.style.display = this.checked ? 'block' : 'none';
         });
+        }
     
+        if(frequencySelect) {
         frequencySelect.addEventListener('change', updateFrequencyFields);
+        }
         updateFrequencyFields();
         
         
         // Transaction type selection
         typeBadges.forEach(badge => {
+          if(badge) {
             badge.addEventListener('click', function() {
                 const type = this.dataset.type;
                 
@@ -719,6 +724,7 @@
                 // Update form based on type
                 updateFormForType(type);
             });
+          }
         });
         
         // Update form based on transaction type
@@ -742,8 +748,12 @@
         }
         
         // Event Listeners
+        if(accountSelect) {
         accountSelect.addEventListener('change', updateAccountBalance);
+        }
+        if(toAccountSelect) {
         toAccountSelect.addEventListener('change', updateAccountBalance);
+        }
         
         if(categorySelect) {
         categorySelect.addEventListener('change', function() {
@@ -757,6 +767,7 @@
         });
         }
         
+        if(amountInput) {
         amountInput.addEventListener('input', function() {
             const amount = parseInt(this.value) || 0;
             const categoryId = categorySelect.value;
@@ -769,6 +780,7 @@
             // Format amount helper
             amountHelpText(amount);
         });
+        }
         
         // Form validation
         document.getElementById('transactionForm').addEventListener('submit', (e) => submitForm(e) );
