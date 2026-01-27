@@ -279,20 +279,12 @@ class TagController extends Controller
 			// Clear cache
 			cache()->forget("user_{$user->id}_tags");
 
-			return response()->json([
-				"success" => true,
-				"message" => "Tag berhasil digabungkan",
-				"data" => $targetTag->loadCount("transactions"),
-			]);
+			return redirect()
+				->route("apps.tags.index")
+				->with("success", "Tag berhasil digabungkan");
 		}
 
-		return response()->json(
-			[
-				"success" => false,
-				"message" => "Gagal menggabungkan tag",
-			],
-			422
-		);
+		return back()->withErrors("Gagal menggabungkan tag");
 	}
 
 	/**

@@ -92,12 +92,10 @@
           window.location.href = '{{ route("apps.transactions.create", ["type" => "expense"]) }}';
           break;
         case 'recurring':
-          alert('Membuka halaman Transaksi Rutin');
-          // window.location.href = '/transactions/recurring';
+          /window.location.href = '{{ route("apps.recurrings.index") }}';
           break;
         case 'report':
-          alert('Membuka halaman Laporan');
-          // window.location.href = '/reports';
+          window.location.href = '{{ route("apps.reports") }}';
           break;
       }
     });
