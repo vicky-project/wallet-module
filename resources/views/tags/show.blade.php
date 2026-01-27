@@ -261,6 +261,7 @@
     </div>
   </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
@@ -387,11 +388,11 @@
     }
     
     async function removeTagFromTransaction(transactionId, tagId) {
-        if (!confirm('Hapus tag ini dari transaksi?')) {
-            return;
-        }
+      if (!confirm('Hapus tag ini dari transaksi?')) {
+        return;
+      }
         
-        try {
+      try {
             const response = await fetch(`{{ config('app.url') }}/apps/transactions/${transactionId}/tags/${tagId}`, {
                 method: 'DELETE',
                 headers: {
@@ -406,19 +407,18 @@
                 const data = await response.json();
                 alert(data.message || 'Terjadi kesalahan');
             }
-        } catch (error) {
+      } catch (error) {
             console.error('Error:', error);
             alert('Terjadi kesalahan saat menghapus tag');
         }
     }
     
     function formatCurrency(amount) {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(amount);
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+      }).format(amount);
     }
 </script>
 @endpush
-@endsection
