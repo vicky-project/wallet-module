@@ -87,7 +87,7 @@
         <h4 class="mb-3">{{ $transaction->title }}</h4>
                     
         <div class="d-flex justify-content-center gap-2 mb-3">
-          <span class="badge bg-{{ $transaction->type->value }} tag-badge">
+          <span class="badge bg-{{ $transaction->type->color() }} tag-badge">
             {{ $transaction->type == TransactionType::INCOME ? 'Pemasukan' : 'Pengeluaran' }}
           </span>
 
