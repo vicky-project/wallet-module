@@ -48,7 +48,7 @@
                 <h3 class="mb-0">{{ $stats['total_tags'] }}</h3>
               </div>
               <div class="avatar-sm">
-                <span class="bg-primary rounded-circle">
+                <span class="stat-icon bg-primary bg-opacity-10 text-primary">
                   <i class="bi bi-tags"></i>
                 </span>
               </div>
@@ -424,6 +424,7 @@
     </div>
   </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
@@ -546,4 +547,17 @@
     }
 </script>
 @endpush
-@endsection
+
+@push('styles')
+<style>
+  .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+</style>
+@endpush
