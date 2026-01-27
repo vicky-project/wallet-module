@@ -223,8 +223,8 @@
             previewName.textContent = name;
             
             // Update icon
-            previewIcon.className = `bi bi-${icon}`;
-            iconPreview.className = `bi bi-${icon}`;
+            previewIcon.className = `bi ${icon}`;
+            iconPreview.className = `bi ${icon}`;
             
             // Update color preview
             colorPreview.style.backgroundColor = color;

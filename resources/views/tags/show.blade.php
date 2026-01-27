@@ -132,8 +132,8 @@
           </div>
         @else
           <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+            <table class="table table-hover">
+              <thead>
                                 <tr>
                                     <th>Tanggal</th>
                                     <th>Deskripsi</th>
@@ -142,7 +142,7 @@
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+              <tbody>
                                 @foreach($transactions as $transaction)
                                     <tr>
                                         <td>
@@ -200,8 +200,8 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
-                    </div>
+            </table>
+          </div>
                     
           <!-- Pagination -->
           @if($transactions->hasPages())
