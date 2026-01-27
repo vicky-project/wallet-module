@@ -63,7 +63,7 @@
         // Fetch all tags on page load
         async function fetchAllTags() {
             try {
-                const response = await fetch('{{ route("apps.tags.index", ["json" => true]) }}', {
+                const response = await fetch('{{ secure_url(config("app.url") . "/apps/tags", ["json" => true]) }}', {
                   'Accept': 'application/json'
                 });
                 const data = await response.json();
