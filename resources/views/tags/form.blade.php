@@ -111,11 +111,11 @@
                   'music-note-fill' => 'Musik (fill)'
                 ] as $icon => $label)
                   <option value="{{ $icon }}" 
-                                            {{ old('icon', $tag->icon ?? '') == $icon ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
-                                @endforeach
-                            </select>
+                    {{ old('icon', $tag->icon ?? '') == $icon ? 'selected' : '' }}>
+                    {{ $label }}
+                  </option>
+                @endforeach
+              </select>
             </div>
             @error('icon')
               <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -167,12 +167,12 @@
     <!-- Suggestions Card -->
     @if(isset($similarTags) && $similarTags->isNotEmpty())
       <div class="card mt-4">
-                <div class="card-header">
+        <div class="card-header">
                     <h6 class="mb-0">
                         <i class="bi bi-lightbulb me-2"></i> Tag Serupa
                     </h6>
                 </div>
-                <div class="card-body">
+        <div class="card-body">
                     <p class="text-muted small mb-3">
                         Berikut adalah tag dengan nama atau warna yang mirip:
                     </p>
@@ -191,7 +191,7 @@
                         @endforeach
                     </div>
                 </div>
-            </div>
+      </div>
     @endif
   </div>
 </div>
