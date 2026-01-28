@@ -769,7 +769,7 @@ class TransactionRepository extends BaseRepository
 			case TransactionType::INCOME:
 				$accountRepo->updateBalance(
 					$transaction->account_id,
-					$transaction->amount,
+					$transaction->amount->getAmount()->toInt(),
 					false
 				);
 				break;
@@ -777,7 +777,7 @@ class TransactionRepository extends BaseRepository
 			case TransactionType::EXPENSE:
 				$accountRepo->updateBalance(
 					$transaction->account_id,
-					$transaction->amount,
+					$transaction->amount->getAmount()->toInt(),
 					true
 				);
 				break;
@@ -785,13 +785,13 @@ class TransactionRepository extends BaseRepository
 			case TransactionType::TRANSFER:
 				$accountRepo->updateBalance(
 					$transaction->account_id,
-					$transaction->amount,
+					$transaction->amount->getAmount()->toInt(),
 					true
 				);
 				if ($transaction->to_account_id) {
 					$accountRepo->updateBalance(
 						$transaction->to_account_id,
-						$transaction->amount,
+						$transaction->amount->getAmount()->toInt(),
 						false
 					);
 				}
