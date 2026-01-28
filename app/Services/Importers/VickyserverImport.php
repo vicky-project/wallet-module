@@ -27,6 +27,7 @@ class VickyserverImport extends BaseImporter
 		$mapping = $this->mapHeaders($headerRow);
 		return $this->data
 			->filter(fn($row) => !empty(array_filter($row)))
+			->dd()
 			->map(function ($row) use ($mapping) {
 				$extracted = $this->extractDataWithMapping($row, $mapping);
 				return $this->processRow($extracted);

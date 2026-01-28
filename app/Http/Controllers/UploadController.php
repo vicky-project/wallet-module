@@ -47,7 +47,6 @@ class UploadController extends Controller
 				$password
 			);
 			$data = $factory->read();
-			dd($data);
 
 			$importer = ImportServiceFactory::createImporter(
 				$appsName,
