@@ -9,6 +9,7 @@ use Modules\Wallet\Http\Controllers\BudgetController;
 use Modules\Wallet\Http\Controllers\RecurringController;
 use Modules\Wallet\Http\Controllers\ReportController;
 use Modules\Wallet\Http\Controllers\TagController;
+use Modules\Wallet\Http\Controllers\UploadController;
 
 Route::middleware(["auth"])
 	->prefix("apps")
@@ -148,4 +149,10 @@ Route::middleware(["auth"])
 			TagController::class,
 			"getTagsForTransaction",
 		])->name("tags.for-transaction");
+
+		// Upload routes
+		Route::get("uploads", [UploadController::class, "index"])->name("uploads");
+		Route::post("uploads", [UploadController::class, "store"])->name(
+			"uploads.store"
+		);
 	});
