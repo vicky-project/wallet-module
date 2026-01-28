@@ -543,7 +543,7 @@
             });
         }
         
-                // Filter collapse functionality
+        // Filter collapse functionality
         const filterCollapse = document.getElementById('filterCollapse');
         const filterCard = document.getElementById('filterCard');
         
@@ -596,7 +596,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ ids: ids })
+                body: JSON.stringify({ '_token': '{{ csrf_token() }}', ids: ids })
             })
             .then(response => response.json())
             .then(data => {
