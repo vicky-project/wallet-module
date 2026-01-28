@@ -18,7 +18,7 @@ class PdfReader implements FileReaderInterface
 		$this->inputFilename = $filepath;
 		$this->password = $password;
 		$this->registerBankParsers();
-		$this->debug = config("wallet.debug", null);
+		$this->debug = config("wallet.debug", false);
 	}
 
 	protected function registerBankParsers(): void
