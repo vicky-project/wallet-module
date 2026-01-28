@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Financial\Interfaces;
+namespace Modules\Wallet\Interfaces;
 
 use Modules\Wallet\Models\Account;
 
