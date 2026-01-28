@@ -420,23 +420,38 @@ class TransactionController extends Controller
 			"ids.*" => "integer|exists:transactions,id",
 		]);
 
-		$user = Auth::user();
+		try {
+			$user = Auth::user();
 
-		$result = $this->transactionService->bulkDelete($request->ids, $user);
+			$result = $this->transactionService->bulkDelete($request->ids, $user);
 
-		if ($result["success"]) {
-			return response()->json([
-				"success" => true,
-				"message" => $result["message"],
-				"deleted" => $result["deleted"],
+			if ($result["success"]) {
+				return response()->json([
+					"success" => true,
+					"message" => $result["message"],
+					"deleted" => $result["deleted"],
+				]);
+			} else {
+				return response()->json(
+					[
+						"success" => false,
+						"message" => $result["message"],
+					],
+					400
+				);
+			}
+		} catch (\Exception $e) {
+			logger()->error("Faild to excute bulk delete", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
 			]);
-		} else {
+
 			return response()->json(
 				[
 					"success" => false,
-					"message" => $result["message"],
+					"message" => $e->getMessage(),
 				],
-				400
+				500
 			);
 		}
 	}

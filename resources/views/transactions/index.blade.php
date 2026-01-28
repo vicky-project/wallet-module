@@ -593,6 +593,7 @@
             fetch("{{ secure_url(config('app.url') . '/apps/transactions/bulk-delete') }}", {
                 method: 'POST',
                 headers: {
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
