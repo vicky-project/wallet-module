@@ -398,13 +398,13 @@
         @forelse($dashboardData['recent_transactions'] as $transaction)
           <div class="d-flex justify-content-between align-items-center mb-2 bg-transparent">
             <div class="d-flex align-items-center">
-              <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME->value ? 'bg-income' : 'bg-expense' }} me-3">
+              <div class="transaction-icon {{ $transaction['type'] == TransactionType::INCOME->value ? 'bg-income' : 'bg-expense' }} me-2">
                 <i class="{{ $transaction['category_icon'] ?? 'bi-arrow-left-right' }} {{ $transaction['type'] == TransactionType::INCOME->value ? 'text-success' : 'text-danger' }}"></i>
               </div>
               <div class="flex-grow-1">
                 <h6 class="mb-0">{{ $transaction['description'] }}</h6>
                 <div class="d-flex align-items-center mt-1">
-                  <span class="badge transaction-badge text-bg-light text-dark me-2">
+                  <span class="badge transaction-badge text-bg-light text-dark me-2 p-2">
                     {{ $transaction['category_name'] }}
                   </span>
                   <small class="text-muted">{{ $transaction['account_name'] }}</small>
