@@ -33,7 +33,6 @@ class VickyserverImport extends BaseImporter
 		return $this->data
 			->filter(fn($row) => !empty(array_filter($row)))
 			->filter(fn($row) => !str($row[0])->startsWith("Tanggal"))
-			->dd()
 			->map(function ($row) use ($mapping) {
 				$extracted = $this->extractDataWithMapping($row, $mapping);
 				return $this->processRow($extracted);
