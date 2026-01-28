@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Financial\Services\Importers;
+namespace Modules\Wallet\Services\Importers;
 
 use Carbon\Carbon;
 use Brick\Money\Money;
