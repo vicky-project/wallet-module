@@ -3,6 +3,7 @@ namespace Modules\Wallet\Services;
 
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Services\Importers\FireflyImport;
+use Modules\Wallet\Services\Importers\VickyserverImport;
 use Modules\Wallet\Services\Importers\EStatementImport;
 use Modules\Wallet\Interfaces\FileReaderInterface;
 use Modules\Wallet\Interfaces\ImporterInterface;
@@ -33,6 +34,7 @@ class ImportServiceFactory
 	): ImporterInterface {
 		$importerClass = match ($appName) {
 			"firefly" => FireflyImport::class,
+			"vickyserver" => VickyserverImport::class,
 			"e-statement" => EStatementImport::class,
 			default => throw new \InvalidArgumentException(
 				"Unsupported app: {$appName}"

@@ -39,6 +39,7 @@
             <select class="form-select" id="apps_name" name="apps_name" required>
               <option value="">Pilih Asal File</option>
               <option value="firefly">Firefly III</option>
+              <option value="vickyserver">Vickyserver</option>
               <option value="e-statement">E-Statement Bank</option>
             </select>
           </div>

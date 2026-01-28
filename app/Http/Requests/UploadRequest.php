@@ -11,7 +11,10 @@ class UploadRequest extends FormRequest
 	 */ public function rules(): array
 	{
 		return [
-			"apps_name" => ["required", Rule::in(["firefly", "e-statement"])],
+			"apps_name" => [
+				"required",
+				Rule::in(["firefly", "vickyserver", "e-statement"]),
+			],
 			"account_id" => "required|exists:accounts,id",
 			"file" => [
 				"required",
