@@ -68,7 +68,7 @@ class Category extends Model
 			if (empty($category->icon)) {
 				$category->icon = self::getDefaultIcon(
 					$category->name,
-					$category->type
+					$category->type->value
 				);
 			}
 
