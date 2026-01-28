@@ -3,8 +3,10 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Modules\Wallet\Models\Account;
+use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Http\Requests\UploadRequest;
 use Modules\Wallet\Services\ImportServiceFactory;
 
@@ -48,7 +50,11 @@ class UploadController extends Controller
 			);
 			$result = $importer->load();
 
-			dd($result);
+			DB::transaction(function () use ($result) {
+				Transaction::insert($result);
+			});
+
+			return back()->with("success", "Data was imported successfully");
 		} catch (\Exception $e) {
 			return back()->withErrors($e->getMessage());
 		}
