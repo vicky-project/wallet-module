@@ -2,6 +2,7 @@
 namespace Modules\Wallet\Services\Importers;
 use Carbon\Carbon;
 use Modules\Wallet\Models\Category;
+use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Enums\TransactionType;
 
 class EStatementImport extends BaseImporter
@@ -94,31 +95,31 @@ class EStatementImport extends BaseImporter
 		$guessName = config("wallet.guess_category_by_text");
 
 		if ($description->contains($guessName["admin"])) {
-			return ["name" => "Admin", "type" => TransactionType::EXPENSE];
+			return ["name" => "Admin", "type" => CategoryType::EXPENSE];
 		}
 		if ($description->contains($guessName["pulsa"])) {
-			return ["name" => "Pulsa", "type" => TransactionType::EXPENSE];
+			return ["name" => "Pulsa", "type" => CategoryType::EXPENSE];
 		}
 		if ($description->contains($guessName["tarik_tunai"])) {
-			return ["name" => "Tarik Tunai", "type" => TransactionType::EXPENSE];
+			return ["name" => "Tarik Tunai", "type" => CategoryType::EXPENSE];
 		}
 		if ($description->contains($guessName["rumah"])) {
-			return ["name" => "Rumah", "type" => TransactionType::EXPENSE];
+			return ["name" => "Rumah", "type" => CategoryType::EXPENSE];
 		}
 		if ($description->contains($guessName["belanja"])) {
-			return ["name" => "Shop/E-Walet", "type" => TransactionType::EXPENSE];
+			return ["name" => "Shop/E-Walet", "type" => CategoryType::EXPENSE];
 		}
 		if ($description->contains($guessName["transfer"])) {
 			return [
 				"name" =>
 					"Transfer " . (str($amount)->startsWith("-") ? "Keluar" : "Masuk"),
 				"type" => str($amount)->startsWith("-")
-					? TransactionType::EXPENSE
-					: TransactionType::INCOME,
+					? CategoryType::EXPENSE
+					: CategoryType::INCOME,
 			];
 		}
 
-		return ["name" => "Unknown", "type" => TransactionType::EXPENSE];
+		return ["name" => "Unknown", "type" => CategoryType::EXPENSE];
 	}
 
 	private function normalizeAmount(string $amount): string

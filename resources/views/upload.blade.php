@@ -116,10 +116,6 @@
                     <input type="text" class="form-control" name="password" id="password">
                     <small class="text-muted d-block">Optional if your file need password to open it.</small>
                   </div>
-                    <small class="text-muted d-block">
-                      Jika dicentang, sistem akan menganggap baris pertama sebagai data transaksi.
-                    </small>
-                  </div>
                                     
                   <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" id="auto_create_categories" name="auto_create_categories" value="1" checked>
