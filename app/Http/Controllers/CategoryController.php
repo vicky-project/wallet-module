@@ -90,7 +90,7 @@ class CategoryController extends Controller
 			);
 
 			return redirect()
-				->route("app.categories.index")
+				->route("apps.categories.index")
 				->with("success", "Category updated successfully");
 		} catch (\Exception $e) {
 			return back()->withErrors($e->getMessage());

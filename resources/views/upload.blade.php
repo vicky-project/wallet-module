@@ -75,7 +75,7 @@
             <div class="file-upload-area border rounded p-4 text-center" id="fileUploadArea" style="background-color: #f8f9fa; border-style: dashed !important;">
               <i class="bi bi-cloud-arrow-up fs-1 text-muted mb-3"></i>
               <p class="mb-2">Drag & drop file atau klik untuk memilih</p>
-              <p class="small text-muted mb-3">Format: CSV, XLS, XLSX (maks. 10MB)</p>
+              <p class="small text-muted mb-3">Format: CSV, XLS, XLSX, PDF (maks. 10MB)</p>
                             
               <input type="file" class="form-control d-none" id="file" name="file" accept=".csv,.xls,.xlsx,.txt,.pdf" required>
                             

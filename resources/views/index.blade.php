@@ -568,7 +568,7 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <h5 class="card-title mb-0">Analisis Kategori</h5>
-            <p class="text-muted small mb-0">Pengeluaran berdasarkan kategori</p>
+            <p class="text-muted small mb-0">Pengeluaran berdasarkan kategori dibulan ini</p>
           </div>
           <a href="{{ route('apps.categories.index') }}" class="btn btn-sm btn-outline-primary">
             Kelola
