@@ -65,6 +65,11 @@ class UploadController extends Controller
 
 			return back()->with("success", "Data was imported successfully");
 		} catch (\Exception $e) {
+			logger()->error("Gagal proses upload", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
+			]);
+			
 			return back()->withErrors($e->getMessage());
 		}
 	}
