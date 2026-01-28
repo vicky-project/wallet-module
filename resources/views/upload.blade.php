@@ -35,7 +35,7 @@
           
           <!-- Application Name -->
           <div class="mb-4">
-            <label for="apps_name" class="form-label fw-semibold">Application Name</label>
+            <label for="apps_name" class="form-label fw-semibold">Application Name <span class="text-danger">*</span></label>
             <select class="form-select" id="apps_name" name="apps_name" required>
               <option value="">Pilih Asal File</option>
               <option value="firefly">Firefly III</option>
