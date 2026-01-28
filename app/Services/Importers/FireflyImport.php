@@ -52,7 +52,10 @@ class FireflyImport extends BaseImporter
 			"transaction_date" => now()
 				->parse($row["date"])
 				->format("Y-m-d H:i:s"),
-			"type" => $this->determineTransactionType($row["amount"]),
+			"type" => Money::of(
+				$this->normalizeAmount($row["amount"]),
+				$this->account->currency ?? config("wallet.default_currency", "USD")
+			),
 			"description" => $row["description"] ?? "",
 			"amount" => $this->normalizeAmount($row["amount"]),
 			"notes" => $row["notes"] ?? null,

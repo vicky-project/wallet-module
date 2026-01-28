@@ -1,6 +1,8 @@
 <?php
 namespace Modules\Wallet\Services\Importers;
+
 use Carbon\Carbon;
+use Brick\Money\Money;
 use Illuminate\Support\Str;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Enums\CategoryType;
@@ -43,7 +45,12 @@ class EStatementImport extends BaseImporter
 			"transaction_date" => $this->parseDate($row["date"] . " " . $row["time"]),
 			"type" => $category ? $category["type"] : TransactionType::EXPENSE,
 			"description" => $description,
-			"amount" => $this->normalizeAmount($row["amount"]),
+			"amount" => Money::of(
+				$this->normalizeAmount($row["amount"]),
+				$this->account->currency ?? config("wallet.default_currency", "USD")
+			)
+				->getMinorAmount()
+				->toInt(),
 			"notes" => null,
 			"created_at" => now(),
 			"updated_at" => now(),
