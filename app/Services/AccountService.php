@@ -10,6 +10,7 @@ use Modules\Wallet\Enums\AccountType;
 use Modules\Wallet\Enums\TransactionType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Brick\Money\Money;
 
 class AccountService
@@ -265,7 +266,9 @@ class AccountService
 				->minus($transfersOut);
 
 			$account->balance = $newBalance;
-			return $account->save();
+			$result = $account->save();
+			Cache::flush();
+			return $result;
 		});
 	}
 
