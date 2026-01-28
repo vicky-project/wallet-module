@@ -3,6 +3,7 @@ namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Modules\Wallet\Models\Account;
@@ -60,6 +61,7 @@ class UploadController extends Controller
 			});
 
 			$this->accountService->recalculateBalance($account);
+			Cache::flush();
 
 			return back()->with("success", "Data was imported successfully");
 		} catch (\Exception $e) {
