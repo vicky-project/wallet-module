@@ -8,10 +8,15 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Http\Requests\UploadRequest;
+use Modules\Wallet\Services\AccountService;
 use Modules\Wallet\Services\ImportServiceFactory;
 
 class UploadController extends Controller
 {
+	public function __construct(protected AccountService $accountService)
+	{
+	}
+
 	public function index(Request $request)
 	{
 		$user = $request->user();
@@ -53,6 +58,8 @@ class UploadController extends Controller
 			DB::transaction(function () use ($result) {
 				Transaction::insert($result);
 			});
+
+			$this->accountService->recalculateBalance($account);
 
 			return back()->with("success", "Data was imported successfully");
 		} catch (\Exception $e) {
