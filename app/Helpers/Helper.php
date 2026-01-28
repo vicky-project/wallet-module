@@ -139,7 +139,6 @@ class Helper
 			"bi-book-half",
 			"bi-box",
 			"bi-box-fill",
-			"bi-box-arrow-down-up",
 			"bi-box-arrow-in-left",
 			"bi-box-arrow-in-right",
 			"bi-box-arrow-left",

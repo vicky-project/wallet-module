@@ -147,7 +147,7 @@
             <div class="col-md-6">
               <div class="detail-label">Metode Pembayaran</div>
               <div class="detail-value">
-                {{ $transaction->payment_method ?? $transaction->payment_method->label() }}
+                {{ $transaction->payment_method ? ($transaction->payment_method ?? $transaction->payment_method->label()) : 'No payment method available' }}
               </div>
             </div>
             <div class="col-md-6">
