@@ -25,17 +25,20 @@ class EStatementImport extends BaseImporter
 	protected function processRow(array $row): array
 	{
 		$description = $this->cleanDescriptionParts($row["description"]);
-		$category = $this->guessCategoryFromDescription(
-			$description,
-			$row["amount"]
-		);
+		$category = null;
+		if ($this->shouldCreateCategory()) {
+			$category = $this->guessCategoryFromDescription(
+				$description,
+				$row["amount"]
+			);
+		}
 
 		return [
 			"user_id" => auth()->id(),
 			"account_id" => $this->account->id,
-			"category_id" => $this->getCategoryId($category),
+			"category_id" => $category ? $this->getCategoryId($category) : null,
 			"transaction_date" => $this->parseDate($row["date"] . " " . $row["time"]),
-			"type" => $category["type"],
+			"type" => $category ? $category["type"] : TransactionType::EXPENSE,
 			"description" => $description,
 			"amount" => $this->normalizeAmount($row["amount"]),
 			"notes" => null,

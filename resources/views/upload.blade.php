@@ -111,16 +111,11 @@
               </h2>
               <div id="advancedSettings" class="accordion-collapse collapse" data-bs-parent="#advancedOptions">
                 <div class="accordion-body">
-                  <div class="form-group">
+                  <div class="form-group mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input type="text" class="form-control" name="password" id="password">
                     <small class="text-muted d-block">Optional if your file need password to open it.</small>
                   </div>
-                  <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="skip_header" name="skip_header" value="1">
-                    <label class="form-check-label" for="skip_header">
-                      File tidak memiliki header (baris pertama)
-                    </label>
                     <small class="text-muted d-block">
                       Jika dicentang, sistem akan menganggap baris pertama sebagai data transaksi.
                     </small>

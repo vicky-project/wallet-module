@@ -43,7 +43,8 @@ class UploadController extends Controller
 			$importer = ImportServiceFactory::createImporter(
 				$appsName,
 				$data,
-				$account
+				$account,
+				$validated
 			);
 			$result = $importer->load();
 

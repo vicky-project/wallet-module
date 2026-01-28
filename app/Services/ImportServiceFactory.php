@@ -28,7 +28,8 @@ class ImportServiceFactory
 	public static function createImporter(
 		string $appName,
 		array $data,
-		Account $account
+		Account $account,
+		?array $config = []
 	): ImporterInterface {
 		$importerClass = match ($appName) {
 			"firefly" => FireflyImport::class,
@@ -38,6 +39,6 @@ class ImportServiceFactory
 			),
 		};
 
-		return new $importerClass($data, $account);
+		return new $importerClass($data, $account, $config);
 	}
 }

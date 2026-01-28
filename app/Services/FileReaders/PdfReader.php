@@ -18,12 +18,12 @@ class PdfReader implements FileReaderInterface
 		$this->inputFilename = $filepath;
 		$this->password = $password;
 		$this->registerBankParsers();
-		$this->debug = config("financial.debug");
+		$this->debug = config("wallet.debug", null);
 	}
 
 	protected function registerBankParsers(): void
 	{
-		foreach (config("financial.bank_parsers") as $parser) {
+		foreach (config("wallet.bank_parsers") as $parser) {
 			$this->bankParsers[] = new $parser();
 		}
 	}
@@ -95,7 +95,8 @@ class PdfReader implements FileReaderInterface
 		return $tempFile;
 	}
 
-	/**                                                                     * return array of page result
+	/**
+	 * return array of page result
 	 */
 	private function extractTextFromPdf(string $pdfPath): array
 	{

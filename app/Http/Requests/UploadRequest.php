@@ -25,7 +25,6 @@ class UploadRequest extends FormRequest
 				]),
 			],
 			"password" => "nullable|string",
-			"skip_header" => "boolean",
 			"auto_create_categories" => "boolean",
 			"auto_create_tags" => "boolean",
 		];

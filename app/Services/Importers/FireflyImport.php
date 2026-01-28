@@ -13,13 +13,18 @@ class FireflyImport extends BaseImporter
 		"notes" => "notes",
 		"category" => "category",
 	];
+
 	public function load(): array
 	{
 		if ($this->data->isEmpty()) {
 			return [];
 		}
 
-		$headerRow = $this->data->shift();
+		$headerRow = [];
+		if (!$this->shouldSkipHeader()) {
+			$headerRow = $this->data->shift();
+		}
+
 		$mapping = $this->mapHeaders($headerRow);
 
 		return $this->data
@@ -33,12 +38,15 @@ class FireflyImport extends BaseImporter
 
 	protected function processRow(array $row): array
 	{
-		$categoryId = $this->getCategoryId($row["category"], $row["amount"]);
+		$categoryId = null;
+		if ($this->shouldCreateCategory()) {
+			$categoryId = $this->getCategoryId($row["category"], $row["amount"]);
+		}
 
 		return [
 			"user_id" => auth()->id(),
 			"account_id" => $this->account->id,
-			"category_id" => $categoryId,
+			"category_id" => $categoryId ?? null,
 			"transaction_date" => now()
 				->parse($row["date"])
 				->format("Y-m-d H:i:s"),
