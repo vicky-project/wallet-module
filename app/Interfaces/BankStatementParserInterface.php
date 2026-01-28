@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Financial\Interfaces;
+namespace Modules\Wallet\Interfaces;
 
 interface BankStatementParserInterface
 {
