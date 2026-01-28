@@ -21,12 +21,9 @@
             <div class="flex-grow-1 ms-3">
               <h6 class="alert-heading">Panduan Upload</h6>
               <ul class="mb-0">
-                <li>File harus dalam format CSV, XLS, atau XLSX</li>
-                <li>File harus memiliki header dengan kolom berikut: Tanggal, Deskripsi, Jumlah, Tipe, Kategori, Tag, Catatan</li>
+                <li>File harus dalam format CSV, XLS, XLSX atau PDF</li>
+                <li>File harus memiliki header dengan kolom berikut: Tanggal, Deskripsi, Jumlah</li>
                 <li>Format tanggal: YYYY-MM-DD (contoh: 2024-01-15)</li>
-                <li>Tipe harus: <code>income</code>, <code>expense</code>, atau <code>transfer</code></li>
-                <li>Kategori harus sesuai dengan kategori yang sudah ada</li>
-                <li>Tag dapat dipisahkan dengan koma (contoh: Makanan,Belanja)</li>
               </ul>
             </div>
           </div>
@@ -47,7 +44,7 @@
                 <option value="{{ $account->id }}" @selected(old('account_id') == $account->id)>
                   {{ $account->name }} - @money($account->balance->getMinorAmount()->toInt())
                   @if($account->type)
-                    <small class="text-muted">({{ $account->type }})</small>
+                    <small class="text-muted">({{ $account->type->label() }})</small>
                   @endif
                 </option>
               @endforeach
@@ -70,7 +67,7 @@
               <p class="mb-2">Drag & drop file atau klik untuk memilih</p>
               <p class="small text-muted mb-3">Format: CSV, XLS, XLSX (maks. 10MB)</p>
                             
-              <input type="file" class="form-control d-none" id="file" name="file" accept=".csv,.xls,.xlsx,.txt" required>
+              <input type="file" class="form-control d-none" id="file" name="file" accept=".csv,.xls,.xlsx,.txt,.pdf" required>
                             
               <button type="button" class="btn btn-outline-primary btn-sm" id="browseBtn">
                 <i class="bi bi-folder2-open me-1"></i> Browse File
