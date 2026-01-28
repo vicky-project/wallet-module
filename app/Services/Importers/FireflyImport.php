@@ -22,10 +22,8 @@ class FireflyImport extends BaseImporter
 		}
 
 		$headerRow = [];
-		if (!$this->shouldSkipHeader()) {
-			$headerRow = $this->data->shift();
-		}
 
+		$headerRow = $this->data->shift();
 		$mapping = $this->mapHeaders($headerRow);
 
 		return $this->data
