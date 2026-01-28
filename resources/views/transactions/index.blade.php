@@ -590,7 +590,7 @@
         
         // Bulk Delete
         function bulkDelete(ids) {
-            fetch("{{ route('apps.transactions.bulk-delete') }}", {
+            fetch("{{ secure_url(config('app.url') . '/apps/transactions/bulk-delete') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
