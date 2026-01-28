@@ -49,7 +49,7 @@ class UploadController extends Controller
 			$result = $importer->load();
 
 			dd($result);
-		} catch (\Exception $error) {
+		} catch (\Exception $e) {
 			return back()->withErrors($e->getMessage());
 		}
 	}
