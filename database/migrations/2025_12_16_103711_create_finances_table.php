@@ -104,6 +104,7 @@ return new class extends Migration {
 				->onDelete("set null");
 			$table
 				->foreignId("category_id")
+				->nullable()
 				->constrained("categories")
 				->onDelete("restrict");
 			$table->string("type");

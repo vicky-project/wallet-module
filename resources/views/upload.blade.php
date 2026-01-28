@@ -32,6 +32,16 @@
         <!-- Upload Form -->
         <form action="{{ route('apps.uploads') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
           @csrf
+          
+          <!-- Application Name -->
+          <div class="mb-4">
+            <label for="apps_name" class="form-label fw-semibold">Application Name</label>
+            <select class="form-select" id="apps_name" name="apps_name" required>
+              <option value="">Pilih Asal File</option>
+              <option value="firefly">Firefly III</option>
+              <option value="e-statement">E-Statement Bank</option>
+            </select>
+          </div>
 
           <!-- Account Selection -->
           <div class="mb-4">
@@ -101,6 +111,11 @@
               </h2>
               <div id="advancedSettings" class="accordion-collapse collapse" data-bs-parent="#advancedOptions">
                 <div class="accordion-body">
+                  <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="text" class="form-control" name="password" id="password">
+                    <small class="text-muted d-block">Optional if your file need password to open it.</small>
+                  </div>
                   <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" id="skip_header" name="skip_header" value="1">
                     <label class="form-check-label" for="skip_header">

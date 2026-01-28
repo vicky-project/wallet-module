@@ -152,7 +152,7 @@ Route::middleware(["auth"])
 
 		// Upload routes
 		Route::get("uploads", [UploadController::class, "index"])->name("uploads");
-		Route::post("uploads", [UploadController::class, "store"])->name(
+		Route::post("uploads", [UploadController::class, "upload"])->name(
 			"uploads.store"
 		);
 	});
