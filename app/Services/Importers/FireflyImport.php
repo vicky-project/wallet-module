@@ -45,7 +45,7 @@ class FireflyImport extends BaseImporter
 		}
 
 		return [
-		  'uuid' => Str::uuid(),
+			"uuid" => Str::uuid(),
 			"user_id" => auth()->id(),
 			"account_id" => $this->account->id,
 			"category_id" => $categoryId ?? null,
