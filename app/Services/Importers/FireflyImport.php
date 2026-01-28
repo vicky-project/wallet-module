@@ -1,6 +1,7 @@
 <?php
 namespace Modules\Wallet\Services\Importers;
 
+use Illuminate\Support\Str;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Enums\TransactionType;
 
@@ -44,6 +45,7 @@ class FireflyImport extends BaseImporter
 		}
 
 		return [
+		  'uuid' => Str::uuid(),
 			"user_id" => auth()->id(),
 			"account_id" => $this->account->id,
 			"category_id" => $categoryId ?? null,
