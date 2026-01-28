@@ -103,8 +103,8 @@
           window.location.href = '{{ route("apps.reports") }}';
           break;
         case 'upload':
-          alert('Upload feature is coming soon.');
-          // window.location.href = '';
+          //alert('Upload feature is coming soon.');
+          window.location.href = '{{ route("apps.uploads") }}';
           break;
       }
     });

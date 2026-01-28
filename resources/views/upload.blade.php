@@ -45,7 +45,7 @@
               <option value="">Pilih Akun Tujuan</option>
               @foreach($accounts as $account)
                 <option value="{{ $account->id }}" @selected(old('account_id') == $account->id)>
-                  {{ $account->name }} - @money($account->balance)
+                  {{ $account->name }} - @money($account->balance->getMinorAmount()->toInt())
                   @if($account->type)
                     <small class="text-muted">({{ $account->type }})</small>
                   @endif
