@@ -23,6 +23,11 @@ class VickyserverImport extends BaseImporter
 		if ($this->data->isEmpty()) {
 			return [];
 		}
+
+		$this->data = $this->data->filter(
+			fn($row) => !str($row[0])->startsWith(["BULAN", "Total", "Saldo"])
+		);
+
 		$headerRow = $this->data->shift();
 		$mapping = $this->mapHeaders($headerRow);
 		return $this->data
