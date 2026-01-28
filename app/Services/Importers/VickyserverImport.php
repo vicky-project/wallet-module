@@ -78,7 +78,9 @@ class VickyserverImport extends BaseImporter
 
 	private function parseDate(string $date): string
 	{
-		return Carbon::createFromFormat("d/m/Y", $date)->format("Y-m-d H:i:s");
+		return Carbon::createFromFormat("d/m/Y H:i:s", $date)->format(
+			"Y-m-d H:i:s"
+		);
 	}
 
 	private function parseAmount(string $amount): string

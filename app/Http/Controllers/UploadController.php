@@ -69,7 +69,7 @@ class UploadController extends Controller
 				"message" => $e->getMessage(),
 				"trace" => $e->getTraceAsString(),
 			]);
-			
+
 			return back()->withErrors($e->getMessage());
 		}
 	}
