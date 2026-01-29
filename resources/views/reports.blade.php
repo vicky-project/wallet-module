@@ -377,7 +377,7 @@
       };
 
       const queryString = new URLSearchParams(filters).toString();
-      const response = await authFetch(`{{ route('api.apps.reports.dashboard-summary') }}?${queryString}`);
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
