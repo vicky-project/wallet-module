@@ -95,6 +95,7 @@ class BudgetService
 			CategoryType::EXPENSE,
 			$user
 		);
+		dd($categories);
 
 		// Get active accounts
 		$accounts = Account::where("user_id", $user->id)
