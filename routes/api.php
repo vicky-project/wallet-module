@@ -20,7 +20,7 @@ Route::prefix("apps")
 					"monthlyReport",
 				]);
 				Route::get("yearly/{year}", [ReportController::class, "yearlyReport"]);
-				Route::get("custom", [ReportController::class, "customReport"]);
+				Route::post("custom", [ReportController::class, "customReport"]);
 				Route::post("export", [ReportController::class, "exportReport"]);
 			});
 
