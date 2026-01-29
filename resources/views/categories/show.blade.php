@@ -144,7 +144,7 @@
           </button>
           <ul class="dropdown-menu">
             @for($i = 0; $i < 6; $i++)
-              <li><a class="dropdown-item" href="?month={{ date('m', strtotime(-$i. ' m')) }}&year={{ -$i }}">{{ date('F Y', strtotime("-$i months")) }}</a></li>
+              <li><a class="dropdown-item" href="?month={{ date('m', strtotime(-$i. ' months')) }}&year={{ date('Y', strtotime(-$i. ' months')) }}">{{ date('F Y', strtotime("-$i months")) }}</a></li>
             @endfor
           </ul>
         </div>
