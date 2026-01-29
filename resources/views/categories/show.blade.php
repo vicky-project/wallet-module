@@ -144,7 +144,7 @@
           </button>
           <ul class="dropdown-menu">
             @for($i = 0; $i < 6; $i++)
-              <li class="{{ date('F Y', strtotime(-$i .' months')) == date('F Y', strtotime(request('year') . ' '. request('month'))) }}"><a class="dropdown-item" href="?month={{ date('m', strtotime(-$i. ' months')) }}&year={{ date('Y', strtotime(-$i. ' months')) }}">{{ date('F Y', strtotime("-$i months")) }}</a></li>
+              <li class="{{ date('F Y', strtotime(-$i .' months')) == date('F Y', strtotime(request('year') . ' '. request('month'))) ? 'active' : '' }}"><a class="dropdown-item" href="?month={{ date('m', strtotime(-$i. ' months')) }}&year={{ date('Y', strtotime(-$i. ' months')) }}">{{ date('F Y', strtotime("-$i months")) }}</a></li>
             @endfor
           </ul>
         </div>
@@ -179,9 +179,9 @@
           <div class="col-md-6 mb-2">
             <div class="card bg-light">
               <div class="card-body">
-                <h6 class="text-muted mb-2">Total Bulan {{ request("month", null) }} {{ request("year", null) }}</h6>
+                <h6 class="text-muted mb-2">Total Bulan {{ request("month", date("F")) }} {{ request("year", date("Y")) }}</h6>
                 <h3 class="mb-0 {{ $category->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
-                  Rp {{ number_format($category->getIncomeTotal(date(request('month', null)), date(request('year', null))) / 100 + $category->getExpenseTotal() / 100, 0, ',', '.') }}
+                  Rp {{ number_format($category->getIncomeTotal(date(request('month', null)), date(request('year', null))) / 100 + $category->getExpenseTotal(date(request('month', null)), date(request('year', null))) / 100, 0, ',', '.') }}
                 </h3>
               </div>
             </div>
