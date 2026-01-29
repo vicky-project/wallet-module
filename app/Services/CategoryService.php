@@ -152,9 +152,6 @@ class CategoryService
 	{
 		$user = auth()->user();
 
-		// Validate data
-		$this->validateCategoryData($data, $user);
-
 		try {
 			DB::beginTransaction();
 
