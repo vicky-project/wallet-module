@@ -83,7 +83,6 @@ class CategoryController extends Controller
 	 */
 	public function update(CategoryRequest $request, Category $category)
 	{
-		dd($request->validated());
 		try {
 			$updatedCategory = $this->categoryService->updateCategory(
 				$category,

@@ -186,7 +186,6 @@ class CategoryService
 	 */
 	public function updateCategory(Category $category, array $data): Category
 	{
-		dd($data);
 		$user = auth()->user();
 
 		// Check authorization
@@ -207,6 +206,8 @@ class CategoryService
 					$category->id
 				);
 			}
+
+			$data["is_budgetable"] = isset($data["is_budgetable"]) ? true : false;
 
 			// Keep original data for activity log
 			$originalData = $category->toArray();
