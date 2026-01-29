@@ -98,38 +98,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Quick Actions -->
-    <div class="card mb-4">
-      <div class="card-header">
-        <h6 class="mb-0">Aksi Cepat</h6>
-      </div>
-      <div class="card-body">
-        <div class="d-grid gap-2">
-          <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-outline-primary">
-            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
-          </a>
-          <form action="{{ route('apps.categories.toggle-status', $category) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <button type="submit" class="btn btn-outline-warning w-100">
-              @if($category->is_active)
-              <i class="bi bi-toggle-off me-2"></i>Nonaktifkan
-              @else
-              <i class="bi bi-toggle-on me-2"></i>Aktifkan
-              @endif
-            </button>
-          </form>
-          <form action="{{ route('apps.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Hapus kategori ini? Transaksi yang terkait tidak akan dihapus.')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-outline-danger w-100">
-              <i class="bi bi-trash me-2"></i>Hapus Kategori
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Right Column: Statistics -->
@@ -211,7 +179,44 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
 
+<div class="row gap-2">
+  <div class="col-lg-4 col-md-4 mb-3">
+    <!-- Quick Actions -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h6 class="mb-0">Aksi Cepat</h6>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{{ route('apps.transactions.create', ['category_id' => $category->id]) }}" class="btn btn-outline-primary">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Transaksi
+          </a>
+          <form action="{{ route('apps.categories.toggle-status', $category) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <button type="submit" class="btn btn-outline-warning w-100">
+              @if($category->is_active)
+              <i class="bi bi-toggle-off me-2"></i>Nonaktifkan
+              @else
+              <i class="bi bi-toggle-on me-2"></i>Aktifkan
+              @endif
+            </button>
+          </form>
+          <form action="{{ route('apps.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Hapus kategori ini? Transaksi yang terkait tidak akan dihapus.')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-outline-danger w-100">
+              <i class="bi bi-trash me-2"></i>Hapus Kategori
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8 col-md-8 mb-3">
     <!-- Recent Transactions -->
     <div class="card mb-4">
       <div class="card-header d-flex   justify-content-between align-items-center">
