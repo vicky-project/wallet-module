@@ -278,7 +278,7 @@ class ReportRepository
 				$item->total,
 				config("wallet.default_currency", "USD")
 			)
-				->getAmount()
+				->getMinorAmount()
 				->toInt();
 			$backgroundColors[] = $colors[$index % count($colors)];
 		}
@@ -297,7 +297,7 @@ class ReportRepository
 				$otherTotal,
 				config("wallet.default_currency", "USD")
 			)
-				->getAmount()
+				->getMinorAmount()
 				->toInt();
 			$backgroundColors[] = "#9ca3af";
 		}
