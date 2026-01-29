@@ -113,7 +113,7 @@ class CategoryService
 						$activeBudget = $category->getCurrentBudget();
 						$monthlyTotal = $activeBudget
 							? $activeBudget->spent->getMinorAmount()->toInt()
-							: 0;
+							: $category->getExpenseTotal();
 						if ($activeBudget) {
 							$category->budget_usage_percentage =
 								$activeBudget->amount->getAmount()->toInt() > 0
@@ -159,6 +159,9 @@ class CategoryService
 			if (!isset($data["slug"]) && isset($data["name"])) {
 				$data["slug"] = $this->generateSlug($data["name"], $user->id);
 			}
+
+			$data["is_active"] = isset($data["is_active"]) ?? false;
+			$data["is_budgetable"] = isset($data["is_budgetable"]) ?? false;
 
 			// Create category
 			$category = $this->categoryRepository->createCategory($data, $user);
@@ -207,7 +210,8 @@ class CategoryService
 				);
 			}
 
-			$data["is_budgetable"] = isset($data["is_budgetable"]) ? true : false;
+			$data["is_active"] = isset($data["is_active"]) ?? false;
+			$data["is_budgetable"] = isset($data["is_budgetable"]) ?? false;
 
 			// Keep original data for activity log
 			$originalData = $category->toArray();
