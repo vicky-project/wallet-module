@@ -246,15 +246,24 @@ class ReportRepository
 	public function getCategoryAnalysis(array $params): array
 	{
 		$userId = $params["user_id"];
-		$startDate = $params["start_date"] ?? now()->startOfMonth();
+		$accountId = $params["account_id"] ?? null;
+		$startDate = $params["start_date"] ?? null;
 		$endDate = $params["end_date"] ?? now()->endOfMonth();
 		$type = $params["type"] ?? "expense"; // income or expense
 		$limit = $params["limit"] ?? 10;
 
-		$results = $this->transaction
+		$query = $this->transaction
 			->where("user_id", $userId)
-			->where("type", $type)
-			->whereBetween("transaction_date", [$startDate, $endDate])
+			->where("type", $type);
+
+		if ($startDate) {
+			$query->whereBetween("transaction_date", [$startDate, $endDate]);
+		}
+
+		if ($accountId) {
+			$query->where("account_id", $accountId);
+		}
+		$results = $query
 			->with("category")
 			->select("category_id", DB::raw("SUM(amount) as total"))
 			->groupBy("category_id")
