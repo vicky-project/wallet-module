@@ -152,7 +152,7 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label class="form-label">Tipe Laporan</label>
-                        <select class="form-select" id="chart-type">
+                        <select class="form-select" id="report-type">
                             <option value="monthly">Bulanan (Per Tahun)</option>
                             <option value="yearly">Tahunan</option>
                             <option value="daily">Harian (Per Bulan)</option>
@@ -496,7 +496,7 @@
             charts.incomeExpense.destroy();
         }
         
-        const chartType = document.getElementById('chart-type').value;
+        const chartType = document.getElementById('chart-type')?.value || 'line';
         charts.incomeExpense = createLineChart('incomeExpenseChart', data.monthly_trend, chartType);
         
         // Update other charts from dashboard data if available
