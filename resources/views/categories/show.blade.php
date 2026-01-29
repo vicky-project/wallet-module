@@ -140,9 +140,9 @@
         <h6 class="mb-0">Statistik Bulanan</h6>
         <div class="dropdown">
           <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            {{ (request('year') && request('month')) ? date('F Y', strtotime(request('year') . ' '. date('F', strtotime(request('month'))))) : date('F Y') }}
+            {{ (request('year') && request('month')) ? date('F Y', strtotime(request('year') . ' '. request('month'))) : date('F Y') }}
           </button>
-          <ul class="dropdown-menu">
+            <ul class="dropdown-menu">
             @for($i = 0; $i < 6; $i++)
               <li><a class="dropdown-item {{ date('F Y', strtotime(-$i .' months')) == date('F Y', strtotime(request('year') . ' '. request('month'))) ? 'active' : '' }}" href="?month={{ date('m', strtotime(-$i. ' months')) }}&year={{ date('Y', strtotime(-$i. ' months')) }}">{{ date('F Y', strtotime("-$i months")) }}</a></li>
             @endfor
