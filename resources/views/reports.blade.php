@@ -448,7 +448,7 @@
       const currentYear = new Date().getFullYear();
       const startYear = currentYear - 5; // Tampilkan 5 tahun terakhir
 
-      const response = await authFetch(`{{ route('api.apps.reports.custom') }}`, {
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/custom`, {
         method: 'POST',
         body: JSON.stringify({
           report_type: 'income_expense_trend',
