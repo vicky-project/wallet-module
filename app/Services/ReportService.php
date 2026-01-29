@@ -33,7 +33,7 @@ class ReportService
 				"income" => $this->reportRepository->getCategoryAnalysis(
 					array_merge($params, ["type" => "income"])
 				),
-				"expene" => $this->reportRepository->getCategoryAnalysis(
+				"expense" => $this->reportRepository->getCategoryAnalysis(
 					array_merge($params, ["type" => "expense"])
 				),
 			];
