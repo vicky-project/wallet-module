@@ -225,11 +225,23 @@
         </h5>
       </div>
       <div class="card-body">
-        <div class="chart-container">
-          <canvas id="expenseCategoryChart"></canvas>
-        </div>
-        <div class="mt-3" id="category-legend">
-          <!-- Legend akan diisi dinamis -->
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <div class="chart-container">
+              <canvas id="expenseCategoryChart"></canvas>
+            </div>
+            <div class="mt-3" id="category-income-legend">
+              <!-- Legend akan diisi dinamis -->
+            </div>
+          </div>
+          <div class="col-md-6 mb-2">
+            <div class="chart-container">
+              <canvas id="incomeCategoryChart"></canvas>
+            </div>
+            <div class="mt-3" id="category-expense-legend">
+              <!-- Legend akan diisi dinamis -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -528,7 +540,7 @@
         charts.expenseCategory.destroy();
       }
 
-      charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis);
+      charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis.expense);
       updateCategoryLegend(data.category_analysis);
     }
         
@@ -817,18 +829,32 @@
 
   // Update category legend
   function updateCategoryLegend(chartData) {
-    const legendContainer = document.getElementById('category-legend');
-    if (!chartData.labels || chartData.labels.length === 0) {
-      legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
+    const expenseLegendContainer = document.getElementById('category-expense-legend');
+    const incomeLegendContainer = document.getElementById('category-income-legend');
+    const expenseData = chartData.expense;
+    const incomeData = chartData.income;
+    
+    if (!expenseData.labels || expenseData.labels.length === 0) {
+      expenseLegendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
       return;
     }
-        
+    
+    if (!incomeData.labels || incomeData.labels.length === 0) {
+      incomeLegendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
+      return;
+    }
+    
+    expenseLegendContainer.innerHTML = generateLegendCategory(expenseData);
+    incomeLegendContainer.innerHTML = generateLegendCategory(incomeData);
+  }
+  
+  function generateLegendCategory(data){
     let legendHtml = '<div class="row g-2">';
-    const total = chartData.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
-    const colors = chartData.datasets[0]?.backgroundColor || [];
+    const total = data.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
+    const colors = data.datasets[0]?.backgroundColor || [];
         
-    chartData.labels.forEach((label, index) => {
-      const value = chartData.datasets[0]?.data[index] || 0;
+    data.labels.forEach((label, index) => {
+      const value = data.datasets[0]?.data[index] || 0;
       const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
       const color = colors[index] || '#cccccc';
 
@@ -851,7 +877,7 @@
     });
         
     legendHtml += '</div>';
-    legendContainer.innerHTML = legendHtml;
+    return legendHtml;
   }
 
   // Update account legend

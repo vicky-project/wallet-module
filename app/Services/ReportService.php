@@ -29,7 +29,14 @@ class ReportService
 			$incomeExpenseTrend = $this->reportRepository->getIncomeExpenseTrend(
 				$params
 			);
-			$categoryAnalysis = $this->reportRepository->getCategoryAnalysis($params);
+			$categoryAnalysis = [
+				"income" => $this->reportRepository->getCategoryAnalysis(
+					array_merge($params, ["type" => "income"])
+				),
+				"expene" => $this->reportRepository->getCategoryAnalysis(
+					array_merge($params, ["type" => "expense"])
+				),
+			];
 			$budgetAnalysis = $this->reportRepository->getBudgetAnalysis($params);
 			$accountAnalysis = $this->reportRepository->getAccountAnalysis($params);
 			$transactionAnalysis = $this->reportRepository->getTransactionAnalysis(
