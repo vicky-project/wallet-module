@@ -854,7 +854,7 @@
 
     // Toggle chart type
     function toggleChartType(type) {
-        document.getElementById('chart-type').value = type;
+        // document.getElementById('chart-type').value = type;
         
         // Update button states
         const buttons = document.querySelectorAll('.chart-toolbar .btn');
