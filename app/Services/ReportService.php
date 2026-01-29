@@ -2,6 +2,7 @@
 
 namespace Modules\Wallet\Services;
 
+use Carbon\Carbon;
 use Modules\Wallet\Repositories\ReportRepository;
 use Illuminate\Support\Facades\Cache;
 use Brick\Money\Money;
