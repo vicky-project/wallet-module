@@ -562,11 +562,11 @@
         document.getElementById('total-transfer').textContent = summary.total_transfer;
         
         // Update progress badges
-        const total = (parseInt(summary.total_income) || 0) + (parseInt(summary.total_expense) || 0);
-        alert(total, summary.total_income, summary.total_expense)
+        const total = (parseInt(summary.income_number / 100) || 0) + (parseInt(summary.expense_number / 100) || 0);
+        
         if (total > 0) {
-            const incomePercent = Math.round((parseInt(summary.total_income) / total) * 100);
-            const expensePercent = Math.round((parseInt(summary.total_expense) / total) * 100);
+            const incomePercent = Math.round((parseInt(summary.income_number / 100) / total) * 100);
+            const expensePercent = Math.round((parseInt(summary.expense_number / 100) / total) * 100);
             
             document.querySelector('#summary-cards .col-md-6:nth-child(1) .summary-badge').innerHTML = 
                 `<i class="bi bi-arrow-up me-1"></i>${incomePercent}%`;
