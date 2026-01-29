@@ -167,12 +167,12 @@ class ReportService
 				"monthly_trend" => $this->reportRepository->getIncomeExpenseTrend(
 					array_merge($params, ["group_by" => "month"])
 				),
-				"top_categories" => [
+				"category_analysis" => [
 					"income" => $this->reportRepository->getCategoryAnalysis(
-						array_merge($params, ["type" => "income", "limit" => 5])
+						array_merge($params, ["type" => "income"])
 					),
 					"expense" => $this->reportRepository->getCategoryAnalysis(
-						array_merge($params, ["type" => "expense", "limit" => 5])
+						array_merge($params, ["type" => "expense"])
 					),
 				],
 				"account_distribution" => $this->reportRepository->getAccountAnalysis(
