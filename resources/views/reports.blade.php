@@ -831,6 +831,7 @@
   function updateCategoryLegend(chartData) {
     const expenseLegendContainer = document.getElementById('category-expense-legend');
     const incomeLegendContainer = document.getElementById('category-income-legend');
+    console.log(chartData)
     const expenseData = chartData.expense;
     const incomeData = chartData.income;
     
