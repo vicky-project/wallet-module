@@ -95,7 +95,7 @@
   </div>
     
   <div class="col-md-6 mb-3">
-    <div class="card stat-card border-start border-primary border-4">
+    <div class="card stat-card border-primary border-4">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>
