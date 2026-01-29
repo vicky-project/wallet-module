@@ -186,6 +186,7 @@ class CategoryService
 	 */
 	public function updateCategory(Category $category, array $data): Category
 	{
+		dd($data);
 		$user = auth()->user();
 
 		// Check authorization
