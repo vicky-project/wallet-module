@@ -200,13 +200,13 @@ class ReportRepository
 				$row->income,
 				config("wallet.default_currency", "USD")
 			)
-				->getAmount()
+				->getMinorAmount()
 				->toInt();
 			$expenseData[] = Money::ofMinor(
 				$row->expense,
 				config("wallet.default_currency", "USD")
 			)
-				->getAmount()
+				->getMinorAmount()
 				->toInt();
 		}
 
