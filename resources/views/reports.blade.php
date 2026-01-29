@@ -558,7 +558,7 @@
         document.getElementById('total-expense').textContent = summary.total_expense;
         document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
         
-        document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow);
+        document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow * 100);
         document.getElementById('total-transfer').textContent = summary.total_transfer;
         
         // Update progress badges
@@ -867,7 +867,7 @@
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between">
                                 <small class="text-truncate" style="max-width: 120px;">${label}</small>
-                                <small>${formatCurrency(value)}</small>
+                                <small>${formatCurrency(value * 100)}</small>
                             </div>
                             <div class="progress progress-thin">
                                 <div class="progress-bar" style="width: ${percentage}%; background-color: ${color};"></div>
