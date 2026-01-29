@@ -1,4 +1,4 @@
-@extends('wallet:layouts.app')
+@extends('wallet::layouts.app')
 
 @section('content')
 @include('wallet::partials.fab')
