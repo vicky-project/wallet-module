@@ -56,11 +56,15 @@ class ReportController extends Controller
 		int $month
 	): JsonResponse {
 		$request->validate([
-			"month" => "integer|between:1,12",
-			"year" => "integer|min:2000|max:2100",
+			"account_id" => "nullable|integer|exists:accounts,id",
 		]);
 
-		$data = $this->reportService->getMonthlyReport(auth()->id(), $year, $month);
+		$data = $this->reportService->getMonthlyReport(
+			auth()->id(),
+			$year,
+			$month,
+			$request->account_id
+		);
 
 		return response()->json([
 			"success" => true,
@@ -71,10 +75,14 @@ class ReportController extends Controller
 	public function yearlyReport(Request $request, int $year): JsonResponse
 	{
 		$request->validate([
-			"year" => "integer|min:2000|max:2100",
+			"account_id" => "nullable|integer|exists:accounts,id",
 		]);
 
-		$data = $this->reportService->getYearlyReport(auth()->id(), $year);
+		$data = $this->reportService->getYearlyReport(
+			auth()->id(),
+			$year,
+			$request->account_id
+		);
 
 		return response()->json([
 			"success" => true,
@@ -85,6 +93,7 @@ class ReportController extends Controller
 	public function customReport(Request $request): JsonResponse
 	{
 		$request->validate([
+			"account_id" => "nullable|integer|exists:accounts,id",
 			"report_type" =>
 				"required|in:financial_summary,income_expense_trend,category_analysis,budget_analysis,account_analysis,transaction_analysis",
 			"start_date" => "nullable|date",
@@ -99,6 +108,7 @@ class ReportController extends Controller
 			auth()->id(),
 			$request->report_type,
 			$request->only([
+				"account_id",
 				"start_date",
 				"end_date",
 				"type",

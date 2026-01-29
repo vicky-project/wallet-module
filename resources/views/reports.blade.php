@@ -401,7 +401,7 @@
   // Load monthly report for daily chart
   async function loadMonthlyReport(year, month) {
     try {
-      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/monthly/${year}/${month}`);
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/monthly/${year}/${month}?account_id=${currentAccountId}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -423,7 +423,7 @@
   // Load yearly report for monthly chart
   async function loadYearlyReport(year) {
     try {
-      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/yearly/${year}`);
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/yearly/${year}?account_id=${currentAccountId}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -451,6 +451,7 @@
       const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/custom`, {
         method: 'POST',
         body: JSON.stringify({
+          account_id: currentAccountId,
           report_type: 'income_expense_trend',
           start_date: `${startYear}-01-01`,
           end_date: `${currentYear}-12-31`,

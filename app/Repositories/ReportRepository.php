@@ -98,6 +98,7 @@ class ReportRepository
 	public function getIncomeExpenseTrend(array $params): array
 	{
 		$userId = $params["user_id"];
+		$accountId = $params["account_id"] ?? null;
 		$startDate = $params["start_date"] ?? now()->subMonths(6);
 		$endDate = $params["end_date"] ?? now();
 		$groupBy = $params["group_by"] ?? "month"; // day, week, month
@@ -106,6 +107,9 @@ class ReportRepository
 			->where("user_id", $userId)
 			->whereBetween("transaction_date", [$startDate, $endDate])
 			->whereIn("type", [TransactionType::INCOME, TransactionType::EXPENSE]);
+		if ($accountId) {
+			$query->where("account_id", $accountId);
+		}
 
 		switch ($groupBy) {
 			case "day":

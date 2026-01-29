@@ -84,20 +84,26 @@ class ReportService
 		}
 	}
 
-	public function getMonthlyReport(int $userId, int $year, int $month): array
-	{
-		$cacheKey = "monthly_report_{$userId}_{$year}_{$month}";
+	public function getMonthlyReport(
+		int $userId,
+		int $year,
+		int $month,
+		?int $accountId = null
+	): array {
+		$cacheKey = "monthly_report_{$userId}_{$year}_{$month}_{$accountId}";
 
 		return Cache::remember($cacheKey, 3600, function () use (
 			$userId,
 			$year,
-			$month
+			$month,
+			$accountId
 		) {
 			$startDate = Carbon::create($year, $month, 1)->startOfMonth();
 			$endDate = Carbon::create($year, $month, 1)->endOfMonth();
 
 			$params = [
 				"user_id" => $userId,
+				"account_id" => $accountId,
 				"start_date" => $startDate,
 				"end_date" => $endDate,
 				"period" => "monthly",
@@ -125,16 +131,24 @@ class ReportService
 		});
 	}
 
-	public function getYearlyReport(int $userId, int $year): array
-	{
-		$cacheKey = "yearly_report_{$userId}_{$year}";
+	public function getYearlyReport(
+		int $userId,
+		int $year,
+		?int $accountId
+	): array {
+		$cacheKey = "yearly_report_{$userId}_{$year}_{$accountId}";
 
-		return Cache::remember($cacheKey, 3600, function () use ($userId, $year) {
+		return Cache::remember($cacheKey, 3600, function () use (
+			$userId,
+			$year,
+			$accountId
+		) {
 			$startDate = Carbon::create($year, 1, 1)->startOfYear();
 			$endDate = Carbon::create($year, 12, 31)->endOfYear();
 
 			$params = [
 				"user_id" => $userId,
+				"account_id" => $accountId,
 				"start_date" => $startDate,
 				"end_date" => $endDate,
 			];
