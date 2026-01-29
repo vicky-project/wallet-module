@@ -181,7 +181,7 @@
               <div class="card-body">
                 <h6 class="text-muted mb-2">Total Bulan Ini</h6>
                 <h3 class="mb-0 {{ $category->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
-                  Rp {{ number_format($category->getIncomeTotal() / 100 + $category->getExpenseTotal() / 100, 0, ',', '.') }}
+                  Rp {{ number_format($category->getIncomeTotal(request('month', null), request('year', null)) / 100 + $category->getExpenseTotal() / 100, 0, ',', '.') }}
                 </h3>
               </div>
             </div>
