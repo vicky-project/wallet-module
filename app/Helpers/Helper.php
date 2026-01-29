@@ -199,6 +199,7 @@ class Helper
 			"bi-cup-hot",
 			"bi-cup-straw",
 			"bi-currency-bitcoin",
+			"bi-currency-dollar",
 			"bi-currency-exchange",
 			"bi-database",
 			"bi-dice-5",
