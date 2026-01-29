@@ -876,7 +876,7 @@
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between">
                                 <small class="text-truncate" style="max-width: 120px;">${label}</small>
-                                <small>${formatCurrency(value * 100)}</small>
+                                <small>${formatCurrency(value)}</small>
                             </div>
                             <div class="progress progress-thin">
                                 <div class="progress-bar" style="width: ${percentage}%; background-color: ${color};"></div>

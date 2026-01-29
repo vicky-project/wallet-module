@@ -415,7 +415,7 @@ class ReportRepository
 
 		foreach ($accounts as $account) {
 			$labels[] = $account->name;
-			$balanceData[] = $account->balance->getAmount()->toInt();
+			$balanceData[] = $account->balance->getMinorAmount()->toInt();
 			$backgroundColors[] = $account->color;
 		}
 
