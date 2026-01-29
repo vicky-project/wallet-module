@@ -123,7 +123,7 @@ class ReportService
 				"daily_trend" => $this->reportRepository->getIncomeExpenseTrend(
 					array_merge($params, ["group_by" => "day"])
 				),
-				"category_breakdown" => [
+				"category_analysis" => [
 					"income" => $this->reportRepository->getCategoryAnalysis(
 						array_merge($params, ["type" => "income"])
 					),
