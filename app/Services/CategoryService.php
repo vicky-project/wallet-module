@@ -198,9 +198,6 @@ class CategoryService
 			);
 		}
 
-		// Validate data
-		$this->validateCategoryData($data, $user, $category->id);
-
 		try {
 			DB::beginTransaction();
 
@@ -373,36 +370,6 @@ class CategoryService
 			$month,
 			$year
 		);
-	}
-
-	/**
-	 * Validate category data
-	 */
-	private function validateCategoryData(
-		array $data,
-		User $user,
-		?int $exceptId = null
-	): void {
-		$rules = [
-			"name" => ["required", "string", "max:100"],
-			"type" => ["required", "in:income,expense"],
-			"icon" => ["nullable", "string", "max:50"],
-			"description" => ["nullable", "string", "max:500"],
-			"is_active" => ["boolean"],
-			"is_budgetable" => ["boolean"],
-			"slug" => [
-				"nullable",
-				"string",
-				"max:120",
-				"unique:categories,slug," . $exceptId . ",id,user_id," . $user->id,
-			],
-		];
-
-		$validator = validator($data, $rules);
-
-		if ($validator->fails()) {
-			throw ValidationException::withMessages($validator->errors()->toArray());
-		}
 	}
 
 	/**
