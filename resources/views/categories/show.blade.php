@@ -140,7 +140,7 @@
         <h6 class="mb-0">Statistik Bulanan</h6>
         <div class="dropdown">
           <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            {{ date('F Y', strtotime(request('year', now()->year). ' '. request('month', now()->months))) }}
+            {{ date('F Y', strtotime(request('year', now()->year). ' '. request('month', now()->month))) }}
           </button>
           <ul class="dropdown-menu">
             @for($i = 0; $i < 6; $i++)
@@ -179,7 +179,7 @@
           <div class="col-md-6 mb-2">
             <div class="card bg-light">
               <div class="card-body">
-                <h6 class="text-muted mb-2">Total Bulan {{ date("F Y", strtotime(request("year", now()->year) . ' ' . request("month", now()->months))) }}</h6>
+                <h6 class="text-muted mb-2">Total Bulan {{ date("F Y", strtotime(request("year", now()->year) . ' ' . request("month", now()->month))) }}</h6>
                 <h3 class="mb-0 {{ $category->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
                   Rp {{ number_format($category->getIncomeTotal(date(request('month', 'm')), date(request('year', 'Y'))) / 100 + $category->getExpenseTotal(date(request('month', 'm')), date(request('year', 'Y'))) / 100, 0, ',', '.') }}
                 </h3>
