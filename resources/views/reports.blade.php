@@ -4,296 +4,296 @@
 @include('wallet::partials.fab')
 <!-- Header -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="h3 mb-2">
-                    <i class="bi bi-bar-chart-line me-2"></i>Laporan Keuangan
-                </h1>
-                <p class="text-muted mb-0">Analisis dan visualisasi data keuangan Anda</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary" onclick="exportReport()">
-                    <i class="bi bi-download me-1"></i>Ekspor
-                </button>
-                <button class="btn btn-primary" onclick="refreshCharts()">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh
-                </button>
-            </div>
-        </div>
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="h3 mb-2">
+          <i class="bi bi-bar-chart-line me-2"></i>Laporan Keuangan
+        </h1>
+        <p class="text-muted mb-0">Analisis dan visualisasi data keuangan Anda</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" onclick="exportReport()">
+          <i class="bi bi-download me-1"></i>Ekspor
+        </button>
+        <button class="btn btn-primary" onclick="refreshCharts()">
+          <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Filter Controls - Hanya Akun -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="filter-section">
-            <div class="row g-3">
-                <div class="col-md-8">
-                    <label class="form-label">Filter Akun</label>
-                    <div class="d-flex gap-2">
-                        <select class="form-select" id="account-filter">
-                            <option value="">Semua Akun</option>
-                            @foreach($accounts as $account)
-                                <option value="{{ $account->id }}">{{ $account->name }}</option>
-                            @endforeach
-                        </select>
-                        <button class="btn btn-primary" onclick="applyAccountFilter()">
-                            <i class="bi bi-funnel me-1"></i>Filter Akun
-                        </button>
-                    </div>
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="filter-section">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label">Filter Akun</label>
+          <div class="d-flex gap-2">
+            <select class="form-select" id="account-filter">
+              <option value="">Semua Akun</option>
+              @foreach($accounts as $account)
+                <option value="{{ $account->id }}">{{ $account->name }}</option>
+              @endforeach
+            </select>
+            <button class="btn btn-primary" onclick="applyAccountFilter()">
+              <i class="bi bi-funnel me-1"></i>Filter Akun
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Summary Cards -->
 <div class="row mb-4" id="summary-cards">
-    <div class="col-md-6 mb-3">
-        <div class="card stat-card border-start border-success border-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="text-muted mb-2">Total Pendapatan</h6>
-                        <h3 class="mb-0" id="total-income">Rp 0</h3>
-                        <small class="text-muted" id="income-count">0 transaksi</small>
-                    </div>
-                    <div class="stat-icon bg-success bg-opacity-10">
-                        <i class="bi bi-arrow-up-circle fs-4 text-success"></i>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <span class="badge bg-success bg-opacity-10 text-success summary-badge">
-                        <i class="bi bi-arrow-up me-1"></i>100%
-                    </span>
-                </div>
-            </div>
+  <div class="col-md-6 mb-3">
+    <div class="card stat-card border-start border-success border-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Total Pendapatan</h6>
+            <h3 class="mb-0" id="total-income">Rp 0</h3>
+            <small class="text-muted" id="income-count">0 transaksi</small>
+          </div>
+          <div class="stat-icon bg-success bg-opacity-10">
+            <i class="bi bi-arrow-up-circle fs-4 text-success"></i>
+          </div>
         </div>
+        <div class="mt-3">
+          <span class="badge bg-success bg-opacity-10 text-success summary-badge">
+            <i class="bi bi-arrow-up me-1"></i>100%
+          </span>
+        </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-md-6 mb-3">
-        <div class="card stat-card border-start border-danger border-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="text-muted mb-2">Total Pengeluaran</h6>
-                        <h3 class="mb-0" id="total-expense">Rp 0</h3>
-                        <small class="text-muted" id="expense-count">0 transaksi</small>
-                    </div>
-                    <div class="stat-icon bg-danger bg-opacity-10">
-                        <i class="bi bi-arrow-down-circle fs-4 text-danger"></i>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <span class="badge bg-danger bg-opacity-10 text-danger summary-badge">
-                        <i class="bi bi-arrow-down me-1"></i>100%
-                    </span>
-                </div>
-            </div>
+  <div class="col-md-6 mb-3">
+    <div class="card stat-card border-start border-danger border-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Total Pengeluaran</h6>
+            <h3 class="mb-0" id="total-expense">Rp 0</h3>
+            <small class="text-muted" id="expense-count">0 transaksi</small>
+          </div>
+          <div class="stat-icon bg-danger bg-opacity-10">
+            <i class="bi bi-arrow-down-circle fs-4 text-danger"></i>
+          </div>
         </div>
+        <div class="mt-3">
+          <span class="badge bg-danger bg-opacity-10 text-danger summary-badge">
+            <i class="bi bi-arrow-down me-1"></i>100%
+          </span>
+        </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-md-6 mb-3">
-        <div class="card stat-card border-start border-primary border-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="text-muted mb-2">Saldo Bersih</h6>
-                        <h3 class="mb-0" id="net-flow">Rp 0</h3>
-                        <small class="text-muted" id="net-flow-label">Arus Kas</small>
-                    </div>
-                    <div class="stat-icon bg-primary bg-opacity-10">
-                        <i class="bi bi-cash-stack fs-4 text-primary"></i>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <span class="badge bg-primary bg-opacity-10 text-primary summary-badge">
-                        <i class="bi bi-graph-up me-1"></i>100%
-                    </span>
-                </div>
-            </div>
+  <div class="col-md-6 mb-3">
+    <div class="card stat-card border-start border-primary border-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Saldo Bersih</h6>
+            <h3 class="mb-0" id="net-flow">Rp 0</h3>
+            <small class="text-muted" id="net-flow-label">Arus Kas</small>
+          </div>
+          <div class="stat-icon bg-primary bg-opacity-10">
+            <i class="bi bi-cash-stack fs-4 text-primary"></i>
+          </div>
         </div>
+        <div class="mt-3">
+          <span class="badge bg-primary bg-opacity-10 text-primary summary-badge">
+            <i class="bi bi-graph-up me-1"></i>100%
+          </span>
+        </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-md-6 mb-3">
-        <div class="card stat-card border-start border-purple border-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="text-muted mb-2">Total Transfer</h6>
-                        <h3 class="mb-0" id="total-transfer">Rp 0</h3>
-                        <small class="text-muted">Antar Akun</small>
-                    </div>
-                    <div class="stat-icon" style="background-color: rgba(139, 92, 246, 0.1);">
-                        <i class="bi bi-arrow-left-right fs-4" style="color: #8b5cf6;"></i>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <span class="badge summary-badge" style="background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
-                        <i class="bi bi-repeat me-1"></i>100%
-                    </span>
-                </div>
-            </div>
+  <div class="col-md-6 mb-3">
+    <div class="card stat-card border-start border-purple border-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-2">Total Transfer</h6>
+            <h3 class="mb-0" id="total-transfer">Rp 0</h3>
+            <small class="text-muted">Antar Akun</small>
+          </div>
+          <div class="stat-icon" style="background-color: rgba(139, 92, 246, 0.1);">
+            <i class="bi bi-arrow-left-right fs-4" style="color: #8b5cf6;"></i>
+          </div>
         </div>
+        <div class="mt-3">
+          <span class="badge summary-badge" style="background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+            <i class="bi bi-repeat me-1"></i>100%
+          </span>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Filter Chart - Terpisah untuk Chart -->
 <div class="row mb-3">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-sliders me-2"></i>Pengaturan Chart
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Tipe Laporan</label>
-                        <select class="form-select" id="report-type">
-                            <option value="monthly">Bulanan (Per Tahun)</option>
-                            <option value="yearly">Tahunan</option>
-                            <option value="daily">Harian (Per Bulan)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3" id="year-selection">
-                        <label class="form-label">Tahun</label>
-                        <select class="form-select" id="year-filter">
-                            @for($i = date('Y'); $i >= 2020; $i--)
-                                <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-md-3" id="month-selection" style="display: none;">
-                        <label class="form-label">Bulan</label>
-                        <select class="form-select" id="month-filter">
-                            @for($i = 1; $i <= 12; $i++)
-                                <option value="{{ $i }}" {{ $i == date('m') ? 'selected' : '' }}>
-                                    {{ DateTime::createFromFormat('!m', $i)->format('F') }}
-                                </option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-outline-primary w-100" onclick="loadChartData()">
-                            <i class="bi bi-eye me-1"></i>Lihat Chart
-                        </button>
-                    </div>
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-sliders me-2"></i>Pengaturan Chart
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Tipe Laporan</label>
+            <select class="form-select" id="report-type">
+              <option value="monthly">Bulanan (Per Tahun)</option>
+              <option value="yearly">Tahunan</option>
+              <option value="daily">Harian (Per Bulan)</option>
+            </select>
+          </div>
+          <div class="col-md-3" id="year-selection">
+            <label class="form-label">Tahun</label>
+            <select class="form-select" id="year-filter">
+              @for($i = date('Y'); $i >= 2020; $i--)
+                <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
+              @endfor
+            </select>
+          </div>
+          <div class="col-md-3" id="month-selection" style="display: none;">
+            <label class="form-label">Bulan</label>
+            <select class="form-select" id="month-filter">
+              @for($i = 1; $i <= 12; $i++)
+                <option value="{{ $i }}" {{ $i == date('m') ? 'selected' : '' }}>
+                  {{ DateTime::createFromFormat('!m', $i)->format('F') }}
+                </option>
+              @endfor
+            </select>
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-outline-primary w-100" onclick="loadChartData()">
+              <i class="bi bi-eye me-1"></i>Lihat Chart
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Charts Row 1: Trend Chart -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="bi bi-graph-up me-2"></i>Trend Pendapatan vs Pengeluaran
-                </h5>
-                <div class="chart-toolbar">
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-outline-secondary active" onclick="toggleChartType('line')">
-                            <i class="bi bi-graph-up"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="toggleChartType('bar')">
-                            <i class="bi bi-bar-chart"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="incomeExpenseChart"></canvas>
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-graph-up me-2"></i>Trend Pendapatan vs Pengeluaran
+        </h5>
+        <div class="chart-toolbar">
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-outline-secondary active" onclick="toggleChartType('line')">
+              <i class="bi bi-graph-up"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="toggleChartType('bar')">
+              <i class="bi bi-bar-chart"></i>
+            </button>
+          </div>
         </div>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="incomeExpenseChart"></canvas>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Charts Row 2: Category & Account -->
 <div class="row mb-4">
-    <div class="col-md-6 mb-3">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-pie-chart me-2"></i>Pengeluaran per Kategori
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="expenseCategoryChart"></canvas>
-                </div>
-                <div class="mt-3" id="category-legend">
-                    <!-- Legend akan diisi dinamis -->
-                </div>
-            </div>
+  <div class="col-md-6 mb-3">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-pie-chart me-2"></i>Pengeluaran per Kategori
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="expenseCategoryChart"></canvas>
         </div>
+        <div class="mt-3" id="category-legend">
+          <!-- Legend akan diisi dinamis -->
+        </div>
+      </div>
     </div>
+  </div>
     
-    <div class="col-md-6 mb-3">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-wallet me-2"></i>Distribusi Saldo Akun
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="accountBalanceChart"></canvas>
-                </div>
-                <div class="mt-3" id="account-legend">
-                    <!-- Legend akan diisi dinamis -->
-                </div>
-            </div>
+  <div class="col-md-6 mb-3">
+    <div class="card h-100">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-wallet me-2"></i>Distribusi Saldo Akun
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="accountBalanceChart"></canvas>
         </div>
+        <div class="mt-3" id="account-legend">
+          <!-- Legend akan diisi dinamis -->
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Charts Row 3: Budget Analysis -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-currency-exchange me-2"></i>Analisis Anggaran vs Realisasi
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="budgetChart"></canvas>
-                </div>
-                <div class="row mt-3" id="budget-summary">
-                    <!-- Summary anggaran akan diisi dinamis -->
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-currency-exchange me-2"></i>Analisis Anggaran vs Realisasi
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="budgetChart"></canvas>
         </div>
+        <div class="row mt-3" id="budget-summary">
+          <!-- Summary anggaran akan diisi dinamis -->
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Charts Row 4: Transaction Activity -->
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-calendar-week me-2"></i>Aktivitas Transaksi per Hari
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="transactionActivityChart"></canvas>
-                </div>
-                <div class="row mt-3" id="activity-summary">
-                    <!-- Summary aktivitas akan diisi dinamis -->
-                </div>
-            </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-calendar-week me-2"></i>Aktivitas Transaksi per Hari
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="transactionActivityChart"></canvas>
         </div>
+        <div class="row mt-3" id="activity-summary">
+          <!-- Summary aktivitas akan diisi dinamis -->
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 @endsection
@@ -301,6 +301,7 @@
 @push('scripts')
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     // Global variables
     let charts = {};
@@ -481,7 +482,6 @@
             charts.incomeExpense.destroy();
         }
         
-        
         charts.incomeExpense = createLineChart('incomeExpenseChart', data.daily_trend, chartType);
         
         // Update other charts from dashboard data if available
@@ -496,7 +496,6 @@
         if (charts.incomeExpense) {
             charts.incomeExpense.destroy();
         }
-        
         
         charts.incomeExpense = createLineChart('incomeExpenseChart', data.monthly_trend, chartType);
         
@@ -513,7 +512,6 @@
             charts.incomeExpense.destroy();
         }
         
-        
         charts.incomeExpense = createLineChart('incomeExpenseChart', data, chartType);
         
         // Update other charts from dashboard data if available
@@ -525,6 +523,11 @@
     // Update chart legends
     function updateChartLegends(data) {
         if (data.category_analysis) {
+            if(charts.expenseCategory) {
+              charts.expenseCategory.destroy();
+            }
+            
+            charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis);
             updateCategoryLegend(data.category_analysis);
         }
         
@@ -717,6 +720,39 @@
             }
         });
     }
+    
+        // Create doughnut chart
+    function createDoughnutChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
     // Update category legend
     function updateCategoryLegend(chartData) {
@@ -923,95 +959,95 @@
 @endpush
 
 @push('styles')
-    <style>
-        .stat-card {
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
+<style>
+  .stat-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
         
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
         
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
+  .chart-container {
+    position: relative;
+    height: 300px;
+  }
         
-/* Chart tooltips */
-.chartjs-tooltip {
+  /* Chart tooltips */
+  .chartjs-tooltip {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid #e9ecef;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding: 12px !important;
     font-size: 14px;
-}
+  }
 
-        .summary-badge {
-            font-size: 0.875rem;
-            padding: 0.25rem 0.5rem;
-        }
+  .summary-badge {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+  }
         
-        .filter-section {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1rem;
-        }
+  .filter-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+  }
         
-        .date-range-input {
-            max-width: 250px;
-        }
+  .date-range-input {
+    max-width: 250px;
+  }
         
-        .progress-thin {
-            height: 6px;
-        }
+  .progress-thin {
+    height: 6px;
+  }
         
-        .chart-toolbar {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
+  .chart-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
         
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 250px !important;
-            }
+  @media (max-width: 768px) {
+    .chart-container {
+      height: 250px !important;
+    }
+
+    .filter-section .col-md-3 {
+      margin-bottom: 1rem;
+    }
+
+    .stat-card .card-body {
+      padding: 1rem;
+    }
+
+    .stat-icon {
+      width: 36px !important;
+      height: 36px !important;
+    }
             
-            .filter-section .col-md-3 {
-              margin-bottom: 1rem;
-            }
+    .stat-icon i {
+      font-size: 1.25rem !important;
+    }
             
-            .stat-card .card-body {
-              padding: 1rem;
-            }
-            
-            .stat-icon {
-                width: 36px !important;
-                height: 36px !important;
-            }
-            
-            .stat-icon i {
-              font-size: 1.25rem !important;
-            }
-            
-            .date-range-input {
-                max-width: 100%;
-            }
-        }
+    .date-range-input {
+      max-width: 100%;
+    }
+  }
         
-        @media (max-width: 576px) {
+  @media (max-width: 576px) {
           .chart-container {
             height: 200px !important;
           }
@@ -1025,8 +1061,8 @@
           }
         }
 
-        /* Dark mode support (optional) */
-        @media (prefers-color-scheme: dark) {
+  /* Dark mode support (optional) */
+  @media (prefers-color-scheme: dark) {
           .card {
             background-color: #2d3748;
             border-color: #4a5568;
@@ -1063,21 +1099,21 @@
             color: #e5e7eb;
           }
         }
-        /* Custom styles for reporting dashboard */
+  /* Custom styles for reporting dashboard */
 
 
-        /* Loading animation */
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
+  /* Loading animation */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 
-        .loading-pulse {
-          animation: pulse 1.5s ease-in-out   infinite;
-        }
-    </style>
+  .loading-pulse {
+    animation: pulse 1.5s ease-in-out   infinite;
+  }
+</style>
 @endpush
