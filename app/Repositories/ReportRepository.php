@@ -33,13 +33,15 @@ class ReportRepository
 	public function getFinancialSummary(array $params): array
 	{
 		$userId = $params["user_id"];
-		$startDate = $params["start_date"] ?? now()->startOfMonth();
+		$startDate = $params["start_date"] ?? null;
 		$endDate = $params["end_date"] ?? now()->endOfMonth();
 		$accountId = $params["account_id"] ?? null;
 
-		$query = $this->transaction
-			->where("user_id", $userId)
-			->whereBetween("transaction_date", [$startDate, $endDate]);
+		$query = $this->transaction->where("user_id", $userId);
+
+		if ($startDate) {
+			$query->whereBetween("transaction_date", [$startDate, $endDate]);
+		}
 
 		if ($accountId) {
 			$query->where("account_id", $accountId);
