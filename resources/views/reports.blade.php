@@ -983,7 +983,7 @@
         format: 'json'
       };
             
-      const response = await authFetch(`{{ route('api.apps.reports.export') }}`, {
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/export`, {
         method: 'POST',
         body: JSON.stringify(filters)
       });
