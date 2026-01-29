@@ -563,6 +563,7 @@
         
         // Update progress badges
         const total = (parseInt(summary.total_income) || 0) + (parseInt(summary.total_expense) || 0);
+        alert(total)
         if (total > 0) {
             const incomePercent = Math.round((parseInt(summary.total_income) / total) * 100);
             const expensePercent = Math.round((parseInt(summary.total_expense) / total) * 100);
