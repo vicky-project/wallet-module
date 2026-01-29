@@ -548,6 +548,14 @@
             charts.budget = createBarChart('budgetChart', data.budget_analysis);
             updateBudgetSummary(data.budget_analysis);
         }
+        
+        if(data.transaction_analysis) {
+            if(charts.transactionActivity) {
+              charts.transactionActivity.destroy();
+            }
+            
+            charts.transactionActivity = createBarChart('transactionActivityChart', data.transaction_analysis);
+        }
     }
 
     // Update summary cards

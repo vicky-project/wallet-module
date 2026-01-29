@@ -32,6 +32,9 @@ class ReportService
 			$categoryAnalysis = $this->reportRepository->getCategoryAnalysis($params);
 			$budgetAnalysis = $this->reportRepository->getBudgetAnalysis($params);
 			$accountAnalysis = $this->reportRepository->getAccountAnalysis($params);
+			$transactionAnalysis = $this->reportRepository->getTransactionAnalysis(
+				$params
+			);
 
 			return [
 				"financial_summary" => $this->formatMoneyValues($financialSummary),
@@ -39,6 +42,7 @@ class ReportService
 				"category_analysis" => $categoryAnalysis,
 				"budget_analysis" => $budgetAnalysis,
 				"account_analysis" => $accountAnalysis,
+				"transaction_analysis" => $transactionAnalysis,
 				"period" => $financialSummary["period"],
 			];
 		});
