@@ -539,7 +539,7 @@
       if(charts.expenseCategory) {
         charts.expenseCategory.destroy();
       }
-
+console.log(data);
       charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis.expense);
       updateCategoryLegend(data.category_analysis);
     }
