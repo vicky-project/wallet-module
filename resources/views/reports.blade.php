@@ -544,8 +544,9 @@
       charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis.expense);
       
       if(charts.incomeCategory) {
-        charts.incomeCategory = createDoughnutChart('incomeCategoryChart', data.category_analysis.income);
+        charts.incomeCategory.destroy();
       }
+      charts.incomeCategory = createDoughnutChart('incomeCategoryChart', data.category_analysis.income);
       updateCategoryLegend(data.category_analysis);
     }
         
