@@ -480,7 +480,7 @@
             charts.incomeExpense.destroy();
         }
         
-        const chartType = document.getElementById('chart-type').value;
+        const chartType = document.getElementById('chart-type')?.value || 'line';
         charts.incomeExpense = createLineChart('incomeExpenseChart', data.daily_trend, chartType);
         
         // Update other charts from dashboard data if available
@@ -512,7 +512,7 @@
             charts.incomeExpense.destroy();
         }
         
-        const chartType = document.getElementById('chart-type').value;
+        const chartType = document.getElementById('chart-type')?.value || 'line';
         charts.incomeExpense = createLineChart('incomeExpenseChart', data, chartType);
         
         // Update other charts from dashboard data if available
