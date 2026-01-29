@@ -524,7 +524,7 @@
                 // Determine budget status
                 $budgetStatus = 'budget-none';
                 $usagePercentage = $category->budget_usage_percentage ?? 0;
-                $hasBudget = isset($category->budgets) && $category->budgets->exists() && $category->is_budgetable;
+                $hasBudget = isset($category->budgets) && $category->budgets->isNotEmpty() && $category->is_budgetable;
                 $isExceeded = $category->has_budget_exceeded ?? false;
                 
                 if ($hasBudget) {
