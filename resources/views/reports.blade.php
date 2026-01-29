@@ -567,9 +567,9 @@
             const incomePercent = Math.round((parseInt(summary.total_income) / total) * 100);
             const expensePercent = Math.round((parseInt(summary.total_expense) / total) * 100);
             
-            document.querySelector('#summary-cards .col-md-3:nth-child(1) .summary-badge').innerHTML = 
+            document.querySelector('#summary-cards .col-md-6:nth-child(1) .summary-badge').innerHTML = 
                 `<i class="bi bi-arrow-up me-1"></i>${incomePercent}%`;
-            document.querySelector('#summary-cards .col-md-3:nth-child(2) .summary-badge').innerHTML = 
+            document.querySelector('#summary-cards .col-md-6:nth-child(2) .summary-badge').innerHTML = 
                 `<i class="bi bi-arrow-down me-1"></i>${expensePercent}%`;
             
             // Update net flow label
@@ -577,9 +577,9 @@
             document.getElementById('net-flow-label').textContent = netLabel;
             
             // Update net flow color
-            const netCard = document.querySelector('#summary-cards .col-md-3:nth-child(3) .card');
-            const netIcon = document.querySelector('#summary-cards .col-md-3:nth-child(3) .stat-icon');
-            const netBadge = document.querySelector('#summary-cards .col-md-3:nth-child(3) .summary-badge');
+            const netCard = document.querySelector('#summary-cards .col-md-6:nth-child(3) .card');
+            const netIcon = document.querySelector('#summary-cards .col-md-6:nth-child(3) .stat-icon');
+            const netBadge = document.querySelector('#summary-cards .col-md-6:nth-child(3) .summary-badge');
             
             if (summary.net_flow >= 0) {
                 netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-success border-4');
