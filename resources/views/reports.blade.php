@@ -539,7 +539,7 @@
       if(charts.expenseCategory) {
         charts.expenseCategory.destroy();
       }
-console.log(data);
+      
       charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis.expense);
       updateCategoryLegend(data.category_analysis);
     }
@@ -831,25 +831,21 @@ console.log(data);
   function updateCategoryLegend(chartData) {
     const expenseLegendContainer = document.getElementById('category-expense-legend');
     const incomeLegendContainer = document.getElementById('category-income-legend');
-    console.log(chartData)
-    const expenseData = chartData.expense;
-    const incomeData = chartData.income;
-    
-    if (!expenseData.labels || expenseData.labels.length === 0) {
-      expenseLegendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
-      return;
-    }
-    
-    if (!incomeData.labels || incomeData.labels.length === 0) {
-      incomeLegendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
-      return;
-    }
-    
-    expenseLegendContainer.innerHTML = generateLegendCategory(expenseData);
-    incomeLegendContainer.innerHTML = generateLegendCategory(incomeData);
+
+    renderCategoryLegend(expenseLegendContainer, chartData.expense);
+    renderCategoryLegend(incomeLegendContainer, chartData.income);
   }
   
-  function generateLegendCategory(data){
+  function renderCategoryLegend(element, data) {
+    if (!data.labels || data.labels.length === 0) {
+      element.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
+      return;
+    }
+    
+    element.innerHTML = generateLegendCategory(data);
+  }
+  
+  function generateLegendCategory(data) {
     let legendHtml = '<div class="row g-2">';
     const total = data.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
     const colors = data.datasets[0]?.backgroundColor || [];
