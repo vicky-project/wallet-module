@@ -139,12 +139,22 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h6 class="mb-0">Statistik Bulanan</h6>
         <div class="dropdown">
+          @php
+          $selectedMonth = request('month', date('m'));
+          $selectedYear = request('year', date('Y'));
+          $selectedDate = strtotime($selectedYear .'-'. $selectedMonth .'-01');
+          @endphp
           <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            {{ (request('year') && request('month')) ? date('F Y', strtotime(request('month') . ' '. request('year'))) : date('F Y') }}
+            {{ date('F Y', $selectedDate) }}
           </button>
             <ul class="dropdown-menu">
             @for($i = 0; $i < 6; $i++)
-              <li><a class="dropdown-item {{ date('F Y', strtotime(-$i .' months')) == date('F Y', strtotime(request('year') . ' '. request('month'))) ? 'active' : '' }}" href="?month={{ date('m', strtotime(-$i. ' months')) }}&year={{ date('Y', strtotime(-$i. ' months')) }}">{{ date('F Y', strtotime("-$i months")) }}</a></li>
+              @php
+              $date = strtotime("-$i months");
+              $dateString = date("Y-m", $date);
+              $selectedDateString = date("Y-m", $selectedDate);
+              @endphp
+              <li><a class="dropdown-item {{ $dateString == $selectedDateString ? 'active' : '' }}" href="?month={{ date('m', $date) }}&year={{ date('Y', $date) }}">{{ date('F Y', $date) }}</a></li>
             @endfor
           </ul>
         </div>
@@ -179,9 +189,9 @@
           <div class="col-md-6 mb-2">
             <div class="card bg-light">
               <div class="card-body">
-                <h6 class="text-muted mb-2">Total Bulan {{ date("F Y", strtotime(request("year") . ' ' . request("month"))) }}</h6>
+                <h6 class="text-muted mb-2">Total Bulan {{ date("F Y", $selectedDate) }}</h6>
                 <h3 class="mb-0 {{ $category->type === CategoryType::INCOME ? 'text-success' : 'text-danger' }}">
-                  Rp {{ number_format($category->getIncomeTotal(date(request('month', 'm')), date(request('year', 'Y'))) / 100 + $category->getExpenseTotal(date(request('month', 'm')), date(request('year', 'Y'))) / 100, 0, ',', '.') }}
+                  Rp {{ number_format($category->getIncomeTotal($selectedMonth, $selectedYear) / 100 + $category->getExpenseTotal($selectedMonth, $selectedYear) / 100, 0, ',', '.') }}
                 </h3>
               </div>
             </div>
@@ -192,7 +202,7 @@
                 <h6 class="text-muted mb-2">Rata-rata Transaksi</h6>
                 @php
                 $count = $category->transactions()->count();
-                $avg = $count > 0 ? ($category->getIncomeTotal(date(request('month', 'm')), date(request('year', 'Y'))) / 100 + $category->getExpenseTotal(date(request('month', 'm')), date(request('year', 'Y'))) / 100) / $count : 0;
+                $avg = $count > 0 ? ($category->getIncomeTotal($selectedMonth, $selectedYear) / 100 + $category->getExpenseTotal($selectedMonth, $selectedYear) / 100) / $count : 0;
                 @endphp
                 <h3 class="text-secondary mb-0">Rp {{ number_format($avg, 0, ',', '.') }}</h3>
               </div>
