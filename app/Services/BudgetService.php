@@ -95,7 +95,6 @@ class BudgetService
 			CategoryType::EXPENSE,
 			$user
 		);
-		dd($categories->filter(fn($row) => $row->is_budgetable));
 
 		// Get active accounts
 		$accounts = Account::where("user_id", $user->id)
@@ -111,7 +110,7 @@ class BudgetService
 		$currentYear = date("Y");
 
 		return [
-			"categories" => $categories,
+			"categories" => $categories->filter(fn($row) => $row->is_budgetable),
 			"accounts" => $accounts,
 			"periodTypes" => $periodTypes,
 			"defaultPeriodType" => PeriodType::MONTHLY,
