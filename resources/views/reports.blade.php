@@ -532,10 +532,20 @@
         }
         
         if (data.account_analysis) {
+            if(charts.accountBalance){
+              charts.accountBalance.destroy();
+            }
+            
+            charts.accountBalance = createDoughnutChart('accountBalanceChart', data.account_analysis);
             updateAccountLegend(data.account_analysis);
         }
         
         if (data.budget_analysis) {
+            if(charts.budget){
+              charts.budget.destroy();
+            }
+            
+            charts.budget = createBarChart('budgetChart', data.budget_analysis);
             updateBudgetSummary(data.budget_analysis);
         }
     }
@@ -721,7 +731,7 @@
         });
     }
     
-        // Create doughnut chart
+    // Create doughnut chart
     function createDoughnutChart(canvasId, chartData) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             return new Chart(ctx, {
@@ -746,6 +756,46 @@
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     const percentage = Math.round((value / total) * 100);
                                     return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+    // Create bar chart
+    function createBarChart(canvasId, chartData) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
                                 }
                             }
                         }
