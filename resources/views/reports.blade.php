@@ -227,16 +227,18 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-6 mb-2">
+            <h5 class="card-title">Pemasukan</h5>
             <div class="chart-container">
-              <canvas id="expenseCategoryChart"></canvas>
+              <canvas id="incomeCategoryChart"></canvas>
             </div>
             <div class="mt-3" id="category-income-legend">
               <!-- Legend akan diisi dinamis -->
             </div>
           </div>
           <div class="col-md-6 mb-2">
+            <h5 class="card-title">Pengeluaran</h5>
             <div class="chart-container">
-              <canvas id="incomeCategoryChart"></canvas>
+              <canvas id="expenseCategoryChart"></canvas>
             </div>
             <div class="mt-3" id="category-expense-legend">
               <!-- Legend akan diisi dinamis -->
@@ -539,8 +541,11 @@
       if(charts.expenseCategory) {
         charts.expenseCategory.destroy();
       }
-      
       charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis.expense);
+      
+      if(charts.incomeCategory) {
+        charts.incomeCategory = createDoughnutChart('incomeCategoryChart', data.category_analysis.income);
+      }
       updateCategoryLegend(data.category_analysis);
     }
         
