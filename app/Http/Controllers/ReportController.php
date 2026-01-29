@@ -90,7 +90,7 @@ class ReportController extends Controller
 			"start_date" => "nullable|date",
 			"end_date" => "nullable|date|after_or_equal:start_date",
 			"type" => "nullable|in:income,expense",
-			"group_by" => "nullable|in:day,week,month",
+			"group_by" => "nullable|in:day,week,month,year",
 			"period" => "nullable|in:current,monthly,yearly",
 			"limit" => "nullable|integer|min:1|max:50",
 		]);

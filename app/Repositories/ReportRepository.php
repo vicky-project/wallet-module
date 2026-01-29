@@ -6,6 +6,7 @@ use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Category;
 use Modules\Wallet\Models\Budget;
+use Modules\Wallet\Enums\TransactionType;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Brick\Money\Money;
@@ -100,7 +101,7 @@ class ReportRepository
 		$query = $this->transaction
 			->where("user_id", $userId)
 			->whereBetween("transaction_date", [$startDate, $endDate])
-			->whereIn("type", ["income", "expense"]);
+			->whereIn("type", [TransactionType::INCOME, TransactionType::EXPENSE]);
 
 		switch ($groupBy) {
 			case "day":
@@ -122,6 +123,21 @@ class ReportRepository
 				$query
 					->select(
 						DB::raw("YEARWEEK(transaction_date, 1) as period"),
+						DB::raw("MIN(DATE(transaction_date)) as period_start"),
+						DB::raw(
+							"SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as income"
+						),
+						DB::raw(
+							"SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense"
+						)
+					)
+					->groupBy("period")
+					->orderBy("period");
+				break;
+			case "year":
+				$query
+					->select(
+						DB::raw("YEAR(transaction_date) as period"),
 						DB::raw("MIN(DATE(transaction_date)) as period_start"),
 						DB::raw(
 							"SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as income"
@@ -159,11 +175,25 @@ class ReportRepository
 		$expenseData = [];
 
 		foreach ($results as $row) {
-			if ($groupBy === "month") {
-				$labels[] = Carbon::parse($row->period_start)->format("M Y");
-			} else {
-				$labels[] = $row->period;
+			switch ($groupBy) {
+				case "month":
+					$labels[] = Carbon::parse($row->period_start)->format("M Y");
+					break;
+				case "week":
+					// Format untuk minggu: "W1 Jan 2024"
+					$weekStart = Carbon::parse($row->period_start);
+					$weekNumber = Carbon::parse($row->period_start)->weekOfYear;
+					$labels[] = "W{$weekNumber} " . $weekStart->format("M Y");
+					break;
+				case "year":
+					$labels[] = Carbon::parse($row->period_start)->format("Y");
+					break;
+				case "day":
+				default:
+					$labels[] = Carbon::parse($row->period)->format("d M Y");
+					break;
 			}
+
 			$incomeData[] = Money::ofMinor(
 				$row->income,
 				config("wallet.default_currency", "USD")
@@ -195,6 +225,12 @@ class ReportRepository
 					"backgroundColor" => "rgba(239, 68, 68, 0.1)",
 					"tension" => 0.4,
 				],
+			],
+			"summary" => [
+				"group_by" => $groupBy,
+				"total_income" => array_sum($incomeData),
+				"total_expense" => array_sum($expenseData),
+				"period_count" => count($labels),
 			],
 		];
 	}
