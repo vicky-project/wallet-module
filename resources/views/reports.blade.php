@@ -55,7 +55,7 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>
-            <h6 class="text-muted mb-2">Total Pendapatan Bulan Ini</h6>
+            <h6 class="text-muted mb-2">Total Pendapatan</h6>
             <h3 class="mb-0" id="total-income">Rp 0</h3>
             <small class="text-muted" id="income-count">0 transaksi</small>
           </div>
@@ -77,7 +77,7 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>
-            <h6 class="text-muted mb-2">Total Pengeluaran Bulan Ini</h6>
+            <h6 class="text-muted mb-2">Total Pengeluaran</h6>
             <h3 class="mb-0" id="total-expense">Rp 0</h3>
             <small class="text-muted" id="expense-count">0 transaksi</small>
           </div>
