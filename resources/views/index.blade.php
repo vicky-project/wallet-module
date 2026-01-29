@@ -177,9 +177,6 @@
     <p class="text-muted mb-0">Ringkasan keuangan Anda {{ now()->format('d M Y') }}</p>
   </div>
   <div class="d-flex gap-2">
-    <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-      <i class="bi bi-download"></i> Ekspor
-    </button>
     <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" id="refreshDashboard">
       <i class="bi bi-arrow-clockwise"></i> Refresh
     </button>

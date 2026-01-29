@@ -9,19 +9,24 @@ Route::prefix("apps")
 	->name("apps.")
 	->group(function () {
 		Route::prefix("reports")
+			->name("reports.")
 			->middleware(["auth", "web"])
 			->group(function () {
 				Route::get("dashboard-summary", [
 					ReportController::class,
 					"dashboardSummary",
-				]);
+				])->name("dashboard-summary");
 				Route::get("monthly/{year}/{month}", [
 					ReportController::class,
 					"monthlyReport",
 				]);
 				Route::get("yearly/{year}", [ReportController::class, "yearlyReport"]);
-				Route::post("custom", [ReportController::class, "customReport"]);
-				Route::post("export", [ReportController::class, "exportReport"]);
+				Route::post("custom", [ReportController::class, "customReport"])->name(
+					"custom"
+				);
+				Route::post("export", [ReportController::class, "exportReport"])->name(
+					"export"
+				);
 			});
 
 		Route::post("budgets/bulk-update", [

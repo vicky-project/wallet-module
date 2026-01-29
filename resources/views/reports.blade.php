@@ -303,717 +303,716 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Global variables
-    let charts = {};
-    let chartType = 'line';
-    let reportData = {};
-    let currentAccountId = '';
-    let currentReportType = 'monthly';
-    let currentYear = new Date().getFullYear();
-    let currentMonth = new Date().getMonth() + 1;
+  // Global variables
+  let charts = {};
+  let chartType = 'line';
+  let reportData = {};
+  let currentAccountId = '';
+  let currentReportType = 'monthly';
+  let currentYear = new Date().getFullYear();
+  let currentMonth = new Date().getMonth() + 1;
     
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        initReportTypeListener();
-        loadInitialData();
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    initReportTypeListener();
+    loadInitialData();
+  });
+
+  // Initialize report type listener
+  function initReportTypeListener() {
+    const reportTypeSelect = document.getElementById('report-type');
+    const monthSelection = document.getElementById('month-selection');
+    const yearSelection = document.getElementById('year-selection');
+        
+    reportTypeSelect.addEventListener('change', function() {
+      currentReportType = this.value;
+
+      if (currentReportType === 'daily') {
+        monthSelection.style.display = 'block';
+        yearSelection.style.display = 'block';
+      } else if (currentReportType === 'monthly') {
+        monthSelection.style.display = 'none';
+        yearSelection.style.display = 'block';
+      } else if (currentReportType === 'yearly') {
+        monthSelection.style.display = 'none';
+        yearSelection.style.display = 'none';
+      }
     });
+  }
 
-    // Initialize report type listener
-    function initReportTypeListener() {
-        const reportTypeSelect = document.getElementById('report-type');
-        const monthSelection = document.getElementById('month-selection');
-        const yearSelection = document.getElementById('year-selection');
-        
-        reportTypeSelect.addEventListener('change', function() {
-            currentReportType = this.value;
-            
-            if (currentReportType === 'daily') {
-                monthSelection.style.display = 'block';
-                yearSelection.style.display = 'block';
-            } else if (currentReportType === 'monthly') {
-                monthSelection.style.display = 'none';
-                yearSelection.style.display = 'block';
-            } else if (currentReportType === 'yearly') {
-                monthSelection.style.display = 'none';
-                yearSelection.style.display = 'none';
-            }
-        });
+  // Apply account filter
+  async function applyAccountFilter() {
+    currentAccountId = document.getElementById('account-filter').value;
+    await loadDashboardSummary();
+  }
+
+  // Load chart data based on selected type
+  async function loadChartData() {
+    currentReportType = document.getElementById('report-type').value;
+    currentYear = document.getElementById('year-filter').value;
+
+    if (currentReportType === 'daily') {
+      currentMonth = document.getElementById('month-filter').value;
+      await loadMonthlyReport(currentYear, currentMonth);
+    } else if (currentReportType === 'monthly') {
+      await loadYearlyReport(currentYear);
+    } else if (currentReportType === 'yearly') {
+      await loadYearlyComparison();
+    }
+  }
+
+  // Load initial data
+  async function loadInitialData() {
+    await loadDashboardSummary();
+    await loadChartData();
+  }
+
+  // Load dashboard summary with account filter
+  async function loadDashboardSummary() {
+    try {
+      const filters = {
+        account_id: currentAccountId || ''
+      };
+
+      const queryString = new URLSearchParams(filters).toString();
+      const response = await authFetch(`{{ route('api.apps.reports.dashboard-summary') }}?${queryString}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        reportData = result.data;
+        updateSummaryCards(reportData.financial_summary);
+        updateChartLegends(reportData);
+      } else {
+        throw new Error(result.message || 'Failed to load data');
+      }
+    } catch (error) {
+      console.error('Error loading dashboard summary:', error);
+      alert('Gagal memuat summary data. Silakan coba lagi. ' + error.message);
+    }
+  }
+
+  // Load monthly report for daily chart
+  async function loadMonthlyReport(year, month) {
+    try {
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/monthly/${year}/${month}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        updateMonthlyCharts(result.data);
+      } else {
+        throw new Error(result.message || 'Failed to load monthly data');
+      }
+    } catch (error) {
+      console.error('Error loading monthly report:', error);
+      alert('Gagal memuat data bulanan. Silakan coba lagi. ' + error.message);
+    }
+  }
+
+  // Load yearly report for monthly chart
+  async function loadYearlyReport(year) {
+    try {
+      const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/yearly/${year}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        updateYearlyCharts(result.data);
+      } else {
+        throw new Error(result.message || 'Failed to load yearly data');
+      }
+    } catch (error) {
+      console.error('Error loading yearly report:', error);
+      alert('Gagal memuat data tahunan. Silakan coba lagi. ' + error.message);
+    }
+  }
+
+  // Load yearly comparison for multi-year chart
+  async function loadYearlyComparison() {
+    try {
+      const currentYear = new Date().getFullYear();
+      const startYear = currentYear - 5; // Tampilkan 5 tahun terakhir
+
+      const response = await authFetch(`{{ route('api.apps.reports.custom') }}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          report_type: 'income_expense_trend',
+          start_date: `${startYear}-01-01`,
+          end_date: `${currentYear}-12-31`,
+          group_by: 'year'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        updateYearlyComparisonCharts(result.data);
+      } else {
+        throw new Error(result.message || 'Failed to load yearly comparison data');
+      }
+    } catch (error) {
+      console.error('Error loading yearly comparison:', error);
+      alert('Gagal memuat perbandingan tahunan. Silakan coba lagi. ' + error.message);
+    }
+  }
+
+  // Update monthly charts
+  function updateMonthlyCharts(data) {
+    // Update income expense trend for daily view
+    if (charts.incomeExpense) {
+      charts.incomeExpense.destroy();
     }
 
-    // Apply account filter
-    async function applyAccountFilter() {
-        currentAccountId = document.getElementById('account-filter').value;
-        await loadDashboardSummary();
+    charts.incomeExpense = createLineChart('incomeExpenseChart', data.daily_trend, chartType);
+
+    // Update other charts from dashboard data if available
+    if (reportData) {
+      updateChartLegends(reportData);
+    }
+  }
+
+  // Update yearly charts
+  function updateYearlyCharts(data) {
+    // Update income expense trend for monthly view
+    if (charts.incomeExpense) {
+      charts.incomeExpense.destroy();
     }
 
-    // Load chart data based on selected type
-    async function loadChartData() {
-        currentReportType = document.getElementById('report-type').value;
-        currentYear = document.getElementById('year-filter').value;
-        
-        if (currentReportType === 'daily') {
-            currentMonth = document.getElementById('month-filter').value;
-            await loadMonthlyReport(currentYear, currentMonth);
-        } else if (currentReportType === 'monthly') {
-            await loadYearlyReport(currentYear);
-        } else if (currentReportType === 'yearly') {
-            await loadYearlyComparison();
-        }
+    charts.incomeExpense = createLineChart('incomeExpenseChart', data.monthly_trend, chartType);
+
+    // Update other charts from dashboard data if available
+    if (reportData) {
+      updateChartLegends(reportData);
+    }
+  }
+
+  // Update yearly comparison charts
+  function updateYearlyComparisonCharts(data) {
+    // Update income expense trend for yearly comparison
+    if (charts.incomeExpense) {
+      charts.incomeExpense.destroy();
     }
 
-    // Load initial data
-    async function loadInitialData() {
-        await loadDashboardSummary();
-        await loadChartData();
+    charts.incomeExpense = createLineChart('incomeExpenseChart', data, chartType);
+
+    // Update other charts from dashboard data if available
+    if (reportData) {
+      updateChartLegends(reportData);
     }
+  }
 
-    // Load dashboard summary with account filter
-    async function loadDashboardSummary() {
-        try {
-            const filters = {
-                account_id: currentAccountId || ''
-            };
+  // Update chart legends
+  function updateChartLegends(data) {
+    if (data.category_analysis) {
+      if(charts.expenseCategory) {
+        charts.expenseCategory.destroy();
+      }
 
-            const queryString = new URLSearchParams(filters).toString();
-            const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/dashboard-summary?${queryString}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                reportData = result.data;
-                updateSummaryCards(reportData.financial_summary);
-                updateChartLegends(reportData);
-            } else {
-                throw new Error(result.message || 'Failed to load data');
-            }
-        } catch (error) {
-            console.error('Error loading dashboard summary:', error);
-            alert('Gagal memuat summary data. Silakan coba lagi. ' + error.message);
-        }
+      charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis);
+      updateCategoryLegend(data.category_analysis);
     }
+        
+    if (data.account_analysis) {
+      if(charts.accountBalance){
+        charts.accountBalance.destroy();
+      }
 
-    // Load monthly report for daily chart
-    async function loadMonthlyReport(year, month) {
-        try {
-            const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/monthly/${year}/${month}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                updateMonthlyCharts(result.data);
-            } else {
-                throw new Error(result.message || 'Failed to load monthly data');
-            }
-        } catch (error) {
-            console.error('Error loading monthly report:', error);
-            alert('Gagal memuat data bulanan. Silakan coba lagi. ' + error.message);
-        }
+      charts.accountBalance = createDoughnutChart('accountBalanceChart', data.account_analysis);
+      updateAccountLegend(data.account_analysis);
     }
+        
+    if (data.budget_analysis) {
+      if(charts.budget){
+        charts.budget.destroy();
+      }
 
-    // Load yearly report for monthly chart
-    async function loadYearlyReport(year) {
-        try {
-            const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/yearly/${year}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                updateYearlyCharts(result.data);
-            } else {
-                throw new Error(result.message || 'Failed to load yearly data');
-            }
-        } catch (error) {
-            console.error('Error loading yearly report:', error);
-            alert('Gagal memuat data tahunan. Silakan coba lagi. ' + error.message);
-        }
+      charts.budget = createBarChart('budgetChart', data.budget_analysis);
+      updateBudgetSummary(data.budget_analysis);
     }
+        
+    if(data.transaction_analysis) {
+      if(charts.transactionActivity) {
+        charts.transactionActivity.destroy();
+      }
 
-    // Load yearly comparison for multi-year chart
-    async function loadYearlyComparison() {
-        try {
-            const currentYear = new Date().getFullYear();
-            const startYear = currentYear - 5; // Tampilkan 5 tahun terakhir
-            
-            const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/custom`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    report_type: 'income_expense_trend',
-                    start_date: `${startYear}-01-01`,
-                    end_date: `${currentYear}-12-31`,
-                    group_by: 'year'
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                updateYearlyComparisonCharts(result.data);
-            } else {
-                throw new Error(result.message || 'Failed to load yearly comparison data');
-            }
-        } catch (error) {
-            console.error('Error loading yearly comparison:', error);
-            alert('Gagal memuat perbandingan tahunan. Silakan coba lagi. ' + error.message);
-        }
+      charts.transactionActivity = createBarChart('transactionActivityChart', data.transaction_analysis);
     }
+  }
 
-    // Update monthly charts
-    function updateMonthlyCharts(data) {
-        // Update income expense trend for daily view
-        if (charts.incomeExpense) {
-            charts.incomeExpense.destroy();
-        }
-        
-        charts.incomeExpense = createLineChart('incomeExpenseChart', data.daily_trend, chartType);
-        
-        // Update other charts from dashboard data if available
-        if (reportData) {
-            updateChartLegends(reportData);
-        }
+  // Update summary cards
+  function updateSummaryCards(summary) {
+    document.getElementById('total-income').textContent = summary.total_income;
+    document.getElementById('income-count').textContent = `${summary.income_count} transaksi`;
+
+    document.getElementById('total-expense').textContent = summary.total_expense;
+    document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
+
+    document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow * 100);
+    document.getElementById('total-transfer').textContent = summary.total_transfer;
+
+    // Update progress badges
+    const total = (parseInt(summary.income_number / 100) || 0) + (parseInt(summary.expense_number / 100) || 0);
+
+    if (total > 0) {
+      const incomePercent = Math.round((parseInt(summary.income_number / 100) / total) * 100);
+      const expensePercent = Math.round((parseInt(summary.expense_number / 100) / total) * 100);
+
+      document.querySelector('#summary-cards .col-md-6:nth-child(1) .summary-badge').innerHTML = 
+        `<i class="bi bi-arrow-up me-1"></i>${incomePercent}%`;
+      document.querySelector('#summary-cards .col-md-6:nth-child(2) .summary-badge').innerHTML = 
+        `<i class="bi bi-arrow-down me-1"></i>${expensePercent}%`;
+
+      // Update net flow label
+      const netLabel = summary.net_flow >= 0 ? 'Surplus' : 'Defisit';
+      document.getElementById('net-flow-label').textContent = netLabel;
+
+      // Update net flow color
+      const netCard = document.querySelector('#summary-cards .col-md-6:nth-child(3) .card');
+      const netIcon = document.querySelector('#summary-cards .col-md-6:nth-child(3) .stat-icon');
+      const netBadge = document.querySelector('#summary-cards .col-md-6:nth-child(3) .summary-badge');
+            
+      if (summary.net_flow >= 0) {
+        netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-success border-4');
+        netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
+        netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-success');
+        netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
+        netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-success');
+      } else {
+        netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-danger border-4');
+        netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
+        netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-danger');
+        netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
+        netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-danger');
+      }
     }
+  }
 
-    // Update yearly charts
-    function updateYearlyCharts(data) {
-        // Update income expense trend for monthly view
-        if (charts.incomeExpense) {
-            charts.incomeExpense.destroy();
-        }
-        
-        charts.incomeExpense = createLineChart('incomeExpenseChart', data.monthly_trend, chartType);
-        
-        // Update other charts from dashboard data if available
-        if (reportData) {
-            updateChartLegends(reportData);
-        }
+  // Format currency
+  function formatCurrency(value) {
+    if (!value && value !== 0) return 'Rp 0';
+
+    try {
+      // Jika value sudah dalam format string Rp, return langsung
+      if (typeof value === 'string' && value.includes('Rp')) {
+        return value;
+      }
+
+      // Jika value adalah integer (minor currency), convert ke rupiah
+      const numValue = parseInt(value) || 0;
+      const majorValue = numValue / 100; // Convert dari minor ke major
+
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(majorValue);
+    } catch (error) {
+      console.error('Error formatting currency:', error, value);
+      alert('Error formating currency.', error.message)
+      return 'Rp 0';
     }
+  }
 
-    // Update yearly comparison charts
-    function updateYearlyComparisonCharts(data) {
-        // Update income expense trend for yearly comparison
-        if (charts.incomeExpense) {
-            charts.incomeExpense.destroy();
-        }
+  // Custom fetch dengan authentication
+  async function authFetch(url, options = {}) {
+    const defaultOptions = {
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    };
+
+    const mergedOptions = { ...defaultOptions, ...options };
         
-        charts.incomeExpense = createLineChart('incomeExpenseChart', data, chartType);
-        
-        // Update other charts from dashboard data if available
-        if (reportData) {
-            updateChartLegends(reportData);
-        }
+    try {
+      const response = await fetch(url, mergedOptions);
+            
+      if (response.status === 401) {
+        window.location.href = '{{ route("login") }}';
+        throw new Error('Unauthorized - Redirecting to login');
+      }
+            
+      if (response.status === 419) {
+        await getNewCsrfToken();
+        mergedOptions.headers['X-CSRF-TOKEN'] = csrfToken;
+        return fetch(url, mergedOptions);
+      }
+            
+      return response;
+    } catch (error) {
+      console.error('Fetch error:', error);
+      throw error;
     }
+  }
 
-    // Update chart legends
-    function updateChartLegends(data) {
-        if (data.category_analysis) {
-            if(charts.expenseCategory) {
-              charts.expenseCategory.destroy();
-            }
+  // Get new CSRF token jika expired
+  async function getNewCsrfToken() {
+    try {
+      const response = await fetch('/sanctum/csrf-cookie', {
+        credentials: 'same-origin'
+      });
             
-            charts.expenseCategory = createDoughnutChart('expenseCategoryChart', data.category_analysis);
-            updateCategoryLegend(data.category_analysis);
-        }
-        
-        if (data.account_analysis) {
-            if(charts.accountBalance){
-              charts.accountBalance.destroy();
-            }
-            
-            charts.accountBalance = createDoughnutChart('accountBalanceChart', data.account_analysis);
-            updateAccountLegend(data.account_analysis);
-        }
-        
-        if (data.budget_analysis) {
-            if(charts.budget){
-              charts.budget.destroy();
-            }
-            
-            charts.budget = createBarChart('budgetChart', data.budget_analysis);
-            updateBudgetSummary(data.budget_analysis);
-        }
-        
-        if(data.transaction_analysis) {
-            if(charts.transactionActivity) {
-              charts.transactionActivity.destroy();
-            }
-            
-            charts.transactionActivity = createBarChart('transactionActivityChart', data.transaction_analysis);
-        }
+      if (response.ok) {
+        console.log('CSRF token refreshed');
+      }
+    } catch (error) {
+      console.error('Failed to refresh CSRF token:', error);
     }
+  }
 
-    // Update summary cards
-    function updateSummaryCards(summary) {
-        document.getElementById('total-income').textContent = summary.total_income;
-        document.getElementById('income-count').textContent = `${summary.income_count} transaksi`;
-        
-        document.getElementById('total-expense').textContent = summary.total_expense;
-        document.getElementById('expense-count').textContent = `${summary.expense_count} transaksi`;
-        
-        document.getElementById('net-flow').textContent = formatCurrency(summary.net_flow * 100);
-        document.getElementById('total-transfer').textContent = summary.total_transfer;
-        
-        // Update progress badges
-        const total = (parseInt(summary.income_number / 100) || 0) + (parseInt(summary.expense_number / 100) || 0);
-        
-        if (total > 0) {
-            const incomePercent = Math.round((parseInt(summary.income_number / 100) / total) * 100);
-            const expensePercent = Math.round((parseInt(summary.expense_number / 100) / total) * 100);
-            
-            document.querySelector('#summary-cards .col-md-6:nth-child(1) .summary-badge').innerHTML = 
-                `<i class="bi bi-arrow-up me-1"></i>${incomePercent}%`;
-            document.querySelector('#summary-cards .col-md-6:nth-child(2) .summary-badge').innerHTML = 
-                `<i class="bi bi-arrow-down me-1"></i>${expensePercent}%`;
-            
-            // Update net flow label
-            const netLabel = summary.net_flow >= 0 ? 'Surplus' : 'Defisit';
-            document.getElementById('net-flow-label').textContent = netLabel;
-            
-            // Update net flow color
-            const netCard = document.querySelector('#summary-cards .col-md-6:nth-child(3) .card');
-            const netIcon = document.querySelector('#summary-cards .col-md-6:nth-child(3) .stat-icon');
-            const netBadge = document.querySelector('#summary-cards .col-md-6:nth-child(3) .summary-badge');
-            
-            if (summary.net_flow >= 0) {
-                netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-success border-4');
-                netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
-                netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-success');
-                netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-success bg-opacity-10');
-                netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-success');
-            } else {
-                netCard.className = netCard.className.replace(/border-\w+-\d+/, 'border-danger border-4');
-                netIcon.className = netIcon.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
-                netIcon.querySelector('i').className = netIcon.querySelector('i').className.replace(/text-\w+-\d+/, 'text-danger');
-                netBadge.className = netBadge.className.replace(/bg-\w+-\d+/, 'bg-danger bg-opacity-10');
-                netBadge.className = netBadge.className.replace(/text-\w+-\d+/, 'text-danger');
+  // Create line chart
+  function createLineChart(canvasId, chartData, type = 'line') {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+      type: type,
+      data: {
+        labels: chartData.labels,
+        datasets: chartData.datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              padding: 20,
+              usePointStyle: true
             }
-        }
-    }
-
-    // Format currency
-    function formatCurrency(value) {
-        if (!value && value !== 0) return 'Rp 0';
-        
-        try {
-            // Jika value sudah dalam format string Rp, return langsung
-            if (typeof value === 'string' && value.includes('Rp')) {
-                return value;
-            }
-            
-            // Jika value adalah integer (minor currency), convert ke rupiah
-            const numValue = parseInt(value) || 0;
-            const majorValue = numValue / 100; // Convert dari minor ke major
-            
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(majorValue);
-        } catch (error) {
-            console.error('Error formatting currency:', error, value);
-            return 'Rp 0';
-        }
-    }
-
-    // Custom fetch dengan authentication
-    async function authFetch(url, options = {}) {
-        const defaultOptions = {
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        };
-
-        const mergedOptions = { ...defaultOptions, ...options };
-        
-        try {
-            const response = await fetch(url, mergedOptions);
-            
-            if (response.status === 401) {
-                window.location.href = '{{ route("login") }}';
-                throw new Error('Unauthorized - Redirecting to login');
-            }
-            
-            if (response.status === 419) {
-                await getNewCsrfToken();
-                mergedOptions.headers['X-CSRF-TOKEN'] = csrfToken;
-                return fetch(url, mergedOptions);
-            }
-            
-            return response;
-        } catch (error) {
-            console.error('Fetch error:', error);
-            throw error;
-        }
-    }
-
-    // Get new CSRF token jika expired
-    async function getNewCsrfToken() {
-        try {
-            const response = await fetch('/sanctum/csrf-cookie', {
-                credentials: 'same-origin'
-            });
-            
-            if (response.ok) {
-                console.log('CSRF token refreshed');
-            }
-        } catch (error) {
-            console.error('Failed to refresh CSRF token:', error);
-        }
-    }
-
-    // Create line chart
-    function createLineChart(canvasId, chartData, type = 'line') {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        return new Chart(ctx, {
-            type: type,
-            data: {
-                labels: chartData.labels,
-                datasets: chartData.datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                label += formatCurrency(context.raw);
-                                return label;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return formatCurrency(value);
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'nearest'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
                 }
+                label += formatCurrency(context.raw);
+                return label;
+              }
             }
-        });
-    }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            }
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'nearest'
+        }
+      }
+    });
+  }
     
-    // Create doughnut chart
-    function createDoughnutChart(canvasId, chartData) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            return new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: chartData.labels,
-                    datasets: chartData.datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `${label}: ${formatCurrency(value)} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-    // Create bar chart
-    function createBarChart(canvasId, chartData) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            return new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartData.labels,
-                    datasets: chartData.datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return formatCurrency(value);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-    // Update category legend
-    function updateCategoryLegend(chartData) {
-        const legendContainer = document.getElementById('category-legend');
-        if (!chartData.labels || chartData.labels.length === 0) {
-            legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
-            return;
-        }
-        
-        let legendHtml = '<div class="row g-2">';
-        const total = chartData.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
-        const colors = chartData.datasets[0]?.backgroundColor || [];
-        
-        chartData.labels.forEach((label, index) => {
-            const value = chartData.datasets[0]?.data[index] || 0;
-            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-            const color = colors[index] || '#cccccc';
-            
-            legendHtml += `
-                <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between">
-                                <small class="text-truncate" style="max-width: 120px;">${label}</small>
-                                <small class="text-muted">${percentage}%</small>
-                            </div>
-                            <div class="progress progress-thin">
-                                <div class="progress-bar" style="width: ${percentage}%; background-color: ${color};"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        legendHtml += '</div>';
-        legendContainer.innerHTML = legendHtml;
-    }
-
-    // Update account legend
-    function updateAccountLegend(chartData) {
-        const legendContainer = document.getElementById('account-legend');
-        if (!chartData.labels || chartData.labels.length === 0) {
-            legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data akun</p>';
-            return;
-        }
-        
-        let legendHtml = '<div class="row g-2">';
-        const total = chartData.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
-        const colors = chartData.datasets[0]?.backgroundColor || [];
-        
-        chartData.labels.forEach((label, index) => {
-            const value = chartData.datasets[0]?.data[index] || 0;
-            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-            const color = colors[index] || '#cccccc';
-            
-            legendHtml += `
-                <div class="col-md-6 mb-3">
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between">
-                                <small class="text-truncate" style="max-width: 120px;">${label}</small>
-                                <small>${formatCurrency(value)}</small>
-                            </div>
-                            <div class="progress progress-thin">
-                                <div class="progress-bar" style="width: ${percentage}%; background-color: ${color};"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        legendHtml += '</div>';
-        legendContainer.innerHTML = legendHtml;
-    }
-
-    // Update budget summary
-    function updateBudgetSummary(chartData) {
-        const summaryContainer = document.getElementById('budget-summary');
-        if (!chartData.summary) {
-            summaryContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data anggaran</p>';
-            return;
-        }
-        
-        const summary = chartData.summary;
-        const usagePercentage = summary.total_budget > 0 ? 
-            Math.round((summary.total_spent / summary.total_budget) * 100) : 0;
-        
-        const statusColor = usagePercentage >= 90 ? 'danger' : 
-                           usagePercentage >= 70 ? 'warning' : 'success';
-        
-        const statusIcon = usagePercentage >= 90 ? 'bi-exclamation-triangle' :
-                          usagePercentage >= 70 ? 'bi-exclamation-circle' : 'bi-check-circle';
-        
-        summaryContainer.innerHTML = `
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 text-bg-light">
-                    <div class="card-body text-center">
-                        <h3 class="text-primary">${formatCurrency(summary.total_budget)}</h3>
-                        <p class="text-muted mb-0">Total Anggaran</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 text-bg-light">
-                    <div class="card-body text-center">
-                        <h3 class="text-${statusColor}">${formatCurrency(summary.total_spent)}</h3>
-                        <p class="text-muted mb-0">Total Terpakai</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 text-bg-light">
-                    <div class="card-body text-center">
-                        <h3 class="text-success">${formatCurrency(summary.total_remaining)}</h3>
-                        <p class="text-muted mb-0">Sisa Anggaran</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mt-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <i class="bi ${statusIcon} text-${statusColor} me-2"></i>
-                        <span class="text-${statusColor} fw-medium">${usagePercentage}% Terpakai</span>
-                    </div>
-                    <div class="progress" style="width: 70%; height: 10px;">
-                        <div class="progress-bar bg-${statusColor}" style="width: ${usagePercentage}%"></div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // Toggle chart type
-    function toggleChartType(type) {
-        chartType = type;
-        
-        // Update button states
-        const buttons = document.querySelectorAll('.chart-toolbar .btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        
-        if (type === 'line') {
-            buttons[0].classList.add('active');
-        } else {
-            buttons[1].classList.add('active');
-        }
-        
-        if (charts.incomeExpense) {
-            charts.incomeExpense.destroy();
-            // Load ulang chart dengan tipe yang baru
-            loadChartData();
-        }
-    }
-
-    // Refresh charts
-    function refreshCharts() {
-        loadInitialData();
-    }
-
-    // Export report
-    async function exportReport() {
-        try {
-            const filters = {
-                account_id: currentAccountId || '',
-                start_date: `${currentYear}-01-01`,
-                end_date: `${currentYear}-12-31`,
-                format: 'json'
-            };
-            
-            const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/export`, {
-                method: 'POST',
-                body: JSON.stringify(filters)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+  // Create doughnut chart
+  function createDoughnutChart(canvasId, chartData) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: chartData.labels,
+        datasets: chartData.datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = Math.round((value / total) * 100);
+                return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+              }
             }
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                // Create download link
-                const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
-                    type: 'application/json' 
-                });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }
-        } catch (error) {
-            console.error('Error exporting report:', error);
-            alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
+          }
         }
+      }
+    });
+  }
+        
+  // Create bar chart
+  function createBarChart(canvasId, chartData) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartData.labels,
+        datasets: chartData.datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              padding: 20,
+              usePointStyle: true
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Update category legend
+  function updateCategoryLegend(chartData) {
+    const legendContainer = document.getElementById('category-legend');
+    if (!chartData.labels || chartData.labels.length === 0) {
+      legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data kategori</p>';
+      return;
     }
+        
+    let legendHtml = '<div class="row g-2">';
+    const total = chartData.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
+    const colors = chartData.datasets[0]?.backgroundColor || [];
+        
+    chartData.labels.forEach((label, index) => {
+      const value = chartData.datasets[0]?.data[index] || 0;
+      const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+      const color = colors[index] || '#cccccc';
+
+      legendHtml += `
+        <div class="col-md-6 mb-3">
+          <div class="d-flex align-items-center mb-2">
+            <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between">
+                <small class="text-truncate" style="max-width: 120px;">${label}</small>
+                <small class="text-muted">${percentage}%</small>
+              </div>
+              <div class="progress progress-thin">
+                <div class="progress-bar" style="width: ${percentage}%; background-color: ${color};"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+        
+    legendHtml += '</div>';
+    legendContainer.innerHTML = legendHtml;
+  }
+
+  // Update account legend
+  function updateAccountLegend(chartData) {
+    const legendContainer = document.getElementById('account-legend');
+    if (!chartData.labels || chartData.labels.length === 0) {
+      legendContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data akun</p>';
+      return;
+    }
+        
+    let legendHtml = '<div class="row g-2">';
+    const total = chartData.datasets[0]?.data?.reduce((a, b) => a + b, 0) || 0;
+    const colors = chartData.datasets[0]?.backgroundColor || [];
+        
+    chartData.labels.forEach((label, index) => {
+      const value = chartData.datasets[0]?.data[index] || 0;
+      const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+      const color = colors[index] || '#cccccc';
+
+      legendHtml += `
+        <div class="col-md-6 mb-3">
+          <div class="d-flex align-items-center mb-2">
+            <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between">
+                <small class="text-truncate" style="max-width: 120px;">${label}</small>
+                <small>${formatCurrency(value)}</small>
+              </div>
+              <div class="progress progress-thin">
+                <div class="progress-bar" style="width: ${percentage}%; background-color: ${color};"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+        
+    legendHtml += '</div>';
+    legendContainer.innerHTML = legendHtml;
+  }
+
+  // Update budget summary
+  function updateBudgetSummary(chartData) {
+    const summaryContainer = document.getElementById('budget-summary');
+    if (!chartData.summary) {
+      summaryContainer.innerHTML = '<p class="text-muted text-center">Tidak ada data anggaran</p>';
+      return;
+    }
+
+    const summary = chartData.summary;
+    const usagePercentage = summary.total_budget > 0 ? 
+      Math.round((summary.total_spent / summary.total_budget) * 100) : 0;
+        
+    const statusColor = usagePercentage >= 90 ? 'danger' : usagePercentage >= 70 ? 'warning' : 'success';
+        
+    const statusIcon = usagePercentage >= 90 ? 'bi-exclamation-triangle' : usagePercentage >= 70 ? 'bi-exclamation-circle' : 'bi-check-circle';
+        
+    summaryContainer.innerHTML = `
+      <div class="col-md-4 mb-3">
+        <div class="card border-0 text-bg-light">
+          <div class="card-body text-center">
+            <h3 class="text-primary">${formatCurrency(summary.total_budget)}</h3>
+            <p class="text-muted mb-0">Total Anggaran</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card border-0 text-bg-light">
+          <div class="card-body text-center">
+            <h3 class="text-${statusColor}">${formatCurrency(summary.total_spent)}</h3>
+            <p class="text-muted mb-0">Total Terpakai</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card border-0 text-bg-light">
+          <div class="card-body text-center">
+            <h3 class="text-success">${formatCurrency(summary.total_remaining)}</h3>
+            <p class="text-muted mb-0">Sisa Anggaran</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 mt-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <i class="bi ${statusIcon} text-${statusColor} me-2"></i>
+            <span class="text-${statusColor} fw-medium">${usagePercentage}% Terpakai</span>
+          </div>
+          <div class="progress" style="width: 70%; height: 10px;">
+            <div class="progress-bar bg-${statusColor}" style="width: ${usagePercentage}%"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Toggle chart type
+  function toggleChartType(type) {
+    chartType = type;
+
+    // Update button states
+    const buttons = document.querySelectorAll('.chart-toolbar .btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    if (type === 'line') {
+      buttons[0].classList.add('active');
+    } else {
+      buttons[1].classList.add('active');
+    }
+
+    if (charts.incomeExpense) {
+      charts.incomeExpense.destroy();
+      // Load ulang chart dengan tipe yang baru
+      loadChartData();
+    }
+  }
+
+  // Refresh charts
+  function refreshCharts() {
+    loadInitialData();
+  }
+
+  // Export report
+  async function exportReport() {
+    try {
+      const filters = {
+        account_id: currentAccountId || '',
+        start_date: `${currentYear}-01-01`,
+        end_date: `${currentYear}-12-31`,
+        format: 'json'
+      };
+            
+      const response = await authFetch(`{{ route('api.apps.reports.export') }}`, {
+        method: 'POST',
+        body: JSON.stringify(filters)
+      });
+            
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+            
+      const data = await response.json();
+            
+      if (data.success) {
+        // Create download link
+        const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
+          type: 'application/json' 
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Error exporting report:', error);
+      alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
+    }
+  }
 </script>
 @endpush
 
