@@ -55,7 +55,7 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 					"Pendapatan",
 					"Pengeluaran",
 					"Saldo Bersih",
-					"Jumlah Transaksi",
+					"Transaksi",
 					"Rata-rata/Transaksi",
 				];
 
@@ -338,7 +338,7 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 				$sheet->getColumnDimension("A")->setWidth(15);
 				$sheet->getColumnDimension("B")->setWidth(15);
 				$sheet->getColumnDimension("C")->setWidth(15);
-				$sheet->getColumnDimension("D")->setWidth(20);
+				$sheet->getColumnDimension("D")->setWidth(15);
 				$sheet->getColumnDimension("E")->setWidth(10);
 				$sheet->getColumnDimension("F")->setWidth(20);
 
