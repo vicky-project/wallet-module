@@ -1,5 +1,6 @@
 <?php
-namespace Modules\Wallet\Exports;
+
+namespace Modules\Wallet\Services\Exporters;
 
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -14,12 +15,15 @@ class MultipleSheetsExport implements WithMultipleSheets
 
 	public function sheets(): array
 	{
-		return [
-			new SummarySheet($this->reportData),
-			new TrendSheet($this->reportData),
-			new CategorySheet($this->reportData),
-			new BudgetSheet($this->reportData),
-			new AccountSheet($this->reportData),
-		];
+		$sheets = [];
+
+		// Buat sheet hanya jika data ada
+		$sheets[] = new SummarySheet($this->reportData);
+		$sheets[] = new TrendSheet($this->reportData);
+		$sheets[] = new CategorySheet($this->reportData);
+		$sheets[] = new BudgetSheet($this->reportData);
+		$sheets[] = new AccountSheet($this->reportData);
+
+		return $sheets;
 	}
 }

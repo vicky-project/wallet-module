@@ -164,82 +164,58 @@ class ReportController extends Controller
 	private function exportToFile(array $data, string $format): JsonResponse
 	{
 		try {
-			$export = new ExportService();
-			$mimeType = match ($format) {
-				"xls" => "application/vnd.ms-excel",
-				"csv" => "text/csv",
-				"pdf" => "application/pdf",
-				default
-					=> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-			};
-
-			$filename =
-				"laporan-keuangan-" .
-				now()->format("d-m-Y-H-i-s") .
-				"-vickyserver" .
-				"." .
-				$format;
-
-			if ($format === "xlsx") {
-				$fileContent = $export->exportExcel($data);
-
-				return response()->json([
-					"success" => true,
-					"download_url" =>
-						"data:" . $mimeType . ";base64," . base64_encode($fileContent),
-					"filename" => $filename,
-					"mime_type" => $mimeType,
-				]);
+			// Validasi data
+			if (empty($data) || !isset($data["report_data"])) {
+				throw new \Exception("Data laporan tidak valid");
 			}
 
-			$writerType = match ($format) {
+			// Buat instance export
+			$export = new \Modules\Wallet\Services\Exporters\MultipleSheetsExport(
+				$data
+			);
+
+			// Tentukan format
+			$excelFormat = match ($format) {
 				"xls" => \Maatwebsite\Excel\Excel::XLS,
 				"csv" => \Maatwebsite\Excel\Excel::CSV,
 				"pdf" => \Maatwebsite\Excel\Excel::DOMPDF,
 				default => \Maatwebsite\Excel\Excel::XLSX,
 			};
 
-			$tempPath = storage_path("app/temp/" . $filename . "." . $format);
-
-			if (!file_exists(dirname($tempPath))) {
-				mkdir(dirname($tempPath), 0775, true);
-			}
-
-			Excel::store(
+			// Generate file content
+			$fileContent = \Maatwebsite\Excel\Facades\Excel::raw(
 				$export,
-				"temp/" . $filename . "." . $format,
-				"local",
-				$writerType
+				$excelFormat
 			);
 
-			$fileContent = file_get_contents($tempPath);
-
-			unlink($tempPath);
-
-			if ($format === "pdf") {
-				return reponse()->json([
-					"success" => true,
-					"download_url" =>
-						"data:application/pdf;base64," . base64_encode($fileContent),
-					"filename" => $filename . "." . $format,
-					"mime_type" => "application/pdf",
-					"has_charts" => false,
-				]);
-			}
+			// Tentukan MIME type
+			$mimeTypes = [
+				"xlsx" =>
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"xls" => "application/vnd.ms-excel",
+				"csv" => "text/csv",
+				"pdf" => "application/pdf",
+			];
 
 			$mimeType = $mimeTypes[$format] ?? "application/octet-stream";
+			$filename =
+				"laporan-keuangan-" .
+				now()->format("Y-m-d") .
+				"-vickyserver." .
+				$format;
 
 			return response()->json([
 				"success" => true,
 				"download_url" =>
 					"data:" . $mimeType . ";base64," . base64_encode($fileContent),
-				"filename" => $filename . "." . $format,
+				"filename" => $filename,
 				"mime_type" => $mimeType,
-				"has_charts" => $format === "xlsx" || $format === "xls",
+				"has_charts" => false,
 			]);
-
-			// Implementation for CSV generation
 		} catch (\Exception $e) {
+			\Log::error(
+				"Export failed: " . $e->getMessage() . "\n" . $e->getTraceAsString()
+			);
 			return response()->json(
 				[
 					"success" => false,

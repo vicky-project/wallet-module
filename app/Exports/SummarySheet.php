@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Wallet\Exports;
+namespace Modules\Wallet\Services\Exporters;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -22,6 +22,9 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$summary = $this->reportData["report_data"]["financial_summary"] ?? [];
 
 		$data = [
+			["RINGKASAN KEUANGAN"],
+			[""],
+			["Item", "Nilai"],
 			[
 				"Total Pendapatan",
 				$this->formatCurrency($summary["total_income"] ?? 0),
@@ -40,7 +43,7 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				"Total Transfer",
 				$this->formatCurrency($summary["total_transfer"] ?? 0),
 			],
-			["", ""],
+			[""],
 			["Periode Laporan", $this->reportData["period"] ?? ""],
 			["Mata Uang", $this->reportData["currency"] ?? "IDR"],
 			[
@@ -54,7 +57,8 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 	public function headings(): array
 	{
-		return ["Item", "Nilai"];
+		// Return empty karena header sudah ada di array()
+		return [];
 	}
 
 	public function title(): string
@@ -64,24 +68,50 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 	public function styles(Worksheet $sheet)
 	{
-		return [
-			1 => ["font" => ["bold" => true, "size" => 12]],
-			"A1:B1" => [
-				"fill" => [
-					"fillType" => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-					"color" => ["rgb" => "E8F5E9"],
-				],
-			],
-		];
+		// Set column widths
+		$sheet->getColumnDimension("A")->setWidth(30);
+		$sheet->getColumnDimension("B")->setWidth(25);
+
+		// Style judul (row 1)
+		$sheet
+			->getStyle("A1")
+			->getFont()
+			->setBold(true)
+			->setSize(14);
+		$sheet->mergeCells("A1:B1");
+
+		// Style header tabel (row 3)
+		$sheet
+			->getStyle("A3:B3")
+			->getFont()
+			->setBold(true);
+
+		// Style untuk angka (format Rupiah)
+		$lastRow = count($this->array());
+		for ($row = 4; $row <= 9; $row++) {
+			if ($row !== 7 && $row !== 8) {
+				// Skip row 7 & 8 (count transaksi)
+				$sheet
+					->getStyle("B{$row}")
+					->getNumberFormat()
+					->setFormatCode("#,##0");
+			}
+		}
+
+		// Border untuk data
+		$sheet
+			->getStyle("A3:B" . $lastRow)
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 	}
 
 	private function formatCurrency($value)
 	{
-		if (is_string($value) && strpos($value, "Rp") !== false) {
-			return $value;
+		if (!is_numeric($value)) {
+			return "0";
 		}
-
-		$amount = is_numeric($value) ? $value / 100 : 0;
-		return "Rp " . number_format($amount, 0, ",", ".");
+		$amount = $value / 100;
+		return $amount;
 	}
 }

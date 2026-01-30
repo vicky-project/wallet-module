@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Wallet\Exports;
+namespace Modules\Wallet\Services\Exporters;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -23,18 +23,16 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			"labels" => [],
 			"datasets" => [["data" => []]],
 		];
+
 		$labels = $categoryData["labels"] ?? [];
 		$values = $categoryData["datasets"][0]["data"] ?? [];
 		$total = array_sum($values);
 
-		$data = [];
-
-		// Header
-		$data[] = ["ANALISIS PENGELUARAN PER KATEGORI"];
-		$data[] = []; // Empty row
-
-		// Table headers
-		$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
+		$data = [
+			["ANALISIS PENGELUARAN PER KATEGORI"],
+			[""],
+			["Kategori", "Jumlah", "Persentase", "Tipe"],
+		];
 
 		// Data rows
 		foreach ($labels as $index => $label) {
@@ -53,7 +51,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		if (count($labels) > 0) {
 			$data[] = ["TOTAL", $this->formatCurrency($total), "100%", ""];
 		} else {
-			$data[] = ["Tidak ada data transaksi"];
+			$data[] = ["Tidak ada data kategori"];
 		}
 
 		return $data;
@@ -61,7 +59,6 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 	public function headings(): array
 	{
-		// Return empty since we include headers in array()
 		return [];
 	}
 
@@ -77,15 +74,63 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet->getColumnDimension("B")->setWidth(20);
 		$sheet->getColumnDimension("C")->setWidth(15);
 		$sheet->getColumnDimension("D")->setWidth(15);
+
+		// Style judul
+		$sheet
+			->getStyle("A1")
+			->getFont()
+			->setBold(true)
+			->setSize(14);
+		$sheet->mergeCells("A1:D1");
+
+		// Style header tabel
+		$sheet
+			->getStyle("A3:D3")
+			->getFont()
+			->setBold(true);
+
+		// Format angka untuk kolom B
+		$lastRow = count($this->array());
+		for ($row = 4; $row <= $lastRow; $row++) {
+			$sheet
+				->getStyle("B{$row}")
+				->getNumberFormat()
+				->setFormatCode("#,##0");
+		}
+
+		// Border
+		$sheet
+			->getStyle("A3:D" . $lastRow)
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+		// Alignment
+		$sheet
+			->getStyle("A3:D" . $lastRow)
+			->getAlignment()
+			->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+		$sheet
+			->getStyle("B4:B" . $lastRow)
+			->getAlignment()
+			->setHorizontal(
+				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT
+			);
+		$sheet
+			->getStyle("C4:C" . $lastRow)
+			->getAlignment()
+			->setHorizontal(
+				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+			);
 	}
 
 	private function formatCurrency($value)
 	{
 		if (!is_numeric($value)) {
-			return "Rp 0";
+			return 0;
 		}
 		$amount = $value / 100;
-		return "Rp " . number_format($amount, 0, ",", ".");
+		return $amount;
 	}
 
 	private function getCategoryType($label)
