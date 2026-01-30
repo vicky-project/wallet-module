@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
@@ -153,5 +154,112 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		return "Lainnya";
+	}
+
+	// Di method registerEvents() pada CategorySheet
+	public function registerEvents(): array
+	{
+		return [
+			AfterSheet::class => function (AfterSheet $event) {
+				$sheet = $event->sheet->getDelegate();
+
+				// Set column widths
+				$sheet->getColumnDimension("A")->setWidth(30);
+				$sheet->getColumnDimension("B")->setWidth(20);
+				$sheet->getColumnDimension("C")->setWidth(15);
+				$sheet->getColumnDimension("D")->setWidth(15);
+				$sheet->getColumnDimension("E")->setWidth(10);
+
+				// Hide color column
+				$sheet->getColumnDimension("E")->setVisible(false);
+
+				// Get the actual data (excluding header row)
+				$data = $this->array();
+				$lastDataRow = count($data) + 1; // +1 for header
+
+				// Add title
+				$sheet->insertNewRowBefore(1, 2);
+				$sheet->mergeCells("A1:E1");
+				$sheet->setCellValue("A1", "ANALISIS PENGELUARAN PER KATEGORI");
+				$sheet->getStyle("A1")->applyFromArray([
+					"font" => [
+						"bold" => true,
+						"size" => 14,
+						"color" => ["rgb" => "2C3E50"],
+					],
+					"alignment" => [
+						"horizontal" => Alignment::HORIZONTAL_CENTER,
+						"vertical" => Alignment::VERTICAL_CENTER,
+					],
+					"fill" => [
+						"fillType" => Fill::FILL_SOLID,
+						"color" => ["rgb" => "F4F6F6"],
+					],
+				]);
+
+				// Add chart if data exists
+				$this->addChartSafely($event);
+
+				// Adjust row numbers for data (since we inserted 2 rows)
+				$newLastRow = $lastDataRow + 2;
+
+				// Apply styles to the new range
+				$sheet->getStyle("A3:E{$newLastRow}")->applyFromArray([
+					"borders" => [
+						"allBorders" => [
+							"borderStyle" => Border::BORDER_THIN,
+							"color" => ["rgb" => "CCCCCC"],
+						],
+					],
+					"alignment" => ["vertical" => Alignment::VERTICAL_CENTER],
+				]);
+
+				// Style for total row
+				$sheet->getStyle("A{$newLastRow}:D{$newLastRow}")->applyFromArray([
+					"font" => ["bold" => true],
+					"fill" => [
+						"fillType" => Fill::FILL_SOLID,
+						"color" => ["rgb" => "D6EAF8"],
+					],
+				]);
+			},
+		];
+	}
+
+	private function addChartSafely(AfterSheet $event)
+	{
+		try {
+			$categoryData =
+				$this->reportData["report_data"]["category_analysis"] ?? [];
+			$labels = $categoryData["labels"] ?? [];
+			$values = $categoryData["datasets"][0]["data"] ?? [];
+
+			// Cek apakah ada data yang cukup untuk chart
+			if (empty($labels) || empty($values) || count($labels) < 1) {
+				return;
+			}
+
+			// Limit data untuk chart (max 10 items)
+			if (count($labels) > 10) {
+				$labels = array_slice($labels, 0, 10);
+				$values = array_slice($values, 0, 10);
+			}
+
+			// Create chart
+			$chart = ChartService::createPieChart(
+				$labels,
+				$values,
+				"Distribusi Pengeluaran per Kategori"
+			);
+
+			if ($chart) {
+				$chart->setTopLeftPosition("F2");
+				$chart->setBottomRightPosition("M20");
+				$event->sheet->getDelegate()->addChart($chart);
+			}
+		} catch (\Exception $e) {
+			\Log::warning("Chart creation failed: " . $e->getMessage());
+			// Continue without chart
+		}
 	}
 }
