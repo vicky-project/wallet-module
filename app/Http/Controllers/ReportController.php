@@ -130,8 +130,8 @@ class ReportController extends Controller
 	{
 		$request->validate([
 			"account_id" => "nullable|exists:accounts,id",
-			"start_date" => "required|date",
-			"end_date" => "required|date|after_or_equal:start_date",
+			"start_date" => "nullable|date",
+			"end_date" => "nullable|date|after_or_equal:start_date",
 			"format" => "nullable|in:json,pdf,csv,xls,xlsx",
 		]);
 

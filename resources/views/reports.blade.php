@@ -327,7 +327,7 @@
         <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
           <span class="visually-hidden">Loading...</span>
         </div>
-        <h5 class="mb-0">Memuat data laporan...</h5>
+        <h5 class="mb-0">Mendownload data laporan...</h5>
       </div>
     </div>
   </div>
@@ -1047,8 +1047,8 @@
     try {
       const filters = {
         account_id: currentAccountId || '',
-        start_date: `${currentYear}-01-01`,
-        end_date: `${currentYear}-12-31`,
+        //start_date: `${currentYear}-01-01`,
+        //end_date: `${currentYear}-12-31`,
         format: format
       };
             
