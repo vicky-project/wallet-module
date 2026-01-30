@@ -19,6 +19,15 @@ return [
 	],
 
 	/**
-	 * List of class that parsing data from banking.                        */
+	 * List of class that parsing data from banking.
+	 */
 	"bank_parsers" => [\Modules\Wallet\Parsers\MandiriStatementParser::class],
+
+	/**
+	 * Metadata Application
+	 */
+	"metadata" => [
+		"company_name" => config("app.name", "Financial Item"),
+		"company_address" => config("app.address", "Planet Pluto"),
+	],
 ];
