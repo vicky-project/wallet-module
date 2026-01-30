@@ -319,6 +319,19 @@
   </div>
 </div>
 
+<!-- Loading Spinner -->
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0">
+      <div class="modal-body text-center py-5">
+        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="mb-0">Memuat data laporan...</h5>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -331,6 +344,7 @@
   let chartType = 'line';
   let reportData = {};
   let currentAccountId = '';
+  let loadingModal = null;
   let currentReportType = 'monthly';
   let currentYear = new Date().getFullYear();
   let currentMonth = new Date().getMonth() + 1;
@@ -363,6 +377,21 @@
         yearSelection.style.display = 'none';
       }
     });
+  }
+  
+  // Show loading modal
+  function showLoading() {
+    if (!loadingModal) {
+      loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    }
+    loadingModal.show();
+  }
+  
+  // Hide loading modal
+  function hideLoading() {
+    if (loadingModal) {
+      loadingModal.hide();
+    }
   }
 
   // Apply account filter
@@ -1014,6 +1043,7 @@
 
   // Export report
   async function exportReport(format = 'json') {
+    showLoading();
     try {
       const filters = {
         account_id: currentAccountId || '',
@@ -1059,9 +1089,12 @@
       } else {
         alert(data.message || 'Gagal mendownload laporan keuangan');
       }
+      hideLoading();
     } catch (error) {
       console.error('Error exporting report:', error);
       alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
+    } finally {
+      hideLoading();
     }
   }
 </script>

@@ -195,7 +195,7 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 
 		// Garis pemisah
 		$sheet->mergeCells("B3:D3");
-		$sheet->getStyle("B3:E3")->applyFromArray([
+		$sheet->getStyle("B3:D3")->applyFromArray([
 			"borders" => [
 				"bottom" => [
 					"borderStyle" => Border::BORDER_MEDIUM,
