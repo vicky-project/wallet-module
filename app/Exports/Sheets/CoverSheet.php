@@ -28,7 +28,10 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 			["LAPORAN KEUANGAN"],
 			[""],
 			[""],
-			["Periode:", $this->reportData["period"] ?? ""],
+			[
+				"Periode:",
+				$this->extractPeriod($this->reportData["period"] ?? []) ?? "",
+			],
 			[
 				"Tanggal Ekspor:",
 				$this->reportData["exported_at"] ?? now()->format("Y-m-d H:i:s"),
@@ -88,7 +91,7 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 				$sheet = $event->sheet->getDelegate();
 
 				// ============ SET COLUMN WIDTHS ============
-				$sheet->getColumnDimension("A")->setWidth(5);
+				$sheet->getColumnDimension("A")->setWidth(50);
 				$sheet->getColumnDimension("B")->setWidth(30);
 				$sheet->getColumnDimension("C")->setWidth(40);
 				$sheet->getColumnDimension("D")->setWidth(10);
@@ -206,5 +209,14 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 				$sheet->setShowGridlines(false);
 			},
 		];
+	}
+
+	private function extractPeriod(array $period): string
+	{
+		if (!isset($period["start_date"]) || !isset($period["end_date"])) {
+			return null;
+		}
+
+		return $period["start_date"] . " - " . $period["end_date"];
 	}
 }
