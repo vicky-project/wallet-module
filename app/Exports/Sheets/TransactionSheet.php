@@ -47,7 +47,7 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			foreach ($yearsData as $year => $yearData) {
 				// Judul untuk setiap tahun
 				$data[] = ["TRANSAKSI TAHUN {$year}"];
-				$data[] = []; // Baris kosong
+				$data[] = [""]; // Baris kosong
 
 				// Header tabel
 				$data[] = [
@@ -63,8 +63,8 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 				$this->addMonthlyDataForYear($data, $yearData, $year);
 
 				// Baris kosong antar tahun
-				$data[] = [];
-				$data[] = [];
+				$data[] = [""];
+				$data[] = [""];
 			}
 		} else {
 			// Fallback: data harian dari laporan biasa
