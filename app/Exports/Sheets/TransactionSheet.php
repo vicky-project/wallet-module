@@ -80,117 +80,6 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 		return $data;
 	}
 
-	private function getTransactionDataFromDB()
-	{
-		$cacheKey =
-			"transaction_export_{$this->userId}_" . md5(json_encode($this->filters));
-
-		return Cache::remember($cacheKey, 300, function () {
-			// Ambil tahun-tahun yang memiliki transaksi
-			$years = DB::table("transactions")
-				->select(DB::raw("YEAR(transaction_date) as year"))
-				->where("user_id", $this->userId)
-				->whereIn("type", ["income", "expense"])
-				->groupBy("year")
-				->orderBy("year", "desc")
-				->pluck("year")
-				->toArray();
-
-			$yearsData = [];
-
-			foreach ($years as $year) {
-				// Query data per bulan untuk tahun ini
-				$monthlyData = DB::table("transactions")
-					->select(
-						DB::raw("MONTH(transaction_date) as month"),
-						DB::raw(
-							'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income'
-						),
-						DB::raw(
-							'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense'
-						),
-						DB::raw("COUNT(*) as transaction_count")
-					)
-					->where("user_id", $this->userId)
-					->whereYear("transaction_date", $year)
-					->whereIn("type", ["income", "expense"])
-					->groupBy("month")
-					->orderBy("month")
-					->get();
-
-				// Filter account jika ada
-				if (!empty($this->filters["account_id"])) {
-					$monthlyData = DB::table("transactions")
-						->select(
-							DB::raw("MONTH(transaction_date) as month"),
-							DB::raw(
-								'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income'
-							),
-							DB::raw(
-								'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense'
-							),
-							DB::raw("COUNT(*) as transaction_count")
-						)
-						->where("user_id", $this->userId)
-						->where("account_id", $this->filters["account_id"])
-						->whereYear("transaction_date", $year)
-						->whereIn("type", ["income", "expense"])
-						->groupBy("month")
-						->orderBy("month")
-						->get();
-				}
-
-				// Format data bulanan
-				$formattedData = $this->formatMonthlyData($monthlyData, $year);
-				$yearsData[$year] = $formattedData;
-			}
-
-			return $yearsData;
-		});
-	}
-
-	private function formatMonthlyData($monthlyData, $year)
-	{
-		$months = [
-			1 => "Januari",
-			2 => "Februari",
-			3 => "Maret",
-			4 => "April",
-			5 => "Mei",
-			6 => "Juni",
-			7 => "Juli",
-			8 => "Agustus",
-			9 => "September",
-			10 => "Oktober",
-			11 => "November",
-			12 => "Desember",
-		];
-
-		$formattedData = [];
-		$monthlyDataArray = $monthlyData->keyBy("month");
-
-		foreach ($months as $monthNum => $monthName) {
-			$data = $monthlyDataArray->get($monthNum);
-
-			$income = $data->total_income ?? 0;
-			$expense = $data->total_expense ?? 0;
-			$count = $data->transaction_count ?? 0;
-			$net = $income - $expense;
-			$avg = $count > 0 ? ($income + $expense) / $count : 0;
-
-			$formattedData[] = [
-				"month" => $monthName,
-				"income" => $income,
-				"expense" => $expense,
-				"net" => $net,
-				"count" => $count,
-				"avg" => $avg,
-			];
-		}
-
-		return $formattedData;
-	}
-
 	private function addMonthlyDataForYear(&$data, $yearData, $year)
 	{
 		$yearTotalIncome = 0;
@@ -198,6 +87,7 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 		$yearTotalTransactions = 0;
 
 		foreach ($yearData as $monthData) {
+			dd($monthData);
 			$yearTotalIncome += $monthData["income"];
 			$yearTotalExpense += $monthData["expense"];
 			$yearTotalTransactions += $monthData["count"];
