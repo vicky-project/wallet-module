@@ -32,12 +32,15 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 		$data = [];
 
 		// Ambil data transaksi per tahun dari database
-		$yearsData = Transaction::getMonthlyTransactionData(
-			$this->userId,
-			$this->filters["account_id"] ?? null
-		);
+		$cacheKey =
+			"transaction_export_{$this->userId}_" . md5(json_encode($this->filters));
 
-		dd($yearsData);
+		$yearsData = Cache::remember($cacheKey, 300, function () {
+			return Transaction::getMonthlyTransactionData(
+				$this->userId,
+				$this->filters["account_id"] ?? null
+			);
+		});
 
 		// Jika ada data per tahun
 		if (!empty($yearsData)) {
@@ -70,6 +73,7 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			$data = $this->getDailyTransactionData($transactionData);
 		}
 
+		dd($data);
 		// Tambahkan ringkasan semua tahun
 		$this->addYearlySummary($data, $yearsData);
 
