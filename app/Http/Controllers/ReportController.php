@@ -136,7 +136,7 @@ class ReportController extends Controller
 		]);
 
 		$data = $this->reportService->getExportData(
-			$request->auth()->id(),
+			auth()->id(),
 			$request->only(["account_id", "start_date", "end_date"])
 		);
 
