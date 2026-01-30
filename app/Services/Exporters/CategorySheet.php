@@ -151,6 +151,7 @@ class CategorySheet implements
 
 				// Insert actual data starting from row 3
 				$data = $this->array();
+				dd($event);
 				$event->sheet->fromArray($this->array(), null, "A3", true);
 
 				// Add chart (Excel chart)
