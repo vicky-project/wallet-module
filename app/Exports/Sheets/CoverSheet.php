@@ -5,15 +5,13 @@ namespace Modules\Wallet\Exports\Sheets;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
-class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
+class CoverSheet implements FromArray, WithTitle, WithEvents
 {
 	protected $reportData;
 	protected $companyName;
@@ -89,45 +87,6 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 	public function title(): string
 	{
 		return "Cover";
-	}
-
-	public function drawings()
-	{
-		$drawings = [];
-
-		// Logo utama di tengah atas
-		$logoPath = public_path("images/logo.png");
-
-		if (file_exists($logoPath)) {
-			$drawing1 = new Drawing();
-			$drawing1->setName("Logo");
-			$drawing1->setDescription("Company Logo");
-			$drawing1->setPath($logoPath);
-			$drawing1->setHeight(70);
-			$drawing1->setWidth(180);
-			$drawing1->setCoordinates("C3");
-			$drawing1->setOffsetX(0);
-			$drawing1->setOffsetY(0);
-			$drawings[] = $drawing1;
-		}
-
-		// Watermark/background light (opsional)
-		$watermarkPath = public_path("images/watermark.png");
-		if (file_exists($watermarkPath)) {
-			$drawing2 = new Drawing();
-			$drawing2->setName("Watermark");
-			$drawing2->setDescription("Background Watermark");
-			$drawing2->setPath($watermarkPath);
-			$drawing2->setCoordinates("A1");
-			$drawing2->setOffsetX(0);
-			$drawing2->setOffsetY(0);
-			$drawing2->setWidth(600);
-			$drawing2->setHeight(400);
-			$drawing2->setWorksheet($this->getActiveSheet());
-			$drawings[] = $drawing2;
-		}
-
-		return $drawings;
 	}
 
 	public function registerEvents(): array
