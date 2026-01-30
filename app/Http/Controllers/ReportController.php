@@ -5,8 +5,10 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Services\ReportService;
+use Modules\Wallet\Services\Exporters\FinancialReportExport;
 
 class ReportController extends Controller
 {
@@ -129,13 +131,28 @@ class ReportController extends Controller
 		$request->validate([
 			"start_date" => "required|date",
 			"end_date" => "required|date|after_or_equal:start_date",
-			"format" => "nullable|in:json,pdf,csv",
+			"format" => "nullable|in:json,pdf,csv,xls,xlsx",
 		]);
 
 		$data = $this->reportService->getExportData(
 			auth()->id(),
 			$request->only(["start_date", "end_date"])
 		);
+
+		return match ($request->format) {
+			"json" => $this->exportToJson($data),
+			"xls", "xlsx", "csv", "pdf" => $this->exportToFile(
+				$data,
+				$request->format
+			),
+			default => response()->json(
+				[
+					"success" => false,
+					"message" => "Unsupported format: " . $request->format,
+				],
+				400
+			),
+		};
 
 		if ($request->format === "pdf") {
 			// Generate PDF report
@@ -151,16 +168,59 @@ class ReportController extends Controller
 		]);
 	}
 
-	private function generatePdfReport(array $data)
+	private function exportToJson(array $data): JsonResponse
 	{
-		// Implementation for PDF generation
-		// You can use DomPDF, TCPDF, or Laravel Excel
-		return response()->json(["message" => "PDF export coming soon"]);
+		return response()->json(["success" => true, "data" => $data]);
 	}
 
-	private function generateCsvReport(array $data)
+	private function exportToFile(array $data, string $format): JsonResponse
 	{
-		// Implementation for CSV generation
-		return response()->json(["message" => "CSV export coming soon"]);
+		try {
+			$export = new FinancialReportExport($data);
+
+			$excelFormat = match ($format) {
+				"xls" => \Maatwebsite\Excel\Excel::XLS,
+				"csv" => \Maatwebsite\Excel\Excel::CSV,
+				"pdf" => \Maatwebsite\Excel\Excel::DOMPDF,
+				default => \Maatwebsite\Excel\Excel::XLSX,
+			};
+
+			$fileContent = Excel::raw($export, $excelFormat);
+
+			$mimeTypes = [
+				"xlsx" =>
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"xls" => "application/vnd.ms-excel",
+				"csv" => "text/csv",
+				"pdf" => "application/pdf",
+			];
+
+			$mimeType = $mimeTypes[$format] ?? "application/octet-stream";
+			$filename =
+				"laporan-keuangan-" .
+				now()->format("d-m-Y") .
+				"-vickyserver" .
+				"." .
+				$format;
+
+			return response()->json([
+				"success" => true,
+				"download_url" =>
+					"data:" . $mimeType . ";base64," . base64_encode($fileContent),
+				"filename" => $filename,
+				"mime_type" => $mimeType,
+			]);
+
+			// Implementation for CSV generation
+		} catch (\Exception $e) {
+			return response()->json(
+				[
+					"success" => false,
+					"error" => "Gagal menghasilkan file: " . $e->getMessage(),
+					"trace" => $e->getTraceAsString(),
+				],
+				500
+			);
+		}
 	}
 }

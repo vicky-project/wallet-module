@@ -13,9 +13,16 @@
         <p class="text-muted mb-0">Analisis dan visualisasi data keuangan Anda</p>
       </div>
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-primary" onclick="exportReport()">
-          <i class="bi bi-download me-1"></i>Ekspor
-        </button>
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-download"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><button class="dropdown-item" onclick="exportReport('json')"><i class="bi bi-filetype-json me-1"></i>JSON</i></li>
+            <li><button class="dropdown-item" onclick="exportReport('xlsx')"><i class="bi bi-filetype-xlsx me-1"></i>EXCEL</i></li>
+            <li><button class="dropdown-item" onclick="exportReport('pdf')"><i class="bi bi-filetype-pdf me-1"></i>PDF</button></li>
+          </ul>
+        </div>
         <button class="btn btn-primary" onclick="refreshCharts()">
           <i class="bi bi-arrow-clockwise me-1"></i>Refresh
         </button>
@@ -1006,13 +1013,13 @@
   }
 
   // Export report
-  async function exportReport() {
+  async function exportReport(format = 'json') {
     try {
       const filters = {
         account_id: currentAccountId || '',
         start_date: `${currentYear}-01-01`,
         end_date: `${currentYear}-12-31`,
-        format: 'json'
+        format: format
       };
             
       const response = await authFetch(`{{ config('app.url') }}/api/apps/reports/export`, {
@@ -1024,13 +1031,17 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
             
-      const data = await response.json();
             
       if (data.success) {
-        // Create download link
-        const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
-          type: 'application/json' 
-        });
+        if(format === 'json') {
+          const data = await response.json();
+          // Create download link
+          const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
+            type: 'application/json' 
+          });
+        } else {
+          const blob = await response.blob();
+        }
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
