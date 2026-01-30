@@ -129,7 +129,7 @@ class ReportController extends Controller
 	public function exportReport(Request $request): JsonResponse
 	{
 		$request->validate([
-			"account_id" => "required|exists:accounts,id",
+			"account_id" => "nullable|exists:accounts,id",
 			"start_date" => "required|date",
 			"end_date" => "required|date|after_or_equal:start_date",
 			"format" => "nullable|in:json,pdf,csv,xls,xlsx",
