@@ -457,20 +457,17 @@ class ReportRepository
 	{
 		$userId = $params["user_id"];
 		$accountId = $params["account_id"] ?? null;
-		$startDate = $params["start_date"] ?? null;
+		$startDate = $params["start_date"] ?? now()->startOfMonth();
 		$endDate = $params["end_date"] ?? now()->endOfMonth();
 
 		$query = $this->transaction->where("user_id", $userId);
-
-		if ($startDate) {
-			$query->whereBetween("transaction_date", [$startDate, $endDate]);
-		}
 
 		if ($accountId) {
 			$query->where("account_id", $accountId);
 		}
 
 		$transactions = $query
+			->whereBetween("transaction_date", [$startDate, $endDate])
 			->whereIn("type", ["income", "expense"])
 			->select(
 				DB::raw("DAYOFWEEK(transaction_date) as day_of_week"),

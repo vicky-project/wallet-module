@@ -354,4 +354,41 @@ class Transaction extends Model
 			get: fn() => $this->type === TransactionType::TRANSFER
 		);
 	}
+
+	public static function getMonthlyTransactionData(
+		$userId,
+		$accountId = null,
+		$years = 5
+	) {
+		$query = self::where("user_id", $userId)->whereIn("type", [
+			"income",
+			"expense",
+		]);
+
+		if ($accountId) {
+			$query->where("account_id", $accountId);
+		}
+
+		// Ambil data untuk X tahun terakhir
+		$startDate = now()
+			->subYears($years)
+			->startOfYear();
+		$query->where("transaction_date", ">=", $startDate);
+
+		return $query
+			->selectRaw(
+				'
+            YEAR(transaction_date) as year,
+            MONTH(transaction_date) as month,
+            SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income,
+            SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense,
+            COUNT(*) as transaction_count
+        '
+			)
+			->groupBy("year", "month")
+			->orderBy("year", "desc")
+			->orderBy("month", "asc")
+			->get()
+			->groupBy("year");
+	}
 }

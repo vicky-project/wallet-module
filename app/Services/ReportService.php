@@ -192,6 +192,8 @@ class ReportService
 			"exported_at" => now()->toDateTimeString(),
 			"period" => $data["period"],
 			"currency" => "IDR",
+			"user_id" => $userId,
+			"filters" => $params,
 		];
 	}
 

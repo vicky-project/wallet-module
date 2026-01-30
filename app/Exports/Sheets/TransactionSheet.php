@@ -8,34 +8,223 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+use Modules\Wallet\Models\Transaction;
 
 class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 {
 	protected $reportData;
+	protected $userId;
+	protected $filters;
 
 	public function __construct(array $reportData)
 	{
 		$this->reportData = $reportData;
+		// Ambil user_id dari data atau gunakan auth
+		$this->userId = $reportData["user_id"] ?? auth()->id();
+		$this->filters = $reportData["filters"] ?? [];
 	}
 
 	public function array(): array
 	{
-		$transactionData =
-			$this->reportData["report_data"]["transaction_analysis"] ?? [];
-		$labels = $transactionData["labels"] ?? [
-			"Minggu",
-			"Senin",
-			"Selasa",
-			"Rabu",
-			"Kamis",
-			"Jumat",
-			"Sabtu",
-		];
-		$incomeData =
-			$transactionData["datasets"][0]["data"] ?? array_fill(0, 7, 0);
-		$expenseData =
-			$transactionData["datasets"][1]["data"] ?? array_fill(0, 7, 0);
+		$data = [];
 
+		// Ambil data transaksi per tahun dari database
+		$yearsData = Transaction::getMonthlyTransactionData(
+			$this->userId,
+			$this->filters["account_id"] ?? null
+		);
+
+		dd($yearsData);
+
+		// Jika ada data per tahun
+		if (!empty($yearsData)) {
+			foreach ($yearsData as $year => $yearData) {
+				// Judul untuk setiap tahun
+				$data[] = ["TRANSAKSI TAHUN {$year}"];
+				$data[] = []; // Baris kosong
+
+				// Header tabel
+				$data[] = [
+					"Bulan",
+					"Pendapatan",
+					"Pengeluaran",
+					"Saldo Bersih",
+					"Jumlah Transaksi",
+					"Rata-rata/Transaksi",
+				];
+
+				// Data bulanan untuk tahun ini
+				$this->addMonthlyDataForYear($data, $yearData, $year);
+
+				// Baris kosong antar tahun
+				$data[] = [];
+				$data[] = [];
+			}
+		} else {
+			// Fallback: data harian dari laporan biasa
+			$transactionData =
+				$this->reportData["report_data"]["transaction_analysis"] ?? [];
+			$data = $this->getDailyTransactionData($transactionData);
+		}
+
+		// Tambahkan ringkasan semua tahun
+		$this->addYearlySummary($data, $yearsData);
+
+		return $data;
+	}
+
+	private function getTransactionDataFromDB()
+	{
+		$cacheKey =
+			"transaction_export_{$this->userId}_" . md5(json_encode($this->filters));
+
+		return Cache::remember($cacheKey, 300, function () {
+			// Ambil tahun-tahun yang memiliki transaksi
+			$years = DB::table("transactions")
+				->select(DB::raw("YEAR(transaction_date) as year"))
+				->where("user_id", $this->userId)
+				->whereIn("type", ["income", "expense"])
+				->groupBy("year")
+				->orderBy("year", "desc")
+				->pluck("year")
+				->toArray();
+
+			$yearsData = [];
+
+			foreach ($years as $year) {
+				// Query data per bulan untuk tahun ini
+				$monthlyData = DB::table("transactions")
+					->select(
+						DB::raw("MONTH(transaction_date) as month"),
+						DB::raw(
+							'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income'
+						),
+						DB::raw(
+							'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense'
+						),
+						DB::raw("COUNT(*) as transaction_count")
+					)
+					->where("user_id", $this->userId)
+					->whereYear("transaction_date", $year)
+					->whereIn("type", ["income", "expense"])
+					->groupBy("month")
+					->orderBy("month")
+					->get();
+
+				// Filter account jika ada
+				if (!empty($this->filters["account_id"])) {
+					$monthlyData = DB::table("transactions")
+						->select(
+							DB::raw("MONTH(transaction_date) as month"),
+							DB::raw(
+								'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income'
+							),
+							DB::raw(
+								'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense'
+							),
+							DB::raw("COUNT(*) as transaction_count")
+						)
+						->where("user_id", $this->userId)
+						->where("account_id", $this->filters["account_id"])
+						->whereYear("transaction_date", $year)
+						->whereIn("type", ["income", "expense"])
+						->groupBy("month")
+						->orderBy("month")
+						->get();
+				}
+
+				// Format data bulanan
+				$formattedData = $this->formatMonthlyData($monthlyData, $year);
+				$yearsData[$year] = $formattedData;
+			}
+
+			return $yearsData;
+		});
+	}
+
+	private function formatMonthlyData($monthlyData, $year)
+	{
+		$months = [
+			1 => "Januari",
+			2 => "Februari",
+			3 => "Maret",
+			4 => "April",
+			5 => "Mei",
+			6 => "Juni",
+			7 => "Juli",
+			8 => "Agustus",
+			9 => "September",
+			10 => "Oktober",
+			11 => "November",
+			12 => "Desember",
+		];
+
+		$formattedData = [];
+		$monthlyDataArray = $monthlyData->keyBy("month");
+
+		foreach ($months as $monthNum => $monthName) {
+			$data = $monthlyDataArray->get($monthNum);
+
+			$income = $data->total_income ?? 0;
+			$expense = $data->total_expense ?? 0;
+			$count = $data->transaction_count ?? 0;
+			$net = $income - $expense;
+			$avg = $count > 0 ? ($income + $expense) / $count : 0;
+
+			$formattedData[] = [
+				"month" => $monthName,
+				"income" => $income,
+				"expense" => $expense,
+				"net" => $net,
+				"count" => $count,
+				"avg" => $avg,
+			];
+		}
+
+		return $formattedData;
+	}
+
+	private function addMonthlyDataForYear(&$data, $yearData, $year)
+	{
+		$yearTotalIncome = 0;
+		$yearTotalExpense = 0;
+		$yearTotalTransactions = 0;
+
+		foreach ($yearData as $monthData) {
+			$yearTotalIncome += $monthData["income"];
+			$yearTotalExpense += $monthData["expense"];
+			$yearTotalTransactions += $monthData["count"];
+
+			$data[] = [
+				$monthData["month"],
+				$this->formatCurrency($monthData["income"]),
+				$this->formatCurrency($monthData["expense"]),
+				$this->formatCurrency($monthData["net"]),
+				$monthData["count"],
+				$this->formatCurrency($monthData["avg"]),
+			];
+		}
+
+		// Total untuk tahun ini
+		$data[] = [
+			"TOTAL " . $year,
+			$this->formatCurrency($yearTotalIncome),
+			$this->formatCurrency($yearTotalExpense),
+			$this->formatCurrency($yearTotalIncome - $yearTotalExpense),
+			$yearTotalTransactions,
+			$yearTotalTransactions > 0
+				? $this->formatCurrency(
+					($yearTotalIncome + $yearTotalExpense) / $yearTotalTransactions
+				)
+				: 0,
+		];
+	}
+
+	private function getDailyTransactionData($transactionData)
+	{
 		$data = [
 			["AKTIVITAS TRANSAKSI PER HARI"],
 			[""],
@@ -50,8 +239,19 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			],
 		];
 
-		$totalIncome = array_sum($incomeData);
-		$totalExpense = array_sum($expenseData);
+		$labels = $transactionData["labels"] ?? [
+			"Minggu",
+			"Senin",
+			"Selasa",
+			"Rabu",
+			"Kamis",
+			"Jumat",
+			"Sabtu",
+		];
+		$incomeData =
+			$transactionData["datasets"][0]["data"] ?? array_fill(0, 7, 0);
+		$expenseData =
+			$transactionData["datasets"][1]["data"] ?? array_fill(0, 7, 0);
 
 		$transactionCounts = [];
 
@@ -73,7 +273,10 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			];
 		}
 
-		// Add average row
+		// Total dan rata-rata
+		$totalIncome = array_sum($incomeData);
+		$totalExpense = array_sum($expenseData);
+
 		$data[] = [
 			"RATA-RATA",
 			$this->formatCurrency($totalIncome / 7),
@@ -84,7 +287,6 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			"",
 		];
 
-		// Add total row
 		$data[] = [
 			"TOTAL",
 			$this->formatCurrency($totalIncome),
@@ -98,9 +300,108 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 		return $data;
 	}
 
+	private function addYearlySummary(&$data, $yearsData)
+	{
+		if (empty($yearsData)) {
+			return;
+		}
+
+		$data[] = [];
+		$data[] = [];
+		$data[] = ["RINGKASAN SEMUA TAHUN"];
+		$data[] = [];
+		$data[] = [
+			"Tahun",
+			"Total Pendapatan",
+			"Total Pengeluaran",
+			"Saldo Bersih",
+			"Jumlah Transaksi",
+			"Trend",
+		];
+
+		$allYearsSummary = [];
+
+		foreach ($yearsData as $year => $yearData) {
+			$totalIncome = 0;
+			$totalExpense = 0;
+			$totalTransactions = 0;
+
+			foreach ($yearData as $monthData) {
+				$totalIncome += $monthData["income"];
+				$totalExpense += $monthData["expense"];
+				$totalTransactions += $monthData["count"];
+			}
+
+			$allYearsSummary[$year] = [
+				"income" => $totalIncome,
+				"expense" => $totalExpense,
+				"transactions" => $totalTransactions,
+				"net" => $totalIncome - $totalExpense,
+			];
+
+			// Tentukan trend
+			$trend = $this->getYearlyTrend($year, $allYearsSummary);
+
+			$data[] = [
+				$year,
+				$this->formatCurrency($totalIncome),
+				$this->formatCurrency($totalExpense),
+				$this->formatCurrency($totalIncome - $totalExpense),
+				$totalTransactions,
+				$trend,
+			];
+		}
+
+		// Total semua tahun
+		$grandTotalIncome = array_sum(array_column($allYearsSummary, "income"));
+		$grandTotalExpense = array_sum(array_column($allYearsSummary, "expense"));
+		$grandTotalTransactions = array_sum(
+			array_column($allYearsSummary, "transactions")
+		);
+
+		$data[] = [
+			"GRAND TOTAL",
+			$this->formatCurrency($grandTotalIncome),
+			$this->formatCurrency($grandTotalExpense),
+			$this->formatCurrency($grandTotalIncome - $grandTotalExpense),
+			$grandTotalTransactions,
+			"",
+		];
+	}
+
+	private function getYearlyTrend($year, $allYearsSummary)
+	{
+		$currentYear = $allYearsSummary[$year] ?? null;
+		$prevYear = $allYearsSummary[$year - 1] ?? null;
+
+		if (!$currentYear || !$prevYear) {
+			return "Baru";
+		}
+
+		$growth = 0;
+		if ($prevYear["income"] > 0) {
+			$growth =
+				(($currentYear["income"] - $prevYear["income"]) / $prevYear["income"]) *
+				100;
+		}
+
+		if ($growth > 20) {
+			return "↑↑ Naik Pesat";
+		}
+		if ($growth > 5) {
+			return "↑ Sedikit Naik";
+		}
+		if ($growth > -5) {
+			return "→ Stabil";
+		}
+		if ($growth > -20) {
+			return "↓ Sedikit Turun";
+		}
+		return "↓↓ Turun Pesat";
+	}
+
 	public function headings(): array
 	{
-		// Return empty karena header sudah ada di array()
 		return [];
 	}
 
@@ -121,109 +422,217 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 				$sheet->getColumnDimension("C")->setWidth(20);
 				$sheet->getColumnDimension("D")->setWidth(20);
 				$sheet->getColumnDimension("E")->setWidth(20);
-				$sheet->getColumnDimension("F")->setWidth(15);
-				$sheet->getColumnDimension("G")->setWidth(20);
+				$sheet->getColumnDimension("F")->setWidth(20);
 
-				// Style title
+				// Apply styling untuk setiap bagian
+				$this->styleYearlySections($sheet);
+			},
+		];
+	}
+
+	private function styleYearlySections($sheet)
+	{
+		$data = $this->array();
+		$currentRow = 1;
+
+		// Cari setiap bagian tahun
+		foreach ($data as $index => $row) {
+			$rowNum = $index + 1;
+
+			if (isset($row[0]) && strpos($row[0], "TRANSAKSI TAHUN") !== false) {
+				// Style judul tahun
 				$sheet
-					->getStyle("A1")
+					->getStyle("A{$rowNum}")
 					->getFont()
 					->setBold(true)
-					->setSize(14);
-				$sheet->mergeCells("A1:G1");
+					->setSize(14)
+					->getColor()
+					->setARGB("FF2C3E50");
+
+				$sheet->mergeCells("A{$rowNum}:F{$rowNum}");
 				$sheet
-					->getStyle("A1")
+					->getStyle("A{$rowNum}")
 					->getAlignment()
 					->setHorizontal("center")
 					->setVertical("center");
 
-				// Style header row (row 3)
+				// Style header tabel untuk tahun ini (2 baris setelah judul)
+				$headerRow = $rowNum + 2;
 				$sheet
-					->getStyle("A3:G3")
+					->getStyle("A{$headerRow}:F{$headerRow}")
 					->getFont()
 					->setBold(true);
+
 				$sheet
-					->getStyle("A3:G3")
+					->getStyle("A{$headerRow}:F{$headerRow}")
 					->getFill()
 					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 					->getStartColor()
 					->setARGB("FFE67E22");
+
 				$sheet
-					->getStyle("A3:G3")
+					->getStyle("A{$headerRow}:F{$headerRow}")
 					->getFont()
 					->getColor()
 					->setARGB("FFFFFFFF");
 
-				// Format currency columns (B, C, D)
-				$lastRow = count($this->array());
-				for ($row = 4; $row <= $lastRow; $row++) {
-					$sheet
-						->getStyle("B{$row}")
-						->getNumberFormat()
-						->setFormatCode("#,##0");
-					$sheet
-						->getStyle("C{$row}")
-						->getNumberFormat()
-						->setFormatCode("#,##0");
-					$sheet
-						->getStyle("D{$row}")
-						->getNumberFormat()
-						->setFormatCode("#,##0");
+				// Cari baris total untuk tahun ini
+				$totalRow = null;
+				for ($i = $rowNum + 3; $i <= count($data); $i++) {
+					if (
+						isset($data[$i - 1][0]) &&
+						strpos($data[$i - 1][0], "TOTAL") !== false
+					) {
+						$totalRow = $i;
+						break;
+					}
 				}
 
-				// Apply borders
-				$sheet
-					->getStyle("A3:G" . $lastRow)
-					->getBorders()
-					->getAllBorders()
-					->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+				if ($totalRow) {
+					// Apply border untuk tabel tahun ini
+					$tableStart = $headerRow;
+					$tableEnd = $totalRow;
 
-				// Alignment
-				$sheet
-					->getStyle("A3:G" . $lastRow)
-					->getAlignment()
-					->setVertical("center");
-				$sheet
-					->getStyle("A4:A" . $lastRow)
-					->getAlignment()
-					->setHorizontal("left");
-				$sheet
-					->getStyle("B4:D" . $lastRow)
-					->getAlignment()
-					->setHorizontal("right");
-				$sheet
-					->getStyle("E4:G" . $lastRow)
-					->getAlignment()
-					->setHorizontal("center");
+					$sheet
+						->getStyle("A{$tableStart}:F{$tableEnd}")
+						->getBorders()
+						->getAllBorders()
+						->setBorderStyle(
+							\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+						);
 
-				// Style for average row
-				$avgRow = $lastRow - 1;
+					// Style baris total
+					$sheet
+						->getStyle("A{$totalRow}:F{$totalRow}")
+						->getFont()
+						->setBold(true);
+
+					$sheet
+						->getStyle("A{$totalRow}:F{$totalRow}")
+						->getFill()
+						->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+						->getStartColor()
+						->setARGB("FFFBEEE6");
+				}
+			}
+
+			// Style ringkasan semua tahun
+			if (isset($row[0]) && $row[0] === "RINGKASAN SEMUA TAHUN") {
 				$sheet
-					->getStyle("A{$avgRow}:G{$avgRow}")
+					->getStyle("A{$rowNum}")
 					->getFont()
 					->setBold(true)
-					->setItalic(true);
-				$sheet
-					->getStyle("A{$avgRow}:G{$avgRow}")
-					->getFill()
-					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-					->getStartColor()
-					->setARGB("FFFEF9E7");
+					->setSize(14)
+					->getColor()
+					->setARGB("FF2C3E50");
 
-				// Style for total row
-				$totalRow = $lastRow;
+				$sheet->mergeCells("A{$rowNum}:F{$rowNum}");
 				$sheet
-					->getStyle("A{$totalRow}:G{$totalRow}")
+					->getStyle("A{$rowNum}")
+					->getAlignment()
+					->setHorizontal("center")
+					->setVertical("center");
+
+				// Style header ringkasan
+				$summaryHeader = $rowNum + 2;
+				$sheet
+					->getStyle("A{$summaryHeader}:F{$summaryHeader}")
 					->getFont()
 					->setBold(true);
+
 				$sheet
-					->getStyle("A{$totalRow}:G{$totalRow}")
+					->getStyle("A{$summaryHeader}:F{$summaryHeader}")
 					->getFill()
 					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 					->getStartColor()
-					->setARGB("FFFBEEE6");
-			},
-		];
+					->setARGB("FF27AE60");
+
+				$sheet
+					->getStyle("A{$summaryHeader}:F{$summaryHeader}")
+					->getFont()
+					->getColor()
+					->setARGB("FFFFFFFF");
+
+				// Cari baris grand total
+				$grandTotalRow = null;
+				for ($i = $summaryHeader + 1; $i <= count($data); $i++) {
+					if (isset($data[$i - 1][0]) && $data[$i - 1][0] === "GRAND TOTAL") {
+						$grandTotalRow = $i;
+						break;
+					}
+				}
+
+				if ($grandTotalRow) {
+					// Apply border untuk tabel ringkasan
+					$summaryStart = $summaryHeader;
+					$summaryEnd = $grandTotalRow;
+
+					$sheet
+						->getStyle("A{$summaryStart}:F{$summaryEnd}")
+						->getBorders()
+						->getAllBorders()
+						->setBorderStyle(
+							\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+						);
+
+					// Style grand total
+					$sheet
+						->getStyle("A{$grandTotalRow}:F{$grandTotalRow}")
+						->getFont()
+						->setBold(true);
+
+					$sheet
+						->getStyle("A{$grandTotalRow}:F{$grandTotalRow}")
+						->getFill()
+						->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+						->getStartColor()
+						->setARGB("FFD5F4E6");
+				}
+			}
+
+			// Format angka untuk kolom B, C, D, F
+			if (isset($row[1]) && is_numeric($row[1])) {
+				$sheet
+					->getStyle("B{$rowNum}")
+					->getNumberFormat()
+					->setFormatCode("#,##0");
+			}
+			if (isset($row[2]) && is_numeric($row[2])) {
+				$sheet
+					->getStyle("C{$rowNum}")
+					->getNumberFormat()
+					->setFormatCode("#,##0");
+			}
+			if (isset($row[3]) && is_numeric($row[3])) {
+				$sheet
+					->getStyle("D{$rowNum}")
+					->getNumberFormat()
+					->setFormatCode("#,##0");
+			}
+			if (isset($row[5]) && is_numeric($row[5])) {
+				$sheet
+					->getStyle("F{$rowNum}")
+					->getNumberFormat()
+					->setFormatCode("#,##0");
+			}
+		}
+
+		// Alignment umum
+		$lastRow = count($data);
+		$sheet
+			->getStyle("A1:F{$lastRow}")
+			->getAlignment()
+			->setVertical("center");
+
+		$sheet
+			->getStyle("B1:F{$lastRow}")
+			->getAlignment()
+			->setHorizontal("right");
+
+		$sheet
+			->getStyle("A1:A{$lastRow}")
+			->getAlignment()
+			->setHorizontal("left");
 	}
 
 	private function formatCurrency($value)
