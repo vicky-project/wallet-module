@@ -217,7 +217,7 @@
 
 <!-- Charts Row 2: Category & Account -->
 <div class="row mb-4">
-  <div class="col-md-6 mb-3">
+  <div class="col-md">
     <div class="card h-100">
       <div class="card-header">
         <h5 class="mb-0">
@@ -248,8 +248,10 @@
       </div>
     </div>
   </div>
-    
-  <div class="col-md-6 mb-3">
+</div>
+
+<div class="row mb-4">
+  <div class="col-md">
     <div class="card h-100">
       <div class="card-header">
         <h5 class="mb-0">

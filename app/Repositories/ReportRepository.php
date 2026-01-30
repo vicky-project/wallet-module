@@ -456,11 +456,16 @@ class ReportRepository
 	public function getTransactionAnalysis(array $params): array
 	{
 		$userId = $params["user_id"];
+		$accountId = $params["account_id"] ?? null;
 		$startDate = $params["start_date"] ?? now()->startOfMonth();
 		$endDate = $params["end_date"] ?? now()->endOfMonth();
 
-		$transactions = $this->transaction
-			->where("user_id", $userId)
+		$query = $this->transaction->where("user_id", $userId);
+
+		if ($accountId) {
+			$query->where("account_id", $accountId);
+		}
+		$transactions = $query
 			->whereBetween("transaction_date", [$startDate, $endDate])
 			->whereIn("type", ["income", "expense"])
 			->select(
