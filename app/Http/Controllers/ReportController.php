@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Services\ReportService;
-use Modules\Wallet\Exports\ExportService;
+use Modules\Wallet\Services\ExportService;
 
 class ReportController extends Controller
 {
