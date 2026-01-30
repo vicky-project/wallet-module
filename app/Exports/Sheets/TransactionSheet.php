@@ -226,9 +226,9 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			$totalTransactions = 0;
 
 			foreach ($yearData as $monthData) {
-				$totalIncome += $monthData["income"];
-				$totalExpense += $monthData["expense"];
-				$totalTransactions += $monthData["count"];
+				$totalIncome += $monthData->total_income;
+				$totalExpense += $monthData->total_expense;
+				$totalTransactions += $monthData->transaction_count;
 			}
 
 			$allYearsSummary[$year] = [
