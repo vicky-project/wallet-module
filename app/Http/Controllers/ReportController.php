@@ -166,37 +166,59 @@ class ReportController extends Controller
 		try {
 			$export = new FinancialReportExport($data);
 
-			$excelFormat = match ($format) {
+			$writerType = match ($format) {
 				"xls" => \Maatwebsite\Excel\Excel::XLS,
 				"csv" => \Maatwebsite\Excel\Excel::CSV,
 				"pdf" => \Maatwebsite\Excel\Excel::DOMPDF,
 				default => \Maatwebsite\Excel\Excel::XLSX,
 			};
 
-			$fileContent = Excel::raw($export, $excelFormat);
+			$filename =
+				"laporan-keuangan-" . now()->format("d-m-Y-H-i-s") . "-vickyserver";
+			$tempPath = storage_path("app/temp/" . $filename . "." . $format);
+
+			if (!file_exists(dirname($tempPath))) {
+				mkdir(dirname($tempPath), 0775, true);
+			}
+
+			Excel::store(
+				$export,
+				"temp/" . $filename . "." . $format,
+				"local",
+				$writerType
+			);
+
+			$fileContent = file_get_contents($tempPath);
+
+			unlink($tempPath);
+
+			if ($format === "pdf") {
+				return reponse()->json([
+					"success" => true,
+					"download_url" =>
+						"data:application/pdf;base64," . base64_encode($fileContent),
+					"filename" => $filename . "." . $format,
+					"mime_type" => "application/pdf",
+					"has_charts" => false,
+				]);
+			}
 
 			$mimeTypes = [
 				"xlsx" =>
 					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 				"xls" => "application/vnd.ms-excel",
 				"csv" => "text/csv",
-				"pdf" => "application/pdf",
 			];
 
 			$mimeType = $mimeTypes[$format] ?? "application/octet-stream";
-			$filename =
-				"laporan-keuangan-" .
-				now()->format("d-m-Y") .
-				"-vickyserver" .
-				"." .
-				$format;
 
 			return response()->json([
 				"success" => true,
 				"download_url" =>
 					"data:" . $mimeType . ";base64," . base64_encode($fileContent),
-				"filename" => $filename,
+				"filename" => $filename . "." . $format,
 				"mime_type" => $mimeType,
+				"has_charts" => $format === "xlsx" || $format === "xls",
 			]);
 
 			// Implementation for CSV generation

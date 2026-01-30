@@ -1034,7 +1034,16 @@
       const data = await response.json();
       
       if(data.success) {
-        if(format === 'json') {
+        if(data.download_url) {
+          const a = document.createElement('a');
+          a.href = data.download_url;
+          a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          
+          alert('File berhasil dibuat.')
+        } else {
           const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
             type: 'application/json' 
           });
@@ -1046,18 +1055,9 @@
           a.click();
           document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
-        } else if(data.download_url){
-          const a = document.createElement('a');
-          a.href = data.download_url;
-          a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        } else {
-          alert('On progress');
         }
       } else {
-        alert(data.message);
+        alert(data.message || 'Gagal mendownload laporan keuangan');
       }
     } catch (error) {
       console.error('Error exporting report:', error);
