@@ -205,10 +205,10 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			return;
 		}
 
-		$data[] = [];
-		$data[] = [];
+		$data[] = [""];
+		$data[] = [""];
 		$data[] = ["RINGKASAN SEMUA TAHUN"];
-		$data[] = [];
+		$data[] = [""];
 		$data[] = [
 			"Tahun",
 			"Total Pendapatan",
