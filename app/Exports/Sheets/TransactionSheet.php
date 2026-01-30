@@ -73,7 +73,6 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			$data = $this->getDailyTransactionData($transactionData);
 		}
 
-		dd($data);
 		// Tambahkan ringkasan semua tahun
 		$this->addYearlySummary($data, $yearsData);
 
