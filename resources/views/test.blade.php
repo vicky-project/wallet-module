@@ -5,11 +5,11 @@
 @endforeach
 </ul>
 @endif
-<form method="POST" action="{{ config('app.url') }}/api/apps/reports/exports">
+<form method="POST" action="{{ config('app.url') }}/api/apps/reports/export">
   @csrf
   <input type="hidden" name="account_id" value="1">
-  <input type="date" name="start_date" value="{{ now()->startOfMonth() }}">
-  <input type="date" name="end_date" value="{{ now()->endOfMonth() }}">
+  <input type="date" name="start_date" value="{{ now()->startOfMonth()->format('Y-m-d') }}">
+  <input type="date" name="end_date" value="{{ now()->endOfMonth()->format('Y-m-d') }}">
   <input type="text" name="format" value="pdf">
   
   <button type="submit">Export</button>
