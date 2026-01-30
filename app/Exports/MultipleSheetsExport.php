@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Wallet\Services\Exporters;
+namespace Modules\Wallet\Exports;
 
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 

@@ -170,9 +170,7 @@ class ReportController extends Controller
 			}
 
 			// Buat instance export
-			$export = new \Modules\Wallet\Services\Exporters\MultipleSheetsExport(
-				$data
-			);
+			$export = new \Modules\Wallet\Exports\MultipleSheetsExport($data);
 
 			// Tentukan format
 			$excelFormat = match ($format) {
