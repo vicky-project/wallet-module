@@ -44,7 +44,10 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				$this->formatCurrency($summary["total_transfer"] ?? 0),
 			],
 			[""],
-			["Periode Laporan", $this->reportData["period"] ?? ""],
+			[
+				"Periode Laporan",
+				$this->extractPeriodDate($this->reportData["period"]) ?? "",
+			],
 			["Mata Uang", $this->reportData["currency"] ?? "IDR"],
 			[
 				"Tanggal Ekspor",
@@ -113,5 +116,14 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 		$amount = $value / 100;
 		return $amount;
+	}
+
+	private function extractPeriodDate(array $period)
+	{
+		if (!isset($period["start_date"]) || !isset($period["end_date"])) {
+			return null;
+		}
+
+		return $period["start_date"] . " - " . $period["end_date"];
 	}
 }

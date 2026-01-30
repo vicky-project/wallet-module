@@ -39,6 +39,7 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 			: date("d F Y H:i");
 
 		// Data untuk cover sheet dengan layout yang lebih terstruktur
+		return [[""]];
 		$data = [
 			[""],
 			[""],
