@@ -1030,27 +1030,25 @@
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-            
-            
-      if (data.success) {
-        if(format === 'json') {
+
+      if(format === 'json') {
           const data = await response.json();
           // Create download link
           const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
             type: 'application/json' 
           });
-        } else {
+      } else {
           const blob = await response.blob();
-        }
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
       }
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
     } catch (error) {
       console.error('Error exporting report:', error);
       alert('Gagal mengekspor laporan. Silakan coba lagi.' + error.message);
