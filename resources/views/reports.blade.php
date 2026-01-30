@@ -1037,7 +1037,7 @@
         if(data.download_url) {
           const a = document.createElement('a');
           a.href = data.download_url;
-          a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
+          a.download = data.filename;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -1050,7 +1050,7 @@
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
+          a.download = data.filename;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
