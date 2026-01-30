@@ -27,11 +27,11 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			["Item", "Nilai"],
 			[
 				"Total Pendapatan",
-				$this->formatCurrency($summary["total_income"] ?? 0),
+				$this->formatCurrency($summary["income_number"] ?? 0),
 			],
 			[
 				"Total Pengeluaran",
-				$this->formatCurrency($summary["total_expense"] ?? 0),
+				$this->formatCurrency($summary["expense_number"] ?? 0),
 			],
 			[
 				"Saldo Bersih (Net Flow)",
