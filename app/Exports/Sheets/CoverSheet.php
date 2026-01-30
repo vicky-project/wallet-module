@@ -8,9 +8,6 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 {
@@ -23,8 +20,13 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 
 	public function array(): array
 	{
-		return [
+		// Data untuk cover sheet
+		$data = [
+			[""],
+			[""],
+			[""],
 			["LAPORAN KEUANGAN"],
+			[""],
 			[""],
 			["Periode:", $this->reportData["period"] ?? ""],
 			[
@@ -33,7 +35,9 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 			],
 			["Mata Uang:", $this->reportData["currency"] ?? "IDR"],
 			[""],
-			["Daftar Isi:"],
+			[""],
+			["DAFTAR ISI"],
+			[""],
 			["1. Ringkasan Eksekutif"],
 			["2. Trend Pendapatan vs Pengeluaran"],
 			["3. Analisis Pengeluaran per Kategori"],
@@ -41,12 +45,15 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 			["5. Distribusi Saldo Akun"],
 			["6. Aktivitas Transaksi"],
 			[""],
-			["Catatan:"],
+			[""],
+			["CATATAN PENTING"],
 			["• Laporan ini dibuat secara otomatis oleh sistem"],
 			["• Data bersumber dari transaksi yang tercatat"],
 			["• Chart tersedia dalam versi Excel (XLSX)"],
-			["• Untuk pertanyaan, hubungi administrator"],
+			["• Untuk pertanyaan, hubungi administrator sistem"],
 		];
+
+		return $data;
 	}
 
 	public function title(): string
@@ -56,12 +63,20 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 
 	public function drawings()
 	{
+		// Pastikan file logo ada sebelum membuat drawing
+		$logoPath = public_path("images/logo.png");
+
+		// Jika logo tidak ada, jangan return drawing
+		if (!file_exists($logoPath)) {
+			return [];
+		}
+
 		$drawing = new Drawing();
 		$drawing->setName("Logo");
 		$drawing->setDescription("Logo Perusahaan");
-		$drawing->setPath(public_path("images/logo.png")); // Sesuaikan dengan path logo Anda
-		$drawing->setHeight(80);
-		$drawing->setCoordinates("B2");
+		$drawing->setPath($logoPath);
+		$drawing->setHeight(60); // Ukuran lebih kecil
+		$drawing->setCoordinates("B2"); // Posisi di kolom B row 2
 
 		return [$drawing];
 	}
@@ -72,84 +87,123 @@ class CoverSheet implements FromArray, WithTitle, WithEvents, WithDrawings
 			AfterSheet::class => function (AfterSheet $event) {
 				$sheet = $event->sheet->getDelegate();
 
-				// Set all column widths
-				$sheet->getColumnDimension("A")->setWidth(30);
-				$sheet->getColumnDimension("B")->setWidth(40);
+				// ============ SET COLUMN WIDTHS ============
+				$sheet->getColumnDimension("A")->setWidth(5);
+				$sheet->getColumnDimension("B")->setWidth(30);
+				$sheet->getColumnDimension("C")->setWidth(40);
+				$sheet->getColumnDimension("D")->setWidth(10);
+				$sheet->getColumnDimension("E")->setWidth(10);
+				$sheet->getColumnDimension("F")->setWidth(10);
 
-				// Merge cells for title
-				$sheet->mergeCells("B1:F1");
-				$sheet->setCellValue("B1", "LAPORAN KEUANGAN");
-				$sheet->getStyle("B1")->applyFromArray([
-					"font" => [
-						"bold" => true,
-						"size" => 24,
-						"color" => ["rgb" => "2C3E50"],
-					],
-					"alignment" => [
-						"horizontal" => Alignment::HORIZONTAL_CENTER,
-						"vertical" => Alignment::VERTICAL_CENTER,
-					],
-				]);
+				// ============ JUDUL UTAMA ============
+				// Title di row 4 (karena ada 3 baris kosong di awal)
+				$titleRow = 4;
+				$sheet->mergeCells("B{$titleRow}:F{$titleRow}");
+				$sheet
+					->getStyle("B{$titleRow}")
+					->getFont()
+					->setBold(true)
+					->setSize(24)
+					->getColor()
+					->setARGB("FF2C3E50");
 
-				// Style for section headers
-				$sheet->getStyle("A7")->applyFromArray([
-					"font" => [
-						"bold" => true,
-						"size" => 14,
-						"color" => ["rgb" => "2C3E50"],
-					],
-					"fill" => [
-						"fillType" => Fill::FILL_SOLID,
-						"color" => ["rgb" => "F4F6F6"],
-					],
-				]);
+				$sheet
+					->getStyle("B{$titleRow}")
+					->getAlignment()
+					->setHorizontal("center")
+					->setVertical("center");
 
-				// Style for notes
-				$sheet->getStyle("A14")->applyFromArray([
-					"font" => [
-						"bold" => true,
-						"size" => 12,
-						"color" => ["rgb" => "34495E"],
-					],
-				]);
+				// ============ INFORMASI PERIODE ============
+				$infoStartRow = 7;
+				$sheet
+					->getStyle("B{$infoStartRow}:C" . ($infoStartRow + 2))
+					->getBorders()
+					->getAllBorders()
+					->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-				// Add border for data section
-				$sheet->getStyle("A3:B5")->applyFromArray([
-					"borders" => [
-						"allBorders" => [
-							"borderStyle" => Border::BORDER_THIN,
-							"color" => ["rgb" => "CCCCCC"],
-						],
-					],
-					"fill" => [
-						"fillType" => Fill::FILL_SOLID,
-						"color" => ["rgb" => "F8F9F9"],
-					],
-				]);
+				$sheet
+					->getStyle("B{$infoStartRow}:C" . ($infoStartRow + 2))
+					->getFill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()
+					->setARGB("FFF8F9F9");
 
-				// Set row heights
-				$sheet->getRowDimension(1)->setRowHeight(40);
-				$sheet->getRowDimension(3)->setRowHeight(25);
-				$sheet->getRowDimension(4)->setRowHeight(25);
-				$sheet->getRowDimension(5)->setRowHeight(25);
+				// Format label informasi
+				for ($row = $infoStartRow; $row <= $infoStartRow + 2; $row++) {
+					$sheet
+						->getStyle("B{$row}")
+						->getFont()
+						->setBold(true)
+						->getColor()
+						->setARGB("FF2C3E50");
+				}
 
-				// Add footer
+				// ============ DAFTAR ISI ============
+				$daftarIsiRow = 12;
+				$sheet
+					->getStyle("B{$daftarIsiRow}")
+					->getFont()
+					->setBold(true)
+					->setSize(14)
+					->getColor()
+					->setARGB("FF2C3E50");
+
+				$sheet
+					->getStyle("B{$daftarIsiRow}")
+					->getFill()
+					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->getStartColor()
+					->setARGB("FFF4F6F6");
+
+				$sheet->mergeCells("B{$daftarIsiRow}:F{$daftarIsiRow}");
+
+				// ============ CATATAN ============
+				$catatanRow = 22;
+				$sheet
+					->getStyle("B{$catatanRow}")
+					->getFont()
+					->setBold(true)
+					->setSize(12)
+					->getColor()
+					->setARGB("FF34495E");
+
+				$sheet->mergeCells("B{$catatanRow}:F{$catatanRow}");
+
+				// ============ FOOTER ============
 				$lastRow = $sheet->getHighestRow();
-				$sheet->mergeCells("A{$lastRow}:F{$lastRow}");
+				$footerRow = $lastRow + 2;
+
+				$sheet->mergeCells("B{$footerRow}:F{$footerRow}");
 				$sheet->setCellValue(
-					"A{$lastRow}",
+					"B{$footerRow}",
 					"© " . date("Y") . " Sistem Keuangan - Confidential"
 				);
-				$sheet->getStyle("A{$lastRow}")->applyFromArray([
-					"font" => [
-						"italic" => true,
-						"size" => 9,
-						"color" => ["rgb" => "7F8C8D"],
-					],
-					"alignment" => [
-						"horizontal" => Alignment::HORIZONTAL_CENTER,
-					],
-				]);
+
+				$sheet
+					->getStyle("B{$footerRow}")
+					->getFont()
+					->setItalic(true)
+					->setSize(9)
+					->getColor()
+					->setARGB("FF7F8C8D");
+
+				$sheet
+					->getStyle("B{$footerRow}")
+					->getAlignment()
+					->setHorizontal("center");
+
+				// ============ SET ROW HEIGHTS ============
+				$sheet->getRowDimension($titleRow)->setRowHeight(40);
+				$sheet->getRowDimension($daftarIsiRow)->setRowHeight(25);
+				$sheet->getRowDimension($catatanRow)->setRowHeight(25);
+
+				// Row untuk informasi periode
+				for ($row = $infoStartRow; $row <= $infoStartRow + 2; $row++) {
+					$sheet->getRowDimension($row)->setRowHeight(25);
+				}
+
+				// ============ HIDE GRIDLINES ============
+				$sheet->setShowGridlines(false);
 			},
 		];
 	}

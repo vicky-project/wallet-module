@@ -24,7 +24,7 @@ class MultipleSheetsExport implements WithMultipleSheets
 		$sheets[] = new CategorySheet($this->reportData);
 		$sheets[] = new BudgetSheet($this->reportData);
 		$sheets[] = new AccountSheet($this->reportData);
-		//$sheets[] = new TransactionSheet($this->reportData);
+		$sheets[] = new TransactionSheet($this->reportData);
 
 		return $sheets;
 	}
