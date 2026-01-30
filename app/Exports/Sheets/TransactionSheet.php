@@ -339,7 +339,7 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 				$sheet->getColumnDimension("B")->setWidth(20);
 				$sheet->getColumnDimension("C")->setWidth(20);
 				$sheet->getColumnDimension("D")->setWidth(20);
-				$sheet->getColumnDimension("E")->setWidth(20);
+				$sheet->getColumnDimension("E")->setWidth(5);
 				$sheet->getColumnDimension("F")->setWidth(20);
 
 				// Apply styling untuk setiap bagian
