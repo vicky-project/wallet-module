@@ -162,9 +162,9 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 	private function setupHeader($sheet)
 	{
 		// Nama perusahaan (atas)
-		$sheet->mergeCells("C1:E1");
-		$sheet->setCellValue("C1", strtoupper($this->companyName));
-		$sheet->getStyle("C1")->applyFromArray([
+		$sheet->mergeCells("B1:D1");
+		$sheet->setCellValue("B1", strtoupper($this->companyName));
+		$sheet->getStyle("B1")->applyFromArray([
 			"font" => [
 				"name" => "Calibri",
 				"bold" => true,
@@ -178,9 +178,9 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 		]);
 
 		// Alamat perusahaan
-		$sheet->mergeCells("C2:E2");
-		$sheet->setCellValue("C2", $this->companyAddress);
-		$sheet->getStyle("C2")->applyFromArray([
+		$sheet->mergeCells("B2:D2");
+		$sheet->setCellValue("B2", $this->companyAddress);
+		$sheet->getStyle("B2")->applyFromArray([
 			"font" => [
 				"name" => "Calibri",
 				"size" => 10,
@@ -193,8 +193,8 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 		]);
 
 		// Garis pemisah
-		$sheet->mergeCells("C3:E3");
-		$sheet->getStyle("C3:E3")->applyFromArray([
+		$sheet->mergeCells("B3:D3");
+		$sheet->getStyle("B3:E3")->applyFromArray([
 			"borders" => [
 				"bottom" => [
 					"borderStyle" => Border::BORDER_MEDIUM,
