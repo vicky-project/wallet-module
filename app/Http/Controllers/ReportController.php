@@ -154,19 +154,6 @@ class ReportController extends Controller
 				400
 			),
 		};
-
-		if ($request->format === "pdf") {
-			// Generate PDF report
-			return $this->generatePdfReport($data);
-		} elseif ($request->format === "csv") {
-			// Generate CSV report
-			return $this->generateCsvReport($data);
-		}
-
-		return response()->json([
-			"success" => true,
-			"data" => $data,
-		]);
 	}
 
 	private function exportToJson(array $data): JsonResponse
