@@ -1047,9 +1047,8 @@
           document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
         } else if(data.download_url){
-          const url = window.URL.createObjectURL(data.download_url);
           const a = document.createElement('a');
-          a.href = url;
+          a.href = data.download_url;
           a.download = `laporan-keuangan-${new Date().toISOString().slice(0,10)}.json`;
           document.body.appendChild(a);
           a.click();
