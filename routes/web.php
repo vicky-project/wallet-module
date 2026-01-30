@@ -15,6 +15,10 @@ Route::middleware(["auth"])
 	->prefix("apps")
 	->name("apps.")
 	->group(function () {
+		Route::get("test", function () {
+			return view("wallet::test");
+		});
+
 		Route::get("preview", [DashboardController::class, "index"])->name(
 			"financial"
 		);
