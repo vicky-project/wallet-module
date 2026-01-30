@@ -46,7 +46,7 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			[""],
 			[
 				"Periode Laporan",
-				$this->extractPeriodDate($this->reportData["period"]) ?? "",
+				$this->extractPeriodDate($this->reportData["period"]) ?? "Semua Tahun",
 			],
 			["Mata Uang", $this->reportData["currency"] ?? "IDR"],
 			[

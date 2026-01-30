@@ -85,13 +85,32 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 		$yearTotalExpense = 0;
 		$yearTotalTransactions = 0;
 
+		$monthName = [
+			1 => "January",
+			2 => "February",
+			3 => "March",
+			4 => "April",
+			5 => "May",
+			6 => "June",
+			7 => "July",
+			8 => "August",
+			9 => "September",
+			10 => "October",
+			11 => "November",
+			12 => "December",
+		];
+
 		foreach ($yearData as $monthData) {
 			$yearTotalIncome += $monthData->total_income;
 			$yearTotalExpense += $monthData->total_expense;
 			$yearTotalTransactions += $monthData->transaction_count;
 
+			$monthStr = isset($monthName[$monthData["month"]])
+				? $monthName[$monthData["month"]]
+				: "Bulan {$monthData["month"]}";
+
 			$data[] = [
-				$monthData["month"],
+				$monthStr,
 				$this->formatCurrency($monthData->total_income),
 				$this->formatCurrency($monthData->total_expense),
 				$this->formatCurrency(
