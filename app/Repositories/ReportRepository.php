@@ -465,6 +465,7 @@ class ReportRepository
 		if ($accountId) {
 			$query->where("account_id", $accountId);
 		}
+
 		$transactions = $query
 			->whereBetween("transaction_date", [$startDate, $endDate])
 			->whereIn("type", ["income", "expense"])
