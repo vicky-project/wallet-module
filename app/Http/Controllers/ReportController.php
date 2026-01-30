@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Services\ReportService;
-use Modules\Wallet\Services\Exporters\FinancialReportExport;
+use Modules\Wallet\Exports\ExportService;
 
 class ReportController extends Controller
 {
@@ -164,7 +164,33 @@ class ReportController extends Controller
 	private function exportToFile(array $data, string $format): JsonResponse
 	{
 		try {
-			$export = new FinancialReportExport($data);
+			$export = new ExportService();
+			$mimeType = match ($format) {
+				"xls" => "application/vnd.ms-excel",
+				"csv" => "text/csv",
+				"pdf" => "application/pdf",
+				default
+					=> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			};
+
+			$filename =
+				"laporan-keuangan-" .
+				now()->format("d-m-Y-H-i-s") .
+				"-vickyserver" .
+				"." .
+				$format;
+
+			if ($format === "xlsx") {
+				$fileContent = $export->exportExcel($data);
+
+				return response()->json([
+					"success" => true,
+					"download_url" =>
+						"data:" . $mimeType . ";base64," . base64_encode($fileContent),
+					"filename" => $filename,
+					"mime_type" => $mimeType,
+				]);
+			}
 
 			$writerType = match ($format) {
 				"xls" => \Maatwebsite\Excel\Excel::XLS,
@@ -173,8 +199,6 @@ class ReportController extends Controller
 				default => \Maatwebsite\Excel\Excel::XLSX,
 			};
 
-			$filename =
-				"laporan-keuangan-" . now()->format("d-m-Y-H-i-s") . "-vickyserver";
 			$tempPath = storage_path("app/temp/" . $filename . "." . $format);
 
 			if (!file_exists(dirname($tempPath))) {
@@ -202,13 +226,6 @@ class ReportController extends Controller
 					"has_charts" => false,
 				]);
 			}
-
-			$mimeTypes = [
-				"xlsx" =>
-					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-				"xls" => "application/vnd.ms-excel",
-				"csv" => "text/csv",
-			];
 
 			$mimeType = $mimeTypes[$format] ?? "application/octet-stream";
 

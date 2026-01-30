@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Wallet\Services\Exporters;
+namespace Modules\Wallet\Exports\Exporters;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
