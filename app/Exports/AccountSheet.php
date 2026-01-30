@@ -6,20 +6,9 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class AccountSheet implements
-	FromArray,
-	WithTitle,
-	WithHeadings,
-	WithStyles,
-	WithEvents
+class AccountSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 {
 	protected $reportData;
 
@@ -30,13 +19,20 @@ class AccountSheet implements
 
 	public function array(): array
 	{
-		$accountData = $this->reportData["report_data"]["account_analysis"] ?? [];
+		$accountData = $this->reportData["report_data"]["account_analysis"] ?? [
+			"labels" => [],
+			"datasets" => [["data" => []]],
+		];
+
 		$labels = $accountData["labels"] ?? [];
 		$balances = $accountData["datasets"][0]["data"] ?? [];
-		$colors = $accountData["datasets"][0]["backgroundColor"] ?? [];
-
-		$data = [];
 		$totalBalance = array_sum($balances);
+
+		$data = [
+			["DISTRIBUSI SALDO AKUN"],
+			[""],
+			["Akun", "Saldo", "Persentase", "Tipe"],
+		];
 
 		foreach ($labels as $index => $label) {
 			$balance = $balances[$index] ?? 0;
@@ -47,44 +43,21 @@ class AccountSheet implements
 				$this->formatCurrency($balance),
 				number_format($percentage, 2) . "%",
 				$this->getAccountType($label),
-				$this->formatCurrency($this->getAccountGrowth($label, $balance)),
-				$colors[$index] ?? "#cccccc",
-				$this->getHealthIndicator($balance),
 			];
 		}
 
-		// Sort by balance descending
-		usort($data, function ($a, $b) {
-			$balanceA = floatval(str_replace(["Rp", ".", ","], "", $a[1]));
-			$balanceB = floatval(str_replace(["Rp", ".", ","], "", $b[1]));
-			return $balanceB <=> $balanceA;
-		});
-
-		// Add totals row
-		$data[] = [
-			"TOTAL",
-			$this->formatCurrency($totalBalance),
-			"100%",
-			"",
-			"",
-			"",
-			"✓",
-		];
+		if (count($labels) > 0) {
+			$data[] = ["TOTAL", $this->formatCurrency($totalBalance), "100%", ""];
+		} else {
+			$data[] = ["Tidak ada data akun"];
+		}
 
 		return $data;
 	}
 
 	public function headings(): array
 	{
-		return [
-			"Akun",
-			"Saldo",
-			"Persentase",
-			"Tipe",
-			"Pertumbuhan",
-			"Warna",
-			"Status",
-		];
+		return [];
 	}
 
 	public function title(): string
@@ -94,195 +67,99 @@ class AccountSheet implements
 
 	public function styles(Worksheet $sheet)
 	{
-		$lastRow = count($this->array()) + 1;
+		// Set column widths
+		$sheet->getColumnDimension("A")->setWidth(25);
+		$sheet->getColumnDimension("B")->setWidth(20);
+		$sheet->getColumnDimension("C")->setWidth(15);
+		$sheet->getColumnDimension("D")->setWidth(15);
 
-		return [
-			1 => [
-				"font" => ["bold" => true, "size" => 12],
-				"fill" => [
-					"fillType" => Fill::FILL_SOLID,
-					"color" => ["rgb" => "8E44AD"],
-				],
-				"font" => ["color" => ["rgb" => "FFFFFF"]],
-			],
-			"A{$lastRow}:G{$lastRow}" => [
-				"font" => ["bold" => true],
-				"fill" => [
-					"fillType" => Fill::FILL_SOLID,
-					"color" => ["rgb" => "F4ECF7"],
-				],
-			],
-			"A1:G{$lastRow}" => [
-				"borders" => [
-					"allBorders" => [
-						"borderStyle" => Border::BORDER_THIN,
-						"color" => ["rgb" => "CCCCCC"],
-					],
-				],
-			],
-			"A1:G{$lastRow}" => [
-				"alignment" => ["vertical" => Alignment::VERTICAL_CENTER],
-			],
-			"A2:A{$lastRow}" => [
-				"alignment" => ["horizontal" => Alignment::HORIZONTAL_LEFT],
-			],
-			"B2:B{$lastRow}" => [
-				"alignment" => ["horizontal" => Alignment::HORIZONTAL_RIGHT],
-				"numberFormat" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-			],
-			"C2:C{$lastRow}" => [
-				"alignment" => ["horizontal" => Alignment::HORIZONTAL_CENTER],
-			],
-			"D2:D{$lastRow}" => [
-				"alignment" => ["horizontal" => Alignment::HORIZONTAL_CENTER],
-			],
-			"E2:E{$lastRow}" => [
-				"alignment" => ["horizontal" => Alignment::HORIZONTAL_RIGHT],
-			],
-		];
-	}
+		// Style judul
+		$sheet
+			->getStyle("A1")
+			->getFont()
+			->setBold(true)
+			->setSize(14);
+		$sheet->mergeCells("A1:D1");
 
-	public function registerEvents(): array
-	{
-		return [
-			AfterSheet::class => function (AfterSheet $event) {
-				// Set column widths
-				$event->sheet->getColumnDimension("A")->setWidth(25);
-				$event->sheet->getColumnDimension("B")->setWidth(20);
-				$event->sheet->getColumnDimension("C")->setWidth(15);
-				$event->sheet->getColumnDimension("D")->setWidth(15);
-				$event->sheet->getColumnDimension("E")->setWidth(20);
-				$event->sheet->getColumnDimension("F")->setWidth(10);
-				$event->sheet->getColumnDimension("G")->setWidth(10);
+		// Style header tabel
+		$sheet
+			->getStyle("A3:D3")
+			->getFont()
+			->setBold(true);
 
-				// Hide color and status columns
-				$event->sheet->getColumnDimension("F")->setVisible(false);
-				$event->sheet->getColumnDimension("G")->setVisible(false);
+		// Format angka untuk kolom B
+		$lastRow = count($this->array());
+		for ($row = 4; $row <= $lastRow; $row++) {
+			$sheet
+				->getStyle("B{$row}")
+				->getNumberFormat()
+				->setFormatCode("#,##0");
+		}
 
-				// Add title
-				$event->sheet->mergeCells("A1:G1");
-				$event->sheet->setCellValue("A1", "ANALISIS DISTRIBUSI SALDO AKUN");
-				$event->sheet->getStyle("A1")->applyFromArray([
-					"font" => [
-						"bold" => true,
-						"size" => 14,
-						"color" => ["rgb" => "6C3483"],
-					],
-					"alignment" => [
-						"horizontal" => Alignment::HORIZONTAL_CENTER,
-						"vertical" => Alignment::VERTICAL_CENTER,
-					],
-					"fill" => [
-						"fillType" => Fill::FILL_SOLID,
-						"color" => ["rgb" => "F5EEF8"],
-					],
-				]);
+		// Border
+		$sheet
+			->getStyle("A3:D" . $lastRow)
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-				// Insert actual data starting from row 3
-				$data = $this->array();
-				$event->sheet->fromArray($data, null, "A3", true);
-
-				// Add chart
-				$this->addChart($event);
-			},
-		];
-	}
-
-	private function addChart(AfterSheet $event)
-	{
-		$data = $this->array();
-		$lastRow = count($data) + 2;
-
-		// Create a doughnut chart for account distribution
-		$chart = new \PhpOffice\PhpSpreadsheet\Chart\Chart(
-			"accountChart",
-			new \PhpOffice\PhpSpreadsheet\Chart\Title("Distribusi Saldo Akun"),
-			null,
-			null,
-			[
-				new \PhpOffice\PhpSpreadsheet\Chart\DataSeries(
-					\PhpOffice\PhpSpreadsheet\Chart\DataSeries::TYPE_DOUGHNUTCHART,
-					null,
-					range(0, count($data) - 2),
-					[
-						new \PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues(
-							"String",
-							"'Akun'!\$A\$3:\$A\$" . ($lastRow - 1)
-						),
-						new \PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues(
-							"Number",
-							"'Akun'!\$B\$3:\$B\$" . ($lastRow - 1)
-						),
-					]
-				),
-			]
-		);
-
-		$chart->setTopLeftPosition("H2");
-		$chart->setBottomRightPosition("N15");
-
-		$event->sheet->getDelegate()->addChart($chart);
+		// Alignment
+		$sheet
+			->getStyle("A3:D" . $lastRow)
+			->getAlignment()
+			->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+		$sheet
+			->getStyle("B4:B" . $lastRow)
+			->getAlignment()
+			->setHorizontal(
+				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT
+			);
+		$sheet
+			->getStyle("C4:C" . $lastRow)
+			->getAlignment()
+			->setHorizontal(
+				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
+			);
 	}
 
 	private function formatCurrency($value)
 	{
-		$amount = is_numeric($value) ? $value / 100 : 0;
-		return "Rp " . number_format($amount, 0, ",", ".");
+		if (!is_numeric($value)) {
+			return 0;
+		}
+		$amount = $value / 100;
+		return $amount;
 	}
 
-	private function getAccountType($accountName)
+	private function getAccountType($label)
 	{
-		$accountLower = strtolower($accountName);
+		$labelLower = strtolower($label);
 
 		if (
-			strpos($accountLower, "tabung") !== false ||
-			strpos($accountLower, "deposit") !== false
+			strpos($labelLower, "tabung") !== false ||
+			strpos($labelLower, "deposit") !== false
 		) {
 			return "Tabungan";
 		}
 
 		if (
-			strpos($accountLower, "tunai") !== false ||
-			strpos($accountLower, "cash") !== false
+			strpos($labelLower, "tunai") !== false ||
+			strpos($labelLower, "cash") !== false
 		) {
 			return "Tunai";
 		}
 
 		if (
-			strpos($accountLower, "kartu") !== false ||
-			strpos($accountLower, "credit") !== false
+			strpos($labelLower, "kartu") !== false ||
+			strpos($labelLower, "credit") !== false
 		) {
 			return "Kartu";
 		}
 
-		if (strpos($accountLower, "invest") !== false) {
+		if (strpos($labelLower, "invest") !== false) {
 			return "Investasi";
 		}
 
 		return "Lainnya";
-	}
-
-	private function getAccountGrowth($accountName, $currentBalance)
-	{
-		// Simulasi pertumbuhan (bisa diganti dengan data historis)
-		$growthRate = match ($this->getAccountType($accountName)) {
-			"Tabungan" => 0.05,
-			"Investasi" => 0.1,
-			"Kartu" => -0.02,
-			default => 0.01,
-		};
-
-		return $currentBalance * $growthRate;
-	}
-
-	private function getHealthIndicator($balance)
-	{
-		if ($balance > 0) {
-			return "✓";
-		} elseif ($balance < 0) {
-			return "⚠";
-		} else {
-			return "○";
-		}
 	}
 }

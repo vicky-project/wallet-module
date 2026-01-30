@@ -5,8 +5,10 @@ namespace Modules\Wallet\Exports;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class TrendSheet implements FromArray, WithTitle, WithHeadings
+class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 {
 	protected $reportData;
 
@@ -17,37 +19,53 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings
 
 	public function array(): array
 	{
-		$trend = $this->reportData["report_data"]["income_expense_trend"] ?? [];
-		$labels = $trend["labels"] ?? [];
-		$incomeData = $trend["datasets"][0]["data"] ?? [];
-		$expenseData = $trend["datasets"][1]["data"] ?? [];
+		$trendData = $this->reportData["report_data"]["income_expense_trend"] ?? [
+			"labels" => [],
+			"datasets" => [["data" => []], ["data" => []]],
+		];
 
-		$data = [];
+		$labels = $trendData["labels"] ?? [];
+		$incomeData = $trendData["datasets"][0]["data"] ?? [];
+		$expenseData = $trendData["datasets"][1]["data"] ?? [];
+
+		$data = [
+			["TREND PENDAPATAN VS PENGELUARAN"],
+			[""],
+			["Periode", "Pendapatan", "Pengeluaran", "Saldo Bersih"],
+		];
+
 		foreach ($labels as $index => $label) {
+			$income = $incomeData[$index] ?? 0;
+			$expense = $expenseData[$index] ?? 0;
+
 			$data[] = [
 				$label,
-				$this->formatCurrency($incomeData[$index] ?? 0),
-				$this->formatCurrency($expenseData[$index] ?? 0),
-				$this->formatCurrency(
-					($incomeData[$index] ?? 0) - ($expenseData[$index] ?? 0)
-				),
+				$this->formatCurrency($income),
+				$this->formatCurrency($expense),
+				$this->formatCurrency($income - $expense),
 			];
 		}
 
-		// Add totals row
-		$data[] = [
-			"TOTAL",
-			$this->formatCurrency(array_sum($incomeData)),
-			$this->formatCurrency(array_sum($expenseData)),
-			$this->formatCurrency(array_sum($incomeData) - array_sum($expenseData)),
-		];
+		if (count($labels) > 0) {
+			$totalIncome = array_sum($incomeData);
+			$totalExpense = array_sum($expenseData);
+
+			$data[] = [
+				"TOTAL",
+				$this->formatCurrency($totalIncome),
+				$this->formatCurrency($totalExpense),
+				$this->formatCurrency($totalIncome - $totalExpense),
+			];
+		} else {
+			$data[] = ["Tidak ada data trend"];
+		}
 
 		return $data;
 	}
 
 	public function headings(): array
 	{
-		return ["Periode", "Pendapatan", "Pengeluaran", "Saldo Bersih"];
+		return [];
 	}
 
 	public function title(): string
@@ -55,9 +73,71 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings
 		return "Trend";
 	}
 
+	public function styles(Worksheet $sheet)
+	{
+		// Set column widths
+		$sheet->getColumnDimension("A")->setWidth(20);
+		$sheet->getColumnDimension("B")->setWidth(20);
+		$sheet->getColumnDimension("C")->setWidth(20);
+		$sheet->getColumnDimension("D")->setWidth(20);
+
+		// Style judul
+		$sheet
+			->getStyle("A1")
+			->getFont()
+			->setBold(true)
+			->setSize(14);
+		$sheet->mergeCells("A1:D1");
+
+		// Style header tabel
+		$sheet
+			->getStyle("A3:D3")
+			->getFont()
+			->setBold(true);
+
+		// Format angka untuk kolom B, C, D
+		$lastRow = count($this->array());
+		for ($row = 4; $row <= $lastRow; $row++) {
+			$sheet
+				->getStyle("B{$row}")
+				->getNumberFormat()
+				->setFormatCode("#,##0");
+			$sheet
+				->getStyle("C{$row}")
+				->getNumberFormat()
+				->setFormatCode("#,##0");
+			$sheet
+				->getStyle("D{$row}")
+				->getNumberFormat()
+				->setFormatCode("#,##0");
+		}
+
+		// Border
+		$sheet
+			->getStyle("A3:D" . $lastRow)
+			->getBorders()
+			->getAllBorders()
+			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+		// Alignment
+		$sheet
+			->getStyle("A3:D" . $lastRow)
+			->getAlignment()
+			->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+		$sheet
+			->getStyle("B4:D" . $lastRow)
+			->getAlignment()
+			->setHorizontal(
+				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT
+			);
+	}
+
 	private function formatCurrency($value)
 	{
-		$amount = is_numeric($value) ? $value / 100 : 0;
-		return "Rp " . number_format($amount, 0, ",", ".");
+		if (!is_numeric($value)) {
+			return 0;
+		}
+		$amount = $value / 100;
+		return $amount;
 	}
 }
