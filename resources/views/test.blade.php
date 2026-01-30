@@ -5,7 +5,7 @@
 @endforeach
 </ul>
 @endif
-<form method="POST" action="{{ route('api.apps.reports.export') }}">
+<form method="POST" action="{{ config('app.url') }}/api/apps/reports/exports">
   @csrf
   <input type="hidden" name="account_id" value="1">
   <input type="date" name="start_date" value="{{ now()->startOfMonth() }}">
