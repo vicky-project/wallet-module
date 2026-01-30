@@ -28,13 +28,13 @@ class FinancialReportExport implements WithMultipleSheets
 		$sheets[] = new TrendSheet($this->reportData);
 
 		// Sheet 3: Category Analysis
-		$sheets[] = new CategorySheet($this->reportData);
+		// $sheets[] = new CategorySheet($this->reportData);
 
 		// Sheet 4: Budget Analysis
-		$sheets[] = new BudgetSheet($this->reportData);
+		// $sheets[] = new BudgetSheet($this->reportData);
 
 		// Sheet 5: Account Analysis
-		$sheets[] = new AccountSheet($this->reportData);
+		// $sheets[] = new AccountSheet($this->reportData);
 
 		return $sheets;
 	}
