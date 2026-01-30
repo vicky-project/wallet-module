@@ -19,11 +19,11 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 	public function array(): array
 	{
-		// Ambil data kategori income dan expense dari struktur yang benar
+		// Ambil data kategori income dan expense
 		$categoryData = $this->reportData["report_data"]["category_analysis"] ?? [];
 
-		// Data income (jika ada dalam struktur baru)
-		$incomeData = $categoryData["income"] ?? $categoryData; // Fallback untuk struktur lama
+		// Data income dan expense
+		$incomeData = $categoryData["income"] ?? $categoryData;
 		$expenseData = $categoryData["expense"] ?? [];
 
 		$data = [];
@@ -40,7 +40,6 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			$incomeValues = $incomeData["datasets"][0]["data"] ?? [];
 			$totalIncome = array_sum($incomeValues);
 
-			// Header untuk income
 			$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
 
 			foreach ($incomeLabels as $index => $label) {
@@ -55,7 +54,6 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				];
 			}
 
-			// Total income
 			$data[] = [
 				"TOTAL PENDAPATAN",
 				$this->formatCurrency($totalIncome),
@@ -81,7 +79,6 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			$expenseValues = $expenseData["datasets"][0]["data"] ?? [];
 			$totalExpense = array_sum($expenseValues);
 
-			// Header untuk expense
 			$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
 
 			foreach ($expenseLabels as $index => $label) {
@@ -96,7 +93,6 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				];
 			}
 
-			// Total expense
 			$data[] = [
 				"TOTAL PENGELUARAN",
 				$this->formatCurrency($totalExpense),
@@ -113,7 +109,6 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$data[] = ["RINGKASAN KATEGORI"];
 		$data[] = [""];
 
-		// Hitung totals dari kedua bagian
 		$totalIncomeAmount = $this->getTotalFromCategoryData($incomeData);
 		$totalExpenseAmount = $this->getTotalFromCategoryData($expenseData);
 		$netAmount = $totalIncomeAmount - $totalExpenseAmount;
@@ -164,22 +159,36 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$expenseTitleRow = null;
 		$summaryTitleRow = null;
 
+		// Temukan baris judul
 		for ($i = 0; $i < count($data); $i++) {
-			if (strpos($data[$i][0] ?? "", "ANALISIS PENGELUARAN") !== false) {
-				$expenseTitleRow = $i + 1; // Excel row dimulai dari 1
+			if (
+				isset($data[$i][0]) &&
+				strpos($data[$i][0], "ANALISIS PENGELUARAN") !== false
+			) {
+				$expenseTitleRow = $i + 1;
 			}
-			if (strpos($data[$i][0] ?? "", "RINGKASAN KATEGORI") !== false) {
+			if (
+				isset($data[$i][0]) &&
+				strpos($data[$i][0], "RINGKASAN KATEGORI") !== false
+			) {
 				$summaryTitleRow = $i + 1;
 			}
 		}
 
-		// Style judul income
+		// ============ APPLY STYLES DENGAN METHOD CHAINING ============
+
+		// Style judul income - PERBAIKAN DI SINI
 		$sheet
 			->getStyle("A" . $incomeTitleRow)
 			->getFont()
 			->setBold(true)
 			->setSize(14);
 		$sheet->mergeCells("A" . $incomeTitleRow . ":D" . $incomeTitleRow);
+		$sheet
+			->getStyle("A" . $incomeTitleRow)
+			->getAlignment()
+			->setHorizontal("center")
+			->setVertical("center");
 
 		// Style judul expense
 		if ($expenseTitleRow) {
@@ -189,6 +198,11 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				->setBold(true)
 				->setSize(14);
 			$sheet->mergeCells("A" . $expenseTitleRow . ":D" . $expenseTitleRow);
+			$sheet
+				->getStyle("A" . $expenseTitleRow)
+				->getAlignment()
+				->setHorizontal("center")
+				->setVertical("center");
 		}
 
 		// Style judul summary
@@ -199,14 +213,19 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				->setBold(true)
 				->setSize(14);
 			$sheet->mergeCells("A" . $summaryTitleRow . ":D" . $summaryTitleRow);
+			$sheet
+				->getStyle("A" . $summaryTitleRow)
+				->getAlignment()
+				->setHorizontal("center")
+				->setVertical("center");
 		}
 
-		// Format angka untuk semua data numerik
+		// Format angka untuk semua data numerik di kolom B
 		$lastRow = count($data);
 		for ($row = 1; $row <= $lastRow; $row++) {
-			// Format kolom B (jumlah) dan kolom D jika ada angka
 			$cellValueB = $sheet->getCell("B" . $row)->getValue();
 			if (is_numeric($cellValueB)) {
+				// PERBAIKAN: Gunakan setFormatCode langsung
 				$sheet
 					->getStyle("B" . $row)
 					->getNumberFormat()
@@ -214,10 +233,29 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			}
 		}
 
-		// Border untuk tabel income (asumsi tabel income dari row 3 sampai sebelum expense)
+		// Apply border dan alignment dengan method chaining yang benar
+		$this->applyTableStyles(
+			$sheet,
+			$data,
+			$incomeTitleRow,
+			$expenseTitleRow,
+			$summaryTitleRow
+		);
+	}
+
+	private function applyTableStyles(
+		$sheet,
+		$data,
+		$incomeTitleRow,
+		$expenseTitleRow,
+		$summaryTitleRow
+	) {
+		$lastRow = count($data);
+
+		// Border untuk tabel income
 		if ($expenseTitleRow) {
-			$incomeTableStart = $incomeTitleRow + 2; // Setelah judul dan 1 baris kosong
-			$incomeTableEnd = $expenseTitleRow - 3; // Sebelum baris kosong dan judul expense
+			$incomeTableStart = $incomeTitleRow + 2;
+			$incomeTableEnd = $expenseTitleRow - 3;
 
 			if ($incomeTableEnd > $incomeTableStart) {
 				$sheet
@@ -225,6 +263,23 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 					->getBorders()
 					->getAllBorders()
 					->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+				// Alignment untuk tabel income
+				$sheet
+					->getStyle("A" . $incomeTableStart . ":D" . $incomeTableEnd)
+					->getAlignment()
+					->setVertical("center");
+
+				// Alignment khusus untuk kolom
+				$sheet
+					->getStyle("B" . $incomeTableStart . ":B" . $incomeTableEnd)
+					->getAlignment()
+					->setHorizontal("right");
+
+				$sheet
+					->getStyle("C" . $incomeTableStart . ":C" . $incomeTableEnd)
+					->getAlignment()
+					->setHorizontal("center");
 			}
 
 			// Border untuk tabel expense
@@ -237,6 +292,22 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 					->getBorders()
 					->getAllBorders()
 					->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+				// Alignment untuk tabel expense
+				$sheet
+					->getStyle("A" . $expenseTableStart . ":D" . $expenseTableEnd)
+					->getAlignment()
+					->setVertical("center");
+
+				$sheet
+					->getStyle("B" . $expenseTableStart . ":B" . $expenseTableEnd)
+					->getAlignment()
+					->setHorizontal("right");
+
+				$sheet
+					->getStyle("C" . $expenseTableStart . ":C" . $expenseTableEnd)
+					->getAlignment()
+					->setHorizontal("center");
 			}
 
 			// Border untuk tabel summary
@@ -252,27 +323,73 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 						->setBorderStyle(
 							\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
 						);
+
+					// Alignment untuk summary
+					$sheet
+						->getStyle("A" . $summaryTableStart . ":B" . $summaryTableEnd)
+						->getAlignment()
+						->setVertical("center");
+
+					$sheet
+						->getStyle("B" . $summaryTableStart . ":B" . $summaryTableEnd)
+						->getAlignment()
+						->setHorizontal("right");
 				}
 			}
 		}
 
-		// Alignment
+		// Font bold untuk header tabel
+		$this->applyHeaderStyles($sheet, $data, $incomeTitleRow, $expenseTitleRow);
+	}
+
+	private function applyHeaderStyles(
+		$sheet,
+		$data,
+		$incomeTitleRow,
+		$expenseTitleRow
+	) {
+		// Header untuk income table (row ke-3 setelah judul)
+		$incomeHeaderRow = $incomeTitleRow + 2;
 		$sheet
-			->getStyle("A1:D" . $lastRow)
-			->getAlignment()
-			->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+			->getStyle("A" . $incomeHeaderRow . ":D" . $incomeHeaderRow)
+			->getFont()
+			->setBold(true);
+
+		// Background untuk header income
 		$sheet
-			->getStyle("B2:B" . $lastRow)
-			->getAlignment()
-			->setHorizontal(
-				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT
-			);
+			->getStyle("A" . $incomeHeaderRow . ":D" . $incomeHeaderRow)
+			->getFill()
+			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+			->getStartColor()
+			->setARGB("FF2E86C1");
+
 		$sheet
-			->getStyle("C2:C" . $lastRow)
-			->getAlignment()
-			->setHorizontal(
-				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
-			);
+			->getStyle("A" . $incomeHeaderRow . ":D" . $incomeHeaderRow)
+			->getFont()
+			->getColor()
+			->setARGB("FFFFFFFF");
+
+		// Header untuk expense table
+		if ($expenseTitleRow) {
+			$expenseHeaderRow = $expenseTitleRow + 2;
+			$sheet
+				->getStyle("A" . $expenseHeaderRow . ":D" . $expenseHeaderRow)
+				->getFont()
+				->setBold(true);
+
+			$sheet
+				->getStyle("A" . $expenseHeaderRow . ":D" . $expenseHeaderRow)
+				->getFill()
+				->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+				->getStartColor()
+				->setARGB("FFE74C3C");
+
+			$sheet
+				->getStyle("A" . $expenseHeaderRow . ":D" . $expenseHeaderRow)
+				->getFont()
+				->getColor()
+				->setARGB("FFFFFFFF");
+		}
 	}
 
 	private function formatCurrency($value)
