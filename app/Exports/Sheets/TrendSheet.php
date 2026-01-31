@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class TrendSheet implements WithHeadings, WithStyles
+class TrendSheet extends BaseSheet implements WithHeadings, WithStyles
 {
 	protected $trendData;
 	protected $labels = [];

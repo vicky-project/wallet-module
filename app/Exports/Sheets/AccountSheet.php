@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class AccountSheet implements WithHeadings, WithStyles
+class AccountSheet extends BaseSheet implements WithHeadings, WithStyles
 {
 	public function __construct(array $reportData)
 	{

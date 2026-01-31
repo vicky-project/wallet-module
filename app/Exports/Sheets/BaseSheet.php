@@ -10,6 +10,8 @@ abstract class BaseSheet implements FromArray, WithTitle
 	{
 	}
 
+	abstract public function array(): array;
+
 	protected function formatCurrency($value)
 	{
 		if (!is_numeric($value)) {
