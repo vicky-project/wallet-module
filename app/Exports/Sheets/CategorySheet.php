@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithCharts;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Chart\Chart;
@@ -21,7 +21,7 @@ class CategorySheet implements
 	WithTitle,
 	WithHeadings,
 	WithStyles,
-	WithEvents
+	WithCharts
 {
 	protected $reportData;
 	protected $incomeLabels = [];
@@ -172,21 +172,12 @@ class CategorySheet implements
 		return "Kategori";
 	}
 
-	public function registerEvents(): array
+	private function charts()
 	{
-		return [
-			AfterSheet::class => function (AfterSheet $event) {
-				$this->addCharts($event->sheet->getDelegate());
-			},
-		];
-	}
-
-	private function addCharts(Worksheet $sheet)
-	{
+		$charts = [];
 		// Buat chart untuk pendapatan jika ada data
 		if (!empty($this->incomeLabels) && !empty($this->incomeValues)) {
-			$this->createPieChart(
-				$sheet,
+			$charts[] = $this->createPieChart(
 				$this->incomeLabels,
 				$this->incomeValues,
 				"Pendapatan per Kategori",
@@ -197,8 +188,7 @@ class CategorySheet implements
 
 		// Buat chart untuk pengeluaran jika ada data
 		if (!empty($this->expenseLabels) && !empty($this->expenseValues)) {
-			$this->createPieChart(
-				$sheet,
+			$charts[] = $this->createPieChart(
 				$this->expenseLabels,
 				$this->expenseValues,
 				"Pengeluaran per Kategori",
@@ -206,10 +196,11 @@ class CategorySheet implements
 				"FFFF4500" // Warna merah untuk pengeluaran
 			);
 		}
+
+		return $charts;
 	}
 
 	private function createPieChart(
-		Worksheet $sheet,
 		array $labels,
 		array $values,
 		string $title,
@@ -280,7 +271,7 @@ class CategorySheet implements
 		$chart->setBottomRightPosition("O15"); // Ukuran chart
 
 		// Tambahkan chart ke worksheet
-		$sheet->addChart($chart);
+		return $chart;
 	}
 
 	public function styles(Worksheet $sheet)
