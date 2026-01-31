@@ -7,6 +7,8 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 {
@@ -201,8 +203,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet
 			->getStyle("A" . $incomeTitleRow)
 			->getAlignment()
-			->setHorizontal("center")
-			->setVertical("center");
+			->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 		$sheet
 			->getStyle("A" . $incomeTitleRow)
@@ -228,8 +229,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			$sheet
 				->getStyle("A" . $expenseTitleRow)
 				->getAlignment()
-				->setHorizontal("center")
-				->setVertical("center");
+				->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 			$sheet
 				->getStyle("A" . $expenseTitleRow)
