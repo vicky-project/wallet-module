@@ -56,7 +56,7 @@
                 <div id="code-display" class="display-4 font-weight-bold"></div>
                 <small class="text-muted">Berlaku sampai: <span id="expiry-time"></span></small>
               </div>
-              <p id="instructions" class="mb-0"></p>
+              <code id="instructions" class="mb-0"></code>
             </div>
           </div>
 
