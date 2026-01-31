@@ -56,7 +56,6 @@ class ChartService
 			$dataSeriesLabels,
 			$dataSeriesValues
 		);
-		dd($series);
 
 		// Buat chart
 		$chart = new Chart(

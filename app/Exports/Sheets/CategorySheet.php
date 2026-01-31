@@ -6,23 +6,11 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithCharts;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Chart;
-use Modules\Wallet\Services\Charts\ChartService;
 
-class CategorySheet implements
-	FromArray,
-	WithTitle,
-	WithHeadings,
-	WithStyles,
-	WithCharts
+class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 {
 	protected $reportData;
-	protected $incomeLabels;
-	protected $incomeValues;
-	protected $expenseLabels;
-	protected $expenseValues;
 
 	public function __construct(array $reportData)
 	{
@@ -149,28 +137,6 @@ class CategorySheet implements
 		}
 
 		return $data;
-	}
-
-	public function charts()
-	{
-		$charts = [];
-		if ($this->incomeLabels) {
-			$charts[] = ChartService::createPieChart(
-				$this->incomeLabels,
-				$this->incomeValues,
-				"Pemasukan"
-			);
-		}
-
-		if ($this->expenseLabels) {
-			$charts[] = ChartService::createPieChart(
-				$this->expenseLabels,
-				$this->expenseValues,
-				"Pengeluaran"
-			);
-		}
-
-		return $charts;
 	}
 
 	public function headings(): array
