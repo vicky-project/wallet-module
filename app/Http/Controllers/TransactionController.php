@@ -281,11 +281,11 @@ class TransactionController extends Controller
 	public function export(Request $request)
 	{
 		$user = Auth::user();
-		if (!$request->ids || !$request->id) {
+		$id = $request->ids ?? $request->id;
+
+		if (!$id) {
 			return back()->withErrors("No id passed.");
 		}
-
-		$id = $request->ids ?? $request->id;
 
 		try {
 			$format = $request->get("format", "excel");
