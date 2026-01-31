@@ -318,7 +318,7 @@ class TelegramWebhookController extends Controller
 
 		$message = "🏦 *Daftar Akun Anda:*\n\n";
 		foreach ($accounts as $account) {
-			$balance = number_format($account->balance);
+			$balance = number_format($account->balance->getAmount()->toInt());
 			$message .= "• @{$account->name} - Rp {$balance}\n";
 		}
 		$message .= "\nGunakan `@nama_akun` saat menambah transaksi.";
@@ -347,7 +347,7 @@ class TelegramWebhookController extends Controller
 
 		$message = "📂 *Daftar Kategori Anda:*\n\n";
 		foreach ($categories as $category) {
-			$type = $category->type === "income" ? "📈" : "📉";
+			$type = $category->type->value === "income" ? "📈" : "📉";
 			$message .= "• #{$category->name} {$type}\n";
 		}
 		$message .= "\nGunakan `#nama_kategori` saat menambah transaksi.";
