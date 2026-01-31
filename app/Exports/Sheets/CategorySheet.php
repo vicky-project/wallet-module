@@ -251,6 +251,7 @@ class CategorySheet implements
 
 		// Buat plot area
 		$plotArea = new PlotArea(null, [$series]);
+		dd($series, $plotArea);
 
 		// Buat legenda
 		$legend = new Legend();
