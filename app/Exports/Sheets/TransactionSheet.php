@@ -18,6 +18,15 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 {
 	protected $userId;
 	protected $filters;
+	protected $yearData = [];
+	protected $monthlyTotals = [];
+	protected $yearlyTotals = [];
+	protected $grandTotals = [
+		"income" => 0,
+		"expense" => 0,
+		"transactions" => 0,
+		"net" => 0,
+	];
 
 	public function __construct(array $reportData)
 	{
@@ -41,6 +50,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 				$this->filters["account_id"] ?? null
 			);
 		});
+		dd($yearsData);
 
 		// Jika ada data per tahun
 		if (!empty($yearsData)) {

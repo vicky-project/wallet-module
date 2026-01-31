@@ -18,10 +18,10 @@
             <i class="bi bi-download"></i>
           </button>
           <ul class="dropdown-menu">
-            <li><button class="dropdown-item" onclick="exportReport('json')"><i class="bi bi-filetype-json me-1"></i>JSON</i></li>
             <li><button class="dropdown-item" onclick="exportReport('xlsx')"><i class="bi bi-filetype-xlsx me-1"></i>EXCEL</i></li>
             <li><button class="dropdown-item" onclick="exportReport('pdf')"><i class="bi bi-filetype-pdf me-1"></i>PDF</button></li>
             <li><button class="dropdown-item" onclick="exportReport('csv')"><i class="bi bi-filetype-csv me-1"></i>CSV</button></li>
+            <li><button class="dropdown-item" onclick="exportReport('json')"><i class="bi bi-filetype-json me-1"></i>JSON</i></li>
             <li><button class="dropdown-item" onclick="exportReport('gsheet')"><i class="bi bi-google me-1"></i>GSheet</button></li>
           </ul>
         </div>
