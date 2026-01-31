@@ -615,10 +615,35 @@
         
         // Bulk Export
         function bulkExport(ids) {
-            const params = new URLSearchParams();
-            ids.forEach(id => params.append('ids[]', id));
-            
-            window.location.href = "{{ route('apps.transactions.export') }}?" + params.toString();
+            fetch("{{ secure_url(config('app.url') . '/apps/transactions/export') }}", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ '_token': '{{ csrf_token() }}', ids: ids })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if(data.download_url){
+                      const a = document.createElement('a');
+                      a.href = data.download_url;
+                      a.download = data.filename;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+          
+                      alert('File berhasil dibuat.')
+                    }
+                } else {
+                    alert('Gagal mengekspor data transaksi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Terjadi kesalahan: ' + error.message);
+            });
         }
         
         // Duplicate Transaction

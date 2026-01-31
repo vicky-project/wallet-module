@@ -310,25 +310,40 @@ class TransactionController extends Controller
 
 			$filename = "transactions_" . date("Ymd_His");
 
+			$export = null;
 			switch (strtolower($format)) {
 				case "csv":
 					$filename .= ".csv";
-					(new TransactionsExport($result))->download(
-						$filename,
-						\Maatwebsite\Excel\Excel::CSV
-					);
+					$export = new TransactionsExport($result);
+					$extension = \Maatwebsite\Excel\Excel::CSV;
+					$mimeType = "text/csv";
 					break;
 				case "excel":
 				default:
 					$filename .= ".xlsx";
-					(new TransactionsExport($result))->download(
-						$filename,
-						\Maatwebsite\Excel\Excel::XLSX
-					);
+					$export = new TransactionsExport($result);
+					$extension = \Maatwebsite\Excel\Excel::XLSX;
+					$mimeType =
+						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 					break;
 			}
 
-			return back();
+			if (is_null($export)) {
+				return response()->json([
+					"success" => false,
+					"message" => "Failed to export data to file.",
+				]);
+			}
+
+			// Generate file content
+			$fileContent = \Maatwebsite\Excel\Facades\Excel::raw($export, $extension);
+
+			return response()->json([
+				"success" => true,
+				"download_url" =>
+					"data:" . $mimeType . ";base64," . base64_encode($fileContent),
+				"filename" => $filename,
+			]);
 		} catch (\Exception $e) {
 			logger()->error("Failef to export file.", [
 				"message" => $e->getMessage(),

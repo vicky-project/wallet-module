@@ -43,7 +43,7 @@ Route::middleware(["auth"])
 		Route::resource("accounts", AccountController::class);
 
 		// Transaction Routes
-		Route::get("transactions/export", [
+		Route::post("transactions/export", [
 			TransactionController::class,
 			"export",
 		])->name("transactions.export");
