@@ -4,6 +4,7 @@ namespace Modules\Wallet\Exports\Sheets;
 
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SummarySheet extends BaseSheet implements WithStyles, WithHeadings
@@ -120,7 +121,7 @@ class SummarySheet extends BaseSheet implements WithStyles, WithHeadings
 		$sheet
 			->getStyle("A1")
 			->getFill()
-			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+			->setFillType(Fill::FILL_SOLID)
 			->getStartColor()
 			->setARGB("FF34495E");
 
@@ -152,7 +153,7 @@ class SummarySheet extends BaseSheet implements WithStyles, WithHeadings
 				$sheet
 					->getStyle("A{$row}")
 					->getFill()
-					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->setFillType(Fill::FILL_SOLID)
 					->getStartColor()
 					->setARGB("FFECF0F1");
 

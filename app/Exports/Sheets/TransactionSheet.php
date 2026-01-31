@@ -5,6 +5,9 @@ namespace Modules\Wallet\Exports\Sheets;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -230,7 +233,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 			"Total Pendapatan",
 			"Total Pengeluaran",
 			"Saldo Bersih",
-			"Jumlah Transaksi",
+			"Transaksi",
 			"Trend",
 		];
 
@@ -332,12 +335,12 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 				$sheet = $event->sheet->getDelegate();
 
 				// Set column widths
-				$sheet->getColumnDimension("A")->setWidth(15);
-				$sheet->getColumnDimension("B")->setWidth(15);
-				$sheet->getColumnDimension("C")->setWidth(15);
-				$sheet->getColumnDimension("D")->setWidth(15);
+				$sheet->getColumnDimension("A")->setWidth(10);
+				$sheet->getColumnDimension("B")->setWidth(20);
+				$sheet->getColumnDimension("C")->setWidth(20);
+				$sheet->getColumnDimension("D")->setWidth(18);
 				$sheet->getColumnDimension("E")->setWidth(10);
-				$sheet->getColumnDimension("F")->setWidth(20);
+				$sheet->getColumnDimension("F")->setWidth(15);
 
 				// Apply styling untuk setiap bagian
 				$this->styleYearlySections($sheet);
@@ -360,7 +363,8 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 					->getStyle("A{$rowNum}")
 					->getFont()
 					->setBold(true)
-					->setSize(14)
+					->setSize(16)
+					->setName("Arial")
 					->getColor()
 					->setARGB("FF2C3E50");
 
@@ -368,8 +372,15 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 				$sheet
 					->getStyle("A{$rowNum}")
 					->getAlignment()
-					->setHorizontal("center")
-					->setVertical("center");
+					->setHorizontal(Alignment::HORIZONTAL_CENTER)
+					->setVertical(Alignment::VERTICAL_CENTER);
+
+				$sheet
+					->getStyle("A{$rowNum}")
+					->getFill()
+					->setFillType(Fill::FILL_SOLID)
+					->getStartColor()
+					->setARGB("FF2C3E50");
 
 				// Style header tabel untuk tahun ini (2 baris setelah judul)
 				$headerRow = $rowNum + 2;
@@ -412,9 +423,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 						->getStyle("A{$tableStart}:F{$tableEnd}")
 						->getBorders()
 						->getAllBorders()
-						->setBorderStyle(
-							\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-						);
+						->setBorderStyle(Border::BORDER_THIN);
 
 					// Style baris total
 					$sheet
@@ -425,7 +434,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 					$sheet
 						->getStyle("A{$totalRow}:F{$totalRow}")
 						->getFill()
-						->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+						->setFillType(Fill::FILL_SOLID)
 						->getStartColor()
 						->setARGB("FFFBEEE6");
 				}
@@ -445,8 +454,8 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 				$sheet
 					->getStyle("A{$rowNum}")
 					->getAlignment()
-					->setHorizontal("center")
-					->setVertical("center");
+					->setHorizontal(Alignment::HORIZONTAL_CENTER)
+					->setVertical(Alignment::VERTICAL_CENTER);
 
 				// Style header ringkasan
 				$summaryHeader = $rowNum + 2;
@@ -458,7 +467,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 				$sheet
 					->getStyle("A{$summaryHeader}:F{$summaryHeader}")
 					->getFill()
-					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+					->setFillType(Fill::FILL_SOLID)
 					->getStartColor()
 					->setARGB("FF27AE60");
 
@@ -486,9 +495,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 						->getStyle("A{$summaryStart}:F{$summaryEnd}")
 						->getBorders()
 						->getAllBorders()
-						->setBorderStyle(
-							\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-						);
+						->setBorderStyle(Border::BORDER_THIN);
 
 					// Style grand total
 					$sheet
@@ -499,7 +506,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 					$sheet
 						->getStyle("A{$grandTotalRow}:F{$grandTotalRow}")
 						->getFill()
-						->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+						->setFillType(Fill::FILL_SOLID)
 						->getStartColor()
 						->setARGB("FFD5F4E6");
 				}
@@ -537,17 +544,17 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 		$sheet
 			->getStyle("A1:F{$lastRow}")
 			->getAlignment()
-			->setVertical("center");
+			->setVertical(Alignment::VERTICAL_CENTER);
 
 		$sheet
 			->getStyle("B1:F{$lastRow}")
 			->getAlignment()
-			->setHorizontal("right");
+			->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
 		$sheet
 			->getStyle("A1:A{$lastRow}")
 			->getAlignment()
-			->setHorizontal("left");
+			->setHorizontal(Alignment::VERTICAL_LEFT);
 	}
 
 	private function getTransactionCount($day)
