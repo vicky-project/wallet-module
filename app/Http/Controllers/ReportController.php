@@ -142,7 +142,7 @@ class ReportController extends Controller
 
 		return match ($request->format) {
 			"json" => $this->exportToJson($data),
-			"xls", "xlsx", "csv", "pdf" => $this->exportToFile(
+			"xls", "xlsx", "csv", "pdf", "gsheet" => $this->exportToFile(
 				$data,
 				$request->format
 			),
