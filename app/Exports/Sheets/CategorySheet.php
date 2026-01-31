@@ -267,8 +267,8 @@ class CategorySheet implements
 
 		// Set posisi chart
 		$chart->setTopLeftPosition($position);
-		$chart->setBottomRightPosition("O15"); // Ukuran chart
-		dd($chart);
+		//$chart->setBottomRightPosition("O15"); // Ukuran chart
+		//dd($chart);
 
 		// Tambahkan chart ke worksheet
 		return $chart;
