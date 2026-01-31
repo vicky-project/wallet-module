@@ -12,7 +12,7 @@ use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
 use Modules\Wallet\Http\Controllers\TelegramLinkController;
 
-Route::middleware()->group(function () {
+Route::middleware(["auth"])->group(function () {
 	Route::prefix("apps")
 		->name("apps.")
 		->group(function () {
