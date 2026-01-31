@@ -6,11 +6,23 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithCharts;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Chart;
+use Modules\Wallet\Services\Charts\ChartService;
 
-class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
+class CategorySheet implements
+	FromArray,
+	WithTitle,
+	WithHeadings,
+	WithStyles,
+	WithCharts
 {
 	protected $reportData;
+	protected $incomeLabels;
+	protected $incomeValues;
+	protected $expenseLabels;
+	protected $expenseValues;
 
 	public function __construct(array $reportData)
 	{
@@ -37,7 +49,9 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			!empty($incomeData["datasets"][0]["data"])
 		) {
 			$incomeLabels = $incomeData["labels"] ?? [];
+			$this->incomeLabels = $incomeLabels;
 			$incomeValues = $incomeData["datasets"][0]["data"] ?? [];
+			$this->incomeValues = $incomeValues;
 			$totalIncome = array_sum($incomeValues);
 
 			$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
@@ -76,7 +90,9 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			!empty($expenseData["datasets"][0]["data"])
 		) {
 			$expenseLabels = $expenseData["labels"] ?? [];
+			$this->expenseLabels = $expenseLabels;
 			$expenseValues = $expenseData["datasets"][0]["data"] ?? [];
+			$this->expenseValues = $expenseValues;
 			$totalExpense = array_sum($expenseValues);
 
 			$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
@@ -133,6 +149,28 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		return $data;
+	}
+
+	public function charts()
+	{
+		$charts = [];
+		if ($this->incomeLabels) {
+			$charts[] = new ChartService::createPieChart(
+				$this->incomeLabels,
+				$this->incomeValues,
+				"Pemasukan"
+			);
+		}
+
+		if ($this->expenseLabels) {
+			$charts[] = new ChartService::createPieChart(
+				$this->expenseLabels,
+				$this->expenseValues,
+				"Pengeluaran"
+			);
+		}
+
+		return $charts;
 	}
 
 	public function headings(): array
