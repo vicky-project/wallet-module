@@ -330,8 +330,7 @@ class SummarySheet extends BaseSheet implements WithStyles, WithHeadings
 			return "Tidak dapat dihitung";
 		}
 
-		$ratio =
-			($this->formatCurrency($expense) / $this->formatCurrency($income)) * 100;
+		$ratio = ($expense / $income) * 100;
 		return number_format($ratio, 1) . "%";
 	}
 }
