@@ -38,7 +38,7 @@
             <h6>Langkah-langkah:</h6>
             <ol>
               <li>Klik tombol "Generate Kode" di bawah</li>
-              <li>Buka Telegram dan cari bot: <strong>@{{ $botUsername }}</strong></li>
+              <li>Buka Telegram dan cari bot: <strong>{{ $botUsername }}</strong></li>
               <li>Kirim perintah: <code>/link &lt;kode&gt;</code></li>
               <li>Tunggu konfirmasi dari bot</li>
             </ol>
