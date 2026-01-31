@@ -223,7 +223,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		// ============ SET COLUMN WIDTHS ============
 		$sheet->getColumnDimension("A")->setWidth(30);
 		$sheet->getColumnDimension("B")->setWidth(20);
-		$sheet->getColumnDimension("C")->setWidth(25);
+		$sheet->getColumnDimension("C")->setWidth(20);
 		$sheet->getColumnDimension("D")->setWidth(15);
 		$sheet->getColumnDimension("E")->setWidth(10);
 		$sheet->getColumnDimension("F")->setWidth(20);
@@ -509,21 +509,21 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 	private function getGrowthDescription($growth)
 	{
 		if ($growth > 20) {
-			return "↑↑ Pertumbuhan Sangat Kuat";
+			return "Pertumbuhan Sangat Kuat";
 		}
 		if ($growth > 10) {
-			return "↑ Pertumbuhan Kuat";
+			return "Pertumbuhan Kuat";
 		}
 		if ($growth > 0) {
-			return "↑ Sedikit Naik";
+			return "Sedikit Naik";
 		}
 		if ($growth == 0) {
-			return "→ Stabil";
+			return "Stabil";
 		}
 		if ($growth > -10) {
-			return "↓ Sedikit Turun";
+			return "Sedikit Turun";
 		}
-		return "↓↓ Penurunan Signifikan";
+		return "Penurunan Signifikan";
 	}
 
 	private function getNetDescription($net)
