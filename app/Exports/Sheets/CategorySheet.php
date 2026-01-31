@@ -6,11 +6,30 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Chart\Chart;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
+use PhpOffice\PhpSpreadsheet\Chart\Legend;
+use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
+use PhpOffice\PhpSpreadsheet\Chart\Title;
 
-class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
+class CategorySheet implements
+	FromArray,
+	WithTitle,
+	WithHeadings,
+	WithStyles,
+	WithEvents
 {
 	protected $reportData;
+	protected $incomeLabels = [];
+	protected $incomeValues = [];
+	protected $expenseLabels = [];
+	protected $expenseValues = [];
+	protected $incomeTotal = 0;
+	protected $expenseTotal = 0;
 
 	public function __construct(array $reportData)
 	{
@@ -37,10 +56,12 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			!empty($incomeData["datasets"][0]["data"])
 		) {
 			$incomeLabels = $incomeData["labels"] ?? [];
-			$this->incomeLabels = $incomeLabels;
 			$incomeValues = $incomeData["datasets"][0]["data"] ?? [];
-			$this->incomeValues = $incomeValues;
 			$totalIncome = array_sum($incomeValues);
+
+			$this->incomeLabels = $incomeLabels;
+			$this->incomeValues = $incomeValues;
+			$this->incomeTotal = $totalIncome;
 
 			$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
 
@@ -78,10 +99,12 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			!empty($expenseData["datasets"][0]["data"])
 		) {
 			$expenseLabels = $expenseData["labels"] ?? [];
-			$this->expenseLabels = $expenseLabels;
 			$expenseValues = $expenseData["datasets"][0]["data"] ?? [];
-			$this->expenseValues = $expenseValues;
 			$totalExpense = array_sum($expenseValues);
+
+			$this->expenseLabels = $expenseLabels;
+			$this->expenseValues = $expenseValues;
+			$this->expenseTotal = $totalExpense;
 
 			$data[] = ["Kategori", "Jumlah", "Persentase", "Tipe"];
 
@@ -113,8 +136,8 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$data[] = ["RINGKASAN KATEGORI"];
 		$data[] = [""];
 
-		$totalIncomeAmount = $this->getTotalFromCategoryData($incomeData);
-		$totalExpenseAmount = $this->getTotalFromCategoryData($expenseData);
+		$totalIncomeAmount = $this->incomeTotal;
+		$totalExpenseAmount = $this->expenseTotal;
 		$netAmount = $totalIncomeAmount - $totalExpenseAmount;
 
 		$data[] = ["Total Pendapatan", $this->formatCurrency($totalIncomeAmount)];
@@ -149,6 +172,117 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		return "Kategori";
 	}
 
+	public function registerEvents(): array
+	{
+		return [
+			AfterSheet::class => function (AfterSheet $event) {
+				$this->addCharts($event->sheet->getDelegate());
+			},
+		];
+	}
+
+	private function addCharts(Worksheet $sheet)
+	{
+		// Buat chart untuk pendapatan jika ada data
+		if (!empty($this->incomeLabels) && !empty($this->incomeValues)) {
+			$this->createPieChart(
+				$sheet,
+				$this->incomeLabels,
+				$this->incomeValues,
+				"Pendapatan per Kategori",
+				"F2", // Posisi chart pendapatan
+				"FF2E8B57" // Warna hijau untuk pendapatan
+			);
+		}
+
+		// Buat chart untuk pengeluaran jika ada data
+		if (!empty($this->expenseLabels) && !empty($this->expenseValues)) {
+			$this->createPieChart(
+				$sheet,
+				$this->expenseLabels,
+				$this->expenseValues,
+				"Pengeluaran per Kategori",
+				"F20", // Posisi chart pengeluaran (di bawah chart pendapatan)
+				"FFFF4500" // Warna merah untuk pengeluaran
+			);
+		}
+	}
+
+	private function createPieChart(
+		Worksheet $sheet,
+		array $labels,
+		array $values,
+		string $title,
+		string $position,
+		string $color
+	) {
+		// Hitung total untuk persentase
+		$total = array_sum($values);
+
+		// Buat data series untuk chart
+		$dataSeriesValues = [];
+		$dataSeriesLabels = [];
+
+		// Siapkan data untuk chart - maksimal 10 kategori agar chart tetap terbaca
+		$maxCategories = min(10, count($labels));
+		$otherValue = 0;
+
+		for ($i = 0; $i < $maxCategories; $i++) {
+			if ($i < count($labels)) {
+				$percentage = ($values[$i] / $total) * 100;
+				$dataSeriesLabels[] =
+					$labels[$i] . " (" . number_format($percentage, 1) . "%)";
+				$dataSeriesValues[] = $values[$i];
+			}
+		}
+
+		// Jika ada lebih dari 10 kategori, gabungkan sisanya sebagai "Lainnya"
+		if (count($labels) > $maxCategories) {
+			for ($i = $maxCategories; $i < count($labels); $i++) {
+				$otherValue += $values[$i];
+			}
+			if ($otherValue > 0) {
+				$percentage = ($otherValue / $total) * 100;
+				$dataSeriesLabels[] =
+					"Lainnya (" . number_format($percentage, 1) . "%)";
+				$dataSeriesValues[] = $otherValue;
+			}
+		}
+
+		// Buat data series
+		$series = new DataSeries(
+			DataSeries::TYPE_PIECHART,
+			null,
+			range(0, count($dataSeriesValues) - 1),
+			$dataSeriesLabels,
+			null,
+			[new DataSeriesValues("Number", null, null, $dataSeriesValues)]
+		);
+
+		// Buat plot area
+		$plotArea = new PlotArea(null, [$series]);
+
+		// Buat legenda
+		$legend = new Legend();
+		$legend->setPosition(Legend::POSITION_RIGHT);
+
+		// Buat chart
+		$chart = new Chart(
+			"chart_" . uniqid(),
+			new Title($title),
+			$legend,
+			$plotArea,
+			true
+		);
+
+		// Set posisi chart
+		$chart->setTopLeftPosition($position);
+		$chart->setBottomRightPosition("O15"); // Ukuran chart
+
+		// Tambahkan chart ke worksheet
+		$sheet->addChart($chart);
+	}
+
 	public function styles(Worksheet $sheet)
 	{
 		// Set column widths
@@ -156,6 +290,18 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet->getColumnDimension("B")->setWidth(15);
 		$sheet->getColumnDimension("C")->setWidth(15);
 		$sheet->getColumnDimension("D")->setWidth(15);
+
+		// Beri ruang untuk chart
+		$sheet->getColumnDimension("F")->setWidth(5);
+		$sheet->getColumnDimension("G")->setWidth(5);
+		$sheet->getColumnDimension("H")->setWidth(5);
+		$sheet->getColumnDimension("I")->setWidth(5);
+		$sheet->getColumnDimension("J")->setWidth(5);
+		$sheet->getColumnDimension("K")->setWidth(5);
+		$sheet->getColumnDimension("L")->setWidth(5);
+		$sheet->getColumnDimension("M")->setWidth(5);
+		$sheet->getColumnDimension("N")->setWidth(5);
+		$sheet->getColumnDimension("O")->setWidth(5);
 
 		// Cari baris untuk setiap bagian
 		$data = $this->array();
