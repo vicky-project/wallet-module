@@ -6,11 +6,8 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 
 abstract class BaseSheet implements FromArray, WithTitle
 {
-	protected array $reportData;
-
-	public function __construct(array $reportData)
+	public function __construct(protected array $reportData)
 	{
-		$this->reportData = $reportData;
 	}
 
 	abstract public function array(): array;

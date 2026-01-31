@@ -10,7 +10,7 @@ class AccountSheet extends BaseSheet implements WithHeadings, WithStyles
 {
 	public function __construct(array $reportData)
 	{
-		parent::_construct($reportData);
+		parent::__construct($reportData);
 	}
 
 	public function array(): array

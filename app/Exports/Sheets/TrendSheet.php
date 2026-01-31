@@ -19,7 +19,7 @@ class TrendSheet extends BaseSheet implements WithHeadings, WithStyles
 
 	public function __construct(array $reportData)
 	{
-		parent::_construct($reportData);
+		parent::__construct($reportData);
 		$this->trendData = $this->reportData["report_data"][
 			"income_expense_trend"
 		] ?? [
