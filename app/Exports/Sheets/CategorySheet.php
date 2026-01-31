@@ -162,10 +162,10 @@ class CategorySheet extends BaseSheet implements WithHeadings, WithStyles
 	public function styles(Worksheet $sheet)
 	{
 		// Set column widths
-		$sheet->getColumnDimension("A")->setWidth(30);
-		$sheet->getColumnDimension("B")->setWidth(15);
-		$sheet->getColumnDimension("C")->setWidth(15);
-		$sheet->getColumnDimension("D")->setWidth(15);
+		$sheet->getColumnDimension("A")->setWidth(25);
+		$sheet->getColumnDimension("B")->setWidth(18);
+		$sheet->getColumnDimension("C")->setWidth(13);
+		$sheet->getColumnDimension("D")->setWidth(13);
 
 		// Cari baris untuk setiap bagian
 		$data = $this->array();

@@ -335,12 +335,12 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 				$sheet = $event->sheet->getDelegate();
 
 				// Set column widths
-				$sheet->getColumnDimension("A")->setWidth(10);
-				$sheet->getColumnDimension("B")->setWidth(20);
-				$sheet->getColumnDimension("C")->setWidth(20);
+				$sheet->getColumnDimension("A")->setWidth(13);
+				$sheet->getColumnDimension("B")->setWidth(18);
+				$sheet->getColumnDimension("C")->setWidth(18);
 				$sheet->getColumnDimension("D")->setWidth(18);
 				$sheet->getColumnDimension("E")->setWidth(10);
-				$sheet->getColumnDimension("F")->setWidth(15);
+				$sheet->getColumnDimension("F")->setWidth(18);
 
 				// Apply styling untuk setiap bagian
 				$this->styleYearlySections($sheet);
@@ -381,6 +381,12 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 					->setFillType(Fill::FILL_SOLID)
 					->getStartColor()
 					->setARGB("FF2C3E50");
+
+				$sheet
+					->getStyle("A{$rowNum}")
+					->getFont()
+					->getColor()
+					->setARGB("FFFFFFFF");
 
 				// Style header tabel untuk tahun ini (2 baris setelah judul)
 				$headerRow = $rowNum + 2;
