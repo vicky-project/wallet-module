@@ -6,14 +6,20 @@ use Carbon\Carbon;
 
 trait TelegramUser
 {
+	protected $newFillable = [
+		"telegram_chat_id",
+		"telegram_username",
+		"telegram_verification_code",
+		"telegram_code_expires_at",
+	];
+
 	/**
 	 * Generate verification code for Telegram linking
 	 */
 	public function generateTelegramVerificationCode(): string
 	{
 		$code = strtoupper(Str::random(6));
-
-		$this->update([
+		$this->mergeFillable($this->newFillable)->update([
 			"telegram_verification_code" => $code,
 			"telegram_code_expires_at" => Carbon::now()->addMinutes(10),
 		]);
@@ -28,7 +34,7 @@ trait TelegramUser
 		int $chatId,
 		string $username = null
 	): bool {
-		return $this->update([
+		return $this->mergeFillable($this->newFillable)->update([
 			"telegram_chat_id" => $chatId,
 			"telegram_username" => $username,
 			"telegram_verification_code" => null,
@@ -41,7 +47,7 @@ trait TelegramUser
 	 */
 	public function unlinkTelegramAccount(): bool
 	{
-		return $this->update([
+		return $this->mergeFillable($this->newFillable)->update([
 			"telegram_chat_id" => null,
 			"telegram_username" => null,
 			"telegram_verification_code" => null,
@@ -89,7 +95,7 @@ trait TelegramUser
 	public function updateTelegramSettings(array $settings): bool
 	{
 		$current = $this->telegram_settings ?? [];
-		return $this->update([
+		return $this->mergeFillable($this->newFillable)->update([
 			"telegram_settings" => array_merge($current, $settings),
 		]);
 	}
