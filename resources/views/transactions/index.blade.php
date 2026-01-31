@@ -637,6 +637,11 @@
           
                       alert('File berhasil dibuat.')
                     }
+                    
+                    Array.from(transactionChecks)
+                    map(check => {
+                      check.checked = !check.checked;
+                    });
                 } else {
                     alert('Gagal mengekspor data transaksi: ' + data.message);
                 }
