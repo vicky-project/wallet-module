@@ -1,0 +1,133 @@
+<?php
+namespace Modules\Wallet\Http\Controllers;
+
+use Illuminate\Routing\Controller;
+use Modules\Wallet\Services\Telegram\TelegramLinkService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class TelegramLinkController extends Controller
+{
+	protected $telegramLinkService;
+
+	public function __construct(TelegramLinkService $telegramLinkService)
+	{
+		$this->middleware("auth");
+		$this->telegramLinkService = $telegramLinkService;
+	}
+
+	/**
+	 * Show Telegram linking page
+	 */
+	public function index()
+	{
+		$user = Auth::user();
+		$botUsername = env("TELEGRAM_BOT_USERNAME", "your_bot_username");
+
+		return view("wallet::telegram.link", compact("user", "botUsername"));
+	}
+
+	/**
+	 * Generate new linking code
+	 */
+	public function generateCode(Request $request)
+	{
+		$user = Auth::user();
+
+		if ($user->hasLinkedTelegram()) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => "Akun Telegram sudah terhubung",
+				],
+				400
+			);
+		}
+
+		$result = $this->telegramLinkService->generateLinkingCode($user);
+
+		return response()->json([
+			"success" => true,
+			"code" => $result["code"],
+			"expires_at" => $result["expires_at"]->format("H:i:s"),
+			"bot_username" => $result["bot_username"],
+			"instructions" => $this->getInstructions(
+				$result["code"],
+				$result["bot_username"]
+			),
+		]);
+	}
+
+	/**
+	 * Unlink Telegram account
+	 */
+	public function unlink(Request $request)
+	{
+		$user = Auth::user();
+
+		if (!$user->hasLinkedTelegram()) {
+			return response()->json(
+				[
+					"success" => false,
+					"message" => "Akun Telegram tidak terhubung",
+				],
+				400
+			);
+		}
+
+		$user->unlinkTelegramAccount();
+
+		return response()->json([
+			"success" => true,
+			"message" => "Akun Telegram berhasil diputuskan",
+		]);
+	}
+
+	/**
+	 * Get linking instructions
+	 */
+	private function getInstructions(string $code, string $botUsername): string
+	{
+		return "1. Buka Telegram dan cari @{$botUsername}\n" .
+			"2. Kirim perintah: /link {$code}\n" .
+			"3. Tunggu konfirmasi dari bot\n" .
+			"Kode berlaku 10 menit";
+	}
+
+	/**
+	 * Update Telegram notification settings
+	 */
+	public function updateSettings(Request $request)
+	{
+		$validated = $request->validate([
+			"notifications" => "boolean",
+			"daily_report" => "boolean",
+			"budget_alerts" => "boolean",
+			"low_balance_alerts" => "boolean",
+		]);
+
+		$user = Auth::user();
+		$user->updateTelegramSettings($validated);
+
+		return response()->json([
+			"success" => true,
+			"message" => "Pengaturan berhasil diperbarui",
+		]);
+	}
+
+	/**
+	 * Get linking status
+	 */
+	public function status()
+	{
+		$user = Auth::user();
+
+		return response()->json([
+			"linked" => $user->hasLinkedTelegram(),
+			"chat_id" => $user->telegram_chat_id,
+			"username" => $user->telegram_username,
+			"notifications" => $user->telegram_notifications,
+			"settings" => $user->telegram_settings,
+		]);
+	}
+}

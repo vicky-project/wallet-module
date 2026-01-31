@@ -11,6 +11,8 @@ use Modules\Wallet\Enums\TransactionType;
 
 trait HasWallets
 {
+	use TelegramUser;
+
 	public function categories()
 	{
 		return $this->hasMany(Category::class);
