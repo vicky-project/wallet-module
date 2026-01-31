@@ -279,9 +279,9 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ SECTION HEADERS ============
 		$headerDetailRow = 14;
-		$analysisRow = $headerDetailRow + count($this->labels) + 3;
+		$performanceRow = $headerDetailRow + count($this->labels) + 3;
 
-		$sectionRows = [4, $headerDetailRow, $analysisRow, $analysisRow + 8];
+		$sectionRows = [4, $headerDetailRow, $performanceRow, $performanceRow + 9];
 
 		foreach ($sectionRows as $row) {
 			if ($row <= $lastRow && !empty($data[$row - 1][0])) {
@@ -305,7 +305,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		// ============ TABLE HEADERS ============
-		$tableHeaderRows = [5, $headerDetailRow + 1, $analysisRow + 1];
+		$tableHeaderRows = [5, $headerDetailRow + 1, $performanceRow + 1];
 
 		foreach ($tableHeaderRows as $row) {
 			if ($row <= $lastRow) {
@@ -461,7 +461,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ SPECIAL HIGHLIGHTS ============
 		// Bold untuk total baris
-		$totalRow = $recommendationStart + 4;
+		$totalRow = $detailEnd;
 		if ($totalRow <= $lastRow) {
 			$sheet
 				->getStyle("A{$totalRow}:F{$totalRow}")
