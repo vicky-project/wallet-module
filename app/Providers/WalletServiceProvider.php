@@ -49,6 +49,7 @@ class WalletServiceProvider extends ServiceProvider
 	{
 		$this->commands([
 			\Modules\Wallet\Console\ProcessRecurringTransactionsCommand::class,
+			\Modules\Wallet\Console\TelegramSetup::class,
 		]);
 	}
 
