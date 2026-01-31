@@ -48,6 +48,8 @@ class ChartService
 			),
 		];
 
+		dd($dataSeriesValues);
+
 		// Buat data series
 		$series = new DataSeries(
 			DataSeries::TYPE_PIECHART,
