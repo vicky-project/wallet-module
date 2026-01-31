@@ -641,6 +641,7 @@
                     Array.from(transactionChecks).map(check => {
                       check.checked = !check.checked;
                     });
+                    selectAll.checked = !selectAll.checked;
                 } else {
                     alert('Gagal mengekspor data transaksi: ' + data.message);
                 }
