@@ -281,7 +281,6 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sectionRows = [
 			4,
 			15,
-			17,
 			27 + count($this->labels),
 			35 + count($this->labels),
 		];
@@ -308,12 +307,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		// ============ TABLE HEADERS ============
-		$tableHeaderRows = [
-			5,
-			16,
-			28 + count($this->labels),
-			36 + count($this->labels),
-		];
+		$tableHeaderRows = [5, 15, 27 + count($this->labels)];
 
 		foreach ($tableHeaderRows as $row) {
 			if ($row <= $lastRow) {
@@ -376,7 +370,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			}
 
 			// Alternating row colors untuk tabel detail
-			if ($row >= 17 && $row <= 16 + count($this->labels) + 1) {
+			if ($row >= 16 && $row <= 15 + count($this->labels) + 1) {
 				$fillColor = $row % 2 == 0 ? "FFF8F9F9" : "FFFFFFFF";
 				$sheet
 					->getStyle("A{$row}:F{$row}")
@@ -422,8 +416,8 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->setBorderStyle(Border::BORDER_THIN);
 
 		// Border untuk detail periode
-		$detailStart = 16;
-		$detailEnd = 16 + count($this->labels) + 1;
+		$detailStart = 15;
+		$detailEnd = 15 + count($this->labels) + 1;
 		$sheet
 			->getStyle("A{$detailStart}:F{$detailEnd}")
 			->getBorders()
@@ -431,8 +425,8 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->setBorderStyle(Border::BORDER_THIN);
 
 		// Border untuk analisis performance
-		$performanceStart = 28 + count($this->labels);
-		$performanceEnd = $performanceStart + 6;
+		$performanceStart = 25;
+		$performanceEnd = $performanceStart + 7;
 		$sheet
 			->getStyle("A{$performanceStart}:C{$performanceEnd}")
 			->getBorders()
@@ -456,7 +450,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// Status dan kategori rata tengah
 		$sheet
-			->getStyle("F17:F" . $detailEnd)
+			->getStyle("F16:F" . $detailEnd)
 			->getAlignment()
 			->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
@@ -469,7 +463,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ SPECIAL HIGHLIGHTS ============
 		// Bold untuk total baris
-		$totalRow = 16 + count($this->labels) + 1;
+		$totalRow = 15 + count($this->labels) + 1;
 		if ($totalRow <= $lastRow) {
 			$sheet
 				->getStyle("A{$totalRow}:F{$totalRow}")
