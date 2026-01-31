@@ -671,6 +671,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		$maxIndex = array_keys($data, max($data))[0];
+		dd($data[$maxIndex]);
 		return $labels[$maxIndex] .
 			" (" .
 			$this->formatCurrency($data[$maxIndex]) .
