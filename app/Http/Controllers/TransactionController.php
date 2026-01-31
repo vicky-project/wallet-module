@@ -281,11 +281,13 @@ class TransactionController extends Controller
 	public function export(Request $request)
 	{
 		$user = Auth::user();
-		$id = $request->ids ?? $request->id;
+		$request->validate([
+			"ids" => "present_if:id,null",
+			"id" => "present_if:ids,null",
+			"format" => "nullable|string",
+		]);
 
-		if (!$id) {
-			return back()->withErrors("No id passed.");
-		}
+		$id = $request->ids ?? $request->id;
 
 		try {
 			$format = $request->get("format", "excel");
