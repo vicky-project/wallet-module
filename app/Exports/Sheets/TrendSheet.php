@@ -278,12 +278,10 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet->getRowDimension(2)->setRowHeight(20);
 
 		// ============ SECTION HEADERS ============
-		$sectionRows = [
-			4,
-			15,
-			27 + count($this->labels),
-			35 + count($this->labels),
-		];
+		$headerDetailRow = 14;
+		$analysisRow = $headerDetailRow + count($this->labels) + 3;
+
+		$sectionRows = [4, $headerDetailRow, $analysisRow, $analysisRow + 8];
 
 		foreach ($sectionRows as $row) {
 			if ($row <= $lastRow && !empty($data[$row - 1][0])) {
@@ -307,7 +305,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		// ============ TABLE HEADERS ============
-		$tableHeaderRows = [5, 15, 27 + count($this->labels)];
+		$tableHeaderRows = [5, $headerDetailRow + 1, $analysisRow + 1];
 
 		foreach ($tableHeaderRows as $row) {
 			if ($row <= $lastRow) {
@@ -410,14 +408,14 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		// ============ BORDERS ============
 		// Border untuk ringkasan trend
 		$sheet
-			->getStyle("A5:C14")
+			->getStyle("A5:C12")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(Border::BORDER_THIN);
 
 		// Border untuk detail periode
-		$detailStart = 15;
-		$detailEnd = 15 + count($this->labels) + 1;
+		$detailStart = $headerDetailRow + 1;
+		$detailEnd = $detailStart + count($this->labels) + 1;
 		$sheet
 			->getStyle("A{$detailStart}:F{$detailEnd}")
 			->getBorders()
@@ -425,7 +423,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->setBorderStyle(Border::BORDER_THIN);
 
 		// Border untuk analisis performance
-		$performanceStart = 25;
+		$performanceStart = $detailEnd + 3;
 		$performanceEnd = $performanceStart + 7;
 		$sheet
 			->getStyle("A{$performanceStart}:C{$performanceEnd}")
@@ -450,12 +448,12 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// Status dan kategori rata tengah
 		$sheet
-			->getStyle("F16:F" . $detailEnd)
+			->getStyle("F" . ($headerDetailRow + 2) . ":F" . $detailEnd)
 			->getAlignment()
 			->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 		// Rekomendasi
-		$recommendationStart = 35 + count($this->labels);
+		$recommendationStart = $performanceEnd + 2;
 		$sheet
 			->getStyle("A{$recommendationStart}:A" . $lastRow)
 			->getFont()
@@ -463,7 +461,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ SPECIAL HIGHLIGHTS ============
 		// Bold untuk total baris
-		$totalRow = 15 + count($this->labels) + 1;
+		$totalRow = $detailEnd;
 		if ($totalRow <= $lastRow) {
 			$sheet
 				->getStyle("A{$totalRow}:F{$totalRow}")
