@@ -415,8 +415,13 @@ class ReportRepository
 	{
 		$userId = $params["user_id"];
 		$showInactive = $params["show_inactive"] ?? false;
+		$accountId = $params["account_id"] ?? null;
 
 		$query = $this->account->where("user_id", $userId);
+
+		if ($accountId) {
+			$query->where("id", $accountId);
+		}
 
 		if (!$showInactive) {
 			$query->where("is_active", true);

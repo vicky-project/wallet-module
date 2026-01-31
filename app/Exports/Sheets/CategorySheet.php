@@ -7,8 +7,9 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 {
@@ -205,7 +206,8 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet
 			->getStyle("A" . $incomeTitleRow)
 			->getAlignment()
-			->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			->setHorizontal(Alignment::HORIZONTAL_CENTER)
+			->setVertical(Alignment::VERTICAL_CENTER);
 
 		$sheet
 			->getStyle("A" . $incomeTitleRow)
@@ -233,7 +235,8 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			$sheet
 				->getStyle("A" . $expenseTitleRow)
 				->getAlignment()
-				->setHorizontal(Alignment::HORIZONTAL_CENTER);
+				->setHorizontal(Alignment::HORIZONTAL_CENTER)
+				->setVertical(Alignment::VERTICAL_CENTER);
 
 			$sheet
 				->getStyle("A" . $expenseTitleRow)
@@ -262,7 +265,8 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			$sheet
 				->getStyle("A" . $summaryTitleRow)
 				->getAlignment()
-				->setHorizontal(Alignment::HORIZONTAL_CENTER);
+				->setHorizontal(Alignment::HORIZONTAL_CENTER)
+				->setVertical(Alignment::VERTICAL_CENTER);
 
 			$sheet
 				->getStyle("A" . $summaryTitleRow)
@@ -319,24 +323,24 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 					->getStyle("A" . $incomeTableStart . ":D" . $incomeTableEnd)
 					->getBorders()
 					->getAllBorders()
-					->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+					->setBorderStyle(Border::BORDER_THIN);
 
 				// Alignment untuk tabel income
 				$sheet
 					->getStyle("A" . $incomeTableStart . ":D" . $incomeTableEnd)
 					->getAlignment()
-					->setVertical("center");
+					->setVertical(Alignment::VERTICAL_CENTER);
 
 				// Alignment khusus untuk kolom
 				$sheet
 					->getStyle("B" . $incomeTableStart . ":B" . $incomeTableEnd)
 					->getAlignment()
-					->setHorizontal("right");
+					->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
 				$sheet
 					->getStyle("C" . $incomeTableStart . ":C" . $incomeTableEnd)
 					->getAlignment()
-					->setHorizontal("center");
+					->setHorizontal(Alignment::HORIZONTAL_CENTER);
 			}
 
 			// Border untuk tabel expense
@@ -348,23 +352,23 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 					->getStyle("A" . $expenseTableStart . ":D" . $expenseTableEnd)
 					->getBorders()
 					->getAllBorders()
-					->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+					->setBorderStyle(Border::BORDER_THIN);
 
 				// Alignment untuk tabel expense
 				$sheet
 					->getStyle("A" . $expenseTableStart . ":D" . $expenseTableEnd)
 					->getAlignment()
-					->setVertical("center");
+					->setVertical(Alignment::VERTICAL_CENTER);
 
 				$sheet
 					->getStyle("B" . $expenseTableStart . ":B" . $expenseTableEnd)
 					->getAlignment()
-					->setHorizontal("right");
+					->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
 				$sheet
 					->getStyle("C" . $expenseTableStart . ":C" . $expenseTableEnd)
 					->getAlignment()
-					->setHorizontal("center");
+					->setHorizontal(Alignment::HORIZONTAL_CENTER);
 			}
 
 			// Border untuk tabel summary
@@ -377,20 +381,18 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 						->getStyle("A" . $summaryTableStart . ":B" . $summaryTableEnd)
 						->getBorders()
 						->getAllBorders()
-						->setBorderStyle(
-							\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-						);
+						->setBorderStyle(Border::BORDER_THIN);
 
 					// Alignment untuk summary
 					$sheet
 						->getStyle("A" . $summaryTableStart . ":B" . $summaryTableEnd)
 						->getAlignment()
-						->setVertical("center");
+						->setVertical(Alignment::VERTICAL_CENTER);
 
 					$sheet
 						->getStyle("B" . $summaryTableStart . ":B" . $summaryTableEnd)
 						->getAlignment()
-						->setHorizontal("right");
+						->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 				}
 			}
 		}
