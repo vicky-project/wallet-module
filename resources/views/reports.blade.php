@@ -21,10 +21,12 @@
             <li><button class="dropdown-item" onclick="exportReport('json')"><i class="bi bi-filetype-json me-1"></i>JSON</i></li>
             <li><button class="dropdown-item" onclick="exportReport('xlsx')"><i class="bi bi-filetype-xlsx me-1"></i>EXCEL</i></li>
             <li><button class="dropdown-item" onclick="exportReport('pdf')"><i class="bi bi-filetype-pdf me-1"></i>PDF</button></li>
+            <li><button class="dropdown-item" onclick="exportReport('csv')"><i class="bi bi-filetype-csv me-1"></i>CSV</button></li>
+            <li><button class="dropdown-item" onclick="exportReport('gsheet')"><i class="bi bi-google me-1"></i>GSheet</button></li>
           </ul>
         </div>
         <button class="btn btn-primary" onclick="refreshCharts()">
-          <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+          <i class="bi bi-arrow-clockwise me"></i>
         </button>
       </div>
     </div>
@@ -1073,6 +1075,8 @@
           document.body.removeChild(a);
           
           alert('File berhasil dibuat.')
+        } else if(data.spreadsheet_url) {
+          window.open(data.spreadsheet_url, '_blank');
         } else {
           const blob = new Blob([JSON.stringify(data.data, null, 2)], { 
             type: 'application/json' 

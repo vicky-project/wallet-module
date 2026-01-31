@@ -132,7 +132,7 @@ class ReportController extends Controller
 			"account_id" => "nullable|exists:accounts,id",
 			"start_date" => "nullable|date",
 			"end_date" => "nullable|date|after_or_equal:start_date",
-			"format" => "nullable|in:json,pdf,csv,xls,xlsx",
+			"format" => "nullable|in:json,pdf,csv,xls,xlsx,gsheet",
 		]);
 
 		$data = $this->reportService->getExportData(
@@ -171,6 +171,27 @@ class ReportController extends Controller
 
 			// Buat instance export
 			$export = new \Modules\Wallet\Exports\Sheets\MultipleSheetsExport($data);
+
+			if ($format === "gsheet") {
+				// Generate file content
+				$csvContent = \Maatwebsite\Excel\Facades\Excel::raw(
+					$export,
+					\Maatwebsite\Excel\Excel::CSV
+				);
+				$gSheetService = new Modules\Wallet\Services\GoogleSheetsExportService();
+				$filename =
+					"Laporan-keuangan-" . now()->format("d-m-Y") . "-vickyserver";
+				$spreadsheet = $gSheetService->createSpreadsheetFromCsv(
+					$csvContent,
+					$filename
+				);
+
+				return response()->json([
+					"success" => true,
+					"spreadsheet_url" => $spreadsheet->getWebViewLink(),
+					"filename" => $filename . ".xlsx",
+				]);
+			}
 
 			// Tentukan format
 			$excelFormat = match ($format) {

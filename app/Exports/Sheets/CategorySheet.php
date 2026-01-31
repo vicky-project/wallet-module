@@ -149,7 +149,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 	{
 		// Set column widths
 		$sheet->getColumnDimension("A")->setWidth(30);
-		$sheet->getColumnDimension("B")->setWidth(20);
+		$sheet->getColumnDimension("B")->setWidth(15);
 		$sheet->getColumnDimension("C")->setWidth(15);
 		$sheet->getColumnDimension("D")->setWidth(15);
 
