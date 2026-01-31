@@ -638,8 +638,7 @@
                       alert('File berhasil dibuat.')
                     }
                     
-                    Array.from(transactionChecks)
-                    map(check => {
+                    Array.from(transactionChecks).map(check => {
                       check.checked = !check.checked;
                     });
                 } else {
