@@ -15,7 +15,7 @@ class TelegramSetup extends Command
 
 	public function handle()
 	{
-		$token = env("TELEGRAM_BOT_TOKEN");
+		$token = config("wallet.telegram_bot.token");
 
 		if (!$token) {
 			$this->error("TELEGRAM_BOT_TOKEN not set in .env");
@@ -43,7 +43,7 @@ class TelegramSetup extends Command
 	private function setWebhook(Api $telegram): int
 	{
 		$url = $this->option("url") ?? url("/api/telegram/webhook");
-		$secret = env("TELEGRAM_WEBHOOK_SECRET");
+		$secret = config("wallet.telegram_bot.webhook_secret");
 
 		$this->info("Setting webhook to: {$url}");
 

@@ -22,7 +22,7 @@ class TelegramWebhookController extends Controller
 	) {
 		$this->linkService = $linkService;
 		$this->commandService = $commandService;
-		$this->telegram = new Api(env("TELEGRAM_BOT_TOKEN"));
+		$this->telegram = new Api(config("wallet.telegram_bot.token"));
 	}
 
 	/**
@@ -36,9 +36,9 @@ class TelegramWebhookController extends Controller
 		]);
 
 		// Verify secret token if set
-		if (env("TELEGRAM_WEBHOOK_SECRET")) {
+		if (config("wallet.telegram_bot.webhook_secret")) {
 			$secret = $request->header("X-Telegram-Bot-Api-Secret-Token");
-			if ($secret !== env("TELEGRAM_WEBHOOK_SECRET")) {
+			if ($secret !== config("wallet.telegram_bot.webhook_secret")) {
 				Log::warning("Invalid webhook secret", ["provided" => $secret]);
 				abort(403, "Invalid secret token");
 			}
@@ -422,7 +422,7 @@ class TelegramWebhookController extends Controller
 		try {
 			$response = $this->telegram->setWebhook([
 				"url" => $url,
-				"secret_token" => env("TELEGRAM_WEBHOOK_SECRET"),
+				"secret_token" => config("wallet telegram_bot.webhook_secret"),
 				"max_connections" => 40,
 				"allowed_updates" => ["message", "callback_query"],
 			]);
@@ -521,7 +521,7 @@ class TelegramWebhookController extends Controller
 		return response()->json([
 			"status" => "ok",
 			"timestamp" => now(),
-			"bot_username" => env("TELEGRAM_BOT_USERNAME"),
+			"bot_username" => config("wallet.telegram_bot.username"),
 			"webhook_url" => url("/api/telegram/webhook"),
 		]);
 	}

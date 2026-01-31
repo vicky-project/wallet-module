@@ -22,7 +22,7 @@ class TelegramLinkController extends Controller
 	public function index()
 	{
 		$user = Auth::user();
-		$botUsername = env("TELEGRAM_BOT_USERNAME", "your_bot_username");
+		$botUsername = config("wallet.telegram_bot.username");
 
 		return view("wallet::telegram.link", compact("user", "botUsername"));
 	}

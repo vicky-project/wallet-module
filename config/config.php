@@ -7,6 +7,16 @@ return [
 	"cache_ttl" => env("WALLET_CACHE_TTL", 3600),
 
 	/**
+	 * Telegram bot configuration
+	 */
+	"telegram_bot" => [
+		"token" => env("TELEGRAM_BOT_TOKEN"),
+		"username" => env("TELEGRAM_BOT_USERNAME", "your_bot_username"),
+		"webhook_secret" => env("TELEGRAM_WEBHOOK_SECRET"),
+		"admin" => env("TELEGRAM_ADMINS", ""), // String of id with comma separated
+	],
+
+	/**
 	 * Guess category name by description text using include text bellow inside description text. This useful when import e-staatement from any bank. You can add more for accurating guess.
 	 */
 	"guess_category_by_text" => [
