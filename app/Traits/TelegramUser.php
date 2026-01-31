@@ -11,7 +11,17 @@ trait TelegramUser
 		"telegram_username",
 		"telegram_verification_code",
 		"telegram_code_expires_at",
+		"telegram_settings",
 	];
+
+	protected function casts(): array
+	{
+		return [
+			"telegram_code_expires_at" => "timestamp",
+			"telegram_notifications" => "boolean",
+			"telegram_settings" => "array",
+		];
+	}
 
 	/**
 	 * Generate verification code for Telegram linking
