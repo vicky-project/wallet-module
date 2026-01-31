@@ -358,8 +358,7 @@ class Transaction extends Model
 	public static function getMonthlyTransactionData(
 		$userId,
 		$accountId = null,
-		$years = 5,
-		$includeWeekly = true
+		$years = 5
 	) {
 		$query = self::where("user_id", $userId)->whereIn("type", [
 			TransactionType::INCOME,
@@ -375,79 +374,6 @@ class Transaction extends Model
 			->subYears($years)
 			->startOfYear();
 		$query->where("transaction_date", ">=", $startDate);
-
-		if ($includeWeekly) {
-			// Ambil data dengan detail mingguan
-			return $query
-				->selectRaw(
-					'
-                YEAR(transaction_date) as year,
-                MONTH(transaction_date) as month,
-                WEEK(transaction_date, 3) - WEEK(DATE_SUB(transaction_date, INTERVAL DAYOFMONTH(transaction_date) - 1 DAY), 3) + 1 as week_number,
-                CONCAT("Minggu ", WEEK(transaction_date, 3) - WEEK(DATE_SUB(transaction_date, INTERVAL DAYOFMONTH(transaction_date) - 1 DAY), 3) + 1) as week_name,
-                DATE_FORMAT(MIN(transaction_date), "%d") as week_start_day,
-                DATE_FORMAT(MAX(transaction_date), "%d %b") as week_end,
-                SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income,
-                SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense,
-                COUNT(*) as transaction_count,
-                GROUP_CONCAT(DISTINCT DAYNAME(transaction_date)) as active_days
-            '
-				)
-				->groupBy("year", "month", "week_number")
-				->orderBy("year", "desc")
-				->orderBy("month", "asc")
-				->orderBy("week_number", "asc")
-				->get()
-				->groupBy(["year", "month"])
-				->map(function ($yearMonths, $year) {
-					return $yearMonths
-						->map(function ($weeks, $month) {
-							$monthlyIncome = $weeks->sum("total_income");
-							$monthlyExpense = $weeks->sum("total_expense");
-
-							return (object) [
-								"month" => (int) $month,
-								"month_name" => Carbon::createFromDate(
-									$year ?? date("Y"),
-									$month,
-									1
-								)->translatedFormat("F"),
-								"total_income" => $monthlyIncome,
-								"total_expense" => $monthlyExpense,
-								"transaction_count" => $weeks->sum("transaction_count"),
-								"net_flow" => $monthlyIncome - $monthlyExpense,
-								"week_count" => $weeks->count(),
-								"weekly_data" => $weeks
-									->map(function ($week) {
-										return (object) [
-											"week_number" => $week->week_number,
-											"week_name" => $week->week_name,
-											"week_range" =>
-												$week->week_start_day . "-" . $week->week_end,
-											"total_income" => $week->total_income,
-											"total_expense" => $week->total_expense,
-											"transaction_count" => $week->transaction_count,
-											"net_flow" => $week->total_income - $week->total_expense,
-											"average_per_transaction" =>
-												$week->transaction_count > 0
-													? ($week->total_income + $week->total_expense) /
-														$week->transaction_count
-													: 0,
-											"active_days" => $week->active_days,
-											"intensity" =>
-												$week->transaction_count > 10
-													? "Tinggi"
-													: ($week->transaction_count > 5
-														? "Sedang"
-														: "Rendah"),
-										];
-									})
-									->values(),
-							];
-						})
-						->values();
-				});
-		}
 
 		return $query
 			->selectRaw(
