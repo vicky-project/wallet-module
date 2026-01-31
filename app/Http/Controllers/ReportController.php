@@ -178,7 +178,7 @@ class ReportController extends Controller
 					$export,
 					\Maatwebsite\Excel\Excel::CSV
 				);
-				$gSheetService = new Modules\Wallet\Services\GoogleSheetsExportService();
+				$gSheetService = new \Modules\Wallet\Services\GoogleSheetsExportService();
 				$filename =
 					"Laporan-keuangan-" . now()->format("d-m-Y") . "-vickyserver";
 				$spreadsheet = $gSheetService->createSpreadsheetFromCsv(
