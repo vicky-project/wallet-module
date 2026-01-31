@@ -135,6 +135,13 @@ class ReportController extends Controller
 			"format" => "nullable|in:json,pdf,csv,xls,xlsx,gsheet",
 		]);
 
+		if ($request->format == "gsheet") {
+			return response()->json([
+				"success" => false,
+				"message" => "In development progress. Coming soon...",
+			]);
+		}
+
 		$data = $this->reportService->getExportData(
 			auth()->id(),
 			$request->only(["account_id", "start_date", "end_date"])

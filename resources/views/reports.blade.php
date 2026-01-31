@@ -1045,6 +1045,9 @@
 
   // Export report
   async function exportReport(format = 'json') {
+    if(format == 'gsheet') {
+      return alert('In development progress. Coming soon...');
+    }
     showLoading();
     try {
       const filters = {
