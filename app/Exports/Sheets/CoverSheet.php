@@ -40,49 +40,6 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 
 		// Data untuk cover sheet dengan layout yang lebih terstruktur
 		return [[""]];
-		$data = [
-			[""],
-			[""],
-			[""],
-			[""], // Row untuk logo dan judul
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-			[""],
-		];
-
-		// Judul utama akan ditambahkan via styling, bukan di array
-		return $data;
 	}
 
 	public function title(): string
