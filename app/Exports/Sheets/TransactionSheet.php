@@ -554,7 +554,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 		$sheet
 			->getStyle("A1:A{$lastRow}")
 			->getAlignment()
-			->setHorizontal(Alignment::VERTICAL_LEFT);
+			->setHorizontal(Alignment::HORIZONTAL_LEFT);
 	}
 
 	private function getTransactionCount($day)
