@@ -251,7 +251,6 @@ class CategorySheet implements
 
 		// Buat plot area
 		$plotArea = new PlotArea(null, [$series]);
-		dd($series, $plotArea);
 
 		// Buat legenda
 		$legend = new Legend();
@@ -265,6 +264,7 @@ class CategorySheet implements
 			$plotArea,
 			true
 		);
+		dd($chart);
 
 		// Set posisi chart
 		$chart->setTopLeftPosition($position);
