@@ -299,8 +299,6 @@ class TransactionController extends Controller
 				return back()->withErrors("Tidak ada data transaksi untuk diekspor.");
 			}
 
-			dd($result);
-
 			$tmp_dir = config("excel.temporary_files.local_path");
 			if (!is_dir($tmp_dir)) {
 				@mkdir($tmp_dir);
