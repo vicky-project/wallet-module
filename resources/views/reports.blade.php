@@ -907,7 +907,7 @@
             <span class="badge me-2" style="background-color: ${color}; width: 12px; height: 12px; border-radius: 2px;"></span>
             <div class="flex-grow-1">
               <div class="d-flex justify-content-between">
-                <small class="text-truncate" style="max-width: 120px;">${label}</small>
+                <small class="text-truncate" style="max-width: 150px;">${label}</small>
                 <small class="text-muted">${percentage}%</small>
               </div>
               <div class="progress progress-thin">
