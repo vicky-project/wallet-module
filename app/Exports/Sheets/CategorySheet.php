@@ -245,8 +245,7 @@ class CategorySheet implements
 				DataSeries::TYPE_PIECHART,
 				null,
 				range(0, count($dataSeriesValues) - 1),
-				[],
-				$dataSeriesLabels,
+				[new DataSeriesValues("String", null, null, $dataSeriesLabels)],
 				[new DataSeriesValues("Number", null, null, $dataSeriesValues)]
 			);
 
