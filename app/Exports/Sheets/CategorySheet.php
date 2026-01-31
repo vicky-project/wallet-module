@@ -7,7 +7,6 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithCharts;
-use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Chart\Chart;
 use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
@@ -172,7 +171,7 @@ class CategorySheet implements
 		return "Kategori";
 	}
 
-	private function charts()
+	public function charts()
 	{
 		$charts = [];
 		// Buat chart untuk pendapatan jika ada data
