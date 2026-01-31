@@ -224,8 +224,8 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet->getColumnDimension("A")->setWidth(30);
 		$sheet->getColumnDimension("B")->setWidth(20);
 		$sheet->getColumnDimension("C")->setWidth(20);
-		$sheet->getColumnDimension("D")->setWidth(15);
-		$sheet->getColumnDimension("E")->setWidth(10);
+		$sheet->getColumnDimension("D")->setWidth(10);
+		$sheet->getColumnDimension("E")->setWidth(8);
 		$sheet->getColumnDimension("F")->setWidth(20);
 
 		// ============ MAIN TITLE ============
