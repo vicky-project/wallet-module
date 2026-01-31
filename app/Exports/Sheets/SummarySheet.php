@@ -138,10 +138,10 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ SECTION HEADERS ============
 		$sectionHeaders = [
-			"RINGKASAN UTAMA" => 4,
-			"STATISTIK TRANSAKSI" => 9,
-			"ANALISIS" => 14,
-			"INFORMASI LAPORAN" => 18,
+			"RINGKASAN UTAMA" => 3,
+			"STATISTIK TRANSAKSI" => 8,
+			"ANALISIS" => 13,
+			"INFORMASI LAPORAN" => 17,
 		];
 
 		foreach ($sectionHeaders as $section => $row) {
@@ -166,7 +166,7 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ FORMAT ANGKAMATAUANG ============
 		// Format angka untuk ringkasan utama
-		for ($row = 5; $row <= 7; $row++) {
+		for ($row = 4; $row <= 6; $row++) {
 			$sheet
 				->getStyle("B{$row}")
 				->getNumberFormat()
@@ -175,14 +175,14 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// Format angka untuk total transfer
 		$sheet
-			->getStyle("B12")
+			->getStyle("B11")
 			->getNumberFormat()
 			->setFormatCode("#,##0");
 
 		// ============ WARNA UNTUK NILAI POSITIF/NEGATIF ============
 		$netFlow =
 			$this->reportData["report_data"]["financial_summary"]["net_flow"] ?? 0;
-		$netRow = 7;
+		$netRow = 6;
 
 		// Warna untuk saldo bersih
 		if ($netFlow > 0) {
@@ -202,28 +202,28 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		// ============ BORDER UNTUK TABEL ============
 		// Border untuk ringkasan utama
 		$sheet
-			->getStyle("A5:B7")
+			->getStyle("A4:B6")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
 		// Border untuk statistik transaksi
 		$sheet
-			->getStyle("A10:C12")
+			->getStyle("A9:C11")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
 		// Border untuk analisis
 		$sheet
-			->getStyle("A15:B16")
+			->getStyle("A14:B15")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
 		// Border untuk informasi laporan
 		$sheet
-			->getStyle("A19:B22")
+			->getStyle("A18:B20")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
@@ -231,39 +231,39 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		// ============ ALIGNMENT ============
 		// Semua label rata kiri
 		$sheet
-			->getStyle("A4:A{$lastRow}")
+			->getStyle("A3:A{$lastRow}")
 			->getAlignment()
 			->setHorizontal("left")
 			->setVertical("center");
 
 		// Semua nilai/number rata kanan
 		$sheet
-			->getStyle("B5:B{$lastRow}")
+			->getStyle("B4:B{$lastRow}")
 			->getAlignment()
 			->setHorizontal("right")
 			->setVertical("center");
 
 		// Persentase rata tengah
 		$sheet
-			->getStyle("C10:C12")
+			->getStyle("C9:C11")
 			->getAlignment()
 			->setHorizontal("center")
 			->setVertical("center");
 
 		// Analisis dan informasi rata kiri
 		$sheet
-			->getStyle("B15:B16")
+			->getStyle("B14:B15")
 			->getAlignment()
 			->setHorizontal("left");
 
 		$sheet
-			->getStyle("B19:B22")
+			->getStyle("B18:B20")
 			->getAlignment()
 			->setHorizontal("left");
 
 		// ============ FONT STYLING ============
 		// Bold untuk nilai penting
-		$importantRows = [5, 6, 7, 12]; // Pendapatan, pengeluaran, saldo, transfer
+		$importantRows = [4, 5, 6, 11]; // Pendapatan, pengeluaran, saldo, transfer
 		foreach ($importantRows as $row) {
 			if ($row <= $lastRow) {
 				$sheet
@@ -275,14 +275,14 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// Alternating row color untuk statistik transaksi
 		$sheet
-			->getStyle("A10:C10")
+			->getStyle("A9:C9")
 			->getFill()
 			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 			->getStartColor()
 			->setARGB("FFF8F9F9");
 
 		$sheet
-			->getStyle("A12:C12")
+			->getStyle("A11:C11")
 			->getFill()
 			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 			->getStartColor()
@@ -292,7 +292,7 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		for ($row = 1; $row <= $lastRow; $row++) {
 			if ($row == 1) {
 				$sheet->getRowDimension($row)->setRowHeight(25);
-			} elseif (in_array($row, [4, 9, 14, 18])) {
+			} elseif (in_array($row, [3, 8, 13, 17])) {
 				$sheet->getRowDimension($row)->setRowHeight(20);
 			} else {
 				$sheet->getRowDimension($row)->setRowHeight(18);
