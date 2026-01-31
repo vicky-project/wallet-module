@@ -204,6 +204,19 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->setHorizontal("center")
 			->setVertical("center");
 
+		$sheet
+			->getStyle("A" . $incomeTitleRow)
+			->getFill()
+			->setFillType(Fill::FILL_SOLID)
+			->getStartColor()
+			->setARGB("FF2C3E50");
+
+		$sheet
+			->getStyle("A" . $incomeTitleRow)
+			->getFont()
+			->getColor()
+			->setARGB("FFFFFFFF");
+
 		// Style judul expense
 		if ($expenseTitleRow) {
 			$sheet
@@ -217,6 +230,19 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				->getAlignment()
 				->setHorizontal("center")
 				->setVertical("center");
+
+			$sheet
+				->getStyle("A" . $expenseTitleRow)
+				->getFill()
+				->setFillType(Fill::FILL_SOLID)
+				->getStartColor()
+				->setARGB("FF2C3E50");
+
+			$sheet
+				->getStyle("A" . $expenseTitleRow)
+				->getFont()
+				->getColor()
+				->setARGB("FFFFFFFF");
 		}
 
 		// Style judul summary
