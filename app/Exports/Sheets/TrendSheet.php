@@ -424,7 +424,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// Border untuk analisis performance
 		$performanceStart = $detailEnd + 3;
-		$performanceEnd = $performanceStart + 7;
+		$performanceEnd = $performanceStart + 6;
 		$sheet
 			->getStyle("A{$performanceStart}:C{$performanceEnd}")
 			->getBorders()
@@ -461,7 +461,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 		// ============ SPECIAL HIGHLIGHTS ============
 		// Bold untuk total baris
-		$totalRow = $detailEnd;
+		$totalRow = $recommendationStart + 4;
 		if ($totalRow <= $lastRow) {
 			$sheet
 				->getStyle("A{$totalRow}:F{$totalRow}")
