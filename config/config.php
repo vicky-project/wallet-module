@@ -28,6 +28,9 @@ return [
 	 */
 	"metadata" => [
 		"company_name" => config("app.name", "Financial Item"),
-		"company_address" => config("app.address", "Planet Pluto"),
+		"company_address" => config(
+			"app.address",
+			"Jl. antah berantah, Dagelan, Indonesia"
+		),
 	],
 ];

@@ -22,23 +22,16 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 		$this->reportData = $reportData;
 		$this->companyName = config(
 			"wallet.metadata.company_name",
-			"Financial System"
+			"Financial Management System"
 		);
 		$this->companyAddress = config(
 			"wallet.metadata.company_address",
-			"Your Company Address"
+			"Jl. Contoh No. 123, Jakarta, Indonesia"
 		);
 	}
 
 	public function array(): array
 	{
-		// Format periode yang lebih baik
-		$period = $this->formatPeriod($this->reportData["period"] ?? []);
-		$exportDate = isset($this->reportData["exported_at"])
-			? date("d F Y H:i", strtotime($this->reportData["exported_at"]))
-			: date("d F Y H:i");
-
-		// Data untuk cover sheet dengan layout yang lebih terstruktur
 		return [[""]];
 	}
 
@@ -53,29 +46,26 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 			AfterSheet::class => function (AfterSheet $event) {
 				$sheet = $event->sheet->getDelegate();
 
-				// ============ SET LAYOUT DASAR ============
+				// Setup dasar
 				$this->setupBasicLayout($sheet);
 
-				// ============ HEADER SECTION ============
-				$this->setupHeader($sheet);
+				// Header perusahaan
+				$this->setupCompanyHeader($sheet);
 
-				// ============ JUDUL UTAMA ============
+				// Judul utama dan periode
 				$this->setupMainTitle($sheet);
 
-				// ============ INFORMASI LAPORAN ============
+				// Ringkasan keuangan utama
+				$this->setupFinancialSummary($sheet);
+
+				// Daftar sheet/laporan
+				$this->setupSheetList($sheet);
+
+				// Informasi laporan
 				$this->setupReportInfo($sheet);
 
-				// ============ DAFTAR ISI ============
-				$this->setupTableOfContents($sheet);
-
-				// ============ CATATAN ============
-				$this->setupNotes($sheet);
-
-				// ============ FOOTER ============
+				// Footer
 				$this->setupFooter($sheet);
-
-				// ============ FINAL TOUCHES ============
-				$this->finalStyling($sheet);
 			},
 		];
 	}
@@ -84,24 +74,15 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 	{
 		// Set column widths
 		$sheet->getColumnDimension("A")->setWidth(5);
-		$sheet->getColumnDimension("B")->setWidth(30);
-		$sheet->getColumnDimension("C")->setWidth(30);
-		$sheet->getColumnDimension("D")->setWidth(30);
+		$sheet->getColumnDimension("B")->setWidth(35);
+		$sheet->getColumnDimension("C")->setWidth(20);
+		$sheet->getColumnDimension("D")->setWidth(20);
 		$sheet->getColumnDimension("E")->setWidth(5);
 
-		// Set default font for entire sheet
-		$sheet
-			->getParent()
-			->getDefaultStyle()
-			->getFont()
-			->setName("Calibri")
-			->setSize(11);
-
-		// Hide gridlines for cleaner look
+		// Hide gridlines
 		$sheet->setShowGridlines(false);
 
-		// Set print area
-		$sheet->getPageSetup()->setPrintArea("A1:E40");
+		// Set page setup
 		$sheet
 			->getPageSetup()
 			->setOrientation(
@@ -114,77 +95,62 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 			);
 		$sheet->getPageSetup()->setFitToPage(true);
 		$sheet->getPageSetup()->setFitToWidth(1);
-		$sheet->getPageSetup()->setFitToHeight(0);
 	}
 
-	private function setupHeader($sheet)
+	private function setupCompanyHeader($sheet)
 	{
-		// Nama perusahaan (atas)
-		$sheet->mergeCells("B1:D1");
-		$sheet->setCellValue("B1", strtoupper($this->companyName));
-		$sheet->getStyle("B1")->applyFromArray([
-			"font" => [
-				"name" => "Calibri",
-				"bold" => true,
-				"size" => 16,
+		// Background header
+		$sheet->mergeCells("B2:D2");
+		$sheet->getStyle("B2:D2")->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
 				"color" => ["rgb" => "2C3E50"],
 			],
+			"font" => [
+				"name" => "Arial",
+				"bold" => true,
+				"size" => 16,
+				"color" => ["rgb" => "FFFFFF"],
+			],
 			"alignment" => [
 				"horizontal" => Alignment::HORIZONTAL_CENTER,
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
+		$sheet->setCellValue("B2", $this->companyName);
+		$sheet->getRowDimension(2)->setRowHeight(30);
 
 		// Alamat perusahaan
-		$sheet->mergeCells("B2:D2");
-		$sheet->setCellValue("B2", $this->companyAddress);
-		$sheet->getStyle("B2")->applyFromArray([
+		$sheet->mergeCells("B3:D3");
+		$sheet->getStyle("B3:D3")->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
+				"color" => ["rgb" => "34495E"],
+			],
 			"font" => [
-				"name" => "Calibri",
+				"name" => "Arial",
 				"size" => 10,
-				"color" => ["rgb" => "7F8C8D"],
+				"color" => ["rgb" => "FFFFFF"],
 			],
 			"alignment" => [
 				"horizontal" => Alignment::HORIZONTAL_CENTER,
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
-
-		// Garis pemisah
-		$sheet->mergeCells("B3:D3");
-		$sheet->getStyle("B3:D3")->applyFromArray([
-			"borders" => [
-				"bottom" => [
-					"borderStyle" => Border::BORDER_MEDIUM,
-					"color" => ["rgb" => "3498DB"],
-				],
-			],
-		]);
+		$sheet->setCellValue("B3", $this->companyAddress);
+		$sheet->getRowDimension(3)->setRowHeight(20);
 	}
 
 	private function setupMainTitle($sheet)
 	{
-		// Title container background
+		// Spasi
+		$sheet->getRowDimension(5)->setRowHeight(15);
+
+		// Judul utama
 		$sheet->mergeCells("B6:D6");
 		$sheet->getStyle("B6:D6")->applyFromArray([
-			"fill" => [
-				"fillType" => Fill::FILL_SOLID,
-				"color" => ["rgb" => "F8F9FA"],
-			],
-			"borders" => [
-				"allBorders" => [
-					"borderStyle" => Border::BORDER_THIN,
-					"color" => ["rgb" => "DEE2E6"],
-				],
-			],
-		]);
-
-		// Main title
-		$sheet->mergeCells("B7:D7");
-		$sheet->setCellValue("B7", "LAPORAN KEUANGAN");
-		$sheet->getStyle("B7")->applyFromArray([
 			"font" => [
-				"name" => "Calibri",
+				"name" => "Arial",
 				"bold" => true,
 				"size" => 24,
 				"color" => ["rgb" => "2C3E50"],
@@ -194,13 +160,14 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
+		$sheet->setCellValue("B6", "LAPORAN KEUANGAN");
+		$sheet->getRowDimension(6)->setRowHeight(35);
 
 		// Subtitle
-		$sheet->mergeCells("B8:D8");
-		$sheet->setCellValue("B8", "Analisis dan Ringkasan Keuangan");
-		$sheet->getStyle("B8")->applyFromArray([
+		$sheet->mergeCells("B7:D7");
+		$sheet->getStyle("B7:D7")->applyFromArray([
 			"font" => [
-				"name" => "Calibri",
+				"name" => "Arial",
 				"italic" => true,
 				"size" => 12,
 				"color" => ["rgb" => "7F8C8D"],
@@ -210,10 +177,12 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
+		$sheet->setCellValue("B7", "Analisis dan Ringkasan Keuangan");
+		$sheet->getRowDimension(7)->setRowHeight(20);
 
-		// Decorative line under title
-		$sheet->mergeCells("B9:D9");
-		$sheet->getStyle("B9:D9")->applyFromArray([
+		// Garis dekoratif
+		$sheet->mergeCells("B8:D8");
+		$sheet->getStyle("B8:D8")->applyFromArray([
 			"borders" => [
 				"bottom" => [
 					"borderStyle" => Border::BORDER_MEDIUM,
@@ -221,92 +190,23 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 				],
 			],
 		]);
+		$sheet->getRowDimension(8)->setRowHeight(10);
+
+		// Spasi
+		$sheet->getRowDimension(9)->setRowHeight(15);
 	}
 
-	private function setupReportInfo($sheet)
+	private function setupFinancialSummary($sheet)
 	{
-		$period = $this->formatPeriod($this->reportData["period"] ?? []);
-		$exportDate = isset($this->reportData["exported_at"])
-			? date("d F Y H:i", strtotime($this->reportData["exported_at"]))
-			: date("d F Y H:i");
+		$summary = $this->reportData["report_data"]["financial_summary"] ?? [];
+		$income = $summary["income_number"] ?? 0;
+		$expense = $summary["expense_number"] ?? 0;
+		$netFlow = $summary["net_flow"] ?? 0;
 
-		// Info box container
-		$infoStartRow = 11;
-		$sheet->mergeCells("B{$infoStartRow}:D" . ($infoStartRow + 4));
-		$sheet
-			->getStyle("B{$infoStartRow}:D" . ($infoStartRow + 4))
-			->applyFromArray([
-				"fill" => [
-					"fillType" => Fill::FILL_SOLID,
-					"color" => ["rgb" => "F8F9FA"],
-				],
-				"borders" => [
-					"allBorders" => [
-						"borderStyle" => Border::BORDER_THIN,
-						"color" => ["rgb" => "DEE2E6"],
-					],
-				],
-			]);
-
-		// Info title
-		$sheet->mergeCells("B{$infoStartRow}:D{$infoStartRow}");
-		$sheet->setCellValue("B{$infoStartRow}", "INFORMASI LAPORAN");
-		$sheet->getStyle("B{$infoStartRow}")->applyFromArray([
-			"font" => [
-				"name" => "Calibri",
-				"bold" => true,
-				"size" => 12,
-				"color" => ["rgb" => "2C3E50"],
-			],
-			"alignment" => [
-				"horizontal" => Alignment::HORIZONTAL_CENTER,
-				"vertical" => Alignment::VERTICAL_CENTER,
-			],
-			"fill" => [
-				"fillType" => Fill::FILL_SOLID,
-				"color" => ["rgb" => "E9ECEF"],
-			],
-		]);
-
-		// Info details
-		$infoRow = $infoStartRow + 1;
-		$sheet->setCellValue("B{$infoRow}", "Periode:");
-		$sheet->setCellValue("C{$infoRow}", $period);
-		$sheet
-			->getStyle("B{$infoRow}")
-			->getFont()
-			->setBold(true);
-
-		$infoRow++;
-		$sheet->setCellValue("B{$infoRow}", "Tanggal Ekspor:");
-		$sheet->setCellValue("C{$infoRow}", $exportDate);
-		$sheet
-			->getStyle("B{$infoRow}")
-			->getFont()
-			->setBold(true);
-
-		$infoRow++;
-		$sheet->setCellValue("B{$infoRow}", "Mata Uang:");
-		$sheet->setCellValue("C{$infoRow}", $this->reportData["currency"] ?? "IDR");
-		$sheet
-			->getStyle("B{$infoRow}")
-			->getFont()
-			->setBold(true);
-
-		// Format untuk nilai
-		$sheet
-			->getStyle("C" . ($infoStartRow + 1) . ":C" . ($infoStartRow + 3))
-			->getFont()
-			->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color("FF34495E"));
-	}
-
-	private function setupTableOfContents($sheet)
-	{
-		$tocStartRow = 17;
-
-		// TOC container
-		$sheet->mergeCells("B{$tocStartRow}:D" . ($tocStartRow + 8));
-		$sheet->getStyle("B{$tocStartRow}:D" . ($tocStartRow + 8))->applyFromArray([
+		// Container ringkasan
+		$startRow = 10;
+		$sheet->mergeCells("B{$startRow}:D" . ($startRow + 4));
+		$sheet->getStyle("B{$startRow}:D" . ($startRow + 4))->applyFromArray([
 			"fill" => [
 				"fillType" => Fill::FILL_SOLID,
 				"color" => ["rgb" => "F8F9FA"],
@@ -319,125 +219,288 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 			],
 		]);
 
-		// TOC title
-		$sheet->mergeCells("B{$tocStartRow}:D{$tocStartRow}");
-		$sheet->setCellValue("B{$tocStartRow}", "DAFTAR ISI");
-		$sheet->getStyle("B{$tocStartRow}")->applyFromArray([
+		// Judul ringkasan
+		$sheet->mergeCells("B{$startRow}:D{$startRow}");
+		$sheet->getStyle("B{$startRow}:D{$startRow}")->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
+				"color" => ["rgb" => "E9ECEF"],
+			],
 			"font" => [
-				"name" => "Calibri",
+				"name" => "Arial",
 				"bold" => true,
-				"size" => 14,
+				"size" => 12,
 				"color" => ["rgb" => "2C3E50"],
 			],
 			"alignment" => [
 				"horizontal" => Alignment::HORIZONTAL_CENTER,
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
-			"fill" => [
-				"fillType" => Fill::FILL_SOLID,
-				"color" => ["rgb" => "E9ECEF"],
-			],
 		]);
+		$sheet->setCellValue("B{$startRow}", "RINGKASAN KEUANGAN");
+		$sheet->getRowDimension($startRow)->setRowHeight(25);
 
-		// TOC items
-		$sections = [
-			"1. RINGKASAN EKSEKUTIF",
-			"2. TREND PENDAPATAN vs PENGELUARAN",
-			"3. ANALISIS PENGELUARAN PER KATEGORI",
-			"4. ANALISIS ANGGARAN vs REALISASI",
-			"5. DISTRIBUSI SALDO AKUN",
-			"6. AKTIVITAS TRANSAKSI",
+		// Data ringkasan
+		$data = [
+			["Total Pendapatan", $this->formatCurrency($income), "00A651"],
+			["Total Pengeluaran", $this->formatCurrency($expense), "E74C3C"],
+			[
+				"Saldo Bersih",
+				$this->formatCurrency($netFlow),
+				$netFlow >= 0 ? "27AE60" : "E74C3C",
+			],
 		];
 
-		$row = $tocStartRow + 1;
-		foreach ($sections as $section) {
-			$sheet->setCellValue("B{$row}", $section);
-			$sheet
-				->getStyle("B{$row}")
-				->getFont()
-				->setSize(11);
-			$sheet->getRowDimension($row)->setRowHeight(22);
-			$row++;
-		}
+		$currentRow = $startRow + 1;
+		foreach ($data as $item) {
+			$sheet->setCellValue("B{$currentRow}", $item[0]);
+			$sheet->setCellValue("C{$currentRow}", $item[1]);
 
-		// Add page numbers
-		$row = $tocStartRow + 1;
-		foreach ($sections as $index => $section) {
-			$sheet->setCellValue("D{$row}", "Hal. " . ($index + 2));
-			$sheet
-				->getStyle("D{$row}")
-				->getFont()
-				->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color("FF7F8C8D"));
-			$sheet
-				->getStyle("D{$row}")
-				->getAlignment()
-				->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-			$row++;
-		}
-	}
-
-	private function setupNotes($sheet)
-	{
-		$notesStartRow = 26;
-
-		// Notes container
-		$sheet->mergeCells("B{$notesStartRow}:D" . ($notesStartRow + 5));
-		$sheet
-			->getStyle("B{$notesStartRow}:D" . ($notesStartRow + 5))
-			->applyFromArray([
-				"fill" => [
-					"fillType" => Fill::FILL_SOLID,
-					"color" => ["rgb" => "FFF9E6"],
+			$sheet->getStyle("B{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"bold" => true,
+					"size" => 11,
 				],
-				"borders" => [
-					"allBorders" => [
-						"borderStyle" => Border::BORDER_THIN,
-						"color" => ["rgb" => "FFEAA7"],
-					],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_LEFT,
+					"vertical" => Alignment::VERTICAL_CENTER,
 				],
 			]);
 
-		// Notes title
-		$sheet->mergeCells("B{$notesStartRow}:D{$notesStartRow}");
-		$sheet->setCellValue("B{$notesStartRow}", "CATATAN PENTING");
-		$sheet->getStyle("B{$notesStartRow}")->applyFromArray([
+			$sheet->getStyle("C{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"bold" => true,
+					"size" => 11,
+					"color" => ["rgb" => $item[2]],
+				],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_RIGHT,
+					"vertical" => Alignment::VERTICAL_CENTER,
+				],
+				"numberFormat" => [
+					"formatCode" => "#,##0",
+				],
+			]);
+
+			$sheet->getRowDimension($currentRow)->setRowHeight(22);
+			$currentRow++;
+		}
+
+		// Spasi
+		$sheet->getRowDimension($currentRow)->setRowHeight(15);
+	}
+
+	private function setupSheetList($sheet)
+	{
+		$startRow = 18;
+
+		// Container daftar sheet
+		$sheet->mergeCells("B{$startRow}:D" . ($startRow + 8));
+		$sheet->getStyle("B{$startRow}:D" . ($startRow + 8))->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
+				"color" => ["rgb" => "FFFFFF"],
+			],
+			"borders" => [
+				"allBorders" => [
+					"borderStyle" => Border::BORDER_THIN,
+					"color" => ["rgb" => "DEE2E6"],
+				],
+			],
+		]);
+
+		// Judul daftar sheet
+		$sheet->mergeCells("B{$startRow}:D{$startRow}");
+		$sheet->getStyle("B{$startRow}:D{$startRow}")->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
+				"color" => ["rgb" => "3498DB"],
+			],
 			"font" => [
-				"name" => "Calibri",
+				"name" => "Arial",
 				"bold" => true,
 				"size" => 12,
-				"color" => ["rgb" => "E67E22"],
+				"color" => ["rgb" => "FFFFFF"],
 			],
 			"alignment" => [
 				"horizontal" => Alignment::HORIZONTAL_CENTER,
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
+		$sheet->setCellValue("B{$startRow}", "DAFTAR LAPORAN");
+		$sheet->getRowDimension($startRow)->setRowHeight(25);
 
-		// Notes items
-		$notes = [
-			"• Laporan ini dibuat secara otomatis oleh sistem",
-			"• Data bersumber dari transaksi yang tercatat",
-			"• Chart interaktif tersedia dalam versi Excel (XLSX)",
-			"• Untuk pertanyaan, hubungi administrator sistem",
-			"• Dokumen ini bersifat rahasia dan terbatas",
+		// Daftar sheet yang tersedia
+		$sheets = [
+			["Ringkasan", "Ringkasan keuangan dan analisis"],
+			["Transaksi", "Detail transaksi per bulan"],
+			["Kategori", "Analisis pengeluaran per kategori"],
+			["Anggaran", "Analisis anggaran vs realisasi"],
+			["Rekap", "Ringkasan per akun dan periode"],
 		];
 
-		$row = $notesStartRow + 1;
-		foreach ($notes as $note) {
-			$sheet->setCellValue("B{$row}", $note);
-			$sheet
-				->getStyle("B{$row}")
-				->getFont()
-				->setSize(10);
-			$row++;
+		$currentRow = $startRow + 1;
+		foreach ($sheets as $index => $sheetItem) {
+			$sheet->setCellValue("B{$currentRow}", $sheetItem[0]);
+			$sheet->setCellValue("C{$currentRow}", $sheetItem[1]);
+			$sheet->setCellValue("D{$currentRow}", "Hal. " . ($index + 2));
+
+			$sheet->getStyle("B{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"bold" => true,
+					"size" => 11,
+					"color" => ["rgb" => "2C3E50"],
+				],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_LEFT,
+					"vertical" => Alignment::VERTICAL_CENTER,
+				],
+			]);
+
+			$sheet->getStyle("C{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"size" => 10,
+					"color" => ["rgb" => "7F8C8D"],
+				],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_LEFT,
+					"vertical" => Alignment::VERTICAL_CENTER,
+				],
+			]);
+
+			$sheet->getStyle("D{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"italic" => true,
+					"size" => 10,
+					"color" => ["rgb" => "95A5A6"],
+				],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_RIGHT,
+					"vertical" => Alignment::VERTICAL_CENTER,
+				],
+			]);
+
+			// Alternating row colors
+			if ($index % 2 == 0) {
+				$sheet->getStyle("B{$currentRow}:D{$currentRow}")->applyFromArray([
+					"fill" => [
+						"fillType" => Fill::FILL_SOLID,
+						"color" => ["rgb" => "F8F9FA"],
+					],
+				]);
+			}
+
+			$sheet->getRowDimension($currentRow)->setRowHeight(20);
+			$currentRow++;
 		}
+
+		// Spasi
+		$sheet->getRowDimension($currentRow)->setRowHeight(10);
+	}
+
+	private function setupReportInfo($sheet)
+	{
+		$startRow = 28;
+
+		// Container informasi
+		$sheet->mergeCells("B{$startRow}:D" . ($startRow + 5));
+		$sheet->getStyle("B{$startRow}:D" . ($startRow + 5))->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
+				"color" => ["rgb" => "FFFFFF"],
+			],
+			"borders" => [
+				"allBorders" => [
+					"borderStyle" => Border::BORDER_THIN,
+					"color" => ["rgb" => "DEE2E6"],
+				],
+			],
+		]);
+
+		// Judul informasi
+		$sheet->mergeCells("B{$startRow}:D{$startRow}");
+		$sheet->getStyle("B{$startRow}:D{$startRow}")->applyFromArray([
+			"fill" => [
+				"fillType" => Fill::FILL_SOLID,
+				"color" => ["rgb" => "2C3E50"],
+			],
+			"font" => [
+				"name" => "Arial",
+				"bold" => true,
+				"size" => 11,
+				"color" => ["rgb" => "FFFFFF"],
+			],
+			"alignment" => [
+				"horizontal" => Alignment::HORIZONTAL_CENTER,
+				"vertical" => Alignment::VERTICAL_CENTER,
+			],
+		]);
+		$sheet->setCellValue("B{$startRow}", "INFORMASI DOKUMEN");
+		$sheet->getRowDimension($startRow)->setRowHeight(22);
+
+		// Data informasi
+		$period = $this->formatPeriod($this->reportData["period"] ?? []);
+		$exportDate = isset($this->reportData["exported_at"])
+			? date("d F Y H:i", strtotime($this->reportData["exported_at"]))
+			: date("d F Y H:i");
+
+		$infoData = [
+			["Periode Laporan:", $period],
+			["Tanggal Ekspor:", $exportDate],
+			["Mata Uang:", $this->reportData["currency"] ?? "IDR"],
+			["Format File:", "Microsoft Excel (.xlsx)"],
+			["Status Dokumen:", "Dokumen Resmi"],
+			["Konfidensial:", "Tinggi"],
+		];
+
+		$currentRow = $startRow + 1;
+		foreach ($infoData as $info) {
+			$sheet->setCellValue("B{$currentRow}", $info[0]);
+			$sheet->setCellValue("C{$currentRow}", $info[1]);
+
+			$sheet->getStyle("B{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"bold" => true,
+					"size" => 10,
+					"color" => ["rgb" => "2C3E50"],
+				],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_LEFT,
+					"vertical" => Alignment::VERTICAL_CENTER,
+				],
+			]);
+
+			$sheet->getStyle("C{$currentRow}")->applyFromArray([
+				"font" => [
+					"name" => "Arial",
+					"size" => 10,
+					"color" => ["rgb" => "34495E"],
+				],
+				"alignment" => [
+					"horizontal" => Alignment::HORIZONTAL_LEFT,
+					"vertical" => Alignment::VERTICAL_CENTER,
+				],
+			]);
+
+			$sheet->getRowDimension($currentRow)->setRowHeight(18);
+			$currentRow++;
+		}
+
+		// Spasi
+		$sheet->getRowDimension($currentRow)->setRowHeight(15);
 	}
 
 	private function setupFooter($sheet)
 	{
-		$footerRow = 33;
+		$footerRow = 36;
 
-		// Decorative line
+		// Garis pemisah
 		$sheet->mergeCells("B{$footerRow}:D{$footerRow}");
 		$sheet->getStyle("B{$footerRow}:D{$footerRow}")->applyFromArray([
 			"borders" => [
@@ -447,19 +510,19 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 				],
 			],
 		]);
+		$sheet->getRowDimension($footerRow)->setRowHeight(10);
 
-		// Footer text
+		// Copyright
 		$footerRow++;
 		$sheet->mergeCells("B{$footerRow}:D{$footerRow}");
 		$currentYear = date("Y");
 		$sheet->setCellValue(
 			"B{$footerRow}",
-			"© {$currentYear} {$this->companyName} • Dokumen Rahasia"
+			"© {$currentYear} {$this->companyName} - Hak Cipta Dilindungi"
 		);
 		$sheet->getStyle("B{$footerRow}")->applyFromArray([
 			"font" => [
-				"name" => "Calibri",
-				"italic" => true,
+				"name" => "Arial",
 				"size" => 9,
 				"color" => ["rgb" => "7F8C8D"],
 			],
@@ -468,17 +531,19 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
+		$sheet->getRowDimension($footerRow)->setRowHeight(18);
 
 		// Generated by
 		$footerRow++;
 		$sheet->mergeCells("B{$footerRow}:D{$footerRow}");
 		$sheet->setCellValue(
 			"B{$footerRow}",
-			"Generated by Vickyserver Financial System"
+			"Dibuat oleh: Financial Management System v" .
+				($this->reportData["version"] ?? "1.0")
 		);
 		$sheet->getStyle("B{$footerRow}")->applyFromArray([
 			"font" => [
-				"name" => "Calibri",
+				"name" => "Arial",
 				"size" => 8,
 				"color" => ["rgb" => "95A5A6"],
 			],
@@ -487,36 +552,15 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 				"vertical" => Alignment::VERTICAL_CENTER,
 			],
 		]);
+		$sheet->getRowDimension($footerRow)->setRowHeight(16);
 	}
 
-	private function finalStyling($sheet)
+	private function formatCurrency($value)
 	{
-		// Center all content horizontally
-		$sheet
-			->getStyle("A1:E40")
-			->getAlignment()
-			->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-		// Set row heights for better spacing
-		$sheet->getRowDimension(1)->setRowHeight(25);
-		$sheet->getRowDimension(2)->setRowHeight(20);
-		$sheet->getRowDimension(3)->setRowHeight(5);
-		$sheet->getRowDimension(6)->setRowHeight(10);
-		$sheet->getRowDimension(7)->setRowHeight(35);
-		$sheet->getRowDimension(8)->setRowHeight(20);
-		$sheet->getRowDimension(9)->setRowHeight(5);
-		$sheet->getRowDimension(10)->setRowHeight(15);
-
-		// Set page margins
-		$sheet->getPageMargins()->setTop(0.75);
-		$sheet->getPageMargins()->setRight(0.75);
-		$sheet->getPageMargins()->setLeft(0.75);
-		$sheet->getPageMargins()->setBottom(0.75);
-		$sheet->getPageMargins()->setHeader(0.3);
-		$sheet->getPageMargins()->setFooter(0.3);
-
-		// Set print titles
-		$sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 3);
+		if (!is_numeric($value)) {
+			return "0";
+		}
+		return $value / 100;
 	}
 
 	private function formatPeriod(array $period): string
@@ -525,16 +569,9 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 			return "Semua Periode";
 		}
 
-		$start = date("d F Y", strtotime($period["start_date"]));
-		$end = date("d F Y", strtotime($period["end_date"]));
+		$start = date("d M Y", strtotime($period["start_date"]));
+		$end = date("d M Y", strtotime($period["end_date"]));
 
 		return "{$start} - {$end}";
-	}
-
-	// Helper method to get active sheet (for watermark)
-	private function getActiveSheet()
-	{
-		// This method is used for watermark drawing
-		return null; // Will be set by Laravel Excel
 	}
 }

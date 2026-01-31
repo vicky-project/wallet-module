@@ -343,7 +343,8 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			return "Tidak dapat dihitung";
 		}
 
-		$ratio = ($expense / $income) * 100;
+		$ratio =
+			($this->formatCurrency($expense) / $this->formatCurrency($income)) * 100;
 		return number_format($ratio, 1) . "%";
 	}
 }
