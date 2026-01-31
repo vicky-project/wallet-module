@@ -198,7 +198,9 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->getStyle("A" . $incomeTitleRow)
 			->getFont()
 			->setBold(true)
-			->setSize(14);
+			->setSize(16)
+			->setName("Arial");
+
 		$sheet->mergeCells("A" . $incomeTitleRow . ":D" . $incomeTitleRow);
 		$sheet
 			->getStyle("A" . $incomeTitleRow)
@@ -217,6 +219,8 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->getFont()
 			->getColor()
 			->setARGB("FFFFFFFF");
+
+		$sheet->getRowDimension($incomeTitleRow)->setRowHeight(30);
 
 		// Style judul expense
 		if ($expenseTitleRow) {
@@ -243,6 +247,8 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				->getFont()
 				->getColor()
 				->setARGB("FFFFFFFF");
+
+			$sheet->getRowDimension($expenseTitleRow)->setRowHeight(30);
 		}
 
 		// Style judul summary
@@ -251,13 +257,24 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				->getStyle("A" . $summaryTitleRow)
 				->getFont()
 				->setBold(true)
-				->setSize(14);
+				->setSize(16);
 			$sheet->mergeCells("A" . $summaryTitleRow . ":D" . $summaryTitleRow);
 			$sheet
 				->getStyle("A" . $summaryTitleRow)
 				->getAlignment()
-				->setHorizontal("center")
-				->setVertical("center");
+				->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+			$sheet
+				->getStyle("A" . $summaryTitleRow)
+				->getFill()
+				->setFillType(Fill::FILL_SOLID)
+				->getStartColor()
+				->setARGB("FF2C3E50");
+			$sheet
+				->getStyle("A" . $summaryTitleRow)
+				->getFont()
+				->getColor()
+				->setARGB("FFFFFFFF");
 		}
 
 		// Format angka untuk semua data numerik di kolom B
@@ -399,7 +416,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$sheet
 			->getStyle("A" . $incomeHeaderRow . ":D" . $incomeHeaderRow)
 			->getFill()
-			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+			->setFillType(Fill::FILL_SOLID)
 			->getStartColor()
 			->setARGB("FF2E86C1");
 
@@ -420,7 +437,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			$sheet
 				->getStyle("A" . $expenseHeaderRow . ":D" . $expenseHeaderRow)
 				->getFill()
-				->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+				->setFillType(Fill::FILL_SOLID)
 				->getStartColor()
 				->setARGB("FFE74C3C");
 
