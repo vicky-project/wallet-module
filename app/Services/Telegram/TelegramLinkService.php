@@ -29,8 +29,8 @@ class TelegramLinkService
 
 		return [
 			"code" => $code,
-			"expires_at" => $user->telegram_code_expires_at,
-			"bot_username" => env("TELEGRAM_BOT_USERNAME", "your_bot_username"),
+			"expires_at" => $use->fresh()->telegram_code_expires_at,
+			"bot_username" => config("telegram_bot.username", "your_bot_username"),
 		];
 	}
 
