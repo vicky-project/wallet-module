@@ -206,72 +206,75 @@ class CategorySheet implements
 		string $position,
 		string $color
 	) {
-		// Hitung total untuk persentase
-		$total = array_sum($values);
+		try {
+			// Hitung total untuk persentase
+			$total = array_sum($values);
 
-		// Buat data series untuk chart
-		$dataSeriesValues = [];
-		$dataSeriesLabels = [];
+			// Buat data series untuk chart
+			$dataSeriesValues = [];
+			$dataSeriesLabels = [];
 
-		// Siapkan data untuk chart - maksimal 10 kategori agar chart tetap terbaca
-		$maxCategories = min(10, count($labels));
-		$otherValue = 0;
+			// Siapkan data untuk chart - maksimal 10 kategori agar chart tetap terbaca
+			$maxCategories = min(10, count($labels));
+			$otherValue = 0;
 
-		for ($i = 0; $i < $maxCategories; $i++) {
-			if ($i < count($labels)) {
-				$percentage = ($values[$i] / $total) * 100;
-				$dataSeriesLabels[] =
-					$labels[$i] . " (" . number_format($percentage, 1) . "%)";
-				$dataSeriesValues[] = $values[$i];
+			for ($i = 0; $i < $maxCategories; $i++) {
+				if ($i < count($labels)) {
+					$percentage = ($values[$i] / $total) * 100;
+					$dataSeriesLabels[] =
+						$labels[$i] . " (" . number_format($percentage, 1) . "%)";
+					$dataSeriesValues[] = $values[$i];
+				}
 			}
+
+			// Jika ada lebih dari 10 kategori, gabungkan sisanya sebagai "Lainnya"
+			if (count($labels) > $maxCategories) {
+				for ($i = $maxCategories; $i < count($labels); $i++) {
+					$otherValue += $values[$i];
+				}
+				if ($otherValue > 0) {
+					$percentage = ($otherValue / $total) * 100;
+					$dataSeriesLabels[] =
+						"Lainnya (" . number_format($percentage, 1) . "%)";
+					$dataSeriesValues[] = $otherValue;
+				}
+			}
+
+			// Buat data series
+			$series = new DataSeries(
+				DataSeries::TYPE_PIECHART,
+				null,
+				range(0, count($dataSeriesValues) - 1),
+				[],
+				$dataSeriesLabels,
+				[new DataSeriesValues("Number", null, null, $dataSeriesValues)]
+			);
+
+			// Buat plot area
+			$plotArea = new PlotArea(null, [$series]);
+
+			// Buat legenda
+			$legend = new Legend();
+			$legend->setPosition(Legend::POSITION_RIGHT);
+
+			// Buat chart
+			$chart = new Chart(
+				"chart_" . uniqid(),
+				new Title($title),
+				$legend,
+				$plotArea,
+				true
+			);
+
+			// Set posisi chart
+			$chart->setTopLeftPosition($position);
+			$chart->setBottomRightPosition("O15"); // Ukuran chart
+
+			// Tambahkan chart ke worksheet
+			return $chart;
+		} catch (\Exception $e) {
+			throw $e;
 		}
-
-		// Jika ada lebih dari 10 kategori, gabungkan sisanya sebagai "Lainnya"
-		if (count($labels) > $maxCategories) {
-			for ($i = $maxCategories; $i < count($labels); $i++) {
-				$otherValue += $values[$i];
-			}
-			if ($otherValue > 0) {
-				$percentage = ($otherValue / $total) * 100;
-				$dataSeriesLabels[] =
-					"Lainnya (" . number_format($percentage, 1) . "%)";
-				$dataSeriesValues[] = $otherValue;
-			}
-		}
-
-		// Buat data series
-		$series = new DataSeries(
-			DataSeries::TYPE_PIECHART,
-			null,
-			range(0, count($dataSeriesValues) - 1),
-			[],
-			$dataSeriesLabels,
-			[new DataSeriesValues("Number", null, null, $dataSeriesValues)]
-		);
-
-		// Buat plot area
-		$plotArea = new PlotArea(null, [$series]);
-
-		// Buat legenda
-		$legend = new Legend();
-		$legend->setPosition(Legend::POSITION_RIGHT);
-
-		// Buat chart
-		$chart = new Chart(
-			"chart_" . uniqid(),
-			new Title($title),
-			$legend,
-			$plotArea,
-			true
-		);
-
-		// Set posisi chart
-		$chart->setTopLeftPosition($position);
-		//$chart->setBottomRightPosition("O15"); // Ukuran chart
-		//dd($chart);
-
-		// Tambahkan chart ke worksheet
-		return $chart;
 	}
 
 	public function styles(Worksheet $sheet)
