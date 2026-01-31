@@ -4,93 +4,93 @@
 
 @section('content')
 <div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">📱 Integrasi Telegram</h5>
-                </div>
-
-                <div class="card-body">
-                    <!-- Status Section -->
-                    <div class="mb-4" id="status-section">
-                        @if(auth()->user()->hasLinkedTelegram())
-                            <div class="alert alert-success">
-                                <h6>✅ Akun Telegram Terhubung</h6>
-                                <p class="mb-1">Chat ID: {{ auth()->user()->telegram_chat_id }}</p>
-                                @if(auth()->user()->telegram_username)
-                                    <p class="mb-1">Username: @{{ auth()->user()->telegram_username }}</p>
-                                @endif
-                            </div>
-                            <button onclick="unlinkAccount()" class="btn btn-outline-danger">
-                                ✗ Putuskan Koneksi
-                            </button>
-                        @else
-                            <div class="alert alert-warning">
-                                <h6>⚠️ Belum Terhubung</h6>
-                                <p>Hubungkan akun Telegram Anda untuk menambah transaksi via bot</p>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Generate Code Section -->
-                    <div class="mb-4">
-                        <h6>Langkah-langkah:</h6>
-                        <ol>
-                            <li>Klik tombol "Generate Kode" di bawah</li>
-                            <li>Buka Telegram dan cari bot: <strong>@{{ $botUsername }}</strong></li>
-                            <li>Kirim perintah: <code>/link &lt;kode&gt;</code></li>
-                            <li>Tunggu konfirmasi dari bot</li>
-                        </ol>
-
-                        <button onclick="generateCode()" class="btn btn-primary" id="generate-btn">
-                            🔑 Generate Kode Verifikasi
-                        </button>
-                    </div>
-
-                    <!-- Code Display -->
-                    <div id="code-section" class="d-none">
-                        <div class="alert alert-info">
-                            <h6>Kode Verifikasi Anda:</h6>
-                            <div class="text-center my-3">
-                                <div id="code-display" class="display-4 font-weight-bold"></div>
-                                <small class="text-muted">Berlaku sampai: <span id="expiry-time"></span></small>
-                            </div>
-                            <p id="instructions" class="mb-0"></p>
-                        </div>
-                    </div>
-
-                    <!-- Settings Section -->
-                    @if(auth()->user()->hasLinkedTelegram())
-                    <div class="mt-4">
-                        <h6>⚙️ Pengaturan Notifikasi</h6>
-                        <form id="settings-form">
-                            <div class="form-check mb-2">
-                                <input type="checkbox" class="form-check-input" id="notifications" checked>
-                                <label class="form-check-label" for="notifications">Aktifkan Notifikasi</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input type="checkbox" class="form-check-input" id="daily_report">
-                                <label class="form-check-label" for="daily_report">Laporan Harian</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input type="checkbox" class="form-check-input" id="budget_alerts" checked>
-                                <label class="form-check-label" for="budget_alerts">Peringatan Budget</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input type="checkbox" class="form-check-input" id="low_balance_alerts" checked>
-                                <label class="form-check-label" for="low_balance_alerts">Peringatan Saldo Rendah</label>
-                            </div>
-                            <button type="button" onclick="saveSettings()" class="btn btn-sm btn-success mt-2">
-                                💾 Simpan Pengaturan
-                            </button>
-                        </form>
-                    </div>
-                    @endif
-                </div>
-            </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">📱 Integrasi Telegram</h5>
         </div>
+
+        <div class="card-body">
+          <!-- Status Section -->
+          <div class="mb-4" id="status-section">
+            @if(auth()->user()->hasLinkedTelegram())
+              <div class="alert alert-success">
+                <h6>✅ Akun Telegram Terhubung</h6>
+                <p class="mb-1">Chat ID: {{ auth()->user()->telegram_chat_id }}</p>
+                @if(auth()->user()->telegram_username)
+                  <p class="mb-1">Username: @{{ auth()->user()->telegram_username }}</p>
+                @endif
+              </div>
+              <button onclick="unlinkAccount()" class="btn btn-outline-danger">
+                ✗ Putuskan Koneksi
+              </button>
+            @else
+              <div class="alert alert-warning">
+                <h6>⚠️ Belum Terhubung</h6>
+                <p>Hubungkan akun Telegram Anda untuk menambah transaksi via bot</p>
+              </div>
+            @endif
+          </div>
+
+          <!-- Generate Code Section -->
+          <div class="mb-4">
+            <h6>Langkah-langkah:</h6>
+            <ol>
+              <li>Klik tombol "Generate Kode" di bawah</li>
+              <li>Buka Telegram dan cari bot: <strong>@{{ $botUsername }}</strong></li>
+              <li>Kirim perintah: <code>/link &lt;kode&gt;</code></li>
+              <li>Tunggu konfirmasi dari bot</li>
+            </ol>
+
+            <button onclick="generateCode()" class="btn btn-primary" id="generate-btn">
+              🔑 Generate Kode Verifikasi
+            </button>
+          </div>
+
+          <!-- Code Display -->
+          <div id="code-section" class="d-none">
+            <div class="alert alert-info">
+              <h6>Kode Verifikasi Anda:</h6>
+              <div class="text-center my-3">
+                <div id="code-display" class="display-4 font-weight-bold"></div>
+                <small class="text-muted">Berlaku sampai: <span id="expiry-time"></span></small>
+              </div>
+              <p id="instructions" class="mb-0"></p>
+            </div>
+          </div>
+
+          <!-- Settings Section -->
+          @if(auth()->user()->hasLinkedTelegram())
+            <div class="mt-4">
+              <h6>⚙️ Pengaturan Notifikasi</h6>
+              <form id="settings-form">
+                <div class="form-check mb-2">
+                  <input type="checkbox" class="form-check-input" id="notifications" checked>
+                  <label class="form-check-label" for="notifications">Aktifkan Notifikasi</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="checkbox" class="form-check-input" id="daily_report">
+                  <label class="form-check-label" for="daily_report">Laporan Harian</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="checkbox" class="form-check-input" id="budget_alerts" checked>
+                  <label class="form-check-label" for="budget_alerts">Peringatan Budget</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="checkbox" class="form-check-input" id="low_balance_alerts" checked>
+                  <label class="form-check-label" for="low_balance_alerts">Peringatan Saldo Rendah</label>
+                </div>
+                <button type="button" onclick="saveSettings()" class="btn btn-sm btn-success mt-2">
+                  💾 Simpan Pengaturan
+                </button>
+              </form>
+            </div>
+          @endif
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
@@ -160,7 +160,7 @@ function saveSettings() {
         low_balance_alerts: document.getElementById('low_balance_alerts').checked
     };
 
-    fetch('{{ route("app.url") }}/telegram/settings', {
+    fetch('{{ config("app.url") }}/telegram/settings', {
         method: 'PUT',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
