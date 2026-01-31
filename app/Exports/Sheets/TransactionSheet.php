@@ -44,13 +44,18 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 		$cacheKey =
 			"transaction_export_{$this->userId}_" . md5(json_encode($this->filters));
 
+		dd(
+			Transaction::getMonthlyTransactionData(
+				$this->userId,
+				$this->filters["account_id"] ?? null
+			)
+		);
 		$yearsData = Cache::remember($cacheKey, 300, function () {
 			return Transaction::getMonthlyTransactionData(
 				$this->userId,
 				$this->filters["account_id"] ?? null
 			);
 		});
-		dd($yearsData);
 
 		// Jika ada data per tahun
 		if (!empty($yearsData)) {
