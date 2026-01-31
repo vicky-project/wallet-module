@@ -14,7 +14,6 @@ class TelegramLinkService
 	public function generateLinkingCode(User $user): array
 	{
 		$code = $user->generateTelegramVerificationCode();
-		dd($code, $user);
 
 		// Store in cache for quick validation
 		Cache::put(
