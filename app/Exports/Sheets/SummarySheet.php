@@ -27,78 +27,53 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$expenseCount = $summary["expense_count"] ?? 0;
 		$totalTransfer = $summary["total_transfer"] ?? 0;
 
-		// Hitung persentase
+		// Hitung persentase transaksi
 		$totalTransactions = $incomeCount + $expenseCount;
 		$incomePercentage =
 			$totalTransactions > 0 ? ($incomeCount / $totalTransactions) * 100 : 0;
 		$expensePercentage =
 			$totalTransactions > 0 ? ($expenseCount / $totalTransactions) * 100 : 0;
 
-		// Hitung rasio pengeluaran/pendapatan
-		$expenseToIncomeRatio =
-			$incomeNumber > 0 ? ($expenseNumber / $incomeNumber) * 100 : 0;
-
 		$data = [
-			["RINGKASAN KEUANGAN - LAPORAN KEUANGAN"],
+			// ============ HEADER ============
+			["LAPORAN RINGKASAN KEUANGAN"],
 			[""],
 
-			// ============ STATISTIK UTAMA ============
-			["STATISTIK UTAMA", "", "", "TREND & ANALISIS"],
-			[
-				"Pendapatan",
-				$this->formatCurrency($incomeNumber),
-				"",
-				$this->getTrendIndicator($netFlow),
-			],
-			[
-				"Pengeluaran",
-				$this->formatCurrency($expenseNumber),
-				"",
-				"Rasio: " . number_format($expenseToIncomeRatio, 1) . "%",
-			],
-			[
-				"Saldo Bersih",
-				$this->formatCurrency($netFlow),
-				"",
-				$this->getNetStatus($netFlow),
-			],
+			// ============ RINGKASAN UTAMA ============
+			["RINGKASAN UTAMA"],
+			["Pendapatan Total", $this->formatCurrency($incomeNumber)],
+			["Pengeluaran Total", $this->formatCurrency($expenseNumber)],
+			["Saldo Bersih", $this->formatCurrency($netFlow)],
 			[""],
 
-			// ============ DETAIL TRANSAKSI ============
-			["DETAIL TRANSAKSI", "Jumlah", "Persentase"],
-			["Pendapatan", $incomeCount, number_format($incomePercentage, 1) . "%"],
+			// ============ STATISTIK TRANSAKSI ============
+			["STATISTIK TRANSAKSI"],
 			[
-				"Pengeluaran",
+				"Jumlah Transaksi Pendapatan",
+				$incomeCount,
+				number_format($incomePercentage, 1) . "%",
+			],
+			[
+				"Jumlah Transaksi Pengeluaran",
 				$expenseCount,
 				number_format($expensePercentage, 1) . "%",
 			],
-			["Total Transaksi", $totalTransactions, "100%"],
-			["Transfer Dana", $this->formatCurrency($totalTransfer), "-"],
+			["Total Transfer", $this->formatCurrency($totalTransfer)],
 			[""],
 
-			// ============ PERFORMANCE INDICATORS ============
-			["PERFORMANCE INDICATORS", "Nilai", "Keterangan"],
+			// ============ ANALISIS SEDERHANA ============
+			["ANALISIS"],
+			["Status Keuangan", $this->getFinancialStatus($netFlow)],
 			[
-				"Cash Flow",
-				$this->getCashFlowStatus($netFlow),
-				$this->getCashFlowDescription($netFlow),
-			],
-			[
-				"Efisiensi",
-				$this->getEfficiencyScore($incomeNumber, $expenseNumber),
-				$this->getEfficiencyLevel($incomeNumber, $expenseNumber),
-			],
-			[
-				"Stabilitas",
-				$this->getStabilityScore($incomeNumber, $expenseNumber),
-				$this->getStabilityLevel($incomeNumber, $expenseNumber),
+				"Rasio Pengeluaran/Pendapatan",
+				$this->getExpenseRatio($incomeNumber, $expenseNumber),
 			],
 			[""],
 
 			// ============ INFORMASI LAPORAN ============
 			["INFORMASI LAPORAN"],
 			[
-				"Periode Laporan",
+				"Periode",
 				$this->extractPeriodDate($this->reportData["period"] ?? []) ??
 				"Semua Periode",
 			],
@@ -107,7 +82,6 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				"Tanggal Ekspor",
 				$this->reportData["exported_at"] ?? now()->format("Y-m-d H:i:s"),
 			],
-			["ID Laporan", "FIN-" . date("Ymd") . "-" . strtoupper(uniqid())],
 		];
 
 		return $data;
@@ -129,32 +103,30 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		$lastRow = count($data);
 
 		// ============ SET COLUMN WIDTHS ============
-		$sheet->getColumnDimension("A")->setWidth(28);
+		$sheet->getColumnDimension("A")->setWidth(30);
 		$sheet->getColumnDimension("B")->setWidth(20);
 		$sheet->getColumnDimension("C")->setWidth(15);
-		$sheet->getColumnDimension("D")->setWidth(25);
 
-		// ============ MAIN TITLE STYLE ============
+		// ============ MAIN TITLE ============
 		$sheet
 			->getStyle("A1")
 			->getFont()
 			->setBold(true)
-			->setSize(16)
-			->setName("Arial");
+			->setSize(14);
 
-		$sheet->mergeCells("A1:D1");
+		$sheet->mergeCells("A1:C1");
 		$sheet
 			->getStyle("A1")
 			->getAlignment()
-			->setHorizontal("center")
-			->setVertical("center");
+			->setHorizontal("center");
 
+		// Background judul utama
 		$sheet
 			->getStyle("A1")
 			->getFill()
 			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
 			->getStartColor()
-			->setARGB("FF2C3E50");
+			->setARGB("FF34495E");
 
 		$sheet
 			->getStyle("A1")
@@ -162,21 +134,25 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->getColor()
 			->setARGB("FFFFFFFF");
 
-		$sheet->getRowDimension(1)->setRowHeight(35);
+		$sheet->getRowDimension(1)->setRowHeight(25);
 
 		// ============ SECTION HEADERS ============
-		$sectionRows = [4, 10, 16, 21]; // Row numbers for section headers
+		$sectionHeaders = [
+			"RINGKASAN UTAMA" => 4,
+			"STATISTIK TRANSAKSI" => 9,
+			"ANALISIS" => 14,
+			"INFORMASI LAPORAN" => 18,
+		];
 
-		foreach ($sectionRows as $row) {
-			if ($row <= $lastRow && !empty($data[$row - 1][0])) {
+		foreach ($sectionHeaders as $section => $row) {
+			if ($row <= $lastRow) {
 				$sheet
-					->getStyle("A{$row}:D{$row}")
+					->getStyle("A{$row}")
 					->getFont()
 					->setBold(true)
 					->setSize(12);
 
-				$sheet->mergeCells("A{$row}:D{$row}");
-
+				// Background section header
 				$sheet
 					->getStyle("A{$row}")
 					->getFill()
@@ -184,177 +160,143 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 					->getStartColor()
 					->setARGB("FFECF0F1");
 
-				$sheet->getRowDimension($row)->setRowHeight(25);
+				$sheet->getRowDimension($row)->setRowHeight(20);
 			}
 		}
 
-		// ============ TABLE HEADERS ============
-		$tableHeaderRows = [5, 11, 17]; // Row numbers for table headers
-
-		foreach ($tableHeaderRows as $row) {
-			if ($row <= $lastRow) {
-				$colEnd = !empty($data[$row - 1][2]) ? "C" : "B";
-
-				$sheet
-					->getStyle("A{$row}:{$colEnd}{$row}")
-					->getFont()
-					->setBold(true)
-					->setSize(11);
-
-				$sheet
-					->getStyle("A{$row}:{$colEnd}{$row}")
-					->getFill()
-					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-					->getStartColor()
-					->setARGB("FF3498DB");
-
-				$sheet
-					->getStyle("A{$row}:{$colEnd}{$row}")
-					->getFont()
-					->getColor()
-					->setARGB("FFFFFFFF");
-
-				$sheet->getRowDimension($row)->setRowHeight(22);
-			}
+		// ============ FORMAT ANGKAMATAUANG ============
+		// Format angka untuk ringkasan utama
+		for ($row = 5; $row <= 7; $row++) {
+			$sheet
+				->getStyle("B{$row}")
+				->getNumberFormat()
+				->setFormatCode("#,##0");
 		}
 
-		// ============ DATA ROWS STYLING ============
-		// Format currency for financial numbers
-		for ($row = 6; $row <= $lastRow; $row++) {
-			// Format kolom B untuk angka mata uang
-			$cellValue = $sheet->getCell("B{$row}")->getValue();
-			if (is_numeric($cellValue) && $cellValue != 0) {
-				// Cek apakah ini baris dengan data mata uang (bukan count)
-				if (!in_array($row, [12, 13])) {
-					// Baris jumlah transaksi tidak diformat mata uang
-					$sheet
-						->getStyle("B{$row}")
-						->getNumberFormat()
-						->setFormatCode("#,##0");
-
-					// Tambahkan warna untuk nilai positif/negatif
-					if ($cellValue < 0) {
-						$sheet
-							->getStyle("B{$row}")
-							->getFont()
-							->getColor()
-							->setARGB("FFE74C3C");
-					} elseif ($cellValue > 0) {
-						$sheet
-							->getStyle("B{$row}")
-							->getFont()
-							->getColor()
-							->setARGB("FF27AE60");
-					}
-				}
-			}
-
-			// Alternating row colors untuk tabel utama
-			if ($row >= 6 && $row <= 9) {
-				$sheet
-					->getStyle("A{$row}:D{$row}")
-					->getFill()
-					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-					->getStartColor()
-					->setARGB($row % 2 == 0 ? "FFF8F9F9" : "FFFFFFFF");
-			}
-
-			// Alternating row colors untuk tabel detail
-			if ($row >= 12 && $row <= 15) {
-				$sheet
-					->getStyle("A{$row}:C{$row}")
-					->getFill()
-					->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-					->getStartColor()
-					->setARGB($row % 2 == 0 ? "FFF8F9F9" : "FFFFFFFF");
-			}
-		}
-
-		// ============ BORDERS ============
-		// Border untuk tabel utama
+		// Format angka untuk total transfer
 		$sheet
-			->getStyle("A5:D9")
+			->getStyle("B12")
+			->getNumberFormat()
+			->setFormatCode("#,##0");
+
+		// ============ WARNA UNTUK NILAI POSITIF/NEGATIF ============
+		$netFlow =
+			$this->reportData["report_data"]["financial_summary"]["net_flow"] ?? 0;
+		$netRow = 7;
+
+		// Warna untuk saldo bersih
+		if ($netFlow > 0) {
+			$sheet
+				->getStyle("B{$netRow}")
+				->getFont()
+				->getColor()
+				->setARGB("FF27AE60");
+		} elseif ($netFlow < 0) {
+			$sheet
+				->getStyle("B{$netRow}")
+				->getFont()
+				->getColor()
+				->setARGB("FFE74C3C");
+		}
+
+		// ============ BORDER UNTUK TABEL ============
+		// Border untuk ringkasan utama
+		$sheet
+			->getStyle("A5:B7")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-		// Border untuk tabel detail transaksi
+		// Border untuk statistik transaksi
 		$sheet
-			->getStyle("A11:C15")
+			->getStyle("A10:C12")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-		// Border untuk performance indicators
+		// Border untuk analisis
 		$sheet
-			->getStyle("A17:C20")
+			->getStyle("A15:B16")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
 		// Border untuk informasi laporan
 		$sheet
-			->getStyle("A22:B25")
+			->getStyle("A19:B22")
 			->getBorders()
 			->getAllBorders()
 			->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
 		// ============ ALIGNMENT ============
-		// Center alignment untuk header dan angka
+		// Semua label rata kiri
 		$sheet
-			->getStyle("B6:B25")
+			->getStyle("A4:A{$lastRow}")
+			->getAlignment()
+			->setHorizontal("left")
+			->setVertical("center");
+
+		// Semua nilai/number rata kanan
+		$sheet
+			->getStyle("B5:B{$lastRow}")
 			->getAlignment()
 			->setHorizontal("right")
 			->setVertical("center");
 
+		// Persentase rata tengah
 		$sheet
-			->getStyle("C11:C25")
+			->getStyle("C10:C12")
 			->getAlignment()
 			->setHorizontal("center")
 			->setVertical("center");
 
+		// Analisis dan informasi rata kiri
 		$sheet
-			->getStyle("D6:D9")
+			->getStyle("B15:B16")
 			->getAlignment()
-			->setHorizontal("left")
-			->setVertical("center");
+			->setHorizontal("left");
 
-		// Left alignment untuk label
 		$sheet
-			->getStyle("A6:A25")
+			->getStyle("B19:B22")
 			->getAlignment()
-			->setHorizontal("left")
-			->setVertical("center");
+			->setHorizontal("left");
 
-		// ============ SPECIAL HIGHLIGHTS ============
-		// Highlight saldo bersih
-		$netFlow =
-			$this->reportData["report_data"]["financial_summary"]["net_flow"] ?? 0;
-		$netRow = 8; // Row untuk saldo bersih
-
-		if ($netFlow > 0) {
-			$sheet
-				->getStyle("A{$netRow}:B{$netRow}")
-				->getFill()
-				->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-				->getStartColor()
-				->setARGB("FFD5F4E6");
-		} elseif ($netFlow < 0) {
-			$sheet
-				->getStyle("A{$netRow}:B{$netRow}")
-				->getFill()
-				->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-				->getStartColor()
-				->setARGB("FFFADBD8");
+		// ============ FONT STYLING ============
+		// Bold untuk nilai penting
+		$importantRows = [5, 6, 7, 12]; // Pendapatan, pengeluaran, saldo, transfer
+		foreach ($importantRows as $row) {
+			if ($row <= $lastRow) {
+				$sheet
+					->getStyle("A{$row}:B{$row}")
+					->getFont()
+					->setBold(true);
+			}
 		}
 
-		// Bold font untuk nilai penting
-		$importantRows = [6, 7, 8]; // Pendapatan, Pengeluaran, Saldo Bersih
-		foreach ($importantRows as $row) {
-			$sheet
-				->getStyle("A{$row}:B{$row}")
-				->getFont()
-				->setBold(true);
+		// Alternating row color untuk statistik transaksi
+		$sheet
+			->getStyle("A10:C10")
+			->getFill()
+			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+			->getStartColor()
+			->setARGB("FFF8F9F9");
+
+		$sheet
+			->getStyle("A12:C12")
+			->getFill()
+			->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+			->getStartColor()
+			->setARGB("FFF8F9F9");
+
+		// Row height konsisten
+		for ($row = 1; $row <= $lastRow; $row++) {
+			if ($row == 1) {
+				$sheet->getRowDimension($row)->setRowHeight(25);
+			} elseif (in_array($row, [4, 9, 14, 18])) {
+				$sheet->getRowDimension($row)->setRowHeight(20);
+			} else {
+				$sheet->getRowDimension($row)->setRowHeight(18);
+			}
 		}
 	}
 
@@ -377,114 +319,31 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			return "Semua Periode";
 		}
 
-		return $period["start_date"] . " - " . $period["end_date"];
+		// Format tanggal agar lebih rapi
+		$start = date("d M Y", strtotime($period["start_date"]));
+		$end = date("d M Y", strtotime($period["end_date"]));
+
+		return $start . " - " . $end;
 	}
 
-	// ============ HELPER METHODS FOR ANALYSIS ============
-
-	private function getTrendIndicator($netFlow)
+	private function getFinancialStatus($netFlow)
 	{
 		if ($netFlow > 0) {
-			return "↑ Positif (Surplus)";
+			return "Surplus (Positif)";
 		} elseif ($netFlow < 0) {
-			return "↓ Negatif (Defisit)";
+			return "Defisit (Negatif)";
 		} else {
-			return "→ Seimbang";
+			return "Seimbang";
 		}
 	}
 
-	private function getNetStatus($netFlow)
-	{
-		if ($netFlow > 0) {
-			return "Sehat - Pendapatan > Pengeluaran";
-		} elseif ($netFlow < 0) {
-			return "Perhatian - Pengeluaran > Pendapatan";
-		} else {
-			return "Seimbang - Pendapatan = Pengeluaran";
-		}
-	}
-
-	private function getCashFlowStatus($netFlow)
-	{
-		if ($netFlow > 0) {
-			return "Positif";
-		} elseif ($netFlow < 0) {
-			return "Negatif";
-		} else {
-			return "Netral";
-		}
-	}
-
-	private function getCashFlowDescription($netFlow)
-	{
-		if ($netFlow > 0) {
-			return "Pendapatan melebihi pengeluaran";
-		} elseif ($netFlow < 0) {
-			return "Pengeluaran melebihi pendapatan";
-		} else {
-			return "Pendapatan dan pengeluaran seimbang";
-		}
-	}
-
-	private function getEfficiencyScore($income, $expense)
+	private function getExpenseRatio($income, $expense)
 	{
 		if ($income == 0) {
-			return "0/10";
+			return "Tidak dapat dihitung";
 		}
 
-		$ratio = $expense / $income;
-		$score = 10 - min(10, $ratio * 10);
-		return intval($score) . "/10";
-	}
-
-	private function getEfficiencyLevel($income, $expense)
-	{
-		if ($income == 0) {
-			return "Tidak Tersedia";
-		}
-
-		$ratio = $expense / $income;
-		if ($ratio < 0.3) {
-			return "Sangat Efisien";
-		}
-		if ($ratio < 0.6) {
-			return "Efisien";
-		}
-		if ($ratio < 0.9) {
-			return "Cukup Efisien";
-		}
-		return "Kurang Efisien";
-	}
-
-	private function getStabilityScore($income, $expense)
-	{
-		if ($income + $expense == 0) {
-			return "0/10";
-		}
-
-		$stability = 10 - (abs($income - $expense) / max($income, $expense)) * 10;
-		return intval(max(0, $stability)) . "/10";
-	}
-
-	private function getStabilityLevel($income, $expense)
-	{
-		if ($income + $expense == 0) {
-			return "Tidak Tersedia";
-		}
-
-		$difference = abs($income - $expense);
-		$total = $income + $expense;
-		$ratio = $difference / $total;
-
-		if ($ratio < 0.2) {
-			return "Sangat Stabil";
-		}
-		if ($ratio < 0.4) {
-			return "Stabil";
-		}
-		if ($ratio < 0.6) {
-			return "Cukup Stabil";
-		}
-		return "Kurang Stabil";
+		$ratio = ($expense / $income) * 100;
+		return number_format($ratio, 1) . "%";
 	}
 }
