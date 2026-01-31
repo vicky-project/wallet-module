@@ -43,21 +43,20 @@ class ChartService
 				DataSeriesValues::DATASERIES_TYPE_NUMBER,
 				null,
 				null,
-				count($convertedValues),
+				\count($convertedValues),
 				$convertedValues
 			),
 		];
-
-		dd($dataSeriesValues);
 
 		// Buat data series
 		$series = new DataSeries(
 			DataSeries::TYPE_PIECHART,
 			null,
-			range(0, count($dataSeriesValues) - 1),
+			range(0, \count($dataSeriesValues) - 1),
 			$dataSeriesLabels,
 			$dataSeriesValues
 		);
+		dd($series);
 
 		// Buat chart
 		$chart = new Chart(
