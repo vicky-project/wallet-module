@@ -155,7 +155,7 @@ class CategorySheet implements
 	{
 		$charts = [];
 		if ($this->incomeLabels) {
-			$charts[] = new ChartService::createPieChart(
+			$charts[] = ChartService::createPieChart(
 				$this->incomeLabels,
 				$this->incomeValues,
 				"Pemasukan"
@@ -163,7 +163,7 @@ class CategorySheet implements
 		}
 
 		if ($this->expenseLabels) {
-			$charts[] = new ChartService::createPieChart(
+			$charts[] = ChartService::createPieChart(
 				$this->expenseLabels,
 				$this->expenseValues,
 				"Pengeluaran"
