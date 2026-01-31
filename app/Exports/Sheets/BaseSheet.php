@@ -4,7 +4,7 @@ namespace Modules\Wallet\Exports\Sheets;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class BaseSheet implements FromArray, WithTitle
+abstract class BaseSheet implements FromArray, WithTitle
 {
 	public function __construct(protected array $reportData)
 	{
