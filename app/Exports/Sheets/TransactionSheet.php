@@ -387,6 +387,7 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 					->getFont()
 					->getColor()
 					->setARGB("FFFFFFFF");
+				$sheet->getRowDimension($rowNum)->setRowHeight(30);
 
 				// Style header tabel untuk tahun ini (2 baris setelah judul)
 				$headerRow = $rowNum + 2;
@@ -462,6 +463,19 @@ class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 					->getAlignment()
 					->setHorizontal(Alignment::HORIZONTAL_CENTER)
 					->setVertical(Alignment::VERTICAL_CENTER);
+
+				$sheet
+					->getStyle("A{$rowNum}")
+					->getFill()
+					->setFillType(Fill::FILL_SOLID)
+					->getStartColor()
+					->setARGB("FF2C3E50");
+				$sheet
+					->getStyle("A{$rowNum}")
+					->getFont()
+					->getColor()
+					->setARGB("FFFFFFFF");
+				$sheet->getRowDimension($rowNum)->setRowHeight(30);
 
 				// Style header ringkasan
 				$summaryHeader = $rowNum + 2;
