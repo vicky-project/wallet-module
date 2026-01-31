@@ -264,10 +264,10 @@ class CategorySheet implements
 			$plotArea,
 			true
 		);
-		dd($chart);
 
 		// Set posisi chart
 		$chart->setTopLeftPosition($position);
+		dd($chart);
 		$chart->setBottomRightPosition("O15"); // Ukuran chart
 
 		// Tambahkan chart ke worksheet
