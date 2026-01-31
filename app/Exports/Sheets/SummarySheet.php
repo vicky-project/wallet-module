@@ -2,19 +2,15 @@
 
 namespace Modules\Wallet\Exports\Sheets;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
+class SummarySheet extends BaseSheet implements WithStyles, WithHeadings
 {
-	protected $reportData;
-
 	public function __construct(array $reportData)
 	{
-		$this->reportData = $reportData;
+		parent::__construct($reportData);
 	}
 
 	public function array(): array
@@ -298,15 +294,6 @@ class SummarySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				$sheet->getRowDimension($row)->setRowHeight(18);
 			}
 		}
-	}
-
-	private function formatCurrency($value)
-	{
-		if (!is_numeric($value)) {
-			return "0";
-		}
-		$amount = $value / 100;
-		return $amount;
 	}
 
 	private function extractPeriodDate($period)

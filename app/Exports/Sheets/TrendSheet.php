@@ -2,8 +2,6 @@
 
 namespace Modules\Wallet\Exports\Sheets;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -12,9 +10,8 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
+class TrendSheet implements WithHeadings, WithStyles
 {
-	protected $reportData;
 	protected $trendData;
 	protected $labels = [];
 	protected $incomeData = [];
@@ -22,7 +19,7 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 	public function __construct(array $reportData)
 	{
-		$this->reportData = $reportData;
+		parent::_construct($reportData);
 		$this->trendData = $this->reportData["report_data"][
 			"income_expense_trend"
 		] ?? [
@@ -477,15 +474,6 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 	}
 
-	private function formatCurrency($value)
-	{
-		if (!is_numeric($value)) {
-			return 0;
-		}
-		$amount = $value / 100;
-		return $amount;
-	}
-
 	// ============ HELPER METHODS ============
 
 	private function calculateGrowthTrend($data)
@@ -671,7 +659,6 @@ class TrendSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 		}
 
 		$maxIndex = array_keys($data, max($data))[0];
-		dd($data[$maxIndex]);
 		return $labels[$maxIndex] .
 			" (" .
 			$this->formatCurrency($data[$maxIndex]) .

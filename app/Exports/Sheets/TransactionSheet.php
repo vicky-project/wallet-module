@@ -2,8 +2,6 @@
 
 namespace Modules\Wallet\Exports\Sheets;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -13,15 +11,14 @@ use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Modules\Wallet\Models\Transaction;
 
-class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
+class TransactionSheet extends BaseSheet implements WithEvents, WithHeadings
 {
-	protected $reportData;
 	protected $userId;
 	protected $filters;
 
 	public function __construct(array $reportData)
 	{
-		$this->reportData = $reportData;
+		parent::__construct($reportData);
 		// Ambil user_id dari data atau gunakan auth
 		$this->userId = $reportData["user_id"] ?? auth()->id();
 		$this->filters = $reportData["filters"] ?? [];
@@ -551,15 +548,6 @@ class TransactionSheet implements FromArray, WithTitle, WithHeadings, WithEvents
 			->getStyle("A1:A{$lastRow}")
 			->getAlignment()
 			->setHorizontal("left");
-	}
-
-	private function formatCurrency($value)
-	{
-		if (!is_numeric($value)) {
-			return 0;
-		}
-		$amount = $value / 100;
-		return $amount;
 	}
 
 	private function getTransactionCount($day)

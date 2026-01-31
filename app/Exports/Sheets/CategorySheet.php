@@ -2,8 +2,6 @@
 
 namespace Modules\Wallet\Exports\Sheets;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -11,9 +9,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
+class CategorySheet extends BaseSheet implements WithHeadings, WithStyles
 {
-	protected $reportData;
 	protected $incomeLabels = [];
 	protected $incomeValues = [];
 	protected $expenseLabels = [];
@@ -23,7 +20,7 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 
 	public function __construct(array $reportData)
 	{
-		$this->reportData = $reportData;
+		parent::__construct($reportData);
 	}
 
 	public function array(): array
@@ -449,14 +446,5 @@ class CategorySheet implements FromArray, WithTitle, WithHeadings, WithStyles
 				->getColor()
 				->setARGB("FFFFFFFF");
 		}
-	}
-
-	private function formatCurrency($value)
-	{
-		if (!is_numeric($value)) {
-			return 0;
-		}
-		$amount = $value / 100;
-		return $amount;
 	}
 }

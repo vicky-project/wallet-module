@@ -2,8 +2,6 @@
 
 namespace Modules\Wallet\Exports\Sheets;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -11,15 +9,14 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
-class CoverSheet implements FromArray, WithTitle, WithEvents
+class CoverSheet extends BaseSheet implements WithEvents
 {
-	protected $reportData;
 	protected $companyName;
 	protected $companyAddress;
 
 	public function __construct(array $reportData)
 	{
-		$this->reportData = $reportData;
+		parent::__construct($reportData);
 		$this->companyName = config(
 			"wallet.metadata.company_name",
 			"Financial Management System"
@@ -553,14 +550,6 @@ class CoverSheet implements FromArray, WithTitle, WithEvents
 			],
 		]);
 		$sheet->getRowDimension($footerRow)->setRowHeight(16);
-	}
-
-	private function formatCurrency($value)
-	{
-		if (!is_numeric($value)) {
-			return "0";
-		}
-		return $value / 100;
 	}
 
 	private function formatPeriod(array $period): string

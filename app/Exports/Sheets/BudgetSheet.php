@@ -2,19 +2,15 @@
 
 namespace Modules\Wallet\Exports\Sheets;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class BudgetSheet implements FromArray, WithTitle, WithHeadings, WithStyles
+class BudgetSheet implements WithHeadings, WithStyles
 {
-	protected $reportData;
-
 	public function __construct(array $reportData)
 	{
-		$this->reportData = $reportData;
+		parent::_construct($reportData);
 	}
 
 	public function array(): array
@@ -148,15 +144,6 @@ class BudgetSheet implements FromArray, WithTitle, WithHeadings, WithStyles
 			->setHorizontal(
 				\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
 			);
-	}
-
-	private function formatCurrency($value)
-	{
-		if (!is_numeric($value)) {
-			return 0;
-		}
-		$amount = $value / 100;
-		return $amount;
 	}
 
 	private function getUsageStatus($percentage)
