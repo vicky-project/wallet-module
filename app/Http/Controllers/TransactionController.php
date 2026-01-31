@@ -281,6 +281,7 @@ class TransactionController extends Controller
 	public function export(Request $request)
 	{
 		$user = Auth::user();
+		dd($request->all());
 
 		try {
 			$format = $request->get("format", "excel");
