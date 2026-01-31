@@ -927,23 +927,18 @@ class TransactionRepository extends BaseRepository
 	/**
 	 * Get transactions for export
 	 */
-	public function getForExport(
-		int $userId,
-		?string $startDate = null,
-		?string $endDate = null
-	): Collection {
+	public function getForExport(int $userId, $ids): Collection
+	{
 		$query = Transaction::with(["account", "toAccount", "category"])->where(
 			"user_id",
 			$userId
 		);
 
-		if ($startDate) {
-			$query->whereDate("transaction_date", ">=", $startDate);
+		if (!is_array($ids)) {
+			$ids = [$ids];
 		}
 
-		if ($endDate) {
-			$query->whereDate("transaction_date", "<=", $endDate);
-		}
+		$query->whereIn("id", $ids);
 
 		return $query
 			->orderBy("transaction_date", "desc")

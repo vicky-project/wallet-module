@@ -281,20 +281,25 @@ class TransactionController extends Controller
 	public function export(Request $request)
 	{
 		$user = Auth::user();
-		dd($request->all());
+		if (!$request->ids || !$request->id) {
+			return back()->withErrors("No id passed.");
+		}
+
+		$id = $request->ids ?? $request->id;
 
 		try {
 			$format = $request->get("format", "excel");
 
 			$result = $this->transactionService->transactionRepository->getForExport(
 				$user->id,
-				$request->get("start_date"),
-				$request->get("end_date")
+				$id
 			);
 
 			if ($result->isEmpty()) {
 				return back()->withErrors("Tidak ada data transaksi untuk diekspor.");
 			}
+
+			dd($result);
 
 			$tmp_dir = config("excel.temporary_files.local_path");
 			if (!is_dir($tmp_dir)) {
