@@ -484,7 +484,6 @@
 @push('scripts')
 <script>
     function deleteItem(transaction) {
-      console.log(transaction);
       const deleteModal = document.getElementById('deleteModal');
       const description = document.getElementById('transaction-description');
       const date = document.getElementById('transaction-date');
@@ -494,7 +493,7 @@
       description.textContent = transaction.description;
       date.textContent = transaction.transaction_date;
       type.classList.add('bg-'+ transaction.typeColor);
-      type.textContent = `${transaction.type}: ${transaction.amount.amount}`;
+      type.textContent = `${transaction.type}: ${transaction.amount}`;
       formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.uuid}/destroy`;
       
       const modal = new bootstrap.Modal(deleteModal);
