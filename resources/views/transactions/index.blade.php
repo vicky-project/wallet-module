@@ -483,7 +483,7 @@
 
 @push('scripts')
 <script>
-    funtion deleteItem(transaction) {
+    function deleteItem(transaction) {
       const deleteModal = document.getElementById('deleteModal');
       const description = document.getElementById('transaction-description');
       const date = document.getElementById('transaction-date');
