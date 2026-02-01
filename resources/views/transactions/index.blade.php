@@ -489,6 +489,7 @@
       const date = document.getElementById('transaction-date');
       const type = document.getElementById('transaction-type');
       const formModal = document.getElementById('form-delete');
+      alert(JSON.stringify(transaction));
       
       description.textContent = transaction.description;
       date.textContent = transaction.transaction_date;
