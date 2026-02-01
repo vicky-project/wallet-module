@@ -23,7 +23,7 @@ class TelegramLinkController extends Controller
 	{
 		$user = Auth::user();
 		$botUsername = config("wallet.telegram_bot.username");
-		$settings = $user->getTelegramSetting();
+		$settings = $user->getAllTelegramSettings();
 
 		return view(
 			"wallet::telegram.link",
