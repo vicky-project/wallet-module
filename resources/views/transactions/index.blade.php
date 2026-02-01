@@ -293,7 +293,7 @@
                     <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary p-2" title="Edit">
                       <i class="bi bi-pencil"></i>
                     </a>
-                    <button type="button" class="btn btn-outline-danger btn-delete" data-transaction="@json($transaction)" title="Hapus">
+                    <button type="button" class="btn btn-outline-danger btn-delete" data-transaction='@json($transaction)' title="Hapus">
                       <i class="bi bi-trash"></i>
                     </button>
                     <div class="dropdown">
