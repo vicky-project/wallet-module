@@ -494,7 +494,7 @@
       description.textContent = transaction.description;
       date.textContent = transaction.transaction_date;
       type.classList.add('bg-'+ transaction.typeColor);
-      type.textContent = `${transaction.typeLabel}: ${transaction.formattedAmount}`;
+      type.textContent = `${transaction.type}: ${transaction.amount.amount}`;
       formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.uuid}/destroy`;
       
       const modal = new bootstrap.Modal(deleteModal);
