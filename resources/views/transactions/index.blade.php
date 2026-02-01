@@ -495,8 +495,15 @@
       
       description.textContent = transaction.description;
       dateEl.textContent = new Intl.DateTimeFormat('id-ID', {
-        numeric: 'auto',
-        timeZone: '{{ config("app.timezone") }}'
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZone: '{{ config("app.timezone") }}',
+        timeZoneName: 'short'
       }).format(date);
       type.classList.add('bg-'+ transaction.typeColor);
       type.textContent = `${transaction.type}: ${transaction.amount.amount}`;

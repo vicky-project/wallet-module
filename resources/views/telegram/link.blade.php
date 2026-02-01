@@ -68,6 +68,7 @@
                 <div class="form-check mb-2">
                   <input type="checkbox" class="form-check-input" id="notifications" checked>
                   <label class="form-check-label" for="notifications">Aktifkan Notifikasi</label>
+                  <small class="form-text text-muted d-block">Jika di nonaktifkan, semua notifikasi akan dimatikan</small>
                 </div>
                 <div class="form-check mb-2">
                   <input type="checkbox" class="form-check-input" id="daily_report">
