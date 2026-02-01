@@ -293,7 +293,7 @@
                     <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary p-2" title="Edit">
                       <i class="bi bi-pencil"></i>
                     </a>
-                    <button type="button" class="btn btn-outline-danger" onclick="deleteItem(@json($transaction))" title="Hapus">
+                    <button type="button" class="btn btn-outline-danger btn-delete" data-transaction="@json($transaction)" title="Hapus">
                       <i class="bi bi-trash"></i>
                     </button>
                     <div class="dropdown">
@@ -506,6 +506,14 @@
         // Select All functionality
         const selectAll = document.getElementById('selectAll');
         const transactionChecks = document.querySelectorAll('.transaction-check');
+        const btnDelete = document.querySelectorAll('btn-delete');
+        
+        if(btnDelete) {
+            btnDelete.forEach(btn => btn.addEventListener('click', () => {
+                const data = this.dataset.transaction;
+                console.log(data);
+            }));
+        }
         
         if (selectAll) {
             selectAll.addEventListener('change', function() {
