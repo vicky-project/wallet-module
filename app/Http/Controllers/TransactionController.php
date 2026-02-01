@@ -242,12 +242,18 @@ class TransactionController extends Controller
 			"search",
 		]);
 
-		$transactions = $this->transactionService->getPaginatedTransactionsDeleted(
+		$result = $this->transactionService->getPaginatedTransactionsDeleted(
 			$filters,
 			10
 		);
 
-		dd($transactions);
+		if (!$result["success"]) {
+			return back()->withErrors($result["message"]);
+		}
+
+		return view("wallet::transactions.trashed", [
+			"transactions" => $result["transactions"],
+		]);
 	}
 
 	/**

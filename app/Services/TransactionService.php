@@ -351,13 +351,17 @@ class TransactionService
 		array $filters = [],
 		int $perPage = 20
 	): array {
-		$paginator = $this->transactionRepository->getPaginatedTransactions(
-			$filters,
-			$perPage,
-			true
-		);
+		try {
+			$paginator = $this->transactionRepository->getPaginatedTransactions(
+				$filters,
+				$perPage,
+				true
+			);
 
-		dd($paginator);
+			return ["success" => true, "transactions" => $paginator];
+		} catch (\Exception $e) {
+			return ["success" => false, "message" => $e->getMessage()];
+		}
 	}
 
 	/**
