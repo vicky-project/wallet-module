@@ -76,7 +76,7 @@ class TelegramNotificationService
 	 */
 	private function shouldSendNotification(User $user, string $type): bool
 	{
-		$settings = $user->telegram_settings ?? [];
+		$settings = $user->getAllTelegramSettings();
 
 		// Default settings if not configured
 		$defaults = [

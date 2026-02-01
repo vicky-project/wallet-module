@@ -136,17 +136,11 @@ class TransactionService
 			// Create transaction
 			$transaction = $this->transactionRepository->createTransaction($data);
 
-			if (
-				$user->hasLinkedTelegram() &&
-				$user->telegram_notifications &&
-				$user->getTelegramSetting("new_transaction")
-			) {
-				event(
-					new TelegramNotificationEvent($user, "new_transaction", [
-						"transaction" => $transaction,
-					])
-				);
-			}
+			event(
+				new TelegramNotificationEvent($user, "new_transaction", [
+					"transaction" => $transaction,
+				])
+			);
 
 			return [
 				"success" => true,

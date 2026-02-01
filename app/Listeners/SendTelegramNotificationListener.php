@@ -2,7 +2,7 @@
 namespace Modules\Wallet\Listeners;
 
 use Modules\Wallet\Events\TelegramNotificationEvent;
-use Modules\Wallet\Services\TelegramNotificationService;
+use Modules\Wallet\Services\Telegram\TelegramNotificationService;
 
 class SendTelegramNotificationListener
 {

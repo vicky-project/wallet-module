@@ -279,18 +279,13 @@ class AccountService
 					->toInt() < $threshold
 			) {
 				$user = $account->user;
-				if (
-					$user->hasLinkedTelegram() &&
-					$user->telegram_notifications &&
-					$user->getTelegramSetting("low_balance")
-				) {
-					event(
-						new TelegramNotificationEvent($user, "low_balance", [
-							"account" => $account,
-							"threshold" => $threshold,
-						])
-					);
-				}
+
+				event(
+					new TelegramNotificationEvent($user, "low_balance", [
+						"account" => $account,
+						"threshold" => $threshold,
+					])
+				);
 			}
 			return $result;
 		});

@@ -5,7 +5,6 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
-use Modules\Wallet\Services\TelegramNotificationService;
 
 class TelegramNotificationEvent
 {

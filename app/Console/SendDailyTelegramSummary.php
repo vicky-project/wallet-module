@@ -4,7 +4,7 @@ namespace Modules\Wallet\Console;
 use Illuminate\Console\Command;
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Services\TelegramNotificationService;
+use Modules\Wallet\Services\Telegram\TelegramNotificationService;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Carbon\Carbon;
 
