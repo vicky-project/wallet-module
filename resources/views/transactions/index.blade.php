@@ -509,7 +509,7 @@
         const btnDelete = document.querySelectorAll('.btn-delete');
         
         if(btnDelete) {
-            btnDelete.forEach(btn => btn.addEventListener('click', () => {
+            btnDelete.forEach(btn => btn.addEventListener('click', function() {
                 const data = this.dataset;
                 console.log(data);
             }));
