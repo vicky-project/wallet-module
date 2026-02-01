@@ -46,6 +46,8 @@ class Transaction extends Model
 		"is_recurring" => "boolean",
 	];
 
+	protected $attributes = ["formattedAmount", "typeColor"];
+
 	protected static function boot()
 	{
 		parent::boot();
@@ -346,6 +348,11 @@ class Transaction extends Model
 				"."
 			)
 		);
+	}
+
+	protected function typeColor(): Attribute
+	{
+		return Attribute::make(get: fn() => $this->type->color());
 	}
 
 	protected function isTransfer(): Attribute
