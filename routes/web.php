@@ -52,6 +52,10 @@ Route::middleware(["auth"])->group(function () {
 				TransactionController::class,
 				"bulkDelete",
 			])->name("transactions.bulk-delete");
+			Route::post("transactions/bulk-delete-trashed", [
+				TransactionController::class,
+				"bulkDeleteTrashed",
+			])->name("transactions.bulk-delete-trashed");
 			Route::post("transactions/{uuid}/duplicate", [
 				TransactionController::class,
 				"duplicate",

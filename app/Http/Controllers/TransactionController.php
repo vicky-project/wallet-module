@@ -508,6 +508,49 @@ class TransactionController extends Controller
 		}
 	}
 
+	public function bulkDeleteTrashed(Request $request)
+	{
+		$request->validate([
+			"ids" => "required|array",
+			"ids.*" => "integer|exists:transactions,id",
+		]);
+
+		try {
+			$user = Auth::user();
+
+			$result = $this->transactionService->bulkDelete($request->ids, $user);
+
+			if ($result["success"]) {
+				return response()->json([
+					"success" => true,
+					"message" => $result["message"],
+					"deleted" => $result["deleted"],
+				]);
+			} else {
+				return response()->json(
+					[
+						"success" => false,
+						"message" => $result["message"],
+					],
+					400
+				);
+			}
+		} catch (\Exception $e) {
+			logger()->error("Faild to excute bulk delete trashed.", [
+				"message" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
+			]);
+
+			return response()->json(
+				[
+					"success" => false,
+					"message" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
 	/**
 	 * Bulk update transactions.
 	 */

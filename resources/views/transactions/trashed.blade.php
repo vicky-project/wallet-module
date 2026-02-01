@@ -11,8 +11,16 @@
 
 <div class="card border-0 shadow-sm">
   <div class="card-header text-bg-white border-0">
-    <div class="d-flex justify-content-between align-items-center gap-2">
+    <div class="d-flex justify-content-between align-items-center">
       <h5 class="card-title mb-0">Deleted</h5>
+      <div>
+        <button type="button" class="btn btn-sm btn-outline-warning bulk-action" data-action="restore" title="Restore Selected">
+          <i class="bi bi-recycle"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger bulk-action" data-action="delete" title="Force Delete Selected">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
     </div>
   </div>
   <div class="card-body p-0">
@@ -139,6 +147,148 @@
 
 @push('scripts')
 <script>
-  document.addEventListener('DOMContentLoaded', function() {});
+  function forceDeleteItem(transactionItem) {
+    const transaction = JSON.parse(transactionItem);
+    alert(transaction.id);
+  }
+  
+  function restoreDeleteItem(transactionItem) {
+    const transaction = JSON.parse(transactionItem);
+    alert(transaction.id);
+  }
+  
+  // Bulk Delete
+  function bulkDelete(ids) {
+    fetch("{{ secure_url(config('app.url') . '/apps/transactions/bulk-delete-trashed') }}", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ '_token': '{{ csrf_token() }}', ids: ids })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert(`Berhasil menghapus ${data.deleted} transaksi.`);
+          location.reload();
+        } else {
+          alert('Gagal menghapus transaksi: ' + data.message);
+        }
+      })
+      .catch(error => {
+        alert('Terjadi kesalahan: ' + error.message);
+      });
+  }
+        
+  function bulkRestore(ids) {}
+  
+  document.addEventListener('DOMContentLoaded', function() {
+            // Select All functionality
+        const selectAll = document.getElementById('selectAll');
+        const transactionChecks = document.querySelectorAll('.transaction-check');
+        const btnDelete = document.querySelectorAll('.btn-delete');
+        const btnRestore = document.querySelectorAll('.btn-restore');
+        
+        if(btnDelete) {
+            btnDelete.forEach(btn => btn.addEventListener('click', function() {
+                const data = this.dataset.transaction;
+                forceDeleteItem(data);
+            }));
+        }
+        
+        if(btnRestore) {
+          btnRestore.forEach(btn => btn.addEventListener('click', function() {
+              const data = this.dataset.transaction;
+              restoreDeleteItem(data);
+          }));
+        }
+        
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                const isChecked = this.checked;
+                transactionChecks.forEach(check => {
+                    check.checked = isChecked;
+                });
+            });
+        }
+        
+        // Bulk Actions
+        const bulkActions = document.querySelectorAll('.bulk-action');
+        bulkActions.forEach(action => {
+            action.addEventListener('click', function() {
+                const selectedTransactions = Array.from(transactionChecks)
+                    .filter(check => check.checked)
+                    .map(check => check.value);
+                
+                if (selectedTransactions.length === 0) {
+                    alert('Pilih setidaknya satu transaksi terlebih dahulu.');
+                    return;
+                }
+                
+                const actionType = this.dataset.action;
+                
+                switch(actionType) {
+                    case 'delete':
+                        if (confirm(`Apakah Anda yakin ingin menghapus ${selectedTransactions.length} transaksi terpilih?`)) {
+                            bulkDelete(selectedTransactions);
+                        }
+                        break;
+                        
+                    case 'restore':
+                        bulkRestore(selectedTransactions);
+                        break;
+                }
+            });
+        });
+  });
 </script>
+@endpush
+
+@push('styles')
+<style>
+    .transaction-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 1.2rem;
+    }
+    
+    .transaction-income .transaction-icon {
+        background-color: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+    
+    .transaction-expense .transaction-icon {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .transaction-transfer .transaction-icon {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+    
+    .transaction-amount {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .transaction-income .transaction-amount {
+        color: #198754;
+    }
+    
+    .transaction-expense .transaction-amount {
+        color: #dc3545;
+    }
+    
+    .transaction-transfer .transaction-amount {
+        color: #0d6efd;
+    }
+</style>
 @endpush
