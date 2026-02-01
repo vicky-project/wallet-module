@@ -374,7 +374,7 @@ class TelegramWebhookController extends Controller
 	/**
 	 * Handle callback queries from inline keyboards
 	 */
-	private function handleCallbackQuery($callbackQuery)
+	private function handleCallbackQuery($callbackQuery): void
 	{
 		$chatId = $callbackQuery
 			->getMessage()

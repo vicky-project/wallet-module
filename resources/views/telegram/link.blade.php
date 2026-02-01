@@ -73,7 +73,7 @@
                 
                 <!-- Transaction -->
                 <div class="card mb-3">
-                  <div class="card-header bg-light">
+                  <div class="card-header text-bg-light">
                     <h6 class="mb-0">💰 Transaksi</h6>
                   </div>
                   <div class="card-body">
@@ -91,7 +91,7 @@
 
                 <!-- Daily/Weekly Reports -->
                 <div class="card mb-3">
-                  <div class="card-header bg-light">
+                  <div class="card-header text-bg-light">
                     <h6 class="mb-0">📊 Laporan</h6>
                   </div>
                   <div class="card-body">
@@ -119,7 +119,7 @@
                 
                 <!-- Budget Alerts -->
                 <div class="card mb-3">
-                  <div class="card-header bg-light">
+                  <div class="card-header text-bg-light">
                     <h6 class="mb-0">⚠️ Peringatan Budget</h6>
                   </div>
                   <div class="card-body">
@@ -147,7 +147,7 @@
 
                 <!-- Account Alerts -->
                 <div class="card mb-3">
-                  <div class="card-header bg-light">
+                  <div class="card-header text-bg-light">
                     <h6 class="mb-0">🏦 Peringatan Akun</h6>
                   </div>
                   <div class="card-body">
@@ -240,9 +240,12 @@ function unlinkAccount() {
 function saveSettings() {
     const settings = {
         notifications: document.getElementById('notifications').checked,
-        daily_report: document.getElementById('daily_report').checked,
-        budget_alerts: document.getElementById('budget_alerts').checked,
-        low_balance_alerts: document.getElementById('low_balance_alerts').checked
+        new_transaction: document.getElementById('new_transaction').checked,
+        daily_summary: document.getElementById('daily_summary').checked,
+        weekly_summary: document.getElementById('weekly_summary').checked,
+        budget_warning: document.getElementById('budget_warning').checked,
+        budget_exceeded: document.getElementById('budget_exceeded').checked,
+        low_balance: document.getElementById('low_balance').checked
     };
 
     fetch('{{ config("app.url") }}/telegram/settings', {
