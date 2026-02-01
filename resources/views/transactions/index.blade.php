@@ -487,15 +487,19 @@
       const transaction = JSON.parse(transactionItem);
       const deleteModal = document.getElementById('deleteModal');
       const description = document.getElementById('transaction-description');
-      const date = document.getElementById('transaction-date');
+      const dateEl = document.getElementById('transaction-date');
       const type = document.getElementById('transaction-type');
       const formModal = document.getElementById('form-delete');
-      alert(transaction.id);
+      
+      const date = new Date(transaction.transaction_date);
       
       description.textContent = transaction.description;
-      date.textContent = transaction.transaction_date;
+      dateEl.textContent = new Intl.DateTimeFormat('id-ID', {
+        numeric: 'auto',
+        timeZone: '{{ app.timezone }}'
+      }).format(date);
       type.classList.add('bg-'+ transaction.typeColor);
-      type.textContent = `${transaction.type}: ${transaction.amount}`;
+      type.textContent = `${transaction.type}: ${transaction.amount.amount}`;
       formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.id}`;
       
       const modal = new bootstrap.Modal(deleteModal);
