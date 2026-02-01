@@ -484,6 +484,7 @@
 @push('scripts')
 <script>
     function deleteItem(transaction) {
+      console.log(transaction);
       const deleteModal = document.getElementById('deleteModal');
       const description = document.getElementById('transaction-description');
       const date = document.getElementById('transaction-date');
@@ -500,6 +501,7 @@
       modal.show();
       
     }
+    
     document.addEventListener('DOMContentLoaded', function() {
         // Select All functionality
         const selectAll = document.getElementById('selectAll');
