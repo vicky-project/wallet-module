@@ -228,6 +228,28 @@ class TransactionController extends Controller
 		}
 	}
 
+	public function trash(Request $request)
+	{
+		// Apply filters
+		$filters = $request->only([
+			"type",
+			"account_id",
+			"category_id",
+			"description",
+			"start_date",
+			"end_date",
+			"payment_method",
+			"search",
+		]);
+
+		$transactions = $this->transactionService->getPaginatedTransactionsDeleted(
+			$filters,
+			10
+		);
+
+		dd($transactions);
+	}
+
 	/**
 	 * Check budget for transaction.
 	 */

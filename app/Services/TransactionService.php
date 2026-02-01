@@ -347,6 +347,19 @@ class TransactionService
 		}
 	}
 
+	public function getPaginatedTransactionsDeleted(
+		array $filters = [],
+		int $perPage = 20
+	): array {
+		$paginator = $this->transactionRepository->getPaginatedTransactions(
+			$filters,
+			$perPage,
+			true
+		);
+
+		dd($paginator);
+	}
+
 	/**
 	 * Get dashboard summary
 	 */

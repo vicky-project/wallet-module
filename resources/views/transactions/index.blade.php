@@ -186,6 +186,7 @@
         <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#filterModal">
           <i class="bi bi-funnel-fill"></i>
         </button>
+        <a href="{{ route('apps.transactions.trash') }}" class="btn btn-sm btn-outline-danger" role="button"><i class="bi bi-recycle"></i></a>
         <div class="dropdown">
           <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
@@ -492,9 +493,7 @@
       const formModal = document.getElementById('form-delete');
       
       const date = new Date(transaction.transaction_date);
-      
-      description.textContent = transaction.description;
-      dateEl.textContent = new Intl.DateTimeFormat('id-ID', {
+      const dateOptions = {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -504,7 +503,10 @@
         second: 'numeric',
         timeZone: '{{ config("app.timezone") }}',
         timeZoneName: 'short'
-      }).format(date);
+      };
+      
+      description.textContent = transaction.description;
+      dateEl.textContent = new Intl.DateTimeFormat('id-ID', dateOptions).format(date);
       type.classList.add('bg-'+ transaction.typeColor);
       type.textContent = `${transaction.type}: ${transaction.amount.amount}`;
       formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.id}`;

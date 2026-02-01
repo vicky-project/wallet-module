@@ -60,6 +60,10 @@ Route::middleware(["auth"])->group(function () {
 				TransactionController::class,
 				"checkBudget",
 			])->name("transactions.check-budget");
+			Route::get("transactions/trash", [
+				TransactionController::class,
+				"trash",
+			])->name("transactions.trash");
 			Route::resource("transactions", TransactionController::class);
 
 			// Category Routes

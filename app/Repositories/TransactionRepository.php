@@ -346,7 +346,8 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function getPaginatedTransactions(
 		array $filters = [],
-		int $perPage = 20
+		int $perPage = 20,
+		bool $onlyTrash = false
 	): LengthAwarePaginator {
 		$user = auth()->user();
 
@@ -354,6 +355,10 @@ class TransactionRepository extends BaseRepository
 			"user_id",
 			$user->id
 		);
+
+		if ($onlyTrash) {
+			$query->onlyTrashed();
+		}
 
 		// Apply filters
 		if (isset($filters["type"])) {
