@@ -2,6 +2,10 @@
 
 @section('title', 'Transaksi - Deleted')
 
+@use('Modules\Wallet\Enums\TransactionType')
+@use('Modules\Wallet\Enums\PaymentMethod')
+
+
 @section('content')
 @include('wallet::partials.fab')
 
@@ -132,3 +136,9 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {});
+</script>
+@endpush
