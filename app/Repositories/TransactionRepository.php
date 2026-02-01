@@ -10,6 +10,7 @@ use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Category;
+use Modules\Wallet\Services\Balances\BalanceUpdateManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -448,33 +449,17 @@ class TransactionRepository extends BaseRepository
 		Transaction $transaction,
 		array $data
 	): Transaction {
-		DB::beginTransaction();
-
 		try {
-			// Save old values for balance reversal
-			$oldAmount = $transaction->amount;
-			$oldType = $transaction->type;
-			$oldAccountId = $transaction->account_id;
-			$oldToAccountId = $transaction->to_account_id;
-			$oldCategoryId = $transaction->category_id;
-
-			// Revert old balances
-			$this->revertAccountBalance($transaction);
-
-			// Update transaction
-			$transaction->update($data);
-
-			// Apply new balances
-			$transaction = $transaction->fresh();
-
-			DB::commit();
+			$transaction = app(BalanceUpdateManager::class)->updateTransaction(
+				$transaction->id,
+				$data
+			);
 
 			// Invalidate cache
 			$this->invalidateTransactionCache($transaction->user_id);
 
 			return $transaction->load(["account", "toAccount", "category"]);
 		} catch (\Exception $e) {
-			DB::rollBack();
 			throw $e;
 		}
 	}
@@ -484,23 +469,14 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function deleteTransaction(Transaction $transaction): bool
 	{
-		DB::beginTransaction();
-
 		try {
-			// Revert balances
-			$this->revertAccountBalance($transaction);
-
-			// Delete transaction
-			$deleted = $transaction->delete();
-
-			DB::commit();
+			app(BalanceUpdateManager::class)->deleteTransaction($transaction->id);
 
 			// Invalidate cache
 			$this->invalidateTransactionCache($transaction->user_id);
 
-			return $deleted;
+			return true;
 		} catch (\Exception $e) {
-			DB::rollBack();
 			throw $e;
 		}
 	}
@@ -510,23 +486,14 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function restoreTransaction(Transaction $transaction): bool
 	{
-		DB::beginTransaction();
-
 		try {
-			// Revert balances
-			$this->revertAccountBalance($transaction);
-
-			// Delete transaction
-			$restored = $transaction->restore();
-
-			DB::commit();
+			app(BalanceUpdateManager::class)->restoreTransaction($transaction->id);
 
 			// Invalidate cache
 			$this->invalidateTransactionCache($transaction->user_id);
 
-			return $restored;
+			return true;
 		} catch (\Exception $e) {
-			DB::rollBack();
 			throw $e;
 		}
 	}
@@ -787,47 +754,6 @@ class TransactionRepository extends BaseRepository
 		}
 
 		return $trends;
-	}
-
-	/**
-	 * Revert account balance from transaction
-	 */
-	private function revertAccountBalance(Transaction $transaction): void
-	{
-		$accountRepo = app(AccountRepository::class);
-
-		switch ($transaction->type) {
-			case TransactionType::INCOME:
-				$accountRepo->updateBalance(
-					$transaction->account_id,
-					$transaction->amount->getAmount()->toInt(),
-					false
-				);
-				break;
-
-			case TransactionType::EXPENSE:
-				$accountRepo->updateBalance(
-					$transaction->account_id,
-					$transaction->amount->getAmount()->toInt(),
-					true
-				);
-				break;
-
-			case TransactionType::TRANSFER:
-				$accountRepo->updateBalance(
-					$transaction->account_id,
-					$transaction->amount->getAmount()->toInt(),
-					true
-				);
-				if ($transaction->to_account_id) {
-					$accountRepo->updateBalance(
-						$transaction->to_account_id,
-						$transaction->amount->getAmount()->toInt(),
-						false
-					);
-				}
-				break;
-		}
 	}
 
 	/**

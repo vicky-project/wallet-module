@@ -25,10 +25,22 @@ class BalanceUpdateManager
 	/**
 	 * Handle delete transaction - revert balance changes
 	 */
-	public function deleteTransaction(int $transactionId): void
-	{
-		DB::transaction(function () use ($transactionId) {
+	public function deleteTransaction(
+		int $transactionId,
+		bool $force = false
+	): void {
+		DB::transaction(function () use ($transactionId, $force) {
 			$transaction = $this->transactionRepo->findOrFail($transactionId);
+
+			if (!$force) {
+				$this->validateDeletion($transaction);
+			} else {
+				\Log::info("Force deletion of transaction.", [
+					"transaction_id" => $transaction->id,
+					"user_id" => auth()->id(),
+					"bypass_validation" => true,
+				]);
+			}
 
 			// Get the appropriate updater
 			$updater = $this->factory->getUpdater($transaction);
@@ -84,7 +96,7 @@ class BalanceUpdateManager
 			// Save the updated transaction
 			$transaction->save();
 
-			return $transaction;
+			return $transaction->fresh();
 		});
 	}
 
@@ -97,17 +109,15 @@ class BalanceUpdateManager
 	): void {
 		// If nothing changed that affects balance, do nothing
 		if (
-			!$this->balanceAffectingFieldsChanged($oldTransaction, $newTransaction)
+			$this->balanceAffectingFieldsChanged($oldTransaction, $newTransaction)
 		) {
-			return;
+			// Get updaters for both old and new transactions
+			$oldUpdater = $this->factory->getUpdater($oldTransaction);
+			$newUpdater = $this->factory->getUpdater($newTransaction);
+
+			$oldUpdater->revert($oldTransaction);
+			$newUpdater->apply($newTransaction);
 		}
-
-		// Get updaters for both old and new transactions
-		$oldUpdater = $this->factory->getUpdater($oldTransaction);
-		$newUpdater = $this->factory->getUpdater($newTransaction);
-
-		$oldUpdater->revert($oldTransaction);
-		$newUpdater->apply($newTransaction);
 	}
 
 	/**
@@ -156,26 +166,176 @@ class BalanceUpdateManager
 	/**
 	 * Validate if transaction can be deleted (balance won't go negative)
 	 */
-	public function validateDeletion(Transaction $transaction): bool
+	public function validateDeletion(
+		Transaction $transaction,
+		bool $checkNegativeBalance = true,
+		bool $checkAccountStatus = true
+	): bool {
+		try {
+			$this->validateBasicTransaction($transaction);
+
+			if ($checkAccountStatus) {
+				$this->validateAccountStatus($transaction);
+			}
+
+			if ($checkNegativeBalance) {
+				$this->validateNegativeBalance($transaction);
+			}
+
+			return true;
+		} catch (\Exception $e) {
+			\Log::error("Transaction deletion validation failed.", [
+				"transaction_id" => $transaction->id,
+				"type" => $transaction->type->value,
+				"error" => $e->getMessage(),
+				"user_id" => auth()->id() ?? "Unknown",
+			]);
+
+			throw $e;
+		}
+	}
+
+	private function validateBasicTransaction(Transaction $transaction): void
 	{
-		$accountRepo = app(AccountRepository::class);
-		$account = $accountRepo->find($transaction->account_id);
-
-		// For expense or transfer out, check if balance would go negative
-		if (
-			$transaction->type === TransactionType::EXPENSE ||
-			$transaction->type === TransactionType::TRANSFER
-		) {
-			$currentBalance = $account->balance->getAmount()->toInt();
-			$transactionAmount = $transaction->amount->getAmount()->toInt();
-
-			// When we revert (delete), we add back the amount for expense
-			// So we need to check if current balance - amount would be negative
-			// Actually for expense revert: we add amount back, so it can't go negative
-			// But we should check if the account has enough balance for the transaction
-			// This validation is better done before the transaction is created
+		if (!$transaction->exists) {
+			throw new \Exception("Transaction does not exist in database.");
 		}
 
-		return true;
+		if ($transaction->trashed()) {
+			throw new \Exception("Transaction has been deleted.");
+		}
+	}
+
+	/**
+	 * Validate account statuses
+	 */
+	private function validateAccountStatus(Transaction $transaction): void
+	{
+		$accountRepo = app(AccountRepository::class);
+
+		// Check source account
+		$sourceAccount = $accountRepo->find($transaction->account_id);
+		if (!$sourceAccount) {
+			throw new \Exception(
+				"Source account (ID: {$transaction->account_id}) not found."
+			);
+		}
+
+		if (!$sourceAccount->is_active) {
+			throw new \Exception(
+				"Source account '{$sourceAccount->name}' is inactive."
+			);
+		}
+
+		// Check destination account for transfers
+		if (
+			$transaction->type === TransactionType::TRANSFER &&
+			$transaction->to_account_id
+		) {
+			$destAccount = $accountRepo->find($transaction->to_account_id);
+			if (!$destAccount) {
+				throw new \Exception(
+					"Destination account (ID: {$transaction->to_account_id}) not found."
+				);
+			}
+
+			if (!$destAccount->is_active) {
+				throw new \Exception(
+					"Destination account '{$destAccount->name}' is inactive."
+				);
+			}
+
+			// Check if source and destination accounts are the same
+			if ($transaction->account_id === $transaction->to_account_id) {
+				throw new \Exception(
+					"Source and destination accounts cannot be the same for transfers."
+				);
+			}
+		}
+	}
+
+	/**
+	 * Validate that deletion won't cause negative balances
+	 */
+	private function validateNegativeBalance(Transaction $transaction): void
+	{
+		$accountRepo = app(AccountRepository::class);
+		$transactionAmount = $transaction->amount->getAmount()->toInt();
+
+		switch ($transaction->type) {
+			case TransactionType::INCOME:
+				// Deleting INCOME: we subtract amount from account
+				$account = $accountRepo->find($transaction->account_id);
+				$currentBalance = $account->balance->getAmount()->toInt();
+				$minimumBalance = $account->min_balance?->getAmount()->toInt() ?? 0;
+
+				// Check if balance would go below minimum after deletion
+				$projectedBalance = $currentBalance - $transactionAmount;
+
+				if ($projectedBalance < $minimumBalance && !$account->allow_negative) {
+					throw new \Exception(
+						sprintf(
+							"Deleting this income would cause account '%s' to have balance %s (min: %s). Current: %s",
+							$account->name,
+							$this->formatCurrency($projectedBalance, $account->currency),
+							$this->formatCurrency($minimumBalance, $account->currency),
+							$this->formatCurrency($currentBalance, $account->currency)
+						)
+					);
+				}
+				break;
+
+			case TransactionType::EXPENSE:
+				// Deleting EXPENSE: we add amount back to account
+				// This increases balance, so no negative risk for source account
+				// But we might want to check other rules
+				break;
+
+			case TransactionType::TRANSFER:
+				// For transfer deletion:
+				// - Source account: gets amount added back (no negative risk)
+				// - Destination account: gets amount subtracted (check negative)
+
+				if ($transaction->to_account_id) {
+					$destAccount = $accountRepo->find($transaction->to_account_id);
+					$destCurrentBalance = $destAccount->balance->getAmount()->toInt();
+					$destMinBalance =
+						$destAccount->min_balance?->getAmount()->toInt() ?? 0;
+
+					// Projected balance after deleting transfer (subtract from destination)
+					$destProjectedBalance = $destCurrentBalance - $transactionAmount;
+
+					if (
+						$destProjectedBalance < $destMinBalance &&
+						!$destAccount->allow_negative
+					) {
+						throw new \Exception(
+							sprintf(
+								"Deleting this transfer would cause destination account '%s' to have balance %s (min: %s). Current: %s",
+								$destAccount->name,
+								$this->formatCurrency(
+									$destProjectedBalance,
+									$account->currency
+								),
+								$this->formatCurrency($destMinBalance, $account->currency),
+								$this->formatCurrency($destCurrentBalance, $account->currency)
+							)
+						);
+					}
+				}
+				break;
+		}
+	}
+
+	/**
+	 * Helper: Format currency amount
+	 */
+	private function formatCurrency(int $amount, ?string $currency = null): string
+	{
+		if (!is_numeric($amount)) {
+			return 0;
+		}
+
+		return money($value, $currency);
 	}
 }

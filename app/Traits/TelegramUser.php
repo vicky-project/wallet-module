@@ -11,6 +11,7 @@ trait TelegramUser
 		"telegram_username",
 		"telegram_verification_code",
 		"telegram_code_expires_at",
+		"telegram_notifications",
 		"telegram_settings",
 	];
 
@@ -96,7 +97,24 @@ trait TelegramUser
 	public function getTelegramSetting(string $key, $default = null)
 	{
 		$settings = $this->telegram_settings ?? [];
+
+		if (!isset($settings[$key])) {
+			return $default;
+		}
+
 		return $settings[$key] ?? $default;
+	}
+
+	public function getAllTelegramSettings()
+	{
+		return $this->telegram_settings ?? [];
+	}
+
+	public function setTelegramNotification(bool $active)
+	{
+		$this->mergeFillable($this->newFillable)->update([
+			"telegram_notifications" => $active,
+		]);
 	}
 
 	/**
@@ -104,7 +122,8 @@ trait TelegramUser
 	 */
 	public function updateTelegramSettings(array $settings): bool
 	{
-		$current = $this->telegram_settings ?? [];
+		$current = $this->getAllTelegramSettings();
+
 		return $this->mergeFillable($this->newFillable)->update([
 			"telegram_settings" => array_merge($current, $settings),
 		]);

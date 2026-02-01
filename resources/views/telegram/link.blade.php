@@ -65,26 +65,110 @@
             <div class="mt-4">
               <h6>⚙️ Pengaturan Notifikasi</h6>
               <form id="settings-form">
-                <div class="form-check mb-2">
-                  <input type="checkbox" class="form-check-input" id="notifications" checked>
-                  <label class="form-check-label" for="notifications">Aktifkan Notifikasi</label>
+                <div class="form-check mb-3">
+                  <input type="checkbox" class="form-check-input" id="notifications" @checked(auth()->user()->telegram_notifications)>
+                  <label class="form-check-label font-weight-bold" for="notifications">Aktifkan Semua Notifikasi</label>
                   <small class="form-text text-muted d-block">Jika di nonaktifkan, semua notifikasi akan dimatikan</small>
                 </div>
-                <div class="form-check mb-2">
-                  <input type="checkbox" class="form-check-input" id="daily_report">
-                  <label class="form-check-label" for="daily_report">Laporan Harian</label>
+                
+                <!-- Transaction -->
+                <div class="card mb-3">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">💰 Transaksi</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check mb-2">
+                      <input type="checkbox" class="form-check-input setting-toggle" id="new_transaction" data-setting="new_transaction" @checked($settings['new_transaction'] ?? true)>
+                      <label class="form-check-label" for="new_transaction">
+                        Notifikasi Transaksi Baru
+                      </label>
+                      <small class="form-text text-muted d-block">
+                        Dapatkan notifikasi setiap menambah transaksi
+                      </small>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-check mb-2">
-                  <input type="checkbox" class="form-check-input" id="budget_alerts" checked>
-                  <label class="form-check-label" for="budget_alerts">Peringatan Budget</label>
+
+                <!-- Daily/Weekly Reports -->
+                <div class="card mb-3">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">📊 Laporan</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check mb-2">
+                      <input type="checkbox" class="form-check-input setting-toggle" id="daily_summary" data-setting="daily_summary" @checked($settings['daily_summary'] ?? false)>
+                      <label class="form-check-label" for="daily_summary">
+                        Laporan Harian
+                      </label>
+                      <small class="form-text text-muted d-block">
+                        Dikirim setiap jam 20:00
+                      </small>
+                    </div>
+                
+                    <div class="form-check mb-2">
+                      <input type="checkbox" class="form-check-input setting-toggle" id="weekly_summary" data-setting="weekly_summary" @checked($settings['weekly_summary'] ?? true)>
+                      <label class="form-check-label" for="weekly_summary">
+                        Laporan Mingguan
+                      </label>
+                      <small class="form-text text-muted d-block">
+                        Dikirim setiap Minggu jam 19:00
+                      </small>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-check mb-2">
-                  <input type="checkbox" class="form-check-input" id="low_balance_alerts" checked>
-                  <label class="form-check-label" for="low_balance_alerts">Peringatan Saldo Rendah</label>
+                
+                <!-- Budget Alerts -->
+                <div class="card mb-3">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">⚠️ Peringatan Budget</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check mb-2">
+                      <input type="checkbox" class="form-check-input setting-toggle" id="budget_warning" data-setting="budget_warning" @checked($settings['budget_warning'] ?? true)>
+                      <label class="form-check-label" for="budget_warning">
+                        Peringatan Budget (80-100%)
+                      </label>
+                      <small class="form-text text-muted d-block">
+                        Dikirim saat budget hampir habis
+                      </small>
+                    </div>
+                
+                    <div class="form-check mb-2">
+                      <input type="checkbox" class="form-check-input setting-toggle" id="budget_exceeded" data-setting="budget_exceeded" @checked($settings['budget_exceeded'] ?? true)>
+                      <label class="form-check-label" for="budget_exceeded">
+                        Budget Terlampaui
+                      </label>
+                      <small class="form-text text-muted d-block">
+                        Dikirim saat budget sudah terlampaui
+                      </small>
+                    </div>
+                  </div>
                 </div>
-                <button type="button" onclick="saveSettings()" class="btn btn-sm btn-success mt-2">
-                  💾 Simpan Pengaturan
-                </button>
+
+                <!-- Account Alerts -->
+                <div class="card mb-3">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">🏦 Peringatan Akun</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check mb-2">
+                      <input type="checkbox" class="form-check-input setting-toggle" id="low_balance" data-setting="low_balance" @checked($settings['low_balance'] ?? true)>
+                      <label class="form-check-label" for="low_balance">
+                        Saldo Rendah
+                      </label>
+                      <small class="form-text text-muted d-block">
+                        Dikirim saat saldo di bawah Rp 100.000
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button type="button" onclick="saveSettings()" class="btn btn-sm btn-success mt-2">
+                    💾 Simpan Pengaturan
+                  </button>
+                </div>
+                <div id="settings-status" class="mt-3"></div>
               </form>
             </div>
           @endif

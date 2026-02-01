@@ -8,6 +8,7 @@ use Modules\Wallet\Models\Account;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Enums\AccountType;
 use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Events\TelegramNotificationEvent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -268,6 +269,29 @@ class AccountService
 			$account->balance = $newBalance;
 			$result = $account->save();
 			Cache::flush();
+
+			//Check for low balance
+			$threshold = 100000;
+			if (
+				$account
+					->fresh()
+					->balance->getAmount()
+					->toInt() < $threshold
+			) {
+				$user = $account->user;
+				if (
+					$user->hasLinkedTelegram() &&
+					$user->telegram_notifications &&
+					$user->getTelegramSetting("low_balance")
+				) {
+					event(
+						new TelegramNotificationEvent($user, "low_balance", [
+							"account" => $account,
+							"threshold" => $threshold,
+						])
+					);
+				}
+			}
 			return $result;
 		});
 	}

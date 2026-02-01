@@ -50,6 +50,10 @@ class WalletServiceProvider extends ServiceProvider
 		$this->commands([
 			\Modules\Wallet\Console\ProcessRecurringTransactionsCommand::class,
 			\Modules\Wallet\Console\TelegramSetup::class,
+			\Modules\Wallet\Console\CheckBudgetWarnings::class,
+			\Modules\Wallet\Console\CheckLowBalances::class,
+			\Modules\Wallet\Console\SendDailyTelegramSummary::class,
+			\Modules\Wallet\Console\SendWeeklyTelegramReport::class,
 		]);
 	}
 
@@ -63,6 +67,18 @@ class WalletServiceProvider extends ServiceProvider
 			Schedule::command("app:process-recurring")
 				->dailyAt("00:01")
 				->withoutOverlapping();
+			Schedule::command("telegram:daily-summary")
+				->dailyAt("20:00")
+				->timezone(config("app.timezone"));
+			Schedule::command("telegram:check-budgets")
+				->dailyAt("09:00")
+				->timezone(config("app.timezone"));
+			Schedule::command("telegram:check-balances")
+				->dailyAt("10:00")
+				->timezone(config("app.timezone"));
+			Schedule::command("telegram:weekly-report")
+				->weeklyOn(0, "19:00")
+				->timezone(config("app.timezone"));
 		});
 	}
 

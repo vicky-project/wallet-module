@@ -23,8 +23,12 @@ class TelegramLinkController extends Controller
 	{
 		$user = Auth::user();
 		$botUsername = config("wallet.telegram_bot.username");
+		$settings = $user->getTelegramSetting();
 
-		return view("wallet::telegram.link", compact("user", "botUsername"));
+		return view(
+			"wallet::telegram.link",
+			compact("user", "botUsername", "settings")
+		);
 	}
 
 	/**
@@ -101,13 +105,37 @@ class TelegramLinkController extends Controller
 	{
 		$validated = $request->validate([
 			"notifications" => "boolean",
-			"daily_report" => "boolean",
-			"budget_alerts" => "boolean",
-			"low_balance_alerts" => "boolean",
+			"new_transaction" => "boolean",
+			"daily_summary" => "boolean",
+			"weekly_summary" => "boolean",
+			"budget_warning" => "boolean",
+			"budget_exceeded" => "boolean",
+			"low_balance" => "boolean",
 		]);
 
 		$user = Auth::user();
-		$user->updateTelegramSettings($validated);
+
+		if (isset($validated["notifications"])) {
+			$user->setTelegramNotification($validated["notifications"]);
+		}
+
+		$settingKeys = [
+			"new_transaction",
+			"daily_summary",
+			"weekly_summary",
+			"budget_warning",
+			"budget_exceeded",
+			"low_balance",
+		];
+
+		$settings = [];
+		foreach ($settingKeys as $key) {
+			if (isset($validated[$key])) {
+				$settings[$key] = $validated[$key];
+			}
+		}
+
+		$user->updateTelegramSettings($settings);
 
 		return response()->json([
 			"success" => true,
