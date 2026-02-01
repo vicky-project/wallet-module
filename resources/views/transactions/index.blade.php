@@ -506,7 +506,7 @@
         // Select All functionality
         const selectAll = document.getElementById('selectAll');
         const transactionChecks = document.querySelectorAll('.transaction-check');
-        const btnDelete = document.querySelectorAll('btn-delete');
+        const btnDelete = document.querySelectorAll('.btn-delete');
         
         if(btnDelete) {
             btnDelete.forEach(btn => btn.addEventListener('click', () => {
