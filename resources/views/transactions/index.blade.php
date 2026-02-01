@@ -510,7 +510,7 @@
         
         if(btnDelete) {
             btnDelete.forEach(btn => btn.addEventListener('click', () => {
-                const data = this.dataset.transaction;
+                const data = this.dataset;
                 console.log(data);
             }));
         }
