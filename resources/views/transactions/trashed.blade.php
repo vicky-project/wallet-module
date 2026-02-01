@@ -143,6 +143,46 @@
     @endif
   </div>
 </div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>Perhatian:</strong> Saldo akun akan disesuaikan otomatis.
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <strong id="transaction-description"></strong>
+            <br>
+            <small class="text-muted" id="transaction-date"></small>
+            <div class="mt-2">
+              <span class="badge" id="transaction-type">
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form method="POST" style="display: inline;" id="form-delete">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-2"></i> Hapus
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -167,7 +207,7 @@
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
       body: JSON.stringify({ '_token': '{{ csrf_token() }}', ids: ids })
-      })
+    })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
@@ -182,7 +222,29 @@
       });
   }
         
-  function bulkRestore(ids) {}
+  function bulkRestore(ids) {
+    fetch("{{ secure_url(config('app.url') . '/apps/transactions/bulk-restore') }}", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ '_token': '{{ csrf_token() }}', ids: ids })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+          alert(`Berhasil memulihkan ${data.restored} transaksi.`);
+          location.reload();
+        } else {
+          alert('Gagal menghapus transaksi: ' + data.message);
+        }
+    })
+    .catch(error => {
+      alert('Terjadi kesalahan: ' + error.message);
+    });
+  }
   
   document.addEventListener('DOMContentLoaded', function() {
             // Select All functionality

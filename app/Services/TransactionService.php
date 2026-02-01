@@ -737,6 +737,38 @@ class TransactionService
 		}
 	}
 
+	public function bulkRestore(array $ids, User $user): array
+	{
+		try {
+			// Verify all transactions belong to user
+			$transactions = $this->transactionRepository
+				->query()
+				->where("user_id", $user->id)
+				->whereIn("id", $ids)
+				->count();
+
+			if ($transactions !== count($ids)) {
+				throw new \Exception(
+					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses."
+				);
+			}
+
+			// Perform bulk restore
+			$restored = $this->transactionRepository->bulkRestore($ids);
+
+			return [
+				"success" => true,
+				"restored" => $restored,
+				"message" => "{$deleted} transaksi berhasil dihapus.",
+			];
+		} catch (\Exception $e) {
+			return [
+				"success" => false,
+				"message" => $e->getMessage(),
+			];
+		}
+	}
+
 	/**
 	 * Duplicate transaction
 	 */

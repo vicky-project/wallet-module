@@ -506,6 +506,32 @@ class TransactionRepository extends BaseRepository
 	}
 
 	/**
+	 * Restore transaction
+	 */
+	public function restoreTransaction(Transaction $transaction): bool
+	{
+		DB::beginTransaction();
+
+		try {
+			// Revert balances
+			$this->revertAccountBalance($transaction);
+
+			// Delete transaction
+			$restored = $transaction->restore();
+
+			DB::commit();
+
+			// Invalidate cache
+			$this->invalidateTransactionCache($transaction->user_id);
+
+			return $restored;
+		} catch (\Exception $e) {
+			DB::rollBack();
+			throw $e;
+		}
+	}
+
+	/**
 	 * Get transaction by UUID
 	 */
 	public function getByUuid(string $uuid): ?Transaction
@@ -1081,6 +1107,34 @@ class TransactionRepository extends BaseRepository
 
 			DB::commit();
 			return $deleted;
+		} catch (\Exception $e) {
+			DB::rollBack();
+			throw $e;
+		}
+	}
+
+	/**
+	 * Bulk restore transactions
+	 */
+	public function bulkRestore(array $ids): int
+	{
+		$user = auth()->user();
+		$restored = 0;
+
+		DB::beginTransaction();
+
+		try {
+			$transactions = Transaction::where("user_id", $user->id)
+				->whereIn("id", $ids)
+				->get();
+
+			foreach ($transactions as $transaction) {
+				$this->restoreTransaction($transaction);
+				$restored++;
+			}
+
+			DB::commit();
+			return $restored;
 		} catch (\Exception $e) {
 			DB::rollBack();
 			throw $e;

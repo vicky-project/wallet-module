@@ -48,6 +48,10 @@ Route::middleware(["auth"])->group(function () {
 				TransactionController::class,
 				"export",
 			])->name("transactions.export");
+			Route::post("transactions/bulk-restore", [
+				TransactionController::class,
+				"bulkRestore",
+			])->name("transactions.bulk-restore");
 			Route::post("transactions/bulk-delete", [
 				TransactionController::class,
 				"bulkDelete",
