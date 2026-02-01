@@ -494,7 +494,7 @@
       date.textContent = transaction.transaction_date;
       type.classList.add('bg-'+ transaction.typeColor);
       type.textContent = `${transaction.type}: ${transaction.amount}`;
-      formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.uuid}/destroy`;
+      formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.id}`;
       
       const modal = new bootstrap.Modal(deleteModal);
       modal.show();

@@ -208,11 +208,14 @@ class TransactionController extends Controller
 	/**
 	 * Remove the specified transaction.
 	 */
-	public function destroy(string $uuid)
+	public function destroy(Transaction $transaction)
 	{
 		$user = Auth::user();
 
-		$result = $this->transactionService->deleteTransaction($uuid, $user);
+		$result = $this->transactionService->deleteTransaction(
+			$transaction->uuid,
+			$user
+		);
 
 		if ($result["success"]) {
 			return redirect()
