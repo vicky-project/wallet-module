@@ -293,7 +293,7 @@
                     <a href="{{ route('apps.transactions.edit', $transaction->uuid) }}" class="btn btn-outline-primary p-2" title="Edit">
                       <i class="bi bi-pencil"></i>
                     </a>
-                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $transaction->id }}" title="Hapus">
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteItem(@json($transaction))" title="Hapus">
                       <i class="bi bi-trash"></i>
                     </button>
                     <div class="dropdown">
@@ -312,48 +312,6 @@
                           </a>
                         </li>
                       </ul>
-                    </div>
-                  </div>
-                                    
-                  <!-- Delete Modal -->
-                  <div class="modal fade" id="deleteModal{{ $transaction->id }}" tabindex="-1">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title">Konfirmasi Hapus</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                          <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
-                          <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            <strong>Perhatian:</strong> Saldo akun akan disesuaikan otomatis.
-                          </div>
-                          <div class="card">
-                            <div class="card-body">
-                              <strong>{{ $transaction->description }}</strong>
-                              <br>
-                              <small class="text-muted">
-                                {{ $transaction->transaction_date->format('d/m/Y H:i') }}</small>
-                                                    <div class="mt-2">
-                                <span class="badge bg-{{ $transaction->typeColor }}">
-                                  {{ $transaction->typeLabel }}: {{ $transaction->formattedAmount }}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                          <form action="{{ route('apps.transactions.destroy', $transaction->uuid) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">
-                              <i class="bi bi-trash me-2"></i> Hapus
-                            </button>
-                          </form>
-                          </div>
-                      </div>
                     </div>
                   </div>
                 </td>
@@ -394,6 +352,46 @@
         </div>
       </div>
     @endif
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>Perhatian:</strong> Saldo akun akan disesuaikan otomatis.
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <strong id="transaction-description"></strong>
+            <br>
+            <small class="text-muted" id="transaction-date"></small>
+            <div class="mt-2">
+              <span class="badge" id="transaction-type">
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form method="POST" style="display: inline;" id="form-delete">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-2"></i> Hapus
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -481,54 +479,27 @@
     </div>
   </div>
 </div>
-
-<!-- Export Modal -->
-<div class="modal fade" id="exportModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Export Data Transaksi</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form action="{{ route('apps.transactions.export') }}" method="GET" id="exportForm">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="export_format" class="form-label">Format Export</label>
-            <select name="format" id="export_format" class="form-select" required>
-              <option value="excel">Excel (.xlsx)</option>
-              <option value="csv">CSV (.csv)</option>
-              <option value="pdf">PDF (.pdf)</option>
-              <option value="json">JSON (.json)</option>
-            </select>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="export_start_date" class="form-label">Dari Tanggal</label>
-              <input type="date" name="start_date" id="export_start_date" class="form-control">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="export_end_date" class="form-label">Sampai Tanggal</label>
-              <input type="date" name="end_date" id="export_end_date" class="form-control">
-            </div>
-          </div>
-          <div class="form-text">
-            Kosongkan tanggal untuk mengekspor semua data transaksi.
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-download me-2"></i> Export Data
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 @endsection
 
 @push('scripts')
 <script>
+    funtion deleteItem(transaction) {
+      const deleteModal = document.getElementById('deleteModal');
+      const description = document.getElementById('transaction-description');
+      const date = document.getElementById('transaction-date');
+      const type = document.getElementById('transaction-type');
+      const formModal = document.getElementById('form-delete');
+      
+      description.textContent = transaction.description;
+      date.textContent = transaction.transaction_date;
+      type.classList.add('bg'+ transaction.typeColor);
+      typeColor.textContent = `${transaction.typeLabel}: ${transaction.formattedAmount}`;
+      formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.uuid}/destroy`;
+      
+      const modal = new bootstrap.Modal(deleteModal);
+      modal.show();
+      
+    }
     document.addEventListener('DOMContentLoaded', function() {
         // Select All functionality
         const selectAll = document.getElementById('selectAll');
