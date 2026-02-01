@@ -19,7 +19,7 @@
                 <h6>✅ Akun Telegram Terhubung</h6>
                 <p class="mb-1">Chat ID: {{ auth()->user()->telegram_chat_id }}</p>
                 @if(auth()->user()->telegram_username)
-                  <p class="mb-1">Username: {{ auth()->user()->telegram_username }}</p>
+                  <p class="mb-1">Username: <span>@</span>{{ auth()->user()->telegram_username }}</p>
                 @endif
               </div>
               <button onclick="unlinkAccount()" class="btn btn-outline-danger">
