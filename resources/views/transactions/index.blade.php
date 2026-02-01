@@ -493,7 +493,7 @@
       
       description.textContent = transaction.description;
       date.textContent = transaction.transaction_date;
-      type.classList.add('bg'+ transaction.typeColor);
+      type.classList.add('bg-'+ transaction.typeColor);
       typeColor.textContent = `${transaction.typeLabel}: ${transaction.formattedAmount}`;
       formModal.action = `{{ config('app.url') }}/apps/transactions/${transaction.uuid}/destroy`;
       
@@ -511,7 +511,7 @@
         if(btnDelete) {
             btnDelete.forEach(btn => btn.addEventListener('click', function() {
                 const data = this.dataset.transaction;
-                console.log(JSON.stringify(data));
+                deleteItem(data);
             }));
         }
         
