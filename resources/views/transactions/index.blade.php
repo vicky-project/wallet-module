@@ -484,7 +484,7 @@
 @push('scripts')
 <script>
     function deleteItem(transactionItem) {
-      const transaction = Array.from(transactionItem);
+      const transaction = JSON.parse(transactionItem);
       const deleteModal = document.getElementById('deleteModal');
       const description = document.getElementById('transaction-description');
       const date = document.getElementById('transaction-date');
