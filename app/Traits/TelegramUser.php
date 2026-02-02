@@ -7,7 +7,7 @@ use Carbon\Carbon;
 trait TelegramUser
 {
 	protected $newFillable = [
-		"telegram_chat_id",
+		"telegram_id",
 		"telegram_username",
 		"telegram_verification_code",
 		"telegram_code_expires_at",
@@ -46,7 +46,7 @@ trait TelegramUser
 		string $username = null
 	): bool {
 		return $this->mergeFillable($this->newFillable)->update([
-			"telegram_chat_id" => $chatId,
+			"telegram_id" => $chatId,
 			"telegram_username" => $username,
 			"telegram_verification_code" => null,
 			"telegram_code_expires_at" => null,
@@ -59,7 +59,7 @@ trait TelegramUser
 	public function unlinkTelegramAccount(): bool
 	{
 		return $this->mergeFillable($this->newFillable)->update([
-			"telegram_chat_id" => null,
+			"telegram_id" => null,
 			"telegram_username" => null,
 			"telegram_verification_code" => null,
 			"telegram_code_expires_at" => null,
@@ -88,7 +88,7 @@ trait TelegramUser
 	 */
 	public function hasLinkedTelegram(): bool
 	{
-		return !is_null($this->telegram_chat_id);
+		return !is_null($this->telegram_id);
 	}
 
 	/**

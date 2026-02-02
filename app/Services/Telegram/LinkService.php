@@ -96,6 +96,6 @@ class LinkService
 	 */
 	public function getUserByChatId(int $chatId): ?User
 	{
-		return User::where("telegram_chat_id", $chatId)->first();
+		return User::where("telegram_id", $chatId)->first();
 	}
 }
