@@ -13,8 +13,8 @@ class MessageHandler
 	protected TelegramApi $telegramApi;
 
 	public function __construct(
-		TelegramCommandHandler $commandHandler,
-		TelegramConversationHandler $conversationHandler,
+		CommandHandler $commandHandler,
+		ConversationHandler $conversationHandler,
 		TelegramApi $telegramApi
 	) {
 		$this->commandHandler = $commandHandler;
