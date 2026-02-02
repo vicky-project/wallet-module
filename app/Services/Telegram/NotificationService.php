@@ -11,7 +11,7 @@ use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Services\Telegram\Handlers\CallbackHandlerFactory;
+use Modules\Wallet\Services\Telegram\Handlers\Callbacks\CallbackHandlerFactory;
 use Modules\Wallet\Services\Telegram\Types\BudgetNotification;
 use Modules\Wallet\Services\Telegram\Types\TransactionNotification;
 
