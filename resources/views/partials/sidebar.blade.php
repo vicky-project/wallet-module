@@ -48,7 +48,7 @@
       </a>
     </li>
     <li class="mt-4">
-      <a href="#">
+      <a href="{{ route('telegram.link') }}">
         <i class="bi bi-gear"></i> Pengaturan
       </a>
     </li>

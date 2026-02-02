@@ -19,16 +19,16 @@ class BalanceUpdaterFactory
 	public function __construct()
 	{
 		$this->updaters = [
-			TransactionType::INCOME->value => IncomeBalanceUpdater::class,
-			TransactionType::EXPENSE->value => ExpenseBalanceUpdater::class,
-			TransactionType::TRANSFER->value => TransferBalanceUpdater::class,
+			TransactionType::INCOME => IncomeBalanceUpdater::class,
+			TransactionType::EXPENSE => ExpenseBalanceUpdater::class,
+			TransactionType::TRANSFER => TransferBalanceUpdater::class,
 		];
 	}
 
 	public function getUpdater(
 		Transaction $transaction
 	): BalanceOperationInterface {
-		$type = $transaction->type->value;
+		$type = $transaction->type;
 
 		if (!isset($this->updaters[$type])) {
 			throw new InvalidArgumentException(

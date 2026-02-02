@@ -30,7 +30,10 @@ class LinkService
 		return [
 			"code" => $code,
 			"expires_at" => Carbon::parse($user->fresh()->telegram_code_expires_at),
-			"bot_username" => config("telegram_bot.username", "your_bot_username"),
+			"bot_username" => config(
+				"wallet.telegram_bot.username",
+				"your_bot_username"
+			),
 		];
 	}
 
