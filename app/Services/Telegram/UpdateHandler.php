@@ -90,8 +90,7 @@ class UpdateHandler
 			$params["secret_token"] = $secretToken;
 		}
 
-		$response = $this->telegram->setWebhook($params);
-		return $response->getResult();
+		return $this->telegram->setWebhook($params);
 	}
 
 	/**
