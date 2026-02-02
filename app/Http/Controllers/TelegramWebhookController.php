@@ -2,8 +2,9 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Modules\Wallet\Services\Telegram\TelegramLinkService;
-use Modules\Wallet\Services\Telegram\TelegramCommandService;
+use Modules\Wallet\Services\Telegram\CommandService;
+use Modules\Wallet\Services\Telegram\LinkService;
+use Modules\Wallet\Services\Telegram\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Telegram\Bot\Api;
@@ -15,10 +16,12 @@ class TelegramWebhookController extends Controller
 	protected $telegram;
 	protected $linkService;
 	protected $commandService;
+	protected $notificationService;
 
 	public function __construct(
-		TelegramLinkService $linkService,
-		TelegramCommandService $commandService
+		LinkService $linkService,
+		CommandService $commandService,
+		NotificationService $notificationService
 	) {
 		$this->linkService = $linkService;
 		$this->commandService = $commandService;
@@ -50,7 +53,9 @@ class TelegramWebhookController extends Controller
 			if ($update->has("message")) {
 				$this->handleMessage($update->getMessage());
 			} elseif ($update->has("callback_query")) {
-				$this->handleCallbackQuery($update->getCallbackQuery());
+				$this->notificationService->handleCallbackQuery(
+					$update->getCallbackQuery()
+				);
 			}
 
 			return response()->json(["status" => "ok"]);
@@ -369,21 +374,6 @@ class TelegramWebhookController extends Controller
 			"Halo! Saya adalah bot untuk manajemen keuangan.\n" .
 				"Gunakan /help untuk melihat command yang tersedia."
 		);
-	}
-
-	/**
-	 * Handle callback queries from inline keyboards
-	 */
-	private function handleCallbackQuery($callbackQuery): void
-	{
-		$chatId = $callbackQuery
-			->getMessage()
-			->getChat()
-			->getId();
-		$data = $callbackQuery->getData();
-
-		// Handle callback data
-		$this->sendMessage($chatId, "Callback received: {$data}");
 	}
 
 	/**

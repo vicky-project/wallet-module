@@ -4,25 +4,138 @@ namespace Modules\Wallet\Services\Telegram;
 use App\Models\User;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Objects\CallbackQuery;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Modules\Wallet\Models\Transaction;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Enums\TransactionType;
+use Modules\Wallet\Services\Telegram\Handlers\CallbackHandlerFactory;
+use Modules\Wallet\Services\Telegram\Types\BudgetNotification;
+use Modules\Wallet\Services\Telegram\Types\TransactionNotification;
 
-class TelegramNotificationService
+class NotificationService
 {
 	protected $telegram;
 	protected $telegramLinkService;
+	protected $handlerFactory;
 
-	public function __construct(TelegramLinkService $telegramLinkService)
-	{
+	public function __construct(
+		LinkService $telegramLinkService,
+		CallbackHandlerFactory $handlerFactory
+	) {
 		$token = config("wallet.telegram_bot.token");
 		if ($token) {
 			$this->telegram = new Api($token);
 		}
 		$this->telegramLinkService = $telegramLinkService;
+		$this->handlerFactory = $handlerFactory;
+	}
+
+	/**
+	 * Handle incoming callback query
+	 */
+	public function handleCallbackQuery(CallbackQuery $callbackQuery): array
+	{
+		try {
+			$chatId = $callbackQuery
+				->getMessage()
+				->getChat()
+				->getId();
+			$data =
+				json_decode($callbackQuery->getData(), true) ??
+				$this->parseLegacyCallbackData($callbackQuery->getData());
+
+			if (!$data) {
+				$this->telegramApi->answerCallbackQuery(
+					$callbackQuery->getId(),
+					"❌ Data tidak valid",
+					true
+				);
+				return ["success" => false];
+			}
+
+			$user = User::where("telegram_chat_id", $chatId)->first();
+			if (!$user) {
+				$this->telegramApi->answerCallbackQuery(
+					$callbackQuery->getId(),
+					"❌ User tidak ditemukan",
+					true
+				);
+				return ["success" => false];
+			}
+
+			$action = $data["action"] ?? null;
+			$type = $data["type"] ?? null;
+
+			if (!$action || !$type) {
+				$this->telegramApi->answerCallbackQuery(
+					$callbackQuery->getId(),
+					"❌ Format callback tidak valid",
+					true
+				);
+				return ["success" => false];
+			}
+
+			// Special case for cancel action
+			if ($action === "cancel") {
+				$this->telegramApi->deleteMessage(
+					$chatId,
+					$callbackQuery->getMessage()->getMessageId()
+				);
+				$this->telegramApi->answerCallbackQuery(
+					$callbackQuery->getId(),
+					"❌ Dibatalkan"
+				);
+				return ["success" => true];
+			}
+
+			// Find appropriate handler
+			$handler = $this->handlerFactory->getHandlerForCallback($action, $type);
+			if (!$handler) {
+				$this->telegramApi->answerCallbackQuery(
+					$callbackQuery->getId(),
+					"❌ Handler tidak ditemukan",
+					true
+				);
+				return ["success" => false];
+			}
+
+			// Execute handler
+			return $handler->handle($user, $data, $callbackQuery);
+		} catch (\Exception $e) {
+			Log::error("Callback query handling error", [
+				"callback_data" => $callbackQuery->getData(),
+				"error" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
+			]);
+
+			$this->telegramApi->answerCallbackQuery(
+				$callbackQuery->getId(),
+				"❌ Terjadi kesalahan sistem",
+				true
+			);
+			return ["success" => false, "error" => $e->getMessage()];
+		}
+	}
+
+	/**
+	 * Parse legacy callback data format (action_type_id)
+	 */
+	private function parseLegacyCallbackData(string $data): array
+	{
+		$parts = explode("_", $data, 3);
+
+		if (count($parts) < 3) {
+			return [];
+		}
+
+		return [
+			"action" => $parts[0],
+			"type" => $parts[1],
+			"id" => $parts[2],
+		];
 	}
 
 	/**
@@ -103,48 +216,10 @@ class TelegramNotificationService
 		User $user,
 		Transaction $transaction
 	): bool {
-		$icon = match ($transaction->type) {
-			TransactionType::INCOME => "💰",
-			TransactionType::EXPENSE => "💸",
-			TransactionType::TRANSFER => "🔄",
-			default => "📝",
-		};
+		$notification = app(TransactionNotification::class);
+		$notification->setContext($user, ["transaction" => $transaction]);
 
-		$typeText = match ($transaction->type) {
-			TransactionType::INCOME => "Pemasukan",
-			TransactionType::EXPENSE => "Pengeluaran",
-			TransactionType::TRANSFER => "Transfer",
-			default => "Transaksi",
-		};
-
-		$amount = number_format($transaction->amount->getAmount()->toInt());
-		$date = $transaction->transaction_date->format("d/m H:i");
-
-		$message = "{$icon} *{$typeText} Baru*\n\n";
-		$message .= "📝 *Deskripsi:* {$transaction->description}\n";
-		$message .= "💰 *Jumlah:* Rp {$amount}\n";
-		$message .= "📂 *Kategori:* {$transaction->category->name}\n";
-		$message .= "🏦 *Akun:* {$transaction->account->name}\n";
-
-		if (
-			$transaction->type === TransactionType::TRANSFER &&
-			$transaction->toAccount
-		) {
-			$message .= "➡️ *Ke Akun:* {$transaction->toAccount->name}\n";
-		}
-
-		$message .= "📅 *Tanggal:* {$date}\n";
-
-		if ($transaction->notes) {
-			$message .= "📎 *Catatan:* {$transaction->notes}\n";
-		}
-
-		$message .= "\nID: `{$transaction->uuid}`";
-
-		return $this->send($user, $message, [
-			"type" => "new_transaction",
-			"parse_mode" => "Markdown",
-		]);
+		return $notification->send($user);
 	}
 
 	/**
@@ -257,49 +332,12 @@ class TelegramNotificationService
 	public function notifyBudgetWarning(
 		User $user,
 		Budget $budget,
-		float $usagePercentage
+		float $percentage
 	): bool {
-		$percentage = round($usagePercentage);
-		$remaining = number_format($budget->remaining);
-		$daysLeft = $budget->days_left;
-		$dailyBudget = number_format($budget->daily_budget);
+		$notification = app(BudgetNotification::class);
+		$notification->setContext($user, ["budget", "percentage" => $percentage]);
 
-		$message = "⚠️ *Peringatan Budget*\n\n";
-		$message .= "📋 *Budget:* {$budget->name}\n";
-		$message .= "📂 *Kategori:* {$budget->category->name}\n";
-		$message .= "📊 *Penggunaan:* {$percentage}%\n";
-		$message .= "💰 *Sisa:* Rp {$remaining}\n";
-		$message .= "📅 *Hari Tersisa:* {$daysLeft}\n";
-		$message .= "📆 *Budget Harian:* Rp {$dailyBudget}\n";
-
-		if ($daysLeft > 0) {
-			$suggestedDaily = floor($budget->remaining / $daysLeft);
-			$message .=
-				"\n💡 *Saran:* Batasi pengeluaran harian maksimal Rp " .
-				number_format($suggestedDaily);
-		}
-
-		// Add inline button to view details
-		$keyboard = [
-			"inline_keyboard" => [
-				[
-					[
-						"text" => "📊 Lihat Detail Budget",
-						"callback_data" => "view_budget_" . $budget->id,
-					],
-					[
-						"text" => "🔕 Sementara Nonaktifkan",
-						"callback_data" => "mute_budget_" . $budget->id,
-					],
-				],
-			],
-		];
-
-		return $this->send($user, $message, [
-			"type" => "budget_warning",
-			"parse_mode" => "Markdown",
-			"reply_markup" => json_encode($keyboard),
-		]);
+		return $notification->send($user);
 	}
 
 	/**

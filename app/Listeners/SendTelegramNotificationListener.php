@@ -2,13 +2,13 @@
 namespace Modules\Wallet\Listeners;
 
 use Modules\Wallet\Events\TelegramNotificationEvent;
-use Modules\Wallet\Services\Telegram\TelegramNotificationService;
+use Modules\Wallet\Services\Telegram\NotificationService;
 
 class SendTelegramNotificationListener
 {
 	protected $notificationService;
 
-	public function __construct(TelegramNotificationService $notificationService)
+	public function __construct(NotificationService $notificationService)
 	{
 		$this->notificationService = $notificationService;
 	}

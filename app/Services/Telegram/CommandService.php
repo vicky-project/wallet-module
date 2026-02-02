@@ -6,7 +6,7 @@ use Modules\Wallet\Services\TransactionService;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
-class TelegramCommandService
+class CommandService
 {
 	protected $transactionService;
 

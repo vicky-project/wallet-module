@@ -2,7 +2,7 @@
 namespace Modules\Wallet\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Modules\Wallet\Services\Telegram\TelegramLinkService;
+use Modules\Wallet\Services\Telegram\LinkService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +10,7 @@ class TelegramLinkController extends Controller
 {
 	protected $telegramLinkService;
 
-	public function __construct(TelegramLinkService $telegramLinkService)
+	public function __construct(LinkService $telegramLinkService)
 	{
 		$this->middleware("auth");
 		$this->telegramLinkService = $telegramLinkService;

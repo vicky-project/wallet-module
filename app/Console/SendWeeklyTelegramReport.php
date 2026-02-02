@@ -4,7 +4,7 @@ namespace Modules\Wallet\Console;
 use Illuminate\Console\Command;
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Services\Telegram\TelegramNotificationService;
+use Modules\Wallet\Services\Telegram\NotificationService;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Carbon\Carbon;
 
@@ -17,7 +17,7 @@ class SendWeeklyTelegramReport extends Command
 	protected $transactionRepository;
 
 	public function __construct(
-		TelegramNotificationService $notificationService,
+		NotificationService $notificationService,
 		TransactionRepository $transactionRepository
 	) {
 		parent::__construct();

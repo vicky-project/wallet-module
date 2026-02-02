@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class TelegramLinkService
+class LinkService
 {
 	/**
 	 * Generate and store linking code
