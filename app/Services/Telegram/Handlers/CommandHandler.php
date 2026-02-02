@@ -82,6 +82,12 @@ class CommandHandler
 		?string $username
 	): array {
 		if (!$code) {
+			Log::warning("Link Code not found.", [
+				"chat_id" => $chatId,
+				"code" => $code,
+				"username" => $username,
+			]);
+
 			$message =
 				"❌ Format salah.\n" .
 				"Gunakan: /link <kode_verifikasi>\n\n" .
