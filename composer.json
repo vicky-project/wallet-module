@@ -25,8 +25,7 @@
 		"setasign/fpdi": "^2.6",
 		"dompdf/dompdf": "^3.1.4",
 		"google/apiclient": "^2.19",
-		"irazasyed/telegram-bot-sdk": "^3.15",
-		"vicky-project/core-module": "dev-dev"
+		"irazasyed/telegram-bot-sdk": "^3.15"
 	},
 	"autoload": {
 		"psr-4": {
