@@ -54,7 +54,7 @@ class TelegramSetup extends Command
 			}
 
 			$handler = app(UpdateHandler::class);
-			$response = $handler->setWehook($url, $params["secret_token"] ?? null);
+			$response = $handler->setWebhook($url, $params["secret_token"] ?? null);
 
 			if ($response) {
 				$this->info("✅ Webhook set successfully!");
