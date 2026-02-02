@@ -20,12 +20,13 @@ class TelegramApi
 	public function sendMessage(
 		int $chatId,
 		string $text,
-		string $parseMode = "Markdown",
+		?string $parseMode = null,
 		?array $replyMarkup = null,
 		array $options = []
 	): bool {
 		try {
 			$params = [
+				"chat_id" => $chatId,
 				"text" => $text,
 				"parse_mode" => $parseMode,
 				"disable_web_page_preview" => $options["disable_preview"] ?? true,
@@ -35,7 +36,7 @@ class TelegramApi
 				$params["reply_markup"] = json_encode($replyMarkup);
 			}
 
-			$this->telegram->sendMessage($chatId, $params);
+			$this->telegram->sendMessage($params);
 			return true;
 		} catch (TelegramSDKException $e) {
 			Log::error("Failed to send Telegram message", [
