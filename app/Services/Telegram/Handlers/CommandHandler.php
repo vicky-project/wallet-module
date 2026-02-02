@@ -8,6 +8,7 @@ use Modules\Wallet\Services\Telegram\Support\TelegramApi;
 
 class CommandHandler
 {
+	protected $appName;
 	protected LinkService $linkService;
 	protected CommandService $commandService;
 	protected TelegramApi $telegramApi;
@@ -20,6 +21,7 @@ class CommandHandler
 		$this->linkService = $linkService;
 		$this->commandService = $commandService;
 		$this->telegramApi = $telegramApi;
+		$this->appName = config("app.name", "Financial");
 	}
 
 	/**
@@ -373,7 +375,7 @@ class CommandHandler
 	 */
 	private function getWelcomeMessageForNewUser(): string
 	{
-		return "👋 Selamat datang di Finance Bot!\n\n" .
+		return "👋 Selamat datang di {$this->appName} Bot!\n\n" .
 			"Untuk menghubungkan akun Anda:\n" .
 			"1. Login ke aplikasi web\n" .
 			"2. Buka Settings → Telegram Integration\n" .
@@ -387,7 +389,7 @@ class CommandHandler
 	 */
 	private function getHelpMessage(): string
 	{
-		return "📚 *Bantuan Finance Bot*\n\n" .
+		return "📚 *Bantuan {$this->appName} Bot*\n\n" .
 			"🔗 *Linking Account:*\n" .
 			"• /start - Memulai bot\n" .
 			"• /link <kode> - Hubungkan akun\n" .
