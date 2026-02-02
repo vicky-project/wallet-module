@@ -42,6 +42,7 @@ class TelegramApi
 			Log::error("Failed to send Telegram message", [
 				"chat_id" => $chatId,
 				"error" => $e->getMessage(),
+				"trace" => $e->getTraceAsString(),
 			]);
 			return false;
 		}
