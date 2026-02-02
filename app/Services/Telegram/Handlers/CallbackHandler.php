@@ -5,6 +5,7 @@ use Telegram\Bot\Objects\CallbackQuery;
 use Illuminate\Support\Facades\Log;
 use Modules\Wallet\Services\Telegram\Handlers\Callbacks\CallbackHandlerFactory;
 use Modules\Wallet\Services\Telegram\LinkService;
+use Modules\Wallet\Services\Telegram\Support\TelegramApi;
 
 class CallbackHandler
 {
