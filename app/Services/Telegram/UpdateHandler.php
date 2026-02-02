@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Illuminate\Support\Facades\Log;
-use Modules\Wallet\Services\Telegram\MessageHandler;
-use Modules\Wallet\Services\Telegram\CallbackHandler;
+use Modules\Wallet\Services\Telegram\Handlers\MessageHandler;
+use Modules\Wallet\Services\Telegram\Handlers\CallbackHandler;
 
 class UpdateHandler
 {
