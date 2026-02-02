@@ -26,7 +26,6 @@ class TelegramApi
 	): bool {
 		try {
 			$params = [
-				"chat_id" => $chatId,
 				"text" => $text,
 				"parse_mode" => $parseMode,
 				"disable_web_page_preview" => $options["disable_preview"] ?? true,
@@ -36,7 +35,7 @@ class TelegramApi
 				$params["reply_markup"] = json_encode($replyMarkup);
 			}
 
-			$this->telegram->sendMessage($params);
+			$this->telegram->sendMessage($chatId, $params);
 			return true;
 		} catch (TelegramSDKException $e) {
 			Log::error("Failed to send Telegram message", [
