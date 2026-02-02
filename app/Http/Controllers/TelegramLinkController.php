@@ -92,9 +92,12 @@ class TelegramLinkController extends Controller
 	 */
 	private function getInstructions(string $code, string $botUsername): string
 	{
-		return "1. Buka Telegram dan cari @{$botUsername}\n" .
-			"2. Kirim perintah: /link {$code}\n" .
-			"3. Tunggu konfirmasi dari bot\n" .
+		return "1. Buka Telegram dan cari   @" .
+			$botUsername .
+			"
+			2. Kirim perintah: /link {$code}" .
+			"
+			3. Tunggu konfirmasi dari bot" .
 			"Kode berlaku 10 menit";
 	}
 

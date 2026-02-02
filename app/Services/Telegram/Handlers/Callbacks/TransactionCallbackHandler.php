@@ -226,42 +226,12 @@ class TransactionCallbackHandler extends BaseCallbackHandler
 		}
 
 		// Show confirmation with keyboard options
-		$message = "⚠️ *Konfirmasi Penghapusan*\n\n";
-		$message .= "Anda yakin ingin menghapus transaksi ini?\n\n";
-		$message .= "**Deskripsi:** {$transaction->description}\n";
-		$message .=
-			"**Jumlah:** Rp " .
-			number_format($transaction->amount, 0, ",", ".") .
-			"\n";
-		$message .=
-			"**Tanggal:** " .
-			$transaction->transaction_date->format("d/m/Y") .
-			"\n\n";
-		$message .= "Tindakan ini tidak dapat dibatalkan!";
-
-		$keyboard = [
-			"inline_keyboard" => [
-				[
-					[
-						"text" => "✅ Ya, Hapus",
-						"callback_data" => json_encode([
-							"action" => "delete",
-							"type" => "transaction",
-							"id" => $transactionId,
-							"confirm" => true,
-						]),
-					],
-					[
-						"text" => "❌ Batalkan",
-						"callback_data" => json_encode([
-							"action" => "view",
-							"type" => "transaction",
-							"id" => $transactionId,
-						]),
-					],
-				],
-			],
-		];
+		$message = $this->messageBuilder->buildTransactionDeleteConfirmMessage(
+			$transaction
+		);
+		$keyboard = $this->keyboardBuilder->buildTransactionDeleteConfirmKeyboard(
+			$transactionId
+		);
 
 		$this->editMessageText($message, $keyboard);
 		$this->answerCallbackQuery("⚠️ Konfirmasi penghapusan");

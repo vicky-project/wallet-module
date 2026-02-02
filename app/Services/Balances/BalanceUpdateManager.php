@@ -336,6 +336,6 @@ class BalanceUpdateManager
 			return 0;
 		}
 
-		return money($value, $currency);
+		return money($amount, $currency);
 	}
 }

@@ -378,7 +378,7 @@ class CommandHandler
 		return "👋 Selamat datang di {$this->appName} Bot!\n\n" .
 			"Untuk menghubungkan akun Anda:\n" .
 			"1. Login ke aplikasi web\n" .
-			"2. Buka Settings → Telegram Integration\n" .
+			"2. Buka Menu Financial -> Settings → Telegram Integration\n" .
 			"3. Generate kode verifikasi\n" .
 			"4. Kirim ke bot ini: /link <kode>\n\n" .
 			"Gunakan /help untuk informasi lebih lanjut.";

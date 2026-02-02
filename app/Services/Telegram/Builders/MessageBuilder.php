@@ -168,4 +168,44 @@ class MessageBuilder
 			"net" => $income - $expense,
 		];
 	}
+
+	public function buildTransactionDeleteConfirmMessage(
+		Transaction $transaction
+	): string {
+		$amount = Number::format($transaction->amount->getAmount()->toInt());
+		$type =
+			$transaction->type === TransactionType::INCOME
+				? "Pemasukan"
+				: "Pengeluaran";
+
+		$message = "⚠️ *Konfirmasi Penghapusan*\n\n";
+		$message .= "Anda yakin ingin menghapus transaksi ini?\n\n";
+		$message .= "**Deskripsi:** {$transaction->description}\n";
+		$message .= "**Jumlah:** Rp {$amount}\n";
+		$message .= "**Tipe:** {$type}\n";
+		$message .=
+			"**Tanggal:** " . $transaction->transaction_date->format("d/m/Y") . "\n";
+		$message .= "**Akun:** {$transaction->account->name}\n\n";
+		$message .= "Tindakan ini tidak dapat dibatalkan!";
+
+		return $message;
+	}
+
+	public function buildAddCommandUsage(): string
+	{
+		$type = collect(TransactionType::cases())
+			->map(fn($type) => "`" . $type->value . "`")
+			->join(", ", " and ");
+
+		return "📝 *Gunakan:*\n" .
+			"`/add <tipe> <jumlah> <deskripsi> [#kategori] [@akun]`\n\n" .
+			"📋 *Contoh:*\n" .
+			"• `/add expense 50000 Makan siang #Food @Cash`\n" .
+			"• `/add income 2000000 Gaji bulanan #Salary @Bank`\n" .
+			"• `/add transfer 1000000 Tabungan #Transfer @Savings`\n\n" .
+			"💡 *Keterangan:*\n" .
+			"• Tipe: {$type}\n" .
+			"• #kategori dan @akun bersifat opsional\n" .
+			"• Gunakan tanpa spasi untuk nama multi-kata";
+	}
 }

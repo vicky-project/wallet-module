@@ -294,4 +294,32 @@ class KeyboardBuilder
 			],
 		];
 	}
+
+	public function buildTransactionDeleteConfirmKeyboard(
+		int $transactionId
+	): array {
+		return [
+			"inline_keyboard" => [
+				[
+					[
+						"text" => "✅ Ya, Hapus",
+						"callback_data" => json_encode([
+							"action" => "delete",
+							"type" => "transaction",
+							"id" => $transactionId,
+							"confirm" => true,
+						]),
+					],
+					[
+						"text" => "❌ Batalkan",
+						"callback_data" => json_encode([
+							"action" => "view",
+							"type" => "transaction",
+							"id" => $transactionId,
+						]),
+					],
+				],
+			],
+		];
+	}
 }

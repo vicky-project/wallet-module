@@ -3,16 +3,21 @@ namespace Modules\Wallet\Services\Telegram;
 
 use App\Models\User;
 use Modules\Wallet\Services\TransactionService;
+use Modules\Wallet\Services\Telegram\Builders\MessageBuilder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 class CommandService
 {
 	protected $transactionService;
+	protected $messageBuilder;
 
-	public function __construct(TransactionService $transactionService)
-	{
+	public function __construct(
+		TransactionService $transactionService,
+		MessageBuilder $messageBuilder
+	) {
 		$this->transactionService = $transactionService;
+		$this->messageBuilder = $messageBuilder;
 	}
 
 	/**
@@ -199,16 +204,8 @@ class CommandService
 	 */
 	private function getAddCommandUsage(): string
 	{
-		return "❌ *Format salah!*\n\n" .
-			"📝 *Gunakan:*\n" .
-			"`/add <tipe> <jumlah> <deskripsi> [#kategori] [@akun]`\n\n" .
-			"📋 *Contoh:*\n" .
-			"• `/add expense 50000 Makan siang #Food @Cash`\n" .
-			"• `/add income 2000000 Gaji bulanan #Salary @Bank`\n" .
-			"• `/add transfer 1000000 Tabungan #Transfer @Savings`\n\n" .
-			"💡 *Keterangan:*\n" .
-			"• Tipe: `income`, `expense`, `transfer`\n" .
-			"• #kategori dan @akun bersifat opsional\n" .
-			"• Gunakan tanpa spasi untuk nama multi-kata";
+		$message = "❌ *Format salah!*\n\n";
+
+		return $message . $this->messageBuilder->buildAddCommandUsage();
 	}
 }
