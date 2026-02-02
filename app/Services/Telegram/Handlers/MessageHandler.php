@@ -5,6 +5,7 @@ use Telegram\Bot\Objects\Message;
 use Illuminate\Support\Facades\Log;
 use Modules\Wallet\Services\Telegram\Handlers\CommandHandler;
 use Modules\Wallet\Services\Telegram\Handlers\ConversationHandler;
+use Modules\Wallet\Services\Telegram\Support\TelegramApi;
 
 class MessageHandler
 {

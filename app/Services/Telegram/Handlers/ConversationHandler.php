@@ -3,6 +3,7 @@ namespace Modules\Wallet\Services\Telegram\Handlers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Modules\Wallet\Services\Telegram\Support\TelegramApi;
 
 class ConversationHandler
 {
