@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Wallet\Services\Telegram\Handlers;
+namespace Modules\Wallet\Services\Telegram\Handlers\Callbacks;
 
 use App\Models\User;
 use Telegram\Bot\Objects\CallbackQuery;

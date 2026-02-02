@@ -4,6 +4,7 @@ namespace Modules\Wallet\Console;
 use Illuminate\Console\Command;
 use Telegram\Bot\Api;
 use Illuminate\Support\Facades\Log;
+use Modules\Wallet\Services\Telegram\UpdateHandler;
 
 class TelegramSetup extends Command
 {
@@ -27,11 +28,11 @@ class TelegramSetup extends Command
 
 		switch ($action) {
 			case "set":
-				return $this->setWebhook($telegram);
+				return $this->setWebhook();
 			case "remove":
-				return $this->removeWebhook($telegram);
+				return $this->removeWebhook();
 			case "info":
-				return $this->getWebhookInfo($telegram);
+				return $this->getWebhookInfo();
 			case "test":
 				return $this->testConnection($telegram);
 			default:
@@ -40,30 +41,24 @@ class TelegramSetup extends Command
 		}
 	}
 
-	private function setWebhook(Api $telegram): int
+	private function setWebhook(): int
 	{
-		$url = $this->option("url") ?? url("/api/telegram/webhook");
-		$secret = config("wallet.telegram_bot.webhook_secret");
-
-		$this->info("Setting webhook to: {$url}");
-
 		try {
-			$params = [
-				"url" => $url,
-				"max_connections" => 40,
-				"allowed_updates" => ["message", "callback_query"],
-			];
+			$url = $this->option("url") ?? url("/api/telegram/webhook");
+			$this->info("Setting webhook to: {$url}");
 
+			$secret = config("wallet.telegram_bot.webhook_secret");
 			if ($secret) {
 				$params["secret_token"] = $secret;
 				$this->info("Using secret token: {$secret}");
 			}
 
-			$response = $telegram->setWebhook($params);
+			$handler = app(UpdateHandler::class);
+			$response = $handler->setWehook($url, $params["secret_token"] ?? null);
 
 			if ($response) {
 				$this->info("✅ Webhook set successfully!");
-				$this->showWebhookInfo($telegram);
+				$this->showWebhookInfo();
 				return 0;
 			} else {
 				$this->error("❌ Failed to set webhook");
@@ -78,12 +73,13 @@ class TelegramSetup extends Command
 		}
 	}
 
-	private function removeWebhook(Api $telegram): int
+	private function removeWebhook(): int
 	{
 		$this->info("Removing webhook...");
 
 		try {
-			$response = $telegram->removeWebhook();
+			$handler = app(UpdateHandler::class);
+			$response = $handler->removeWebhook();
 
 			if ($response) {
 				$this->info("✅ Webhook removed successfully!");
@@ -98,28 +94,31 @@ class TelegramSetup extends Command
 		}
 	}
 
-	private function getWebhookInfo(Api $telegram): int
+	private function getWebhookInfo(): int
 	{
-		$this->showWebhookInfo($telegram);
+		$this->showWebhookInfo();
 		return 0;
 	}
 
-	private function showWebhookInfo(Api $telegram): void
+	private function showWebhookInfo(): void
 	{
 		try {
-			$info = $telegram->getWebhookInfo();
+			$handler = app(UpdateHandler::class);
+			$info = $handler->getWebhookInfo();
 
 			$this->info("\n📊 Webhook Information:");
-			$this->line("URL: " . ($info->getUrl() ?: "Not set"));
-			$this->line("Pending Updates: " . $info->getPendingUpdateCount());
-			$this->line("Last Error: " . ($info->getLastErrorMessage() ?: "None"));
-			$this->line("Max Connections: " . $info->getMaxConnections());
+			$this->line("URL: " . ($info["url"] ?: "Not set"));
+			$this->line("Pending Updates: " . $info["pending_update_count"]);
+			$this->line("Last Error: " . ($info["last_error_message"] ?: "None"));
+			$this->line("Max Connections: " . $info["max_connections"]);
 
-			if ($info->getLastErrorDate()) {
+			if ($info["last_error_date"]) {
 				$this->line(
-					"Last Error Date: " . date("Y-m-d H:i:s", $info->getLastErrorDate())
+					"Last Error Date: " . date("Y-m-d H:i:s", $info["last_error_date"])
 				);
 			}
+
+			$this->line("Allowed Updates: " . $info["allowed_updates"]);
 		} catch (\Exception $e) {
 			$this->error("Failed to get webhook info: " . $e->getMessage());
 		}

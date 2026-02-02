@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Wallet\Services\Telegram\Handlers;
+namespace Modules\Wallet\Services\Telegram\Handlers\Callbacks;
 
 use Illuminate\Support\Collection;
 use Modules\Wallet\Interfaces\CallbackHandlerInterface;

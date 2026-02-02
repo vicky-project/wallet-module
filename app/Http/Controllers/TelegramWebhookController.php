@@ -4,7 +4,7 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Modules\Wallet\Services\Telegram\CommandService;
 use Modules\Wallet\Services\Telegram\LinkService;
-use Modules\Wallet\Services\Telegram\NotificationService;
+use Modules\Wallet\Services\Telegram\UpdateHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Telegram\Bot\Api;
@@ -16,15 +16,16 @@ class TelegramWebhookController extends Controller
 	protected $telegram;
 	protected $linkService;
 	protected $commandService;
-	protected $notificationService;
+	protected $updateHandler;
 
 	public function __construct(
 		LinkService $linkService,
 		CommandService $commandService,
-		NotificationService $notificationService
+		UpdateHandler $updateHandler
 	) {
 		$this->linkService = $linkService;
 		$this->commandService = $commandService;
+		$this->updateHandler = $updateHandler;
 		$this->telegram = new Api(config("wallet.telegram_bot.token"));
 	}
 
@@ -48,17 +49,9 @@ class TelegramWebhookController extends Controller
 		}
 
 		try {
-			$update = $this->telegram->getWebhookUpdate();
+			$result = $this->updateHandler->handle($request);
 
-			if ($update->has("message")) {
-				$this->handleMessage($update->getMessage());
-			} elseif ($update->has("callback_query")) {
-				$this->notificationService->handleCallbackQuery(
-					$update->getCallbackQuery()
-				);
-			}
-
-			return response()->json(["status" => "ok"]);
+			return response()->json(["status" => "ok", "result" => $result]);
 		} catch (TelegramSDKException $e) {
 			Log::error("Telegram SDK error", [
 				"error" => $e->getMessage(),
