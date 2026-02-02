@@ -44,7 +44,11 @@ class TelegramSetup extends Command
 	private function setWebhook(): int
 	{
 		try {
-			$url = $this->option("url") ?? url("/api/telegram/webhook");
+			$url =
+				$this->option("url") ??
+				url(
+					config("wallet.telegram_bot.webhook_url") ?? "/api/telegram/webhook"
+				);
 			$this->info("Setting webhook to: {$url}");
 
 			$secret = config("wallet.telegram_bot.webhook_secret");

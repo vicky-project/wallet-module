@@ -12,6 +12,7 @@ return [
 	"telegram_bot" => [
 		"token" => env("TELEGRAM_BOT_TOKEN"),
 		"username" => env("TELEGRAM_BOT_USERNAME", "your_bot_username"),
+		"webhook_url" => env("TELEGRAM_WEBHOOK_URL", "/api/telegram/webhook"),
 		"webhook_secret" => env("TELEGRAM_WEBHOOK_SECRET"),
 		"admin" => env("TELEGRAM_ADMINS", ""), // String of id with comma separated
 	],
