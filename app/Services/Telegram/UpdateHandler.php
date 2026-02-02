@@ -99,6 +99,6 @@ class UpdateHandler
 	public function removeWebhook(): bool
 	{
 		$response = $this->telegram->removeWebhook();
-		return $response->getResult();
+		return $response;
 	}
 }
