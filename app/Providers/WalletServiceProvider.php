@@ -41,8 +41,8 @@ class WalletServiceProvider extends ServiceProvider
 				\Modules\Telegram\Services\Handlers\CommandDispatcher::class
 			);
 
-			$this->registerCommands($dispatcher);
-			$this->registerMiddlewares($dispatcher);
+			$this->registerTelegramCommands($dispatcher);
+			$this->registerTelegramMiddlewares($dispatcher);
 		} else {
 			\Log::warning(
 				"Telegram CommandDispatcher not bound. Skipping command registration."
@@ -50,13 +50,13 @@ class WalletServiceProvider extends ServiceProvider
 		}
 	}
 
-	protected function registerCommands(
+	protected function registerTelegramCommands(
 		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
 	) {
 		// $dispatcher->registerHandler($this->app->make(Handler::class));
 	}
 
-	protected function registerMiddlewares(
+	protected function registerTelegramMiddlewares(
 		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
 	) {
 		// $dispatcher->registerMiddleware($this->app->make(Middleware::class));
