@@ -31,6 +31,35 @@ class WalletServiceProvider extends ServiceProvider
 		$this->loadMigrationsFrom(module_path($this->name, "database/migrations"));
 
 		Model::preventLazyLoading(!$this->app->isProduction());
+
+		if (
+			$this->app->bound(
+				\Modules\Telegram\Services\Handlers\CommandDispatcher::class
+			)
+		) {
+			$dispatcher = $this->app->make(
+				\Modules\Telegram\Services\Handlers\CommandDispatcher::class
+			);
+
+			$this->registerCommands($dispatcher);
+			$this->registerMiddlewares($dispatcher);
+		} else {
+			\Log::warning(
+				"Telegram CommandDispatcher not bound. Skipping command registration."
+			);
+		}
+	}
+
+	protected function registerCommands(
+		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
+	) {
+		// $dispatcher->registerHandler($this->app->make(Handler::class));
+	}
+
+	protected function registerMiddlewares(
+		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
+	) {
+		// $dispatcher->registerMiddleware($this->app->make(Middleware::class));
 	}
 
 	/**
@@ -49,7 +78,6 @@ class WalletServiceProvider extends ServiceProvider
 	{
 		$this->commands([
 			\Modules\Wallet\Console\ProcessRecurringTransactionsCommand::class,
-			\Modules\Wallet\Console\TelegramSetup::class,
 			\Modules\Wallet\Console\CheckBudgetWarnings::class,
 			\Modules\Wallet\Console\CheckLowBalances::class,
 			\Modules\Wallet\Console\SendDailyTelegramSummary::class,
