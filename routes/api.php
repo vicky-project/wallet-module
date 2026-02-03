@@ -43,13 +43,3 @@ Route::prefix("apps")
 			"suggestedAmount",
 		])->name("budgets.suggested-amount");
 	});
-
-Route::prefix("telegram")->group(function () {
-	Route::post("webhook", [TelegramWebhookController::class, "handleWebhook"])
-		->withoutMiddleware(["auth:sanctum", "auth"])
-		->name("telegram.webhook");
-
-	Route::middleware(["auth"])->group(function () {
-		Route::get("test", [TelegramWebhookController::class, "test"]);
-	});
-});
