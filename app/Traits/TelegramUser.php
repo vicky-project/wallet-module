@@ -14,9 +14,9 @@ trait TelegramUser
 
 	protected function prepare()
 	{
-		$fields = array_keys(config("wallet.telgram_bot.table_fields"));
+		$fields = config("wallet.telegram_bot.table_fields");
 
-		$this->mergeFillable($fields);
+		$this->mergeFillable(array_keys($fields))->mergeCasts($fields);
 		return $this;
 	}
 
