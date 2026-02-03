@@ -6,26 +6,17 @@ use Carbon\Carbon;
 
 trait TelegramUser
 {
-	protected $mergeFillable = [
-		"telegram_id",
-		"telegram_verification_code",
-		"telegram_code_expires_at",
-		"telegram_notifications",
-		"telegram_settings",
-	];
-
 	protected function casts(): array
 	{
-		return [
-			"telegram_code_expires_at" => "timestamp",
-			"telegram_notifications" => "boolean",
-			"telegram_settings" => "array",
-		];
+		$fields = config("wallet.table_fields");
+		return $fields;
 	}
 
 	protected function prepare()
 	{
-		$this->mergeFillable($this->mergeFillable);
+		$fields = array_keys(config("wallet.table_fields"));
+
+		$this->mergeFillable($fields);
 		return $this;
 	}
 
