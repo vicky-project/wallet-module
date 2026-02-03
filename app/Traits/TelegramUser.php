@@ -6,12 +6,6 @@ use Carbon\Carbon;
 
 trait TelegramUser
 {
-	protected function casts(): array
-	{
-		$fields = config("wallet.table_fields");
-		return $fields;
-	}
-
 	protected function prepare()
 	{
 		$fields = config("wallet.telegram_bot.table_fields");
