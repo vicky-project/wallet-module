@@ -43,5 +43,9 @@ return [
 			"app.address",
 			"Jl. antah berantah, Dagelan, Indonesia"
 		),
+
+		"model_extensions" => [
+			\Modules\Wallet\Extensions\UserModelExtension::class,
+		],
 	],
 ];
