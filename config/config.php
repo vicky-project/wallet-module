@@ -15,11 +15,18 @@ return [
 		"webhook_url" => env("TELEGRAM_WEBHOOK_URL", "/api/telegram/webhook"),
 		"webhook_secret" => env("TELEGRAM_WEBHOOK_SECRET"),
 		"admin" => env("TELEGRAM_ADMINS", ""), // String of id with comma separated
-		"table_fields" => [
-			"telegram_id" => "integer",
-			"telegram_verification_code" => "string",
+	],
+
+	"table_fields" => [
+		"fillable" => [
+			"telegram_id",
+			"telegram_verification_code",
+			"telegram_code_expires_at",
+			"telegram_notifications",
+			"telegram_settings",
+		],
+		"casts" => [
 			"telegram_code_expires_at" => "timestamp",
-			"telegram_notifications" => "bool",
 			"telegram_settings" => "array",
 		],
 	],

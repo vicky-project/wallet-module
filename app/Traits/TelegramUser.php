@@ -6,20 +6,13 @@ use Carbon\Carbon;
 
 trait TelegramUser
 {
-	protected function prepare()
-	{
-		$fields = config("wallet.telegram_bot.table_fields");
-
-		$this->mergeFillable(array_keys($fields))->mergeCasts($fields);
-	}
-
 	/**
 	 * Generate verification code for Telegram linking
 	 */
 	public function generateTelegramVerificationCode(): string
 	{
 		$code = strtoupper(Str::random(6));
-		$this->prepare()->update([
+		$this->update([
 			"telegram_verification_code" => $code,
 			"telegram_code_expires_at" => Carbon::now()->addMinutes(10),
 		]);
@@ -34,7 +27,7 @@ trait TelegramUser
 		int $chatId,
 		string $username = null
 	): bool {
-		return $this->prepare()->update([
+		return $this->update([
 			"telegram_id" => $chatId,
 			"telegram_username" => $username,
 			"telegram_verification_code" => null,
@@ -47,7 +40,7 @@ trait TelegramUser
 	 */
 	public function unlinkTelegramAccount(): bool
 	{
-		return $this->prepare()->update([
+		return $this->update([
 			"telegram_id" => null,
 			"telegram_username" => null,
 			"telegram_verification_code" => null,
@@ -101,7 +94,7 @@ trait TelegramUser
 
 	public function setTelegramNotification(bool $active)
 	{
-		$this->prepare()->update([
+		$this->update([
 			"telegram_notifications" => $active,
 		]);
 	}
@@ -113,7 +106,7 @@ trait TelegramUser
 	{
 		$current = $this->getAllTelegramSettings();
 
-		return $this->prepare()->update([
+		return $this->update([
 			"telegram_settings" => array_merge($current, $settings),
 		]);
 	}
