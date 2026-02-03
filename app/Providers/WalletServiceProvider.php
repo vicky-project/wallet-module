@@ -29,6 +29,7 @@ class WalletServiceProvider extends ServiceProvider
 		$this->registerConfig();
 		$this->registerViews();
 		$this->loadMigrationsFrom(module_path($this->name, "database/migrations"));
+		$this->afterResolvingModel();
 
 		Model::preventLazyLoading(!$this->app->isProduction());
 	}
@@ -186,6 +187,21 @@ class WalletServiceProvider extends ServiceProvider
 			config("modules.namespace") . "\\" . $this->name . "\\View\\Components",
 			$this->nameLower
 		);
+	}
+
+	private function afterResolvingModel()
+	{
+		$this->app->afterResolving(config("auth.providers.users.model"), function (
+			$user
+		) {
+			if (method_exists($user, "addModuleFillable")) {
+				$user->addModuleFillable(config("wallet.table_fields.fillable"));
+			}
+
+			if (method_exists($user, "addModuleCasts")) {
+				$user->addModuleCasts(config("wallet.table_fields.casts"));
+			}
+		});
 	}
 
 	/**
