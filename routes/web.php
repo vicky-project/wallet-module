@@ -179,26 +179,4 @@ Route::middleware(["auth"])->group(function () {
 				"uploads.store"
 			);
 		});
-
-	Route::prefix("telegram")
-		->name("telegram.")
-		->group(function () {
-			Route::get("link", [TelegramLinkController::class, "index"])->name(
-				"link"
-			);
-			Route::post("generate-code", [
-				TelegramLinkController::class,
-				"generateCode",
-			])->name("generate-code");
-			Route::post("unlink", [TelegramLinkController::class, "unlink"])->name(
-				"unlink"
-			);
-			Route::put("settings", [
-				TelegramLinkController::class,
-				"updateSettings",
-			])->name("settings");
-			Route::get("status", [TelegramLinkController::class, "status"])->name(
-				"status"
-			);
-		});
 });
