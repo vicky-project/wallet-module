@@ -47,11 +47,13 @@
         <i class="bi bi-graph-up"></i> Laporan
       </a>
     </li>
+    @if(Route::has('settings'))
     <li class="mt-4">
-      <a href="{{ route('telegram.link') }}">
+      <a href="{{ route('settings') }}">
         <i class="bi bi-gear"></i> Pengaturan
       </a>
     </li>
+    @endif
     <li>
       <a href="#">
         <i class="bi bi-question-circle"></i> Bantuan
