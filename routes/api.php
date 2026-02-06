@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 use Modules\Wallet\Http\Controllers\BudgetController;
 use Modules\Wallet\Http\Controllers\ReportController;
-use Modules\Wallet\Http\Controllers\TelegramWebhookController;
 
 Route::prefix("apps")
 	->name("apps.")

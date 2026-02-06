@@ -10,7 +10,6 @@ use Modules\Wallet\Http\Controllers\RecurringController;
 use Modules\Wallet\Http\Controllers\ReportController;
 use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
-use Modules\Wallet\Http\Controllers\TelegramLinkController;
 
 Route::middleware(["auth"])->group(function () {
 	Route::prefix("apps")
