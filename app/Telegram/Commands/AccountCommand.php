@@ -115,12 +115,8 @@ class AccountCommand implements TelegramCommandInterface
 		$keyboard = [];
 		foreach ($accounts as $account) {
 			$keyboard[] = [
-				[
-					[
-						"text" => $account->name,
-						"value" => ["id" => $account->id],
-					],
-				],
+				"text" => $account->name,
+				"value" => ["id" => $account->id],
 			];
 		}
 
