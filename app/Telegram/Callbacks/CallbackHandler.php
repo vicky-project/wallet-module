@@ -42,7 +42,11 @@ class CallbackHandler extends BaseCallbackHandler
 					break;
 			}
 
-			$this->telegram->answerCallbackQuery($callbackId, $message);
+			$this->telegram->answerCallbackQuery(
+				$callbackId,
+				$message,
+				strlen($text) > 100
+			);
 
 			return ["status" => "callback_handled", "entity" => $entity];
 		} catch (\Exception $e) {
