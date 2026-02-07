@@ -19,6 +19,7 @@ class CallbackHandler extends BaseCallbackHandler
 
 	public function handle(array $data, array $context): array
 	{
+		Log::debug("Getting data....", ["data" => $data]);
 		try {
 			return $this->handleCallbackWithAutoAnswer(
 				$context,
@@ -45,7 +46,7 @@ class CallbackHandler extends BaseCallbackHandler
 		$params = $data["params"] ?? [];
 		$user = $context["user"] ?? null;
 		Log::debug("Prosessing callback", [
-			"en" => $entity,
+			"entity" => $entity,
 			"action" => $action,
 			"id" => $id,
 			"params" => $params,
