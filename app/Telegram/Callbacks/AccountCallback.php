@@ -7,16 +7,21 @@ use Illuminate\Support\Number;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Services\AccountService;
+use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 
 class AccountCallback
 {
 	protected AccountService $service;
 	protected $repo;
+	protected $keyboard;
 
-	public function __construct(AccountService $service)
-	{
+	public function __construct(
+		AccountService $service,
+		InlineKeyboardBuilder $keyboard
+	) {
 		$this->service = $service;
 		$this->repo = $this->service->getRepository();
+		$this->keyboard = $keyboard;
 	}
 
 	public function action(
@@ -31,11 +36,22 @@ class AccountCallback
 
 			switch ($action) {
 				case "detail":
-					return $this->getAccountDetail($account);
+					$message = $this->getAccountDetail($account);
+					$params = array_merge(
+						[
+							"action" => "help",
+							"text" => "❓️ Bantuan",
+							"value" => $accountId,
+						],
+						$params
+					);
+					$keyboard = $this->generateKeyboard($params);
+
+					return ["message" => $message, "keyboard" => $keyboard];
 					break;
 				case "help":
 				default:
-					return $this->getAccountHelp($account);
+					return ["message" => $this->getAccountHelp($account)];
 					break;
 			}
 		} catch (\Exception $e) {
@@ -117,6 +133,39 @@ class AccountCallback
 			"income" => $income,
 			"expense" => $expense,
 			"net" => $income - $expense,
+		];
+	}
+
+	private function generateKeyboard($action, $value, array $params = [])
+	{
+		if (isset($params["scope"])) {
+			$this->keyboard->setScope($params["scope"]);
+		}
+
+		if (isset($params["module"])) {
+			$this->keyboard->setModule($params["module"]);
+		}
+
+		if (isset($params["entity"])) {
+			$this->keyboard->setEntity($params["entity"]);
+		}
+
+		if (!isset($params["text"])) {
+			$params["text"] = "";
+		}
+		if (!isset($params["value"])) {
+			$params["value"] = "";
+		}
+		if (!isset($params["action"])) {
+			$params["action"] = "list";
+		}
+
+		return [
+			"inline_keyboard" => $this->keyboard->grid(
+				[["text" => $params["text"], "value" => $params["value"]]],
+				2,
+				$params["action"]
+			),
 		];
 	}
 }

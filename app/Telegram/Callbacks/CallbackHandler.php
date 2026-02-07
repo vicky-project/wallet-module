@@ -3,7 +3,6 @@ namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
-use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 
 class CallbackHandler extends BaseCallbackHandler
 {
@@ -19,7 +18,6 @@ class CallbackHandler extends BaseCallbackHandler
 
 	public function handle(array $data, array $context): array
 	{
-		Log::debug("Getting data....", ["data" => $data]);
 		try {
 			return $this->handleCallbackWithAutoAnswer(
 				$context,
@@ -45,13 +43,6 @@ class CallbackHandler extends BaseCallbackHandler
 		$id = $data["id"] ?? null;
 		$params = $data["params"] ?? [];
 		$user = $context["user"] ?? null;
-		Log::debug("Prosessing callback", [
-			"entity" => $entity,
-			"action" => $action,
-			"id" => $id,
-			"params" => $params,
-			"user" => $user,
-		]);
 
 		if (!$user) {
 			return [
@@ -95,24 +86,19 @@ class CallbackHandler extends BaseCallbackHandler
 		array $params = []
 	): array {
 		$callback = app(AccountCallback::class);
-		$message = $callback->action($user, $action, $id);
-
-		$inlineKeyboard = app(InlineKeyboardBuilder::class);
-		$inlineKeyboard->setScope($this->getScope());
-		$inlineKeyboard->setModule($this->getModuleName());
-		$inlineKeyboard->setEntity("account");
-		$keyboard = [
-			"inline_keyboard" => $inlineKeyboard->grid(
-				[["text" => "❓️ Bantuan", "value" => $id]],
-				2,
-				"help"
-			),
-		];
+		$result = $callback->action($user, $action, $id, [
+			"scope" => $this->getScope(),
+			"module" => $this->getModuleName(),
+			"entity" => "account",
+		]);
 
 		return [
 			"status" => "success",
 			"answer" => "Detail akun berhasil dimuat",
-			"edit_message" => $this->createEditMessageData($message, $keyboard),
+			"edit_message" => $this->createEditMessageData(
+				$result["message"],
+				$result["keyboard"] ?? null
+			),
 		];
 	}
 }
