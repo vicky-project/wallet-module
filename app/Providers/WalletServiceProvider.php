@@ -9,6 +9,10 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Telegram\Services\Handlers\CommandDispatcher;
+use Modules\Telegram\Services\Support\TelegramApi;
+use Modules\Telegram\Services\TelegramService;
+use Modules\Wallet\Telegram\Commands\AccountCommand;
 
 class WalletServiceProvider extends ServiceProvider
 {
@@ -32,14 +36,8 @@ class WalletServiceProvider extends ServiceProvider
 
 		Model::preventLazyLoading(!$this->app->isProduction());
 
-		if (
-			$this->app->bound(
-				\Modules\Telegram\Services\Handlers\CommandDispatcher::class
-			)
-		) {
-			$dispatcher = $this->app->make(
-				\Modules\Telegram\Services\Handlers\CommandDispatcher::class
-			);
+		if ($this->app->bound(CommandDispatcher::class)) {
+			$dispatcher = $this->app->make(CommandDispatcher::class);
 
 			$this->registerTelegramCommands($dispatcher);
 			$this->registerTelegramMiddlewares($dispatcher);
@@ -53,13 +51,19 @@ class WalletServiceProvider extends ServiceProvider
 	protected function registerTelegramCommands(
 		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
 	) {
-		// $dispatcher->registerHandler($this->app->make(Handler::class));
+		$dispatcher->registerCommand(
+			new AccountCommand(
+				$this->app->make(TelegramService::class),
+				$this->app->make(TelegramApi::class)
+			),
+			["auth"]
+		);
 	}
 
 	protected function registerTelegramMiddlewares(
 		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
 	) {
-		// $dispatcher->registerMiddleware($this->app->make(Middleware::class));
+		// $dispatcher->registerMiddleware(new Middleware());
 	}
 
 	/**
