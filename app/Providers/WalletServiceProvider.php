@@ -13,6 +13,7 @@ use Modules\Telegram\Services\Handlers\CommandDispatcher;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\TelegramService;
 use Modules\Wallet\Telegram\Commands\AccountCommand;
+use Modules\Wallet\Telegram\Commands\CategoryCommand;
 
 class WalletServiceProvider extends ServiceProvider
 {
@@ -53,6 +54,13 @@ class WalletServiceProvider extends ServiceProvider
 	) {
 		$dispatcher->registerCommand(
 			new AccountCommand(
+				$this->app->make(TelegramService::class),
+				$this->app->make(TelegramApi::class)
+			),
+			["auth"]
+		);
+		$dispatcher->registerCommand(
+			new CategoryCommand(
 				$this->app->make(TelegramService::class),
 				$this->app->make(TelegramApi::class)
 			),

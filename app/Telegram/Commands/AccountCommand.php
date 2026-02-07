@@ -19,12 +19,12 @@ class AccountCommand implements TelegramCommandInterface
 
 	public function getName(): string
 	{
-		return "account";
+		return "accounts";
 	}
 
 	public function getDescription(): string
 	{
-		return "Show list of accounts";
+		return "Show accounts list";
 	}
 
 	/*
