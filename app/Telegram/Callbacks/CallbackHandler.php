@@ -3,16 +3,11 @@ namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
-use Modules\Telegram\Services\Support\TelegramApi;
 
 class CallbackHandler extends BaseCallbackHandler
 {
-	protected $telegram;
-
-	public function __construct(TelegramApi $telegram)
-	{
-		$this->telegram = $telegram;
-	}
+	
+	
 
 	public function getModuleName(): string
 	{
@@ -27,25 +22,10 @@ class CallbackHandler extends BaseCallbackHandler
 	public function handle(array $data, array $context): array
 	{
 		try {
-			$callbackId = $context["callback_id"];
-			$user = $context["user"];
-			$entity = $data["entity"];
-			$action = $data["action"];
-			$id = $data["id"];
-			$params = $data["params"] ?? [];
-
-			$message = "No message";
-			switch ($entity) {
-				case "account":
-					$callback = app(AccountCallback::class);
-					$message = $callback->action($user, $action, $id);
-					break;
-			}
-
-			return $this->answerCallbackQuery(
-				$callbackId,
-				$message,
-				strlen($message) > 100
+			return $this->handleCallbackWithAutoAnswer(
+				$context,
+				$data,
+				fn($data, $context) => $this->processCallback($data, $context)
 			);
 
 			return ["status" => "callback_handled", "entity" => $entity];
@@ -57,5 +37,39 @@ class CallbackHandler extends BaseCallbackHandler
 
 			return ["status" => "callback_failed", "answer" => $e->getMessage()];
 		}
+	}
+
+	private function processCallback(array $data, array $context): array
+	{
+		$callbackId = $context["callback_id"];
+		$user = $context["user"];
+		$entity = $data["entity"];
+		$action = $data["action"];
+		$id = $data["id"];
+		$params = $data["params"] ?? [];
+
+		$message = "No message";
+		switch ($entity) {
+			case "account":
+				return $this->handleAccountCallback(
+					$context,
+					$user,
+					$action,
+					$id,
+					$params
+				);
+		}
+	}
+
+	private function handleAccountCallback(
+		array $context,
+		$user,
+		string $action,
+		$id,
+		$params
+	): array {
+		$callback = app(AccountCallback::class);
+		$message = $callback->action($user, $action, $id);
+		return ["answer" => $message, "send_as_message" => true];
 	}
 }
