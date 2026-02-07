@@ -89,10 +89,10 @@ class WalletServiceProvider extends ServiceProvider
 	protected function registerCallbackHandlers(
 		TelegramCallbackHandler $callback
 	): void {
-		$callback->registerHandler(new CallbackHandler(), [
-			"auth",
-			"module-callback",
-		]);
+		$callback->registerHandler(
+			new CallbackHandler($this->app->make(TelegramApi::class)),
+			["auth", "module-callback"]
+		);
 	}
 
 	protected function registerCallbackMiddlewares(
