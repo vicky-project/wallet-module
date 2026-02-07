@@ -51,7 +51,7 @@ class WalletServiceProvider extends ServiceProvider
 			);
 		}
 
-		if ($this->app->bond(CallbackHandler::class)) {
+		if ($this->app->bound(CallbackHandler::class)) {
 			$callback = $this->app->make(CallbackHandler::class);
 			$this->registerCallbackHandlers($callback);
 			$this->registerCallbackMiddlewares($callback);
