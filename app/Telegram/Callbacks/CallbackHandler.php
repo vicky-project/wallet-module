@@ -44,6 +44,13 @@ class CallbackHandler extends BaseCallbackHandler
 		$id = $data["id"] ?? null;
 		$params = $data["params"] ?? [];
 		$user = $context["user"] ?? null;
+		Log::debug("Prosessing callback", [
+			"en" => $entity,
+			"action" => $action,
+			"id" => $id,
+			"params" => $params,
+			"user" => $user,
+		]);
 
 		if (!$user) {
 			return [
