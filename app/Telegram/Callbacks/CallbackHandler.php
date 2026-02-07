@@ -45,7 +45,7 @@ class CallbackHandler extends BaseCallbackHandler
 			$this->telegram->answerCallbackQuery(
 				$callbackId,
 				$message,
-				strlen($text) > 100
+				strlen($message) > 100
 			);
 
 			return ["status" => "callback_handled", "entity" => $entity];
