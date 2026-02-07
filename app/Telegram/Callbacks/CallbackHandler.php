@@ -3,6 +3,7 @@ namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
+use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 
 class CallbackHandler extends BaseCallbackHandler
 {
@@ -67,6 +68,17 @@ class CallbackHandler extends BaseCallbackHandler
 	): array {
 		$callback = app(AccountCallback::class);
 		$message = $callback->action($user, $action, $id);
-		return ["answer" => $message, "send_as_message" => true];
+		$inlineKeyboard = app(InlineKeyboardBuilder::class);
+		$inlineKeyboard->setScope($this->getScope());
+		$inlineKeyboard->setModule($this->getModuleName());
+		$inlineKeyboard->setEntity("account");
+
+		return [
+			"answer" => $message,
+			"send_as_message" => true,
+			"message_options" => [
+				"inline_keyboard" => $inlineKeyboard->grid([["text" => ""]], 2, "help"),
+			],
+		];
 	}
 }
