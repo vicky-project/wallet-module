@@ -4,6 +4,7 @@ namespace Modules\Wallet\Telegram\Commands;
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\TelegramService;
 use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
+use Modules\Telegram\Services\Support\GlobalCallbackBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Interfaces\TelegramCommandInterface;
 
@@ -116,10 +117,13 @@ class AccountCommand implements TelegramCommandInterface
 		foreach ($accounts as $account) {
 			$keyboard[] = [
 				"text" => $account->name,
-				"value" => "id:" . $account->id,
+				"value" => $account->id,
 			];
 		}
 
-		return $this->inlineKeyboard->grid($keyboard, 2, "wallet:account:detail");
+		$this->inlineKeyboard->setModule("wallet");
+		$this->inlineKeyboard->setEntity("account");
+
+		return $this->inlineKeyboard->grid($keyboard, 2, "detail");
 	}
 }

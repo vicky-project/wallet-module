@@ -14,9 +14,11 @@ use Modules\Telegram\Services\Handlers\CommandDispatcher;
 use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\TelegramService;
+use Modules\Wallet\Services\AccountService;
 use Modules\Wallet\Telegram\Callbacks\AccountCallback;
 use Modules\Wallet\Telegram\Commands\AccountCommand;
 use Modules\Wallet\Telegram\Commands\CategoryCommand;
+use Modules\Wallet\Telegram\Middlewares\AccountCallbackMiddleware;
 
 class WalletServiceProvider extends ServiceProvider
 {
@@ -86,12 +88,22 @@ class WalletServiceProvider extends ServiceProvider
 
 	protected function registerCallbackHandlers(CallbackHandler $callback): void
 	{
-		$callback->registerHandler(new AccountCallback(), ["auth"]);
+		$callback->registerHandler(new AccountCallback(), [
+			"auth",
+			"account-callback",
+		]);
 	}
 
 	protected function registerCallbackMiddlewares(
 		CallbackHandler $callback
 	): void {
+		$callback->registerMiddleware(
+			"account-callback",
+			new AccountCallbackMiddleware(
+				$this->app->make(AccountService::class),
+				$this->app->make(TelegramService::class)
+			)
+		);
 	}
 
 	/**

@@ -2,18 +2,18 @@
 namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Telegram\Interfaces\TelegramCallbackHandlerInterface;
+use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
 
-class AccountCallback implements TelegramCallbackHandlerInterface
+class AccountCallback extends BaseCallbackHandler
 {
-	public function getPattern(): string
+	public function getModuleName(): string
 	{
-		return "wallet:account:*";
+		return "wallet";
 	}
 
 	public function getName(): string
 	{
-		return "Account callbac handler";
+		return "Account callback handler";
 	}
 
 	public function handle(array $data, array $context): array
@@ -22,6 +22,7 @@ class AccountCallback implements TelegramCallbackHandlerInterface
 			Log::debug("Incoming callback account", [
 				"data" => $data,
 				"context" => $context,
+				"parsed" => $this->parseModuleData($data, $context),
 			]);
 			return [];
 		} catch (\Exception $e) {

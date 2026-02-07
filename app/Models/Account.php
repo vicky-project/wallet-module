@@ -15,6 +15,8 @@ class Account extends Model
 {
 	use SoftDeletes;
 
+	protected $with = ["user"];
+
 	protected $fillable = [
 		"user_id",
 		"name",
