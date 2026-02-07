@@ -9,7 +9,7 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Telegram\Services\Handlers\CallbackHandler;
+use Modules\Telegram\Services\Handlers\CallbackHandler as TelegramCallbackHandler;
 use Modules\Telegram\Services\Handlers\CommandDispatcher;
 use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
@@ -53,8 +53,8 @@ class WalletServiceProvider extends ServiceProvider
 			);
 		}
 
-		if ($this->app->bound(CallbackHandler::class)) {
-			$callback = $this->app->make(CallbackHandler::class);
+		if ($this->app->bound(TelegramCallbackHandler::class)) {
+			$callback = $this->app->make(TelegramCallbackHandler::class);
 			$this->registerCallbackHandlers($callback);
 			$this->registerCallbackMiddlewares($callback);
 		}
@@ -86,8 +86,9 @@ class WalletServiceProvider extends ServiceProvider
 		// $dispatcher->registerMiddleware();
 	}
 
-	protected function registerCallbackHandlers(CallbackHandler $callback): void
-	{
+	protected function registerCallbackHandlers(
+		TelegramCallbackHandler $callback
+	): void {
 		$callback->registerHandler(new CallbackHandler(), [
 			"auth",
 			"module-callback",
@@ -95,7 +96,7 @@ class WalletServiceProvider extends ServiceProvider
 	}
 
 	protected function registerCallbackMiddlewares(
-		CallbackHandler $callback
+		TelegramCallbackHandler $callback
 	): void {
 		$callback->registerMiddleware(
 			"module-callback",
