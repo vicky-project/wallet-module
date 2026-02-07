@@ -39,14 +39,20 @@ class CallbackHandler extends BaseCallbackHandler
 
 	private function processCallback(array $data, array $context): array
 	{
-		$callbackId = $context["callback_id"];
-		$user = $context["user"];
 		$entity = $data["entity"];
 		$action = $data["action"];
-		$id = $data["id"];
+		$id = $data["id"] ?? null;
 		$params = $data["params"] ?? [];
+		$user = $context["user"] ?? null;
 
-		$message = "No message";
+		if (!$user) {
+			return [
+				"status" => "unauthorized",
+				"answer" => "Anda perlu login terlebih dahulu",
+				"show_alert" => true,
+			];
+		}
+
 		switch ($entity) {
 			case "account":
 				return $this->handleAccountCallback(
@@ -56,6 +62,12 @@ class CallbackHandler extends BaseCallbackHandler
 					$id,
 					$params
 				);
+			default:
+				return [
+					"status" => "unknown_entity",
+					"answer" => "Entitas tidak dikenali",
+					"show_alert" => false,
+				];
 		}
 	}
 
@@ -64,21 +76,27 @@ class CallbackHandler extends BaseCallbackHandler
 		$user,
 		string $action,
 		$id,
-		$params
+		array $params = []
 	): array {
 		$callback = app(AccountCallback::class);
 		$message = $callback->action($user, $action, $id);
+
 		$inlineKeyboard = app(InlineKeyboardBuilder::class);
 		$inlineKeyboard->setScope($this->getScope());
 		$inlineKeyboard->setModule($this->getModuleName());
 		$inlineKeyboard->setEntity("account");
+		$keyboard = [
+			"inline_keyboard" => $inlineKeyboard->grid(
+				[["text" => "❓️ Bantuan"]],
+				2,
+				"help"
+			),
+		];
 
 		return [
-			"answer" => $message,
-			"send_as_message" => true,
-			"message_options" => [
-				"inline_keyboard" => $inlineKeyboard->grid([["text" => ""]], 2, "help"),
-			],
+			"status" => "success",
+			"answer" => "Detail akun berhasil dimuat",
+			"edit_message" => $this->createEditMessageData($message, $keyboard),
 		];
 	}
 }
