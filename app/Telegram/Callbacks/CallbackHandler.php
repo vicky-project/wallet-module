@@ -87,7 +87,7 @@ class CallbackHandler extends BaseCallbackHandler
 		$inlineKeyboard->setEntity("account");
 		$keyboard = [
 			"inline_keyboard" => $inlineKeyboard->grid(
-				[["text" => "❓️ Bantuan", "value" => null]],
+				[["text" => "❓️ Bantuan", "value" => $id]],
 				2,
 				"help"
 			),
