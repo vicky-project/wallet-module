@@ -3,6 +3,7 @@ namespace Modules\Wallet\Telegram\Commands;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\TelegramService;
+use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Interfaces\TelegramCommandInterface;
 
@@ -10,11 +11,16 @@ class AccountCommand implements TelegramCommandInterface
 {
 	protected TelegramService $service;
 	protected TelegramApi $telegram;
+	protected InlineKeyboardBuilder $inlineKeyboard;
 
-	public function __construct(TelegramService $service, TelegramApi $telegram)
-	{
+	public function __construct(
+		TelegramService $service,
+		TelegramApi $telegram,
+		InlineKeyboardBuilder $inlineKeyboard
+	) {
 		$this->service = $service;
 		$this->telegram = $telegram;
+		$this->inlineKeyboard = $inlineKeyboard;
 	}
 
 	public function getName(): string
@@ -62,7 +68,19 @@ class AccountCommand implements TelegramCommandInterface
 				->get();
 
 			if ($accounts->isEmpty()) {
-				$this->telegram->sendMessage($chatId, "📭 Anda belum memiliki akun.");
+				$addAccountKeyboard = [
+					[
+						[
+							"text" => "➕️ Tambah akun baru",
+							",callback_data" => "wallet:account:create",
+						],
+					],
+				];
+				$this->telegram->sendMessage(
+					$chatId,
+					"📭 Anda belum memiliki akun.\n\nTambahkan akun untuk mulai mencatat transaksi.",
+					["inline_keyboard" => $addAccountKeyboard]
+				);
 
 				return ["status" => "no_accounts"];
 			}
@@ -74,7 +92,9 @@ class AccountCommand implements TelegramCommandInterface
 			}
 			$message .= "\nGunakan `@nama_akun` saat menambah transaksi.";
 
-			$this->telegram->sendMessage($chatId, $message, "Markdown");
+			$this->telegram->sendMessage($chatId, $message, "Markdown", [
+				"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
+			]);
 
 			return [
 				"status" => "accounts_listed",
@@ -88,5 +108,17 @@ class AccountCommand implements TelegramCommandInterface
 
 			return ["status" => "accounts_failed", "message" => $e->getMessage()];
 		}
+	}
+
+	private function prepareAccountsKeyboard($accounts)
+	{
+		$keyboard = [];
+		foreach ($accounts as $account) {
+			$keyboard[] = [
+				["text" => $account->name, "value" => ["id" => $account->id]],
+			];
+		}
+
+		return $this->inlineKeyboard->grid($keyboard, 2, "wallet:account:detail");
 	}
 }

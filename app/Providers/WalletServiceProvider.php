@@ -10,6 +10,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Telegram\Services\Handlers\CommandDispatcher;
+use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\TelegramService;
 use Modules\Wallet\Telegram\Commands\AccountCommand;
@@ -55,7 +56,8 @@ class WalletServiceProvider extends ServiceProvider
 		$dispatcher->registerCommand(
 			new AccountCommand(
 				$this->app->make(TelegramService::class),
-				$this->app->make(TelegramApi::class)
+				$this->app->make(TelegramApi::class),
+				$this->app->make(InlineKeyboardBuilder::class)
 			),
 			["auth"]
 		);
