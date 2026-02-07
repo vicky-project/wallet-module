@@ -89,6 +89,11 @@ class WalletServiceProvider extends ServiceProvider
 		$callback->registerHandler(new AccountCallback(), ["auth"]);
 	}
 
+	protected function registerCallbackMiddlewares(
+		CallbackHandler $callback
+	): void {
+	}
+
 	/**
 	 * Register the service provider.
 	 */
