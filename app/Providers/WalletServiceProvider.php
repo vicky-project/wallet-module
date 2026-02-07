@@ -9,10 +9,12 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Telegram\Services\Handlers\CallbackHandler;
 use Modules\Telegram\Services\Handlers\CommandDispatcher;
 use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\TelegramService;
+use Modules\Wallet\Telegram\Callbacks\AccountCallback;
 use Modules\Wallet\Telegram\Commands\AccountCommand;
 use Modules\Wallet\Telegram\Commands\CategoryCommand;
 
@@ -48,11 +50,17 @@ class WalletServiceProvider extends ServiceProvider
 				"Telegram CommandDispatcher not bound. Skipping command registration."
 			);
 		}
+
+		if ($this->app->bond(CallbackHandler::class)) {
+			$callback = $this->app->make(CallbackHandler::class);
+			$this->registerCallbackHandlers($callback);
+			$this->registerCallbackMiddlewares($callback);
+		}
 	}
 
 	protected function registerTelegramCommands(
-		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
-	) {
+		CommandDispatcher $dispatcher
+	): void {
 		$dispatcher->registerCommand(
 			new AccountCommand(
 				$this->app->make(TelegramService::class),
@@ -71,9 +79,14 @@ class WalletServiceProvider extends ServiceProvider
 	}
 
 	protected function registerTelegramMiddlewares(
-		\Modules\Telegram\Services\Handlers\CommandDispatcher $dispatcher
-	) {
+		CommandDispatcher $dispatcher
+	): void {
 		// $dispatcher->registerMiddleware(new Middleware());
+	}
+
+	protected function registerCallbackHandlers(CallbackHandler $callback): void
+	{
+		$callback->registerHandler(new AccountCallback(), ["auth"]);
 	}
 
 	/**
