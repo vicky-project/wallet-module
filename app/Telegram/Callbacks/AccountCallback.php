@@ -46,7 +46,7 @@ class AccountCallback
 	private function getAccountDetail(Account $account)
 	{
 		$balance = Number::format($account->balance->getAmount()->toInt());
-		$initial = Number::format($account->initial_balance);
+		$initial = Number::format($account->initial_balance->getAmount()->toInt());
 
 		$message = "🏦 *Detail Akun*\n\n";
 		$message .= "📛 *Nama:* {$account->name}\n";
