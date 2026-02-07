@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Number;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Repositories\AccountService;
+use Modules\Wallet\Services\AccountService;
 
 class AccountCallback
 {
