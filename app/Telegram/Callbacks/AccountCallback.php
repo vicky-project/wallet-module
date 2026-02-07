@@ -136,7 +136,7 @@ class AccountCallback
 		];
 	}
 
-	private function generateKeyboard($action, $value, array $params = [])
+	private function generateKeyboard(array $params = [])
 	{
 		if (isset($params["scope"])) {
 			$this->keyboard->setScope($params["scope"]);
