@@ -97,7 +97,8 @@ class CallbackHandler extends BaseCallbackHandler
 			"answer" => "Detail akun berhasil dimuat",
 			"edit_message" => $this->createEditMessageData(
 				$result["message"],
-				$result["keyboard"] ?? null
+				$result["keyboard"] ?? null,
+				"MarkdownV2"
 			),
 		];
 	}
