@@ -6,9 +6,6 @@ use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
 
 class CallbackHandler extends BaseCallbackHandler
 {
-	
-	
-
 	public function getModuleName(): string
 	{
 		return "wallet";
