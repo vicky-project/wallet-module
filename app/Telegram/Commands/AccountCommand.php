@@ -3,8 +3,9 @@ namespace Modules\Wallet\Telegram\Commands;
 
 use Modules\Telegram\Services\TelegramService;
 use Modules\Telegram\Services\Support\TelegramApi;
+use Modules\Telegram\Interfaces\TelegramCommandInterface;
 
-class AccountCommand
+class AccountCommand implements TelegramCommandInterface
 {
 	protected TelegramService $service;
 	protected TelegramApi $telegram;
