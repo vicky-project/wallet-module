@@ -18,8 +18,8 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profil</a></li>
-        @if(Route::has('settings'))
-        <li><a class="dropdown-item" href="{{ route('settings') }}"><i class="bi bi-gear me-2"></i> Pengaturan</a></li>
+        @if(Route::has('settings.index'))
+        <li><a class="dropdown-item" href="{{ route('settings.index') }}"><i class="bi bi-gear me-2"></i> Pengaturan</a></li>
         @endif
         @if(config('wallet.back_to_server_url'))
           <li><a href="{{ config('wallet.back_to_server_url') }}" class="dropdown-item"><i class="bi bi-server me-2"></i>Server</a></li>
