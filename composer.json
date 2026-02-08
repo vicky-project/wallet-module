@@ -26,7 +26,7 @@
 		"dompdf/dompdf": "^3.1.4",
 		"google/apiclient": "^2.19",
 		"vicky-project/core-module": "^1.0",
-		"vicky-project/telegram-module": "dev-dev"
+		"vicky-project/telegram-module": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {
