@@ -10,8 +10,14 @@ use Modules\Wallet\Http\Controllers\RecurringController;
 use Modules\Wallet\Http\Controllers\ReportController;
 use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
+use Rappasoft\LaravelAuthenticationLog\Middleware\RequireTrustedDevice;
 
-Route::middleware(["auth"])->group(function () {
+$middleware = ["auth"];
+if (class_exists(RequireTrustedDevice::class)) {
+	$middleware[] = RequireTrustedDevice::class;
+}
+
+Route::middleware($middleware)->group(function () {
 	Route::prefix("apps")
 		->name("apps.")
 		->group(function () {
