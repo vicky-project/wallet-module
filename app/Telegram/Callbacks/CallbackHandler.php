@@ -24,8 +24,6 @@ class CallbackHandler extends BaseCallbackHandler
 				$data,
 				fn($data, $context) => $this->processCallback($data, $context)
 			);
-
-			return ["status" => "callback_handled", "entity" => $entity];
 		} catch (\Exception $e) {
 			Log::error("Failed to handle callback of account", [
 				"message" => $e->getMessage(),

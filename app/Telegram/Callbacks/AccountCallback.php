@@ -59,7 +59,7 @@ class AccountCallback
 		}
 	}
 
-	private function getAccountDetail(Account $account)
+	private function getAccountDetail(Account $account): string
 	{
 		$balance = Number::format($account->balance->getAmount()->toInt());
 		$initial = Number::format($account->initial_balance->getAmount()->toInt());
@@ -94,7 +94,7 @@ class AccountCallback
 		return $message;
 	}
 
-	private function getAccountHelp(Account $account)
+	private function getAccountHelp(Account $account): string
 	{
 		$type = collect(TransactionType::cases())
 			->map(fn($type) => "`" . $type->value . "`")
