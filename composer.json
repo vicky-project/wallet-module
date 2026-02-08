@@ -25,8 +25,8 @@
 		"setasign/fpdi": "^2.6",
 		"dompdf/dompdf": "^3.1.4",
 		"google/apiclient": "^2.19",
-		"vicky-project/telegram-module": "dev-dev",
-		"vicky-project/core-module": "^1.0"
+		"vicky-project/core-module": "^1.0",
+		"vicky-project/telegram-module": "dev-dev"
 	},
 	"autoload": {
 		"psr-4": {
