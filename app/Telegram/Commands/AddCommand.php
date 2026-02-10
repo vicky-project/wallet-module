@@ -226,6 +226,7 @@ class AddCommand extends BaseCommandHandler
 		User $user,
 		string $accountName
 	): int {
+		$accountName = str($accountName)->replace("_", " ");
 		$accountService = app(AccountService::class);
 		$account = $accountService
 			->getRepository()
