@@ -6,12 +6,11 @@ use Modules\Telegram\Services\TelegramService;
 use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\GlobalCallbackBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
-use Modules\Telegram\Interfaces\TelegramCommandInterface;
+use Modules\Telegram\Services\Handlers\Commands\BaseCommandHandler;
 
-class AccountCommand implements TelegramCommandInterface
+class AccountCommand extends BaseCommandHandler
 {
 	protected TelegramService $service;
-	protected TelegramApi $telegram;
 	protected InlineKeyboardBuilder $inlineKeyboard;
 
 	public function __construct(
@@ -19,8 +18,8 @@ class AccountCommand implements TelegramCommandInterface
 		TelegramApi $telegram,
 		InlineKeyboardBuilder $inlineKeyboard
 	) {
+		parent::__construct($telegram);
 		$this->service = $service;
-		$this->telegram = $telegram;
 		$this->inlineKeyboard = $inlineKeyboard;
 	}
 
@@ -37,7 +36,7 @@ class AccountCommand implements TelegramCommandInterface
 	/*
 	 * Handle command
 	 */
-	public function handle(
+	protected function processCommand(
 		int $chatId,
 		string $text,
 		?string $username = null,
@@ -55,11 +54,12 @@ class AccountCommand implements TelegramCommandInterface
 					"❌ Anda belum terhubung.\n" .
 					"Gunakan /start untuk instruksi linking.";
 
-				$this->telegram->sendMessage($chatId, $message);
+				//$this->telegram->sendMessage($chatId, $message);
 
 				return [
 					"status" => "accounts_failed",
 					"reason" => "not_linked",
+					"send_message" => ["text" => $message, "parse_mode" => "MarkdownV2"],
 				];
 			}
 
@@ -77,13 +77,20 @@ class AccountCommand implements TelegramCommandInterface
 						],
 					],
 				];
-				$this->telegram->sendMessage(
-					$chatId,
-					"📭 Anda belum memiliki akun.\n\nTambahkan akun untuk mulai mencatat transaksi.",
-					["inline_keyboard" => $addAccountKeyboard]
-				);
 
-				return ["status" => "no_accounts"];
+				$message =
+					"📭 Anda belum memiliki akun.\n\nTambahkan akun untuk mulai mencatat transaksi.";
+				//$this->telegram->sendMessage($chatId, $message, [
+				//	"inline_keyboard" => $addAccountKeyboard,
+				//]);
+
+				return [
+					"status" => "no_accounts",
+					"send_message" => [
+						"text" => $message,
+						"reply_markup" => ["inline_keyboard" => $addAccountKeyboard],
+					],
+				];
 			}
 
 			$message = "🏦 *Daftar Akun Anda:*\n\n";
@@ -93,13 +100,20 @@ class AccountCommand implements TelegramCommandInterface
 			}
 			$message .= "\nGunakan `@nama_akun` saat menambah transaksi.";
 
-			$this->telegram->sendMessage($chatId, $message, "MarkdownV2", [
-				"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
-			]);
+			//$this->telegram->sendMessage($chatId, $message, "MarkdownV2", [
+			//	"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
+			//]);
 
 			return [
 				"status" => "accounts_listed",
 				"count" => $accounts->count(),
+				"send_message" => [
+					"text" => $message,
+					"parse_mode" => "MarkdownV2",
+					"reply_markup" => [
+						"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
+					],
+				],
 			];
 		} catch (\Exception $e) {
 			Log::error("Failed to get accounts list.", [
@@ -107,7 +121,11 @@ class AccountCommand implements TelegramCommandInterface
 				"trace" => $e->getTraceAsString(),
 			]);
 
-			return ["status" => "accounts_failed", "message" => $e->getMessage()];
+			return [
+				"status" => "accounts_failed",
+				"message" => $e->getMessage(),
+				"send_message" => ["text" => $e->getMessage()],
+			];
 		}
 	}
 

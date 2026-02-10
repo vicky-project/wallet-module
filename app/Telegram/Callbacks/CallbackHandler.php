@@ -2,9 +2,11 @@
 namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
+use Modules\Telegram\Interfaces\TelegramCallbackHandlerInterface;
+use Modules\Telegram\Services\Handlers\BaseHandler;
 
-class CallbackHandler extends BaseCallbackHandler
+class CallbackHandler extends BaseHandler implements
+	TelegramCallbackHandlerInterface
 {
 	public function getModuleName(): string
 	{
