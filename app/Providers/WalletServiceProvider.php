@@ -17,6 +17,7 @@ use Modules\Telegram\Services\TelegramService;
 use Modules\Wallet\Services\AccountService;
 use Modules\Wallet\Telegram\Callbacks\CallbackHandler;
 use Modules\Wallet\Telegram\Commands\AccountCommand;
+use Modules\Wallet\Telegram\Commands\AddCommand;
 use Modules\Wallet\Telegram\Commands\CategoryCommand;
 use Modules\Wallet\Telegram\Middlewares\CallbackMiddleware;
 
@@ -68,6 +69,13 @@ class WalletServiceProvider extends ServiceProvider
 				$this->app->make(TelegramService::class),
 				$this->app->make(TelegramApi::class),
 				$this->app->make(InlineKeyboardBuilder::class)
+			),
+			["auth"]
+		);
+		$dispatcher->registerCommand(
+			new AddCommand(
+				$this->app->make(TelegramApi::class),
+				$this->app->make(TelegramService::class)
 			),
 			["auth"]
 		);
