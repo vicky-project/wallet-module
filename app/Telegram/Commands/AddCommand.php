@@ -28,7 +28,7 @@ class AddCommand extends BaseCommandHandler
 
 	public function getName(): string
 	{
-		return "add transactions";
+		return "add";
 	}
 
 	public function getDescription(): string
