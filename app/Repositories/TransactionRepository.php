@@ -426,6 +426,7 @@ class TransactionRepository extends BaseRepository
 		try {
 			// Generate UUID
 			$data["uuid"] = \Illuminate\Support\Str::uuid();
+			\Log::info("Prepare data", $data);
 
 			// Create transaction
 			$transaction = Transaction::create($data);
