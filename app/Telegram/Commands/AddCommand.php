@@ -192,6 +192,7 @@ class AddCommand extends BaseCommandHandler
 		string $categoryName,
 		string $type
 	): int {
+		$categoryName = str($categoryName)->replace("_", " ");
 		$categoryService = app(CategoryService::class);
 		$category = $categoryService->searchCategories($user, $categoryName);
 
