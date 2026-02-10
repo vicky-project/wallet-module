@@ -111,7 +111,6 @@ class AccountCommand extends BaseCommandHandler
 					"reply_markup" => [
 						"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
 					],
-					"auto_escape" => false,
 				],
 			];
 		} catch (\Exception $e) {
