@@ -201,7 +201,7 @@ class AddCommand extends BaseCommandHandler
 
 			$category = $categoryService->createCategory($user, [
 				"name" => $categoryName,
-				"type" => in_array($type, CategoryType::array())
+				"type" => in_array($type, CategoryType::cases())
 					? $type
 					: CategoryType::EXPENSE,
 			]);
