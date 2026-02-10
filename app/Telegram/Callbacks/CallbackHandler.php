@@ -3,7 +3,7 @@ namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\Support\TelegramApi;
-use Modules\Telegram\Services\Handlers\Csllbacks\BaseCallbackHandler;
+use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
 
 class CallbackHandler extends BaseCallbackHandler
 {
