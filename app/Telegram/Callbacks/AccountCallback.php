@@ -48,11 +48,13 @@ class AccountCallback
 					$keyboard = $this->generateKeyboard($params);
 
 					return ["message" => $message, "keyboard" => $keyboard];
-					break;
+
+				case "create":
+					return $this->createAccount($user, $params);
+
 				case "help":
 				default:
 					return ["message" => $this->getAccountHelp($account)];
-					break;
 			}
 		} catch (\Exception $e) {
 			throw $e;
@@ -167,5 +169,10 @@ class AccountCallback
 				$params["action"]
 			),
 		];
+	}
+
+	private function createAccount(User $user, array $params): array
+	{
+		return ["message" => "Masukkan nama account"];
 	}
 }

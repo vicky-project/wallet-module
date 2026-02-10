@@ -67,12 +67,13 @@ class AccountCommand extends BaseCommandHandler
 				->get();
 
 			if ($accounts->isEmpty()) {
+				$this->inlineKeyboard->setModule("wallet");
+				$this->inlineKeyboard->setEntity("account");
+
 				$addAccountKeyboard = [
 					[
-						[
-							"text" => "➕️ Tambah akun baru",
-							",callback_data" => "wallet:account:create",
-						],
+						"text" => "➕️ Tambah akun baru",
+						"value" => $user->id,
 					],
 				];
 
@@ -83,7 +84,13 @@ class AccountCommand extends BaseCommandHandler
 					"status" => "no_accounts",
 					"send_message" => [
 						"text" => $message,
-						"reply_markup" => ["inline_keyboard" => $addAccountKeyboard],
+						"reply_markup" => [
+							"inline_keyboard" => $this->inlineKeyboard->grid(
+								$addAccountKeyboard,
+								2,
+								"create"
+							),
+						],
 					],
 				];
 			}
@@ -104,6 +111,7 @@ class AccountCommand extends BaseCommandHandler
 					"reply_markup" => [
 						"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
 					],
+					"auto_escape" => false,
 				],
 			];
 		} catch (\Exception $e) {
