@@ -273,6 +273,10 @@ class Category extends Model
 
 	public static function getDefaultIcon($name, $type)
 	{
+		if ($type instanceof CategoryType) {
+			$type = $type->value;
+		}
+
 		return self::DEFAULT_ICONS[$type][$name] ?? "bi-bag";
 	}
 
