@@ -93,7 +93,7 @@ class AccountCommand implements TelegramCommandInterface
 			}
 			$message .= "\nGunakan `@nama_akun` saat menambah transaksi.";
 
-			$this->telegram->sendMessage($chatId, $message, "Markdown", [
+			$this->telegram->sendMessage($chatId, $message, "MarkdownV2", [
 				"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
 			]);
 
