@@ -380,16 +380,6 @@
             </select>
           </div>
 
-          <!-- Status Filter -->
-          <div class="col-md-4">
-            <label for="is_active" class="form-label">Status</label>
-            <select class="form-select" id="is_active" name="is_active">
-              <option value="">Semua Status</option>
-              <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Aktif</option>
-              <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Tidak Aktif</option>
-            </select>
-          </div>
-
           <!-- Budget Filter -->
           <div class="col-md-4">
             <label for="has_budget" class="form-label">Status Budget</label>
@@ -435,6 +425,12 @@
         <div class="row mt-3">
           <div class="col-12">
             <div class="d-flex justify-content-end">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="include_inactive" name="include_inactive">
+                <label class="form-check-label" for="include_inactive">
+                  include active
+                </label>
+              </div>
               <button type="submit" class="btn btn-primary me-2">
                 <i class="bi bi-search me-1"></i>Terapkan Filter
               </button>

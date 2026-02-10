@@ -71,10 +71,7 @@ class CategoryService
 		$query = Category::where("user_id", $user->id);
 
 		// Apply filters
-		if (
-			$type &&
-			in_array($type, [CategoryType::INCOME, CategoryType::EXPENSE])
-		) {
+		if ($type && in_array($type, CategoryType::cases())) {
 			$query->where("type", $type);
 		}
 
