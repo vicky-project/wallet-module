@@ -54,8 +54,6 @@ class AccountCommand extends BaseCommandHandler
 					"❌ Anda belum terhubung.\n" .
 					"Gunakan /start untuk instruksi linking.";
 
-				//$this->telegram->sendMessage($chatId, $message);
-
 				return [
 					"status" => "accounts_failed",
 					"reason" => "not_linked",
@@ -80,9 +78,6 @@ class AccountCommand extends BaseCommandHandler
 
 				$message =
 					"📭 Anda belum memiliki akun.\n\nTambahkan akun untuk mulai mencatat transaksi.";
-				//$this->telegram->sendMessage($chatId, $message, [
-				//	"inline_keyboard" => $addAccountKeyboard,
-				//]);
 
 				return [
 					"status" => "no_accounts",
@@ -99,10 +94,6 @@ class AccountCommand extends BaseCommandHandler
 				$message .= "• @{$account->name} - Rp {$balance}\n";
 			}
 			$message .= "\nGunakan `@nama_akun` saat menambah transaksi.";
-
-			//$this->telegram->sendMessage($chatId, $message, "MarkdownV2", [
-			//	"inline_keyboard" => $this->prepareAccountsKeyboard($accounts),
-			//]);
 
 			return [
 				"status" => "accounts_listed",

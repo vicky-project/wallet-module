@@ -2,12 +2,16 @@
 namespace Modules\Wallet\Telegram\Callbacks;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Telegram\Interfaces\TelegramCallbackHandlerInterface;
-use Modules\Telegram\Services\Handlers\BaseHandler;
+use Modules\Telegram\Services\Support\TelegramApi;
+use Modules\Telegram\Services\Handlers\Csllbacks\BaseCallbackHandler;
 
-class CallbackHandler extends BaseHandler implements
-	TelegramCallbackHandlerInterface
+class CallbackHandler extends BaseCallbackHandler
 {
+	public function __construct(TelegramApi $telegramApi)
+	{
+		parent::__construct($telegramApi);
+	}
+
 	public function getModuleName(): string
 	{
 		return "wallet";
@@ -73,7 +77,7 @@ class CallbackHandler extends BaseHandler implements
 				return [
 					"status" => "unknown_entity",
 					"answer" => "Entitas tidak dikenali",
-					"show_alert" => false,
+					"show_alert" => true,
 				];
 		}
 	}
