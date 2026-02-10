@@ -99,11 +99,11 @@ class CallbackHandler extends BaseCallbackHandler
 		return [
 			"status" => "success",
 			"answer" => "Informasi akun berhasil dimuat",
-			"edit_message" => $this->createEditMessageData(
-				$result["message"],
-				$result["keyboard"] ?? null,
-				"MarkdownV2"
-			),
+			"edit_message" => [
+				"text" => $result["message"],
+				"reply_markup" => $result["keyboard"] ?? null,
+				"parse_mode" => "MarkdownV2",
+			],
 		];
 	}
 }
