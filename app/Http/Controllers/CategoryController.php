@@ -57,7 +57,11 @@ class CategoryController extends Controller
 	public function store(CategoryRequest $request)
 	{
 		try {
-			$category = $this->categoryService->createCategory($request->validated());
+			$user = $request->user();
+			$category = $this->categoryService->createCategory(
+				$user,
+				$request->validated()
+			);
 
 			return redirect()
 				->route("apps.categories.index")

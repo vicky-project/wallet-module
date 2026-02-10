@@ -100,7 +100,7 @@ class AccountService
 		$data["user_id"] = $user->id;
 
 		// If this is the first account, set as default
-		if (!$this->repository->getUserAccounts($user)->count()) {
+		if ($this->repository->getUserAccounts($user)->count() === 0) {
 			$data["is_default"] = true;
 		}
 

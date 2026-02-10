@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Wallet\Services\Telegram\Builders;
+namespace Modules\Wallet\Telegram\Builders;
 
 use Modules\Wallet\Models\Budget;
 use Modules\Wallet\Models\Account;

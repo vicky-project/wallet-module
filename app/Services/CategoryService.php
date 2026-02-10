@@ -148,10 +148,8 @@ class CategoryService
 	/**
 	 * Create a new category
 	 */
-	public function createCategory(array $data): Category
+	public function createCategory(User $user, array $data): Category
 	{
-		$user = auth()->user();
-
 		try {
 			DB::beginTransaction();
 
@@ -160,20 +158,13 @@ class CategoryService
 				$data["slug"] = $this->generateSlug($data["name"], $user->id);
 			}
 
-			$data["is_active"] = isset($data["is_active"]) ?? false;
+			$data["is_active"] = isset($data["is_active"]) ?? true;
 			$data["is_budgetable"] = isset($data["is_budgetable"]) ?? false;
 
 			// Create category
 			$category = $this->categoryRepository->createCategory($data, $user);
 
 			DB::commit();
-
-			// Log activity
-			activity()
-				->performedOn($category)
-				->causedBy($user)
-				->withProperties(["attributes" => $data])
-				->log("created category");
 
 			return $category;
 		} catch (\Exception $e) {
@@ -224,16 +215,6 @@ class CategoryService
 
 			DB::commit();
 
-			// Log activity
-			activity()
-				->performedOn($updatedCategory)
-				->causedBy($user)
-				->withProperties([
-					"old" => $originalData,
-					"new" => $updatedCategory->toArray(),
-				])
-				->log("updated category");
-
 			return $updatedCategory;
 		} catch (\Exception $e) {
 			DB::rollBack();
@@ -268,12 +249,6 @@ class CategoryService
 
 			DB::commit();
 
-			// Log activity
-			activity()
-				->causedBy($user)
-				->withProperties(["category" => $categoryData])
-				->log("deleted category");
-
 			return $result;
 		} catch (\Exception $e) {
 			DB::rollBack();
@@ -300,16 +275,6 @@ class CategoryService
 		try {
 			$oldStatus = $category->is_active;
 			$category = $this->categoryRepository->toggleStatus($category);
-
-			// Log activity
-			activity()
-				->performedOn($category)
-				->causedBy($user)
-				->withProperties([
-					"old_status" => $oldStatus,
-					"new_status" => $category->is_active,
-				])
-				->log("toggled category status");
 
 			return $category;
 		} catch (\Exception $e) {
@@ -447,10 +412,10 @@ class CategoryService
 	 * Search categories
 	 */
 	public function searchCategories(
+		User $user,
 		string $search,
 		string $type = null
 	): Collection {
-		$user = auth()->user();
 		return $this->categoryRepository->search($search, $user, $type);
 	}
 
@@ -509,15 +474,6 @@ class CategoryService
 			// Invalidate cache
 			$this->categoryRepository->invalidateUserCategoryCache($user->id);
 
-			// Log activity
-			activity()
-				->causedBy($user)
-				->withProperties([
-					"category_ids" => $categoryIds,
-					"updates" => $validatedData,
-				])
-				->log("bulk updated categories");
-
 			return $count;
 		} catch (\Exception $e) {
 			DB::rollBack();
@@ -571,12 +527,6 @@ class CategoryService
 
 			// Invalidate cache
 			$this->categoryRepository->invalidateUserCategoryCache($user->id);
-
-			// Log activity
-			activity()
-				->causedBy($user)
-				->withProperties(["results" => $results])
-				->log("imported categories");
 
 			return $results;
 		} catch (\Exception $e) {
