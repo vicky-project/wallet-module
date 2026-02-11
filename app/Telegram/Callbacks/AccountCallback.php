@@ -179,7 +179,8 @@ class AccountCallback
 		$transactions = $account
 			->transactions()
 			->orderByDesc("transaction_date")
-			->limit($howMuch);
+			->limit($howMuch)
+			->get();
 		\Log::info("Total transactions: " . $transactions->count(), [
 			"data" => $transactions,
 		]);
