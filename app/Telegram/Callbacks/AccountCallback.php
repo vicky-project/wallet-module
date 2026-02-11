@@ -40,7 +40,7 @@ class AccountCallback
 					$keyboards = [
 						[
 							"action" => "transactions",
-							"text" => "📃 Last 10",
+							"text" => "📃 Show 10",
 							"value" => $accountId,
 						],
 						[

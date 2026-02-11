@@ -29,31 +29,9 @@ class WalletMenuProvider extends BaseMenuProvider
 			$this->item([
 				"title" => "Financial",
 				"icon" => "fas fa-dollar",
-				"type" => "dropdown",
 				"order" => 10,
-				"children" => [
-					$this->item([
-						"title" => "Accounts",
-						"icon" => "fas fa-wallet",
-						"route" => "apps.financial",
-						"order" => 2,
-						"permission" => Permissions::VIEW_ACCOUNTS,
-					]),
-					$this->item([
-						"title" => "Transactions",
-						"icon" => "fas fa-arrow-right-arrow-left",
-						"route" => "apps.transactions.index",
-						"order" => 3,
-						"permission" => Permissions::VIEW_TRANSACTIONS,
-					]),
-					$this->item([
-						"title" => "Category",
-						"icon" => "fas fa-tags",
-						"route" => "apps.categories.index",
-						"order" => 4,
-						"permission" => Permissions::VIEW_CATEGORIES,
-					]),
-				],
+				"route" => "apps.financial",
+				"permission" => Permissions::VIEW_ACCOUNTS,
 			]),
 		];
 	}
