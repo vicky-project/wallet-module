@@ -176,7 +176,10 @@ class AccountCallback
 
 	private function getListTransactions(Account $account, int $howMuch): string
 	{
-		$transactions = $account->transactions()->latest($howMuch);
+		$transactions = $account
+			->transactions()
+			->orderByDesc("transaction_date")
+			->limit($howMuch);
 		\Log::info("Total transactions: " . $transactions->count(), [
 			"data" => $transactions,
 		]);
