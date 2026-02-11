@@ -38,6 +38,7 @@ class AccountCallback
 			} else {
 				return [
 					"success" => false,
+					"status" => "account_not_found",
 					"answer" => "Account not found. Please create account first",
 					"show_alert" => true,
 				];
@@ -63,8 +64,12 @@ class AccountCallback
 					return [
 						"success" => true,
 						"status" => "show_account",
-						"message" => $this->getAccountDetail($account),
-						"reply_markup" => $this->generateKeyboard($keyboards, $params),
+						"edit_message" => [
+							"text" => $this->getAccountDetail($account),
+							"reply_markup" => $this->generateKeyboard($keyboards, $params),
+
+							"parse_mode" => "MarkdownV2",
+						],
 					];
 				case "create":
 					return $this->createAccount($user, $params);
@@ -73,7 +78,10 @@ class AccountCallback
 					return [
 						"success" => true,
 						"status" => "show_transactions",
-						"message" => $this->getListTransactions($account, 10),
+						"edit_message" => [
+							"text" => $this->getListTransactions($account, 10),
+							"parse_mode" => "MarkdownV2",
+						],
 					];
 
 				case "help":
@@ -81,7 +89,10 @@ class AccountCallback
 					return [
 						"success" => true,
 						"status" => "show_help",
-						"message" => $this->getAccountHelp(),
+						"edit_message" => [
+							"text" => $this->getAccountHelp(),
+							"parse_mode" => "MarkdownV2",
+						],
 					];
 			}
 		} catch (\Exception $e) {
@@ -197,8 +208,11 @@ class AccountCallback
 		return [
 			"success" => true,
 			"status" => "request_account_name",
-			"message" => "Input account name",
-			"reply_markup" => ["force_reply" => true],
+			"delete_message" => true,
+			"send_message" => [
+				"text" => "Input account name",
+				"reply_markup" => ["force_reply" => true],
+			],
 		];
 	}
 

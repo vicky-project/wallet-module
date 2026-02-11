@@ -90,27 +90,10 @@ class CallbackHandler extends BaseCallbackHandler
 		array $params = []
 	): array {
 		$callback = app(AccountCallback::class);
-		$result = $callback->action($user, $action, $id, [
+		return $callback->action($user, $action, $id, [
 			"scope" => $this->getScope(),
 			"module" => $this->getModuleName(),
 			"entity" => "account",
 		]);
-
-		if (!$result["success"] || $result["success"] !== true) {
-			return $result;
-		}
-
-		return [
-			"status" => $result["status"] ?? "",
-			"answer" => "Informasi akun berhasil dimuat",
-			"edit_message" => array_merge(
-				[
-					"text" => $result["message"],
-					"reply_markup" => $result["reply_markup"] ?? null,
-					"parse_mode" => "MarkdownV2",
-				],
-				$result
-			),
-		];
 	}
 }
