@@ -28,7 +28,7 @@ class NewTransactionEvent implements TelegramNotifiable
 		$this->options = $options;
 	}
 
-	public function getUser()
+	public function getUser(): User
 	{
 		return $this->user;
 	}
