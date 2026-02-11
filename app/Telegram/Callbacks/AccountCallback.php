@@ -40,6 +40,11 @@ class AccountCallback
 					$message = $this->getAccountDetail($account);
 					$params = array_merge(
 						[
+							"action" => "transactions",
+							"text" => "📃 Last 10",
+							"value" => $accountId,
+						],
+						[
 							"action" => "help",
 							"text" => "❓️ Bantuan",
 							"value" => $accountId,
@@ -52,10 +57,12 @@ class AccountCallback
 
 				case "create":
 					return $this->createAccount($user, $params);
+				case "transactions":
+					return ["message" => $this->getListTransactions($account, 10)];
 
 				case "help":
 				default:
-					return ["message" => $this->getAccountHelp($account)];
+					return ["message" => $this->getAccountHelp()];
 			}
 		} catch (\Exception $e) {
 			throw $e;
@@ -95,7 +102,7 @@ class AccountCallback
 		return $message;
 	}
 
-	private function getAccountHelp(Account $account): string
+	private function getAccountHelp(): string
 	{
 		$type = collect(TransactionType::cases())
 			->map(fn($type) => "`" . $type->value . "`")
@@ -179,5 +186,27 @@ class AccountCallback
 	private function createAccount(User $user, array $params): array
 	{
 		return ["message" => "Masukkan nama account"];
+	}
+
+	private function getListTransactions(Account $account, int $howMuch): string
+	{
+		$transactions = $account->transactions()->get($howMuch);
+
+		$messages = "📃 Last 10 Transactions in account {$account->name}\n\n";
+
+		foreach ($transactions as $transaction) {
+			$amount = $transaction->amount->getAmount()->toInt();
+
+			$messages .=
+				"● 🗓 {$transaction->transaction_date}\n" . "● 💵 {$amount}\n";
+			if ($transaction->type === TransactionType::EXPENSE) {
+				$messages .= "● 🏷 {$transaction->type->label()}";
+			} else {
+				$messages .= "● 💳 {$transaction->type->label()}";
+			}
+			$messages .= "\n\n";
+		}
+
+		return $messages;
 	}
 }
