@@ -84,11 +84,9 @@ class AccountCallback
 		// Monthly stats
 		$monthlyStats = $this->getAccountMonthlyStats($account);
 		$message .= "\n📈 *Statistik Bulan Ini:*\n";
-		$message .=
-			"💰 *Pemasukan:* Rp " . Number::format($monthlyStats["income"]) . "\n";
-		$message .=
-			"💸 *Pengeluaran:* Rp " . Number::format($monthlyStats["expense"]) . "\n";
-		$message .= "📊 *Net:* Rp " . Number::format($monthlyStats["net"]) . "\n";
+		$message .= "💰 *Pemasukan:* Rp " . $monthlyStats["income"] . "\n";
+		$message .= "💸 *Pengeluaran:* Rp " . $monthlyStats["expense"] . "\n";
+		$message .= "📊 *Net:* Rp " . $monthlyStats["net"] . "\n";
 
 		if ($account->notes) {
 			$message .= "\n📝 *Catatan:* {$account->notes}\n";
