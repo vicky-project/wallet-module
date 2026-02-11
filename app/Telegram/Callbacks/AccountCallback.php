@@ -176,7 +176,7 @@ class AccountCallback
 
 	private function getListTransactions(Account $account, int $howMuch): string
 	{
-		$transactions = $account->transactions()->get($howMuch);
+		$transactions = $account->transactions()->limit($howMuch);
 
 		$messages = "📃 Last 10 Transactions in account {$account->name}\n\n";
 
