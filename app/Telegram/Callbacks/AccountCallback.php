@@ -37,6 +37,7 @@ class AccountCallback
 				return [
 					"success" => false,
 					"answer" => "Account not found. Please create account first",
+					"show_alert" => true,
 				];
 			}
 

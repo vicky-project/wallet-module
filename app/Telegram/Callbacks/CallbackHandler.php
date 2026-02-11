@@ -97,10 +97,7 @@ class CallbackHandler extends BaseCallbackHandler
 		]);
 
 		if (!$result["success"] || $result["success"] !== true) {
-			return [
-				"status" => $result["status"] ?? "callback_failed",
-				"answer" => $result["answer"] ?? ($result["message"] ?? "No answer"),
-			];
+			return $result;
 		}
 
 		return [
