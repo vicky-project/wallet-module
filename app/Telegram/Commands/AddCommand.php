@@ -3,6 +3,7 @@ namespace Modules\Wallet\Telegram\Commands;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Modules\Wallet\Enums\CategoryType;
 use Modules\Wallet\Services\AccountService;
 use Modules\Wallet\Services\CategoryService;
