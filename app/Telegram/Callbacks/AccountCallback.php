@@ -40,14 +40,18 @@ class AccountCallback
 					$message = $this->getAccountDetail($account);
 					$params = array_merge(
 						[
-							"action" => "transactions",
-							"text" => "📃 Last 10",
-							"value" => $accountId,
-						],
-						[
-							"action" => "help",
-							"text" => "❓️ Bantuan",
-							"value" => $accountId,
+							"keyboard" => [
+								[
+									"action" => "transactions",
+									"text" => "📃 Last 10",
+									"value" => $accountId,
+								],
+								[
+									"action" => "help",
+									"text" => "❓️ Bantuan",
+									"value" => $accountId,
+								],
+							],
 						],
 						$params
 					);
@@ -164,22 +168,8 @@ class AccountCallback
 			$this->keyboard->setEntity($params["entity"]);
 		}
 
-		if (!isset($params["text"])) {
-			$params["text"] = "";
-		}
-		if (!isset($params["value"])) {
-			$params["value"] = "";
-		}
-		if (!isset($params["action"])) {
-			$params["action"] = "list";
-		}
-
 		return [
-			"inline_keyboard" => $this->keyboard->grid(
-				[["text" => $params["text"], "value" => $params["value"]]],
-				2,
-				$params["action"]
-			),
+			"inline_keyboard" => $this->keyboard->grid($params["keyboard"], 2),
 		];
 	}
 
