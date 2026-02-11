@@ -42,14 +42,16 @@ class AccountCallback
 						[
 							"keyboard" => [
 								[
-									"action" => "transactions",
-									"text" => "📃 Last 10",
-									"value" => $accountId,
-								],
-								[
-									"action" => "help",
-									"text" => "❓️ Bantuan",
-									"value" => $accountId,
+									[
+										"action" => "transactions",
+										"text" => "📃 Last 10",
+										"value" => $accountId,
+									],
+									[
+										"action" => "help",
+										"text" => "❓️ Bantuan",
+										"value" => $accountId,
+									],
 								],
 							],
 						],
