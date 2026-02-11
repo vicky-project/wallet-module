@@ -133,13 +133,13 @@ class AccountCallback
 			->sum("amount");
 
 		return [
-			"income" => (int) Helper::toMoney($income)
+			"income" => (int) Helper::toMoney($income, isInt: true)
 				->getAmount()
 				->toInt(),
-			"expense" => (int) Helper::toMoney($expense)
+			"expense" => (int) Helper::toMoney($expense, isInt: true)
 				->getAmount()
 				->toInt(),
-			"net" => (int) Helper::toMoney($income - $expense)
+			"net" => (int) Helper::toMoney($income - $expense, isInt: true)
 				->getAmount()
 				->toInt(),
 		];
