@@ -37,29 +37,23 @@ class AccountCallback
 
 			switch ($action) {
 				case "detail":
-					$message = $this->getAccountDetail($account);
-					$params = array_merge(
+					$keyboards = [
 						[
-							"keyboard" => [
-								[
-									[
-										"action" => "transactions",
-										"text" => "📃 Last 10",
-										"value" => $accountId,
-									],
-									[
-										"action" => "help",
-										"text" => "❓️ Bantuan",
-										"value" => $accountId,
-									],
-								],
-							],
+							"action" => "transactions",
+							"text" => "📃 Last 10",
+							"value" => $accountId,
 						],
-						$params
-					);
-					$keyboard = $this->generateKeyboard($params);
+						[
+							"action" => "help",
+							"text" => "❓️ Bantuan",
+							"value" => $accountId,
+						],
+					];
 
-					return ["message" => $message, "keyboard" => $keyboard];
+					return [
+						"message" => $this->getAccountDetail($account),
+						"keyboard" => $this->generateKeyboard($keyboards, $params),
+					];
 
 				case "create":
 					return $this->createAccount($user, $params);
@@ -156,7 +150,7 @@ class AccountCallback
 		];
 	}
 
-	private function generateKeyboard(array $params = [])
+	private function generateKeyboard(array $keyboards, array $params = [])
 	{
 		if (isset($params["scope"])) {
 			$this->keyboard->setScope($params["scope"]);
@@ -171,7 +165,7 @@ class AccountCallback
 		}
 
 		return [
-			"inline_keyboard" => $this->keyboard->grid($params["keyboard"], 2),
+			"inline_keyboard" => $this->keyboard->grid($keyboards, 2),
 		];
 	}
 
