@@ -28,12 +28,14 @@ class AccountCallback
 	public function action(
 		User $user,
 		string $action,
-		int $accountId,
+		int $id, // may be account id or user id
 		array $params = []
 	) {
 		try {
-			$account = $this->repo->find($accountId);
-			if (!$account) {
+			$account = $this->repo->find($id);
+			if (!$account && $action === "create") {
+				return $this->createAccount($user, $params);
+			} else {
 				return [
 					"success" => false,
 					"answer" => "Account not found. Please create account first",
@@ -49,12 +51,12 @@ class AccountCallback
 						[
 							"action" => "transactions",
 							"text" => "📃 Show 10",
-							"value" => $accountId,
+							"value" => $id,
 						],
 						[
 							"action" => "help",
 							"text" => "❓️ Bantuan",
-							"value" => $accountId,
+							"value" => $id,
 						],
 					];
 
@@ -62,11 +64,11 @@ class AccountCallback
 						"success" => true,
 						"status" => "show_account",
 						"message" => $this->getAccountDetail($account),
-						"keyboard" => $this->generateKeyboard($keyboards, $params),
+						"reply_markup" => $this->generateKeyboard($keyboards, $params),
 					];
-
 				case "create":
 					return $this->createAccount($user, $params);
+
 				case "transactions":
 					return [
 						"success" => true,
@@ -187,9 +189,16 @@ class AccountCallback
 		];
 	}
 
-	private function createAccount(User $user, array $params): array
-	{
-		return ["message" => "Masukkan nama account"];
+	private function createAccount(
+		User $user,
+		array $params,
+		?int $id = null
+	): array {
+		return [
+			"success" => true,
+			"message" => "Input account name",
+			"reply_markup" => ["force_reply" => true],
+		];
 	}
 
 	private function getListTransactions(Account $account, int $limit): string

@@ -106,7 +106,7 @@ class CallbackHandler extends BaseCallbackHandler
 			"edit_message" => array_merge_recursive(
 				[
 					"text" => $result["message"],
-					"reply_markup" => $result["keyboard"] ?? null,
+					"reply_markup" => $result["reply_markup"] ?? null,
 					"parse_mode" => "MarkdownV2",
 				],
 				$result
