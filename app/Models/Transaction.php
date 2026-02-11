@@ -336,6 +336,16 @@ class Transaction extends Model
 	}
 
 	// Accessors
+	public function formattedAmount(): Attribute
+	{
+		return Attribute::make(get: fn() => $this->amount->getAmount()->toInt());
+	}
+
+	public function typeColor(): Attribute
+	{
+		return Attribute::make(get: fn() => $this->type->color());
+	}
+
 	protected function isTransfer(): Attribute
 	{
 		return Attribute::make(
