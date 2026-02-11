@@ -133,7 +133,7 @@ class AccountCallback
 			->sum("amount");
 
 		return [
-			"income" => Helper::formatMoney($amount),
+			"income" => Helper::formatMoney($income),
 			"expense" => Helper::formatMoney($expense),
 			"net" => Helper::formatMoney($income - $expense),
 		];
