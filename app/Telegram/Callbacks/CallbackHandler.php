@@ -101,7 +101,7 @@ class CallbackHandler extends BaseCallbackHandler
 		}
 
 		return [
-			"status" => $result["status"],
+			"status" => $result["status"] ?? "",
 			"answer" => "Informasi akun berhasil dimuat",
 			"edit_message" => array_merge_recursive(
 				[

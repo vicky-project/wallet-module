@@ -196,6 +196,7 @@ class AccountCallback
 	): array {
 		return [
 			"success" => true,
+			"status" => "request_account_name",
 			"message" => "Input account name",
 			"reply_markup" => ["force_reply" => true],
 		];
