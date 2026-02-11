@@ -4,6 +4,7 @@ namespace Modules\Wallet\Telegram\Callbacks;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Number;
+use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Services\AccountService;
@@ -132,9 +133,9 @@ class AccountCallback
 			->sum("amount");
 
 		return [
-			"income" => $income,
-			"expense" => $expense,
-			"net" => $income - $expense,
+			"income" => Helper::formatMoney($amount),
+			"expense" => Helper::formatMoney($expense),
+			"net" => Helper::formatMoney($income - $expense),
 		];
 	}
 

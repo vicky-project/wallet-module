@@ -18,7 +18,7 @@ class Helper
 
 	public static function toMoney(
 		string|int $money,
-		string $currency = "IDR",
+		?string $currency = null,
 		bool $isInt = false
 	): Money {
 		$currency = $currency ?? config("wallet.default_currency", "USD");
