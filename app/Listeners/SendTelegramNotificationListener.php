@@ -16,8 +16,17 @@ class SendTelegramNotificationListener
 	public function handle(TelegramNotificationEvent $event)
 	{
 		$user = $event->user;
+		$hasSocialAccounts = $user->socialAccounts->isNotEmpty();
+		if (!$hasSocialAccounts) {
+			return;
+		}
 
-		if (!$user->hasLinkedTelegram() || !$user->telegram_notifications) {
+		$telegram = $user
+			->socialAccounts()
+			->byProvider("telegram")
+			->first();
+
+		if ($telegram || !$telegram->notifications) {
 			return;
 		}
 

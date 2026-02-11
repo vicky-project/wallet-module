@@ -261,7 +261,7 @@ class AddCommand extends BaseCommandHandler
 		string $description,
 		string $categoryName,
 		string $accountName
-	) {
+	): string {
 		return "✅️ Transaksi baru berhasil di tambahkan.\n\n" .
 			"● 💰 {$amount}\n" .
 			"● 📃 {$description}\n" .

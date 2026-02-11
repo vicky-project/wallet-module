@@ -5,7 +5,7 @@ namespace Modules\Wallet\Services;
 use App\Models\User;
 use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Enums\RecurringFreq;
-use Modules\Wallet\Events\TelegramNotificationEvent;
+use Modules\Wallet\Events\NewTransactionEvent;
 use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Repositories\TransactionRepository;
 use Modules\Wallet\Repositories\AccountRepository;
@@ -136,11 +136,7 @@ class TransactionService
 			// Create transaction
 			$transaction = $this->transactionRepository->createTransaction($data);
 
-			event(
-				new TelegramNotificationEvent($user, "new_transaction", [
-					"transaction" => $transaction,
-				])
-			);
+			event(new NewTransactionEvent($user, $transaction));
 
 			return [
 				"success" => true,
@@ -152,6 +148,8 @@ class TransactionService
 				"message" => $e->getMessage(),
 				"trace" => $e->getTraceAsString(),
 			]);
+			event(new NewTransactionEvent($user, null, false));
+
 			return [
 				"success" => false,
 				"message" => $e->getMessage(),
