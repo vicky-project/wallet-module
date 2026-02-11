@@ -46,8 +46,6 @@ class Transaction extends Model
 		"is_recurring" => "boolean",
 	];
 
-	protected $attributes = ["formattedAmount", "typeColor"];
-
 	protected static function boot()
 	{
 		parent::boot();
@@ -338,7 +336,6 @@ class Transaction extends Model
 	}
 
 	// Accessors
-
 	protected function isTransfer(): Attribute
 	{
 		return Attribute::make(
