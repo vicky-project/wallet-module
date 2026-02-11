@@ -174,28 +174,28 @@ class AccountCallback
 		return ["message" => "Masukkan nama account"];
 	}
 
-	private function getListTransactions(Account $account, int $howMuch): string
+	private function getListTransactions(Account $account, int $limit): string
 	{
 		$transactions = $account
 			->transactions()
 			->orderByDesc("transaction_date")
-			->limit($howMuch)
+			->limit($limit)
 			->get();
 		\Log::info("Total transactions: " . $transactions->count(), [
 			"data" => $transactions,
 		]);
 
-		$messages = "📃 Last 10 Transactions in account {$account->name}\n\n";
+		$messages = "*📃 Show {$limit} from {$transactions->count()}Transactions in account {$account->name}*\n\n";
 
 		foreach ($transactions as $transaction) {
 			$amount = $transaction->amount->getAmount()->toInt();
 
 			$messages .=
-				"● 🗓 {$transaction->transaction_date}\n" . "● 💵 {$amount}\n";
+				"● 🗓 {$transaction->transaction_date}\n" . "  💵 {$amount}\n";
 			if ($transaction->type === TransactionType::EXPENSE) {
-				$messages .= "● 🏷 {$transaction->type->label()}";
+				$messages .= "  🏷 {$transaction->description} - {$transaction->type->label()}";
 			} else {
-				$messages .= "● 💳 {$transaction->type->label()}";
+				$messages .= "  💳 {$transaction->description} - {$transaction->type->label()}";
 			}
 			$messages .= "\n\n";
 		}
