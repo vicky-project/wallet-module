@@ -74,6 +74,7 @@ class AccountCommand extends BaseCommandHandler
 					[
 						"text" => "➕️ Tambah akun baru",
 						"value" => $user->id,
+						"action" => "create",
 					],
 				];
 
@@ -87,8 +88,7 @@ class AccountCommand extends BaseCommandHandler
 						"reply_markup" => [
 							"inline_keyboard" => $this->inlineKeyboard->grid(
 								$addAccountKeyboard,
-								2,
-								"create"
+								2
 							),
 						],
 					],
@@ -134,12 +134,13 @@ class AccountCommand extends BaseCommandHandler
 			$keyboard[] = [
 				"text" => $account->name,
 				"value" => $account->id,
+				"action" => "detail",
 			];
 		}
 
 		$this->inlineKeyboard->setModule("wallet");
 		$this->inlineKeyboard->setEntity("account");
 
-		return $this->inlineKeyboard->grid($keyboard, 2, "detail");
+		return $this->inlineKeyboard->grid($keyboard, 2);
 	}
 }
