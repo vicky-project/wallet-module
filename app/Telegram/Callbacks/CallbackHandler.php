@@ -96,8 +96,15 @@ class CallbackHandler extends BaseCallbackHandler
 			"entity" => "account",
 		]);
 
+		if (!$result["success"] || $result["success"] !== true) {
+			return [
+				"status" => $result["status"] ?? "callback_failed",
+				"answer" => $result["answer"] ?? ($result["message"] ?? "No answer"),
+			];
+		}
+
 		return [
-			"status" => "success",
+			"status" => $result["status"],
 			"answer" => "Informasi akun berhasil dimuat",
 			"edit_message" => array_merge_recursive(
 				[

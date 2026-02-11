@@ -33,6 +33,13 @@ class AccountCallback
 	) {
 		try {
 			$account = $this->repo->find($accountId);
+			if (!$account) {
+				return [
+					"success" => false,
+					"answer" => "Account not found. Please create account first",
+				];
+			}
+
 			$this->service->validateAccount($account, $user);
 
 			switch ($action) {
@@ -51,6 +58,8 @@ class AccountCallback
 					];
 
 					return [
+						"success" => true,
+						"status" => "show_account",
 						"message" => $this->getAccountDetail($account),
 						"keyboard" => $this->generateKeyboard($keyboards, $params),
 					];
@@ -58,11 +67,19 @@ class AccountCallback
 				case "create":
 					return $this->createAccount($user, $params);
 				case "transactions":
-					return ["message" => $this->getListTransactions($account, 10)];
+					return [
+						"success" => true,
+						"status" => "show_transactions",
+						"message" => $this->getListTransactions($account, 10),
+					];
 
 				case "help":
 				default:
-					return ["message" => $this->getAccountHelp()];
+					return [
+						"success" => true,
+						"status" => "show_help",
+						"message" => $this->getAccountHelp(),
+					];
 			}
 		} catch (\Exception $e) {
 			throw $e;
