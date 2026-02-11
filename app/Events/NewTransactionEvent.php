@@ -23,7 +23,7 @@ class NewTransactionEvent implements TelegramNotifiable
 		array $options = []
 	) {
 		$this->user = $user;
-		$this->message = $message;
+		$this->transaction = $transaction;
 		$this->isSuccess = $isSuccess;
 		$this->options = $options;
 	}
