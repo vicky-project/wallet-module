@@ -39,5 +39,7 @@ class CreateAccountReply extends BaseReplyHandler
 			"text" => $replyText,
 			"context" => $context,
 		]);
+
+		return ["answer" => "Oke jalan"];
 	}
 }
