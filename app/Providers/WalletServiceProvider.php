@@ -11,6 +11,7 @@ use RecursiveIteratorIterator;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Telegram\Services\Handlers\CallbackHandler as TelegramCallbackHandler;
 use Modules\Telegram\Services\Handlers\CommandDispatcher;
+use Modules\Telegram\Services\Handlers\ReplyDispatcher;
 use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\TelegramService;
@@ -20,6 +21,7 @@ use Modules\Wallet\Telegram\Commands\AccountCommand;
 use Modules\Wallet\Telegram\Commands\AddCommand;
 use Modules\Wallet\Telegram\Commands\CategoryCommand;
 use Modules\Wallet\Telegram\Middlewares\CallbackMiddleware;
+use Modules\Wallet\Telegram\Replies\CreateAccountReply;
 
 class WalletServiceProvider extends ServiceProvider
 {
@@ -52,6 +54,12 @@ class WalletServiceProvider extends ServiceProvider
 			\Log::warning(
 				"Telegram CommandDispatcher not bound. Skipping command registration."
 			);
+		}
+
+		if ($this->app->bound(ReplyDispatcher::class)) {
+			$replyDispatcher = $this->app->make(ReplyDispatcher::class);
+			$this->registerReplyHandlers($replyDispatcher);
+			$this->registerReplyMiddlewares($replyDispatcher);
 		}
 
 		if ($this->app->bound(TelegramCallbackHandler::class)) {
@@ -92,6 +100,15 @@ class WalletServiceProvider extends ServiceProvider
 		CommandDispatcher $dispatcher
 	): void {
 		// $dispatcher->registerMiddleware();
+	}
+
+	protected function registerReplyHandlers(
+		ReplyDispatcher $replyDispatcher
+	): void {
+		$replyDispatcher->registerHandler(
+			new CreateAccountReply($this->app->make(TelegramApi::class)),
+			["auth"]
+		);
 	}
 
 	protected function registerCallbackHandlers(

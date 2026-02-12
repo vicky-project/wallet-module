@@ -1,6 +1,7 @@
 <?php
 namespace Modules\Wallet\Telegram\Callbacks;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\Handlers\Callbacks\BaseCallbackHandler;
@@ -84,7 +85,7 @@ class CallbackHandler extends BaseCallbackHandler
 
 	private function handleAccountCallback(
 		array $context,
-		$user,
+		User $user,
 		string $action,
 		$id,
 		array $params = []
@@ -94,6 +95,7 @@ class CallbackHandler extends BaseCallbackHandler
 			"scope" => $this->getScope(),
 			"module" => $this->getModuleName(),
 			"entity" => "account",
+			"context" => $context,
 		]);
 	}
 }

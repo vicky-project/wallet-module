@@ -200,11 +200,8 @@ class AccountCallback
 		];
 	}
 
-	private function createAccount(
-		User $user,
-		array $params,
-		?int $id = null
-	): array {
+	private function createAccount(User $user, array $params): array
+	{
 		return [
 			"success" => true,
 			"status" => "request_account_name",
@@ -212,6 +209,9 @@ class AccountCallback
 			"send_message" => [
 				"text" => "Input account name",
 				"reply_markup" => ["force_reply" => true],
+			],
+			"reply_handler" => [
+				"identifier" => $params["module"] . ":" . $params["entity"] . ":create",
 			],
 		];
 	}
