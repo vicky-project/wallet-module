@@ -111,6 +111,12 @@ class WalletServiceProvider extends ServiceProvider
 		);
 	}
 
+	protected function registerReplyMiddlewares(
+		ReplyDispatcher $replyDispatcher
+	): void {
+		// $replyDispatcher->registerMiddleware();
+	}
+
 	protected function registerCallbackHandlers(
 		TelegramCallbackHandler $callback
 	): void {
