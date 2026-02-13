@@ -212,6 +212,7 @@ class AccountCallback
 			],
 			"reply_handler" => [
 				"identifier" => $params["module"] . ":" . $params["entity"] . ":create",
+				"context" => $params["context"],
 			],
 		];
 	}
