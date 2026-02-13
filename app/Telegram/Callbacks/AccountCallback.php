@@ -205,7 +205,8 @@ class AccountCallback
 		return [
 			"success" => true,
 			"status" => "request_account_name",
-			"edit_message" => [
+			"delete_message" => true,
+			"send_message" => [
 				"text" => "Input account name",
 				"reply_markup" => ["force_reply" => true],
 			],

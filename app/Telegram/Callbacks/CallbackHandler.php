@@ -43,43 +43,47 @@ class CallbackHandler extends BaseCallbackHandler
 
 	private function processCallback(array $data, array $context): array
 	{
-		$entity = $data["entity"];
-		$action = $data["action"];
-		$id = $data["id"] ?? null;
-		$params = $data["params"] ?? [];
-		$user = $context["user"] ?? null;
+		try {
+			$entity = $data["entity"];
+			$action = $data["action"];
+			$id = $data["id"] ?? null;
+			$params = $data["params"] ?? [];
+			$user = $context["user"] ?? null;
 
-		if (!$user) {
-			return [
-				"status" => "unauthorized",
-				"answer" => "Anda perlu login terlebih dahulu",
-				"show_alert" => true,
-			];
-		}
-
-		if (!$id) {
-			return [
-				"status" => "unknown_account",
-				"answer" => "Kehilangan ID akun. Ketik perintah akun kembali.",
-				"show_alert" => true,
-			];
-		}
-
-		switch ($entity) {
-			case "account":
-				return $this->handleAccountCallback(
-					$context,
-					$user,
-					$action,
-					$id,
-					$params
-				);
-			default:
+			if (!$user) {
 				return [
-					"status" => "unknown_entity",
-					"answer" => "Entitas tidak dikenali",
+					"status" => "unauthorized",
+					"answer" => "Anda perlu login terlebih dahulu",
 					"show_alert" => true,
 				];
+			}
+
+			if (!$id) {
+				return [
+					"status" => "unknown_account",
+					"answer" => "Kehilangan ID akun. Ketik perintah akun kembali.",
+					"show_alert" => true,
+				];
+			}
+
+			switch ($entity) {
+				case "account":
+					return $this->handleAccountCallback(
+						$context,
+						$user,
+						$action,
+						$id,
+						$params
+					);
+				default:
+					return [
+						"status" => "unknown_entity",
+						"answer" => "Entitas tidak dikenali",
+						"show_alert" => true,
+					];
+			}
+		} catch (\Exception $e) {
+			throw $e;
 		}
 	}
 
