@@ -208,8 +208,10 @@ class AccountCallback
 				"reply_markup" => [
 					"inline_keyboard" => [
 						[
-							"text" => "Create account",
-							"url" => route("apps.accounts.create"),
+							[
+								"text" => "Create account",
+								"url" => route("apps.accounts.create"),
+							],
 						],
 					],
 				],

@@ -73,8 +73,7 @@ class AccountCommand extends BaseCommandHandler
 				$addAccountKeyboard = [
 					[
 						"text" => "➕️ Tambah akun baru",
-						"value" => $user->id,
-						"action" => "create",
+						"url" => route("apps.accounts.create"),
 					],
 				];
 
