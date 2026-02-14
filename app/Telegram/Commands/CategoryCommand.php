@@ -77,7 +77,10 @@ class CategoryCommand extends BaseCommandHandler
 						"text" => "➕️ Tambah category baru",
 						"url" => route("apps.categories.create"),
 					],
-					["text" => "❓️ Bantuan", "callback_data" => ["action" => "help"]],
+					[
+						"text" => "❓️ Bantuan",
+						"callback_data" => ["action" => "help"],
+					],
 				];
 
 				return [
