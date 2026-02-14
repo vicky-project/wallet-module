@@ -58,14 +58,6 @@ class CallbackHandler extends BaseCallbackHandler
 				];
 			}
 
-			if (!$id) {
-				return [
-					"status" => "unknown_account",
-					"answer" => "Kehilangan ID akun. Ketik perintah akun kembali.",
-					"show_alert" => true,
-				];
-			}
-
 			switch ($entity) {
 				case "account":
 					return $this->handleAccountCallback(

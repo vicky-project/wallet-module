@@ -29,13 +29,15 @@ class AccountCallback
 	public function action(
 		User $user,
 		string $action,
-		int $id, // may be account id or user id
+		?int $id = null,
 		array $params = []
 	) {
 		try {
-			$account = $this->repo->find($id);
-			if (!$account) {
-				return $this->createAccount($user, $params);
+			if ($id) {
+				$account = $this->repo->find($id);
+				if (!$account) {
+					return $this->createAccount($user, $params);
+				}
 			}
 
 			switch ($action) {

@@ -73,10 +73,7 @@ class CreateAccountReply extends BaseReplyHandler
 				$chatId,
 				"Apakah ingin menambahkan saldo awal ?",
 				[
-					"inline_keyboard" => $inlineKeyboard->confirmation(
-						"initial_balance",
-						$context["user"]->id
-					),
+					"inline_keyboard" => $inlineKeyboard->confirmation("initial_balance"),
 				],
 				"Markdown",
 				[],
