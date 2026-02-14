@@ -3,19 +3,26 @@ namespace Modules\Wallet\Telegram\Commands;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Wallet\Enums\CategoryType;
-use Modules\Telegram\Services\TelegramService;
-use Modules\Telegram\Services\Support\TelegramApi;
 use Modules\Telegram\Services\Handlers\Commands\BaseCommandHandler;
+use Modules\Telegram\Services\Support\InlineKeyboardBuilder;
+use Modules\Telegram\Services\Support\GlobalCallbackBuilder;
+use Modules\Telegram\Services\Support\TelegramApi;
+use Modules\Telegram\Services\TelegramService;
 
 class CategoryCommand extends BaseCommandHandler
 {
-	protected TelegramService $service;
+	protected InlineKeyboardBuilder $service;
+	protected TelegramService $inlineKeyboard;
 
-	public function __construct(TelegramService $service, TelegramApi $telegram)
-	{
+	public function __construct(
+		TelegramService $service,
+		TelegramApi $telegram,
+		InlineKeyboardBuilder $inlineKeyboard
+	) {
 		parent::__construct($telegram);
 
 		$this->service = $service;
+		$this->inlineKeyboard = $inlineKeyboard;
 	}
 
 	public function getName(): string

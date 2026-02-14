@@ -90,7 +90,8 @@ class WalletServiceProvider extends ServiceProvider
 		$dispatcher->registerCommand(
 			new CategoryCommand(
 				$this->app->make(TelegramService::class),
-				$this->app->make(TelegramApi::class)
+				$this->app->make(TelegramApi::class),
+				$this->app->make(InlineKeyboardBuilder::class)
 			),
 			["auth"]
 		);
