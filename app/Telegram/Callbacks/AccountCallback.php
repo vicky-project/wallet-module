@@ -33,6 +33,7 @@ class AccountCallback
 		array $params = []
 	) {
 		try {
+			$account = null;
 			if ($id) {
 				$account = $this->repo->find($id);
 				if (!$account) {
@@ -79,12 +80,6 @@ class AccountCallback
 							"parse_mode" => "MarkdownV2",
 						],
 					];
-				case "initial_balance_confirm":
-					Log::debug("initial balance confirm", ["params" => $params]);
-					break;
-				case "initial_balance_cancel":
-					Log::debug("initial balance cancel", ["params" => $params]);
-					break;
 
 				case "help":
 				default:
@@ -206,15 +201,18 @@ class AccountCallback
 	{
 		return [
 			"success" => true,
-			"status" => "request_account_name",
-			"delete_message" => true,
-			"send_message" => [
+			"answer" => "Create Account",
+			"status" => "create_account",
+			"edit_message" => [
 				"text" => "Input account name",
-				"reply_markup" => ["force_reply" => true],
-			],
-			"reply_handler" => [
-				"identifier" => $params["module"] . ":" . $params["entity"] . ":create",
-				"context" => $params["context"],
+				"reply_markup" => [
+					"inline_keyboard" => [
+						[
+							"text" => "Create account",
+							"url" => route("apps.accounts.create"),
+						],
+					],
+				],
 			],
 		];
 	}

@@ -352,8 +352,11 @@ class AccountService
 	/**
 	 * Validate account before operations
 	 */
-	public function validateAccount(Account $account, User $user): void
+	public function validateAccount(?Account $account = null, User $user): void
 	{
+		if (!$account) {
+			throw new \Exception("Account not found.");
+		}
 		if ($account->user_id !== $user->id) {
 			throw new \Exception("Unauthorized access to account");
 		}
