@@ -64,6 +64,7 @@ class CreateAccountReply extends BaseReplyHandler
 				);
 				return ["keep_reply_state" => true];
 			}
+			Log::debug("context reply", ["context" => $context]);
 
 			$inlineKeyboard = app(InlineKeyboardBuilder::class);
 			$inlineKeyboard->setModule("wallet");
