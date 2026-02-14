@@ -95,11 +95,19 @@ class CallbackHandler extends BaseCallbackHandler
 		array $params = []
 	): array {
 		$callback = app(AccountCallback::class);
-		return $callback->action($user, $action, $id, [
-			"scope" => $this->getScope(),
-			"module" => $this->getModuleName(),
-			"entity" => "account",
-			"context" => $context,
-		]);
+		return $callback->action(
+			$user,
+			$action,
+			$id,
+			array_merge(
+				[
+					"scope" => $this->getScope(),
+					"module" => $this->getModuleName(),
+					"entity" => "account",
+					"context" => $context,
+				],
+				$params
+			)
+		);
 	}
 }

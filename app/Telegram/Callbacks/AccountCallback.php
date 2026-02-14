@@ -4,6 +4,7 @@ namespace Modules\Wallet\Telegram\Callbacks;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Number;
+use Illuminate\Support\Facades\Log;
 use Modules\Wallet\Helpers\Helper;
 use Modules\Wallet\Models\Account;
 use Modules\Wallet\Enums\TransactionType;
@@ -33,21 +34,13 @@ class AccountCallback
 	) {
 		try {
 			$account = $this->repo->find($id);
-			if (!$account && $action === "create") {
+			if (!$account) {
 				return $this->createAccount($user, $params);
-			} else {
-				return [
-					"success" => false,
-					"status" => "account_not_found",
-					"answer" => "Account not found. Please create account first",
-					"show_alert" => true,
-				];
 			}
-
-			$this->service->validateAccount($account, $user);
 
 			switch ($action) {
 				case "detail":
+					$this->service->validateAccount($account, $user);
 					$keyboards = [
 						[
 							"action" => "transactions",
@@ -75,6 +68,7 @@ class AccountCallback
 					return $this->createAccount($user, $params);
 
 				case "transactions":
+					$this->service->validateAccount($account, $user);
 					return [
 						"success" => true,
 						"status" => "show_transactions",
@@ -83,6 +77,12 @@ class AccountCallback
 							"parse_mode" => "MarkdownV2",
 						],
 					];
+				case "initial_balance_confirm":
+					Log::debug("initial balance confirm", ["params" => $params]);
+					break;
+				case "initial_balance_cancel":
+					Log::debug("initial balance cancel", ["params" => $params]);
+					break;
 
 				case "help":
 				default:
