@@ -62,9 +62,28 @@ class CategoryCommand extends BaseCommandHandler
 				->get();
 
 			if ($categories->isEmpty()) {
+				$this->inlineKeyboard->setModule("wallet");
+				$this->inlineKeyboard->setEntity("account");
+
+				$categoryKeyboard = [
+					[
+						"text" => "➕️ Tambah category baru",
+						"url" => route("apps.categories.create"),
+					],
+					["text" => "❓️ Bantuan", "callback_data" => ["action" => "help"]],
+				];
+
 				return [
 					"status" => "no_categories",
-					"send_message" => ["text" => "📭 Anda belum memiliki kategori."],
+					"send_message" => [
+						"text" => "📭 Anda belum memiliki kategori.",
+						"reply_markup" => [
+							"inline_keyboard" => $this->inlineKeyboard->grid(
+								$categoryKeyboard,
+								2
+							),
+						],
+					],
 				];
 			}
 
