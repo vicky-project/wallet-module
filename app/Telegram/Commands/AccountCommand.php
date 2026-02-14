@@ -72,7 +72,7 @@ class AccountCommand extends BaseCommandHandler
 
 				$accountKeyboard = [
 					[
-						"text" => "➕️ Tambah akun baru",
+						"text" => "➕️ Tambah akun",
 						"url" => route("apps.accounts.create"),
 					],
 					[

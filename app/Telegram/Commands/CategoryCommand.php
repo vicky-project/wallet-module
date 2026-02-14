@@ -70,11 +70,11 @@ class CategoryCommand extends BaseCommandHandler
 
 			if ($categories->isEmpty()) {
 				$this->inlineKeyboard->setModule("wallet");
-				$this->inlineKeyboard->setEntity("account");
+				$this->inlineKeyboard->setEntity("category");
 
 				$categoryKeyboard = [
 					[
-						"text" => "➕️ Tambah category baru",
+						"text" => "➕️ Tambah category",
 						"url" => route("apps.categories.create"),
 					],
 					[

@@ -60,46 +60,16 @@ class CallbackHandler extends BaseCallbackHandler
 
 			switch ($entity) {
 				case "account":
-					return $this->handleAccountCallback(
-						$context,
-						$user,
-						$action,
-						$id,
-						$params
-					);
+					$account = app(AccountCallback::class);
+					return $account->handle($user, $action, $id, $params);
+
+				case "category":
+					return [];
 				default:
-					return [
-						"status" => "unknown_entity",
-						"answer" => "Entitas tidak dikenali",
-						"show_alert" => true,
-					];
+					return [];
 			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
-	}
-
-	private function handleAccountCallback(
-		array $context,
-		User $user,
-		string $action,
-		$id,
-		array $params = []
-	): array {
-		$callback = app(AccountCallback::class);
-		return $callback->action(
-			$user,
-			$action,
-			$id,
-			array_merge(
-				[
-					"scope" => $this->getScope(),
-					"module" => $this->getModuleName(),
-					"entity" => "account",
-					"context" => $context,
-				],
-				$params
-			)
-		);
 	}
 }
