@@ -11,8 +11,8 @@ use Modules\Telegram\Services\TelegramService;
 
 class CategoryCommand extends BaseCommandHandler
 {
-	protected InlineKeyboardBuilder $service;
-	protected TelegramService $inlineKeyboard;
+	protected TelegramService $service;
+	protected InlineKeyboardBuilder $inlineKeyboard;
 
 	public function __construct(
 		TelegramService $service,
