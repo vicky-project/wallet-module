@@ -56,6 +56,8 @@
             font-size: 1rem;
             font-weight: 500;
         }
+        .container {
+        background-color: var(--tg-theme-section-bg-color);
     </style>
 </head>
 <body>
@@ -113,6 +115,7 @@
         document.body.style.setProperty('--tg-theme-button-color', theme.button_color || '#40a7e3');
         document.body.style.setProperty('--tg-theme-button-text-color', theme.button_text_color || '#ffffff');
         document.body.style.setProperty('--tg-theme-secondary-bg-color', theme.secondary_bg_color || '#f0f0f0');
+        document.body.style.setProperty('--tg-theme-section-bg-color', theme.section_bg_color || '#f0f0f0');
 
         // Fungsi untuk menangani klik menu
         function handleMenuClick(menu) {
