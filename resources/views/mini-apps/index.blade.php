@@ -77,8 +77,9 @@
           </small>
         </div>
 
-        <!-- Menu Utama -->
-        <div class="container text-center">
+    </div>
+    <!-- Menu Utama -->
+    <div class="container text-center mt-4 p-3 border-top border-primary">
           <div class="row">
             <div class="col-6 col-md-3 mb-2">
               <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4 p-4">
@@ -93,7 +94,6 @@
               </a>
             </div>
           </div>
-        </div>
     </div>
 
     <!-- Bootstrap JS -->
