@@ -84,98 +84,87 @@ class AddCommand extends BaseCommandHandler
 	private function processAdd(int $chatId, User $user, string $text): array
 	{
 		// Parse command: /add <type> <amount> <description> [#category] [@account]
-		try {
-			$pattern = '/^\/add\s+(\w+)\s+(-?\d+)\s+(.+)$/';
-			if (!preg_match($pattern, $text, $matches)) {
-				return [
-					"success" => false,
-					"send_message" => [
-						"text" => $this->getAddCommandUsage(),
-						"parse_mode" => "MarkdownV2",
-					],
-				];
-			}
 
-			$type = strtolower($matches[1]);
-			$amount = $this->parseAmount($matches[2]);
-			$rest = $matches[3];
-
-			if (!in_array($type, TransactionType::cases())) {
-				throw new \Exception(
-					"Type transaksi harus " .
-						collect(TransactionType::cases())
-							->map(fn($type) => "`{$type->value}`")
-							->join(", ", " and ")
-				);
-			}
-
-			// Extract optional parameters
-			preg_match("/#(\w+)/", $rest, $categoryMatch);
-			preg_match("/@(\w+)/", $rest, $accountMatch);
-
-			$categoryName = $categoryMatch[1] ?? "Umum";
-			$rest = str_replace($categoryMatch[0] ?? "", "", $rest);
-			$accountName = $accountMatch[1] ?? "Default";
-			$rest = str_replace($accountMatch[0] ?? "", "", $rest);
-
-			$description = trim($rest);
-			if (empty($description)) {
-				throw new \Exception("Description is required.");
-			}
-
-			// Prepare transaction data
-			$transactionData = [
-				"type" => $type,
-				"amount" => $amount,
-				"description" => $description,
-				"category_id" => $this->getCategoryId(
-					$chatId,
-					$user,
-					$categoryName,
-					$type
-				),
-				"account_id" => $this->getAccountId($chatId, $user, $accountName),
-				"transaction_date" => now()->format("Y-m-d H:i:s"),
+		$pattern = '/^\/add\s+(\w+)\s+(-?\d+)\s+(.+)$/';
+		if (!preg_match($pattern, $text, $matches)) {
+			return [
+				"success" => false,
+				"send_message" => [
+					"text" => $this->getAddCommandUsage(),
+					"parse_mode" => "MarkdownV2",
+				],
 			];
+		}
 
-			Log::info(
-				"User {$user->name} creating new transaction.",
-				$transactionData
+		$type = strtolower($matches[1]);
+		$amount = $this->parseAmount($matches[2]);
+		$rest = $matches[3];
+
+		if (!in_array($type, TransactionType::cases())) {
+			throw new \Exception(
+				"Type transaksi harus " .
+					collect(TransactionType::cases())
+						->map(fn($type) => "`{$type->value}`")
+						->join(", ", " and ")
 			);
+		}
 
-			// Use existing TransactionService
-			$result = $this->transactionService->createTransaction(
-				$transactionData,
-				$user
-			);
+		// Extract optional parameters
+		preg_match("/#(\w+)/", $rest, $categoryMatch);
+		preg_match("/@(\w+)/", $rest, $accountMatch);
 
-			if ($result["success"]) {
-				return [
-					"success" => true,
-					"send_message" => [
-						"text" => $this->formatSuccessMessage(
-							$result,
-							$amount,
-							$description,
-							$categoryName,
-							$accountName
-						),
-						"parse_mode" => "MarkdownV2",
-					],
-				];
-			} else {
-				return [
-					"success" => false,
-					"send_message" => ["text" => "❌ Gagal: " . $result["message"]],
-				];
-			}
-		} catch (\Exception $e) {
-			Log::error("Telegram add command error", [
-				"user_id" => $user->id,
-				"error" => $e->getMessage(),
-			]);
+		$categoryName = $categoryMatch[1] ?? "Umum";
+		$rest = str_replace($categoryMatch[0] ?? "", "", $rest);
+		$accountName = $accountMatch[1] ?? "Default";
+		$rest = str_replace($accountMatch[0] ?? "", "", $rest);
 
-			throw $e;
+		$description = trim($rest);
+		if (empty($description)) {
+			throw new \Exception("Description is required.");
+		}
+
+		// Prepare transaction data
+		$transactionData = [
+			"type" => $type,
+			"amount" => $amount,
+			"description" => $description,
+			"category_id" => $this->getCategoryId(
+				$chatId,
+				$user,
+				$categoryName,
+				$type
+			),
+			"account_id" => $this->getAccountId($chatId, $user, $accountName),
+			"transaction_date" => now()->format("Y-m-d H:i:s"),
+		];
+
+		Log::info("User {$user->name} creating new transaction.", $transactionData);
+
+		// Use existing TransactionService
+		$result = $this->transactionService->createTransaction(
+			$transactionData,
+			$user
+		);
+
+		if ($result["success"]) {
+			return [
+				"success" => true,
+				"send_message" => [
+					"text" => $this->formatSuccessMessage(
+						$result,
+						$amount,
+						$description,
+						$categoryName,
+						$accountName
+					),
+					"parse_mode" => "MarkdownV2",
+				],
+			];
+		} else {
+			return [
+				"success" => false,
+				"send_message" => ["text" => "❌ Gagal: " . $result["message"]],
+			];
 		}
 	}
 
