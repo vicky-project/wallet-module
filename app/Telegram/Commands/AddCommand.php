@@ -214,7 +214,7 @@ class AddCommand extends BaseCommandHandler
 		return (int) $amount;
 	}
 
-	private function getAvailableUserCategorie(): Collection
+	private function getAvailableUserCategorie(User $user): Collection
 	{
 		$categoryService = app(CategoryService::class);
 		return $categoryService->getUserCategories($user);
