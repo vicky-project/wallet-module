@@ -79,7 +79,7 @@
 
     </div>
     <!-- Menu Utama -->
-    <div class="container text-center mt-4 p-3 border-top border-primary">
+    <div class="container text-center mt-4 p-3">
           <div class="row">
             <div class="col-6 col-md-3 mb-2">
               <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4 p-4">
