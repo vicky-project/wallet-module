@@ -217,7 +217,13 @@ class AddCommand extends BaseCommandHandler
 	private function getAvailableUserCategorie(User $user): Collection
 	{
 		$categoryService = app(CategoryService::class);
-		return $categoryService->getUserCategories($user);
+		return $categoryService
+			->getUserCategories($user)
+			->whenEmpty(
+				fn(Collection $collection) => $collection->push(
+					"No category available."
+				)
+			);
 	}
 
 	private function getCategoryUserByName(
