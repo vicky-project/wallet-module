@@ -81,12 +81,8 @@ class AddCommand extends BaseCommandHandler
 		}
 	}
 
-	private function processAdd(
-		int $chatId,
-		User $user,
-		string $text,
-		array $parts
-	): array {
+	private function processAdd(int $chatId, User $user, string $text): array
+	{
 		// Parse command: /add <type> <amount> <description> [#category] [@account]
 		try {
 			$pattern = '/^\/add\s+(\w+)\s+(-?\d+)\s+(.+)$/';
