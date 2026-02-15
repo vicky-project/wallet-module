@@ -141,7 +141,14 @@ class AddCommand extends BaseCommandHandler
 
 			$message =
 				"Category {$categoryName} is not exists in your categories. Available categories: " .
-				$categoriesUser->map(fn($cat) => "`{$cat->name}`")->join(", ", " and ");
+				$categoriesUser
+					->map(fn($cat) => "`{$cat->name}`")
+					->whenEmpty(
+						fn(Collection $collection) => $collection->push(
+							"No category available."
+						)
+					)
+					->join(", ", " and ");
 			return ["success" => false, "send_message" => ["text" => $message]];
 		}
 
@@ -217,13 +224,7 @@ class AddCommand extends BaseCommandHandler
 	private function getAvailableUserCategorie(User $user): Collection
 	{
 		$categoryService = app(CategoryService::class);
-		return $categoryService
-			->getUserCategories($user)
-			->whenEmpty(
-				fn(Collection $collection) => $collection->push(
-					"No category available."
-				)
-			);
+		return $categoryService->getUserCategories($user);
 	}
 
 	private function getCategoryUserByName(
