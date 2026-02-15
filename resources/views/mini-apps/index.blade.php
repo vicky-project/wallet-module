@@ -36,9 +36,6 @@
         }
         .menu-item {
             background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-radius: 16px;
-            padding: 20px 10px;
-            text-align: center;
             cursor: pointer;
             transition: transform 0.2s, opacity 0.2s;
             color: var(--tg-theme-text-color, #000);
@@ -95,11 +92,6 @@
             </a>
           </div>
         </div>
-
-        <!-- Tombol Create New (alternatif) -->
-        <button class="btn-create" onclick="handleMenuClick('create')">
-            <i class="bi bi-plus-lg"></i> Create New App
-        </button>
     </div>
 
     <!-- Bootstrap JS -->
