@@ -79,17 +79,19 @@
 
         <!-- Menu Utama -->
         <div class="container text-center">
-          <div class="col-6 col-md-3">
-            <a onclick="handleMenuClick('keuangan');" class="menu-item">
-              <i class="bi bi-cash-stack"></i>
-              <span>Keuangan</span>
-            </a>
-          </div>
-          <div class="col-6 col-md-3">
-            <a onclick="handleMenuClick('pengaturan');" class="menu-item">
+          <div class="row">
+            <div class="col-6 col-md-3">
+              <a onclick="handleMenuClick('keuangan');" class="menu-item">
+                <i class="bi bi-cash-stack"></i>
+                <span>Keuangan</span>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a onclick="handleMenuClick('pengaturan');" class="menu-item">
                 <i class="bi bi-gear"></i>
                 <span>Pengaturan</span>
-            </a>
+              </a>
+            </div>
           </div>
         </div>
     </div>
