@@ -80,13 +80,13 @@
         <!-- Menu Utama -->
         <div class="container text-center">
           <div class="row">
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-3 mb-2">
               <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4">
                 <i class="bi bi-cash-stack"></i>
                 <span>Keuangan</span>
               </a>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-3 mb-2">
               <a onclick="handleMenuClick('pengaturan');" class="menu-item">
                 <i class="bi bi-gear"></i>
                 <span>Pengaturan</span>
