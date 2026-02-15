@@ -33,59 +33,39 @@
         }
         .app-description {
             color: var(--tg-theme-hint-color, #999);
-            margin-bottom: 2rem;
-            padding: 0 20px;
+        }
+         .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
         }
         .menu-item {
             background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: transform 0.2s, opacity 0.2s;
+            color: var(--tg-theme-text-color, #000);
+            text-decoration: none;
+            display: block;
         }
         .menu-item:hover {
+            transform: scale(1.02);
             opacity: 0.8;
         }
-        .menu-item i:first-child {
-            font-size: 1.5rem;
-            margin-right: 15px;
+        .menu-item i {
+            font-size: 2.5rem;
             color: var(--tg-theme-button-color, #40a7e3);
+            margin-bottom: 10px;
+            display: block;
         }
-        .menu-item .menu-text {
-            flex-grow: 1;
-        }
-        .menu-item .menu-title {
-            font-weight: 600;
-            color: var(--tg-theme-text-color, #000);
-        }
-        .menu-item .menu-subtitle {
-            font-size: 0.85rem;
-            color: var(--tg-theme-hint-color, #999);
-        }
-        .menu-item .bi-chevron-right {
-            color: var(--tg-theme-hint-color, #999);
-        }
-        .btn-create {
-            background-color: var(--tg-theme-button-color, #40a7e3);
-            color: var(--tg-theme-button-text-color, white);
-            border: none;
-            border-radius: 12px;
-            padding: 15px;
-            width: 100%;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .btn-create i {
-            margin-right: 8px;
-            font-size: 1.2rem;
+        .menu-item span {
+            font-size: 1rem;
+            font-weight: 500;
         }
         .container {
             padding: 20px;
@@ -114,46 +94,15 @@
         </div>
 
         <!-- Menu Utama -->
-        <div class="mt-4">
-            <!-- Menu 1: My Bots (seperti di screenshot) -->
-            <div class="menu-item" onclick="handleMenuClick('mybots')">
-                <i class="bi bi-robot"></i>
-                <div class="menu-text">
-                    <div class="menu-title">My Bots</div>
-                    <div class="menu-subtitle">2 bot aktif</div>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </div>
-
-            <!-- Menu 2: Create New Bot (tombol +) -->
-            <div class="menu-item" onclick="handleMenuClick('create')">
-                <i class="bi bi-plus-circle"></i>
-                <div class="menu-text">
-                    <div class="menu-title">Create New Bot</div>
-                    <div class="menu-subtitle">Buat bot baru</div>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </div>
-
-            <!-- Menu 3: Settings -->
-            <div class="menu-item" onclick="handleMenuClick('settings')">
+        <div class="menu-grid">
+            <a onclick="handleMenuClick('keuangan');" class="menu-item">
+                <i class="bi bi-cash-stack"></i>
+                <span>Keuangan</span>
+            </a>
+            <a onclick="handleMenuClick('pengaturan');" class="menu-item">
                 <i class="bi bi-gear"></i>
-                <div class="menu-text">
-                    <div class="menu-title">Settings</div>
-                    <div class="menu-subtitle">Preferensi aplikasi</div>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </div>
-
-            <!-- Menu 4: Help -->
-            <div class="menu-item" onclick="handleMenuClick('help')">
-                <i class="bi bi-question-circle"></i>
-                <div class="menu-text">
-                    <div class="menu-title">Help</div>
-                    <div class="menu-subtitle">FAQ dan dukungan</div>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </div>
+                <span>Pengaturan</span>
+            </a>
         </div>
 
         <!-- Tombol Create New (alternatif) -->
@@ -165,7 +114,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
     <script>
         // Inisialisasi Telegram WebApp
         const tg = window.Telegram.WebApp;
