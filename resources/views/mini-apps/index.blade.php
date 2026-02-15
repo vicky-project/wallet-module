@@ -167,6 +167,10 @@
 
         // Tampilkan data user di console untuk debugging (opsional)
         console.log('User:', tg.initDataUnsafe?.user);
+        
+        tg.settingsButton = {
+          isVisible: true,
+        };
 
         // Beri tahu Telegram bahwa halaman sudah siap
         tg.ready();
