@@ -81,13 +81,13 @@
     <div class="container text-center mt-4 p-3">
           <div class="row">
             <div class="col-4 col-md-2 mb-2">
-              <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4">
+              <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4 p-2">
                 <i class="bi bi-cash-stack"></i>
                 <span>Keuangan</span>
               </a>
             </div>
             <div class="col-4 col-md-2 mb-2">
-              <a onclick="handleMenuClick('pengaturan');" class="menu-item rounded-4">
+              <a onclick="handleMenuClick('pengaturan');" class="menu-item rounded-4 p-2">
                 <i class="bi bi-gear"></i>
                 <span>Pengaturan</span>
               </a>
