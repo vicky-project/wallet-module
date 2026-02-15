@@ -73,6 +73,8 @@ class AddCommand extends BaseCommandHandler
 				"trace" => $e->getTraceAsString(),
 			]);
 
+			$this->sendMessage($chatId, "Failed to add transaction.");
+
 			return [
 				"status" => "add_transaction_failed",
 				"message" => $e->getMessage(),
