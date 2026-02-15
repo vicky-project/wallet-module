@@ -57,11 +57,10 @@
             font-weight: 500;
         }
         .container {
-        background-color: var(--tg-theme-section-bg-color);
+            background-color: var(--tg-theme-section-bg-color);
     </style>
 </head>
 <body>
-    <div class="container">
         <!-- Logo Lingkaran -->
         <div class="app-logo">
             <img src="/homeserver.png" alt="Logo Aplikasi" class="img-fluid rounded-circle">
@@ -78,8 +77,6 @@
             Satu aplikasi untuk semua fitur tersedia.
           </small>
         </div>
-
-    </div>
     <!-- Menu Utama -->
     <div class="container text-center mt-4 p-3">
           <div class="row">
