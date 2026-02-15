@@ -29,14 +29,9 @@
             font-size: 3rem;
         }
         .app-name {
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 0.5rem;
             color: var(--tg-theme-text-color, #000);
         }
         .app-description {
-            text-align: center;
             color: var(--tg-theme-hint-color, #999);
             margin-bottom: 2rem;
             padding: 0 20px;
@@ -107,13 +102,15 @@
         </div>
 
         <!-- Nama Aplikasi -->
-        <div class="app-name">
+        <div class="app-name h4 fw-bold text-center">
             Vicky Server App
         </div>
 
         <!-- Deskripsi -->
         <div class="app-description">
+          <small class="text-center">
             Satu aplikasi untuk semua fitur tersedia.
+          </small>
         </div>
 
         <!-- Menu Utama -->
