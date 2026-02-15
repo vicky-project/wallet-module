@@ -145,17 +145,14 @@ class AddCommand extends BaseCommandHandler
 			return ["success" => false, "send_message" => ["text" => $message]];
 		}
 
+		$category = $category->first();
+
 		// Prepare transaction data
 		$transactionData = [
 			"type" => $type,
 			"amount" => $amount,
 			"description" => $description,
-			"category_id" => $this->getCategoryId(
-				$chatId,
-				$user,
-				$categoryName,
-				$type
-			),
+			"category_id" => $category->id,
 			"account_id" => $this->getAccountId($chatId, $user, $accountName),
 			"transaction_date" => now()->format("Y-m-d H:i:s"),
 		];
