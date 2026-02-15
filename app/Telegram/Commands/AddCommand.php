@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Modules\Wallet\Enums\CategoryType;
+use Modules\Wallet\Enums\TransactionType;
 use Modules\Wallet\Services\AccountService;
 use Modules\Wallet\Services\CategoryService;
 use Modules\Wallet\Services\TransactionService;
@@ -65,20 +66,7 @@ class AddCommand extends BaseCommandHandler
 				];
 			}
 
-			// Parse command: /add <type> <amount> <description> [#category] [@account]
-			$parts = explode(" ", $text, 5);
-
-			if (count($parts) < 4) {
-				return [
-					"status" => "add_transaction_failed",
-					"send_message" => [
-						"text" => $this->getAddCommandUsage(),
-						"parse_mode" => "MarkdownV2",
-					],
-				];
-			}
-
-			return $this->processAdd($chatId, $user, $text, $parts);
+			return $this->processAdd($chatId, $user, $text);
 		} catch (\Exception $e) {
 			Log::error("Failed to add transaction.", [
 				"message" => $e->getMessage(),
@@ -99,17 +87,43 @@ class AddCommand extends BaseCommandHandler
 		string $text,
 		array $parts
 	): array {
+		// Parse command: /add <type> <amount> <description> [#category] [@account]
 		try {
-			$type = strtolower($parts[1]);
-			$amount = $this->parseAmount($parts[2]);
-			$description = $parts[3];
+			$pattern = '/^\/add\s+(\w+)\s+(-?\d+)\s+(.+)$/';
+			if (!preg_match($pattern, $text, $matches)) {
+				return [
+					"success" => false,
+					"send_message" => [
+						"text" => $this->getAddCommandUsage(),
+						"parse_mode" => "MarkdownV2",
+					],
+				];
+			}
+
+			$type = strtolower($matches[1]);
+			$amount = $this->parseAmount($matches[2]);
+			$rest = $matches[3];
+
+			if (!in_array($type, CategoryType::cases())) {
+				throw new \Exception(
+					"Type transaksi harus " .
+						collect(TransactionType::cases())->join(", ", " and ")
+				);
+			}
 
 			// Extract optional parameters
-			preg_match("/#(\w+)/", $text, $categoryMatch);
-			preg_match("/@(\w+)/", $text, $accountMatch);
+			preg_match("/#(\w+)/", $rest, $categoryMatch);
+			preg_match("/@(\w+)/", $rest, $accountMatch);
 
 			$categoryName = $categoryMatch[1] ?? "Umum";
+			$rest = str_replace($categoryMatch[0] ?? "", "", $rest);
 			$accountName = $accountMatch[1] ?? "Default";
+			$rest = str_replace($accountMatch[0] ?? "", "", $rest);
+
+			$description = trim($rest);
+			if (empty($description)) {
+				throw new \Exception("Description is required.");
+			}
 
 			// Prepare transaction data
 			$transactionData = [
@@ -125,6 +139,11 @@ class AddCommand extends BaseCommandHandler
 				"account_id" => $this->getAccountId($chatId, $user, $accountName),
 				"transaction_date" => now()->format("Y-m-d H:i:s"),
 			];
+
+			Log::info(
+				"User {$user->name} creating new transaction.",
+				$transactionData
+			);
 
 			// Use existing TransactionService
 			$result = $this->transactionService->createTransaction(
