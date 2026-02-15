@@ -107,8 +107,8 @@
         </div>
 
         <!-- Deskripsi -->
-        <div class="app-description">
-          <small class="text-center">
+        <div class="app-description text-center">
+          <small>
             Satu aplikasi untuk semua fitur tersedia.
           </small>
         </div>
