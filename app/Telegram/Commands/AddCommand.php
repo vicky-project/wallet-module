@@ -140,7 +140,7 @@ class AddCommand extends BaseCommandHandler
 			$categoriesUser = $this->getAvailableUserCategorie($user);
 
 			$message =
-				"Category {$categoryName} is not exists in your categories. Available categories: " .
+				"Category {$categoryName} is not exists in your categories. Available categories:\n\n" .
 				$categoriesUser
 					->map(fn($cat) => "`{$cat->name}`")
 					->whenEmpty(

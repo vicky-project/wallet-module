@@ -892,7 +892,7 @@ class CategoryRepository extends BaseRepository
 			$cacheKey,
 			config("wallet.cache_ttl"),
 			function () use ($user, $type, $includeInactive) {
-				$categories = $this->getUserCategories($type, $includeInactive);
+				$categories = $this->getUserCategories($user, $type, $includeInactive);
 				$stats = $this->getCategoryStats($user);
 
 				return [
