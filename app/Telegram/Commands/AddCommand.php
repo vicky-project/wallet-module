@@ -136,16 +136,18 @@ class AddCommand extends BaseCommandHandler
 		}
 
 		$category = $this->getCategoryUserByName($user, $categoryName);
-		if (!$category) {
+		if ($category->isEmpty()) {
 			$categoriesUser = $this->getAvailableUserCategorie($user);
 
 			$message =
 				"Category {$categoryName} is not exists in your categories. Available categories: " .
-				$categoriesUser->join(", ", " and ");
+				$categoriesUser->map(fn($cat) => "`{$cat->name}`")->join(", ", " and ");
 			return ["success" => false, "send_message" => ["text" => $message]];
 		}
 
-		$category = $category->first();
+		if ($category->isNotEmpty() && $category->count() > 1) {
+			$category = $category->first();
+		}
 
 		// Prepare transaction data
 		$transactionData = [
