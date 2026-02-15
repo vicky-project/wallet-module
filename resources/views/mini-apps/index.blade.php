@@ -80,7 +80,7 @@
     <!-- Menu Utama -->
     <div class="container text-center mt-4 p-3">
           <div class="row">
-            <div class="col-6 col-md-3 mb-2">
+            <div class="col-4 col-md-2 mb-2">
               <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4 p-4">
                 <i class="bi bi-cash-stack"></i>
                 <span>Keuangan</span>
