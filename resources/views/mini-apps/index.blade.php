@@ -103,7 +103,7 @@
     <div class="container">
         <!-- Logo Lingkaran -->
         <div class="app-logo">
-            <img src="/homeserver.png" alt="Logo Aplikasi">
+            <img src="/homeserver.png" alt="Logo Aplikasi" class="img-fluid rounded-circle">
         </div>
 
         <!-- Nama Aplikasi -->
