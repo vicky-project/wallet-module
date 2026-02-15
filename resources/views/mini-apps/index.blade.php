@@ -81,7 +81,7 @@
         <div class="container text-center">
           <div class="row">
             <div class="col-6 col-md-3">
-              <a onclick="handleMenuClick('keuangan');" class="menu-item">
+              <a onclick="handleMenuClick('keuangan');" class="menu-item rounded-4">
                 <i class="bi bi-cash-stack"></i>
                 <span>Keuangan</span>
               </a>
