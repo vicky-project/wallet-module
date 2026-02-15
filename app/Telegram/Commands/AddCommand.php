@@ -100,10 +100,12 @@ class AddCommand extends BaseCommandHandler
 			$amount = $this->parseAmount($matches[2]);
 			$rest = $matches[3];
 
-			if (!in_array($type, CategoryType::cases())) {
+			if (!in_array($type, TransactionType::cases())) {
 				throw new \Exception(
 					"Type transaksi harus " .
-						collect(TransactionType::cases())->join(", ", " and ")
+						collect(TransactionType::cases())
+							->map(fn($type) => "`{$type->value}`")
+							->join(", ", " and ")
 				);
 			}
 
