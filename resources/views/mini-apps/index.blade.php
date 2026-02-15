@@ -34,14 +34,6 @@
         .app-description {
             color: var(--tg-theme-hint-color, #999);
         }
-         .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 20px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
         .menu-item {
             background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
             border-radius: 16px;
@@ -67,11 +59,6 @@
             font-size: 1rem;
             font-weight: 500;
         }
-        .container {
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
     </style>
 </head>
 <body>
@@ -94,15 +81,19 @@
         </div>
 
         <!-- Menu Utama -->
-        <div class="menu-grid">
+        <div class="container text-center">
+          <div class="col-6 col-md-3">
             <a onclick="handleMenuClick('keuangan');" class="menu-item">
-                <i class="bi bi-cash-stack"></i>
-                <span>Keuangan</span>
+              <i class="bi bi-cash-stack"></i>
+              <span>Keuangan</span>
             </a>
+          </div>
+          <div class="col-6 col-md-3">
             <a onclick="handleMenuClick('pengaturan');" class="menu-item">
                 <i class="bi bi-gear"></i>
                 <span>Pengaturan</span>
             </a>
+          </div>
         </div>
 
         <!-- Tombol Create New (alternatif) -->
