@@ -4,10 +4,16 @@ use Illuminate\Support\Facades\Route;
 
 use Modules\Wallet\Http\Controllers\BudgetController;
 use Modules\Wallet\Http\Controllers\ReportController;
+use Modules\Wallet\Http\Controllers\TelegramController;
 
 Route::prefix("apps")
 	->name("apps.")
 	->group(function () {
+		Route::prefix("telegram")
+			->middleware(["auth::telegram"])
+			->group(function () {
+				Route::post("mini-app", [TelegramController::class, "handleData"]);
+			});
 		Route::prefix("reports")
 			->name("reports.")
 			->middleware(["auth", "web"])

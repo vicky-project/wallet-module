@@ -8,6 +8,7 @@ use Modules\Wallet\Http\Controllers\DashboardController;
 use Modules\Wallet\Http\Controllers\BudgetController;
 use Modules\Wallet\Http\Controllers\RecurringController;
 use Modules\Wallet\Http\Controllers\ReportController;
+use Modules\Wallet\Http\Controllers\TelegramController;
 use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
 use Rappasoft\LaravelAuthenticationLog\Middleware\RequireTrustedDevice;
@@ -185,3 +186,9 @@ Route::middleware($middleware)->group(function () {
 			);
 		});
 });
+
+Route::middleware(["auth"])
+	->prefix("telegram")
+	->group(function () {
+		Route::get("mini-app", [TelegramController::class, "index"]);
+	});
