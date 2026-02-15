@@ -4,7 +4,7 @@ namespace Modules\Wallet\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-class TelegramMController extends Controller
+class TelegramController extends Controller
 {
 	public function index(Request $request)
 	{
