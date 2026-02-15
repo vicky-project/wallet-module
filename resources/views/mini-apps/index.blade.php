@@ -29,7 +29,7 @@
             font-size: 3rem;
         }
         .app-name {
-            font-size: 1.8rem;
+            font-size: 1rem;
             font-weight: bold;
             text-align: center;
             margin-bottom: 0.5rem;
@@ -103,17 +103,17 @@
     <div class="container">
         <!-- Logo Lingkaran -->
         <div class="app-logo">
-            <i class="bi bi-grid"></i>
+            <img src="/homeserver.png" alt="Logo Aplikasi">
         </div>
 
         <!-- Nama Aplikasi -->
         <div class="app-name">
-            My Telegram App
+            Vicky Server App
         </div>
 
         <!-- Deskripsi -->
         <div class="app-description">
-            Kelola bot dan aplikasi Telegram Anda dengan mudah dan cepat.
+            Satu aplikasi untuk semua fitur tersedia.
         </div>
 
         <!-- Menu Utama -->
@@ -199,7 +199,7 @@
             let toastContainer = document.querySelector('.toast-container');
             if (!toastContainer) {
                 toastContainer = document.createElement('div');
-                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
                 document.body.appendChild(toastContainer);
                 
                 const toastEl = document.createElement('div');
