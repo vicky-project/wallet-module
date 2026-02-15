@@ -26,6 +26,11 @@ class CategoryService
 		$this->categoryRepository = $categoryRepository;
 	}
 
+	public function getUserCategories(User $user, string $type = null): Collection
+	{
+		return $this->categoryRepository->getUserCategories($user, $type, true);
+	}
+
 	public function getDashboardData(User $user, Carbon $now): array
 	{
 		$startOfMonth = $now->copy()->startOfMonth();

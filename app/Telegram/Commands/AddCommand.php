@@ -135,6 +135,16 @@ class AddCommand extends BaseCommandHandler
 			throw new \Exception("Description is required.");
 		}
 
+		$category = $this->getCategoryUserByName($user, $categoryName);
+		if (!$category) {
+			$categoriesUser = $this->getAvailableUserCategorie($user);
+
+			$message =
+				"Category {$categoryName} is not exists in your categories. Available categories: " .
+				$categoriesUser->join(", ", " and ");
+			return ["success" => false, "send_message" => ["text" => $message]];
+		}
+
 		// Prepare transaction data
 		$transactionData = [
 			"type" => $type,
@@ -205,39 +215,19 @@ class AddCommand extends BaseCommandHandler
 		return (int) $amount;
 	}
 
-	private function getCategoryId(
-		int $chatId,
+	private function getAvailableUserCategorie(): Collection
+	{
+		$categoryService = app(CategoryService::class);
+		return $categoryService->getUserCategories($user);
+	}
+
+	private function getCategoryUserByName(
 		User $user,
-		string $categoryName,
-		string $type
-	): int {
+		string $categoryName
+	): ?Collection {
 		$categoryName = str($categoryName)->replace("_", " ");
 		$categoryService = app(CategoryService::class);
-		$category = $categoryService->searchCategories($user, $categoryName);
-
-		if ($category->isEmpty()) {
-			$message = "Category {$categoryName} is not exists in your categories. Try to create new category for {$categoryName}";
-			$this->sendMessage($chatId, $message);
-
-			$category = $categoryService->createCategory($user, [
-				"name" => $categoryName,
-				"type" => in_array($type, CategoryType::cases())
-					? $type
-					: CategoryType::EXPENSE,
-			]);
-		}
-
-		if ($category instanceof Collection) {
-			if ($category->count() === 0) {
-				throw new \RuntimeException(
-					"Category not found and Failed to create new Category"
-				);
-			}
-
-			$category = $category->first();
-		}
-
-		return $category->id;
+		return $categoryService->searchCategories($user, $categoryName);
 	}
 
 	private function getAccountId(

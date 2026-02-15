@@ -66,10 +66,10 @@ class CategoryRepository extends BaseRepository
 	 * Get all categories for current user with filters (cached)
 	 */
 	public function getUserCategories(
+		User $user,
 		string $type = null,
 		bool $includeInactive = false
 	): Collection {
-		$user = auth()->user();
 		$cacheKey = Helper::generateCacheKey("user_categories", [
 			"user_id" => $user->id,
 			"type" => $type,
