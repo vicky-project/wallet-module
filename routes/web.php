@@ -187,7 +187,7 @@ Route::middleware($middleware)->group(function () {
 		});
 });
 
-Route::middleware(["auth"])
+Route::middleware(["auth:telegram"])
 	->prefix("telegram")
 	->group(function () {
 		Route::get("mini-apps", [TelegramController::class, "index"]);

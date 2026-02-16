@@ -4,7 +4,7 @@
 <div class="main-container">
   
   <!-- Logo Lingkaran -->
-  <div class="app-logo d-flex justify-content-center align-items-center text-center mt-4 p-2">
+  <div class="app-logo d-flex justify-content-center align-items-center text-center p-4">
     <img src="{{ config('core.logo_url') }}" alt="Logo Aplikasi" class="img-fluid rounded-circle" style="width: 100px; height: 100px;">
   </div>
 
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Deskripsi -->
-  <div class="app-description text-center">
+  <div class="app-description text-center pb-4">
     <small>
       Satu aplikasi untuk semua fitur tersedia.
     </small>
@@ -36,7 +36,7 @@
   @endHasHook
   
   <nav class="navbar fixed-bottom bg-body-tertiary">
-    <div class="container-fluid">
+    <div class="container-fluid float-end">
       <a class="navbar-brand" href="#">Fixed bottom</a>
     </div>
   </nav>
@@ -47,4 +47,13 @@
 <script>
   tg.SettingsButton.show();
 </script>
+@endpush
+
+@push('styles')
+<style>
+  .navbar {
+    background-color: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+  }
+</style>
 @endpush
