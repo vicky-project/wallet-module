@@ -36,3 +36,9 @@
   @endHasHook
 </div>
 @endsection
+
+@push('scripts')
+<script>
+  ts.SettingsButton.show();
+</script>
+@endpush
