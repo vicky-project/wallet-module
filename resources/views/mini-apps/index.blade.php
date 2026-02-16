@@ -39,6 +39,6 @@
 
 @push('scripts')
 <script>
-  ts.SettingsButton.show();
+  tg.SettingsButton.show();
 </script>
 @endpush
