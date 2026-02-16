@@ -5,7 +5,7 @@
   
   <!-- Logo Lingkaran -->
   <div class="app-logo d-flex justify-content-center align-items-center text-center mt-4 p-2">
-    <img src="{{ config('core.logo_url') }}" alt="Logo Aplikasi" class="img-fluid rounded-circle">
+    <img src="{{ config('core.logo_url') }}" alt="Logo Aplikasi" class="img-fluid rounded-circle" style="width: 100px; height: 100px;">
   </div>
 
   <!-- Nama Aplikasi -->
