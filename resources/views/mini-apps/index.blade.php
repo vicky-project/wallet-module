@@ -76,8 +76,8 @@
 @push('styles')
 <style>
   .navbar {
-    background-color: var(--tg-theme-button-color);
-    color: var(--tg-theme-button-text-color);
+    background-color: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
   }
   .btn-user {
     background-color: var(--tg-theme-button-color);
