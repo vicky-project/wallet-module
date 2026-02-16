@@ -4,8 +4,8 @@
 <div class="main-container my-4">
   
   <!-- Logo Lingkaran -->
-  <div class="app-logo d-flex justify-content-center align-items-center">
-    <img src="{{ config('core.logo_url') }}" alt="Logo Aplikasi" class="img-fluid rounded-circle text-center align-items-center">
+  <div class="app-logo d-flex justify-content-center align-items-center text-center">
+    <img src="{{ config('core.logo_url') }}" alt="Logo Aplikasi" class="img-fluid rounded-circle">
   </div>
 
   <!-- Nama Aplikasi -->
