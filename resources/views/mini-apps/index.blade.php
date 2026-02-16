@@ -36,8 +36,8 @@
   @endHasHook
   
   <nav class="navbar fixed-bottom bg-body-tertiary">
-    <div class="container-fluid text-end">
-      <div class="navbar-brand" id="auth-button"></div>
+    <div class="container">
+      <div class="navbar-brand float-end ms-auto" id="auth-button"></div>
     </div>
   </nav>
 </div>
@@ -59,14 +59,14 @@
   
   if(user) {
     if(user.photo_url) {
-      authButtonDiv.innerHTML = `<img src="${user.photo_url}" class="img-prfile img-fluid rounded-circle" onclick="handleProfileClick();">`;
+      authButtonDiv.innerHTML = `<img src="${user.photo_url}" class="img-prfile img-fluid rounded-circle btn-user" onclick="handleProfileClick();">`;
     } else {
-      authButtonDiv.innerHTML = `<button class="btn btn-sm rounded-circle" onclick="handleProfileClick();">
+      authButtonDiv.innerHTML = `<button class="btn btn-sm rounded-circle btn-user" onclick="handleProfileClick();">
         <i class="bi bi-person-circle"></i>
       </button>`;
     }
   } else {
-    authButtonDiv.innerHTML = `<button class="btn btn-primary btn-sm" onclick="handleLoginClick();">
+    authButtonDiv.innerHTML = `<button class="btn btn-sm btn-user" onclick="handleLoginClick();">
       <i class="bi bi-box-arrow-in-right"></i>
     </button>`;
   }
@@ -76,6 +76,10 @@
 @push('styles')
 <style>
   .navbar {
+    background-color: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+  }
+  .btn-user {
     background-color: var(--tg-theme-button-color);
     color: var(--tg-theme-button-text-color);
   }
