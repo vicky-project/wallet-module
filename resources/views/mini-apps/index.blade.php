@@ -37,7 +37,7 @@
   
   <nav class="navbar fixed-bottom bg-body-tertiary">
     <div class="container-fluid float-end">
-      <a class="navbar-brand" href="#">Fixed bottom</a>
+      <div class="navbar-brand" id="auth-button"></div>
     </div>
   </nav>
 </div>
@@ -46,6 +46,30 @@
 @push('scripts')
 <script>
   tg.SettingsButton.show();
+  const user = tg.initData?.user;
+  const authButtonDiv = document.getElementById('auth-button');
+  
+  function handleProfileClick() {
+    showToast('Profile pengguna', 'success');
+  }
+  
+  function handleLoginClick() {
+    showToast('Silakan login terlebih dahulu', 'info');
+  }
+  
+  if(user) {
+    if(user.photo_url) {
+      authButtonDiv.innerHTML = `<img src="${user.photo_url}" class="img-prfile img-fluid rounded-circle" onclick="handleProfileClick();">`;
+    } else {
+      authButtonDiv.innerHTML = `<button class="btn btn-sm rounded-circle" onclick="handleProfileClick();">
+        <i class="bi bi-person-circle"></i>
+      </button>`;
+    }
+  } else {
+    authButtonDiv.innerHTML = `<button class="btn btn-primary btn-sm" onclick="handleLoginClick();">
+      <i class="bi bi-box-arrow-in-right"></i>
+    </button>`;
+  }
 </script>
 @endpush
 
