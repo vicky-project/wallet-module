@@ -67,6 +67,13 @@ class WalletServiceProvider extends ServiceProvider
 			$this->registerCallbackHandlers($callback);
 			$this->registerCallbackMiddlewares($callback);
 		}
+
+		if (
+			config($this->nameLower . ".hooks.enabled", false) &&
+			class_exists($class = config($this->nameLower . ".hooks.service"))
+		) {
+			$this->registerHooks($class);
+		}
 	}
 
 	protected function registerTelegramCommands(
@@ -146,6 +153,20 @@ class WalletServiceProvider extends ServiceProvider
 	{
 		$this->app->register(EventServiceProvider::class);
 		$this->app->register(RouteServiceProvider::class);
+	}
+
+	protected function registerHooks($hookService): void
+	{
+		$hookService::add(
+			config($this->nameLower . ".hooks.name"),
+			function ($data) {
+				if (\Auth::check()) {
+					return view("wallet::hooks.financial")->render();
+				}
+				return "";
+			},
+			10
+		);
 	}
 
 	/**

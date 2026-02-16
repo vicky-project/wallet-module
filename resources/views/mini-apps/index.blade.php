@@ -50,11 +50,11 @@
   const authButtonDiv = document.getElementById('auth-button');
   
   function handleProfileClick() {
-    showToast('Profile pengguna', 'success');
+    window.location.href = '{{ route('settings.index') }}';
   }
   
   function handleLoginClick() {
-    showToast('Silakan login terlebih dahulu', 'info');
+    window.location.href = '{{ route('login') }}';
   }
   
   if(user) {

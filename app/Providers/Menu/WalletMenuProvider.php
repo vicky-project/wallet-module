@@ -9,7 +9,7 @@ class WalletMenuProvider extends BaseMenuProvider
 	protected array $config = [
 		"group" => "application",
 		"location" => "sidebar",
-		"icon" => "fas fa-grip",
+		"icon" => "bi bi-grip",
 		"order" => 1,
 		"permission" => null,
 	];
@@ -28,7 +28,7 @@ class WalletMenuProvider extends BaseMenuProvider
 		return [
 			$this->item([
 				"title" => "Financial",
-				"icon" => "fas fa-dollar",
+				"icon" => "bi bi-currency-dollar",
 				"order" => 10,
 				"route" => "apps.financial",
 				"permission" => Permissions::VIEW_ACCOUNTS,

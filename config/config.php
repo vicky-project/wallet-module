@@ -6,17 +6,6 @@ return [
 	"back_to_server_url" => env("WALLET_SERVER_URL", config("app.url", null)),
 	"cache_ttl" => env("WALLET_CACHE_TTL", 3600),
 
-	/**
-	 * Telegram bot configuration
-	 */
-	"telegram_bot" => [
-		"token" => env("TELEGRAM_BOT_TOKEN"),
-		"username" => env("TELEGRAM_BOT_USERNAME", "your_bot_username"),
-		"webhook_url" => env("TELEGRAM_WEBHOOK_URL", "/api/telegram/webhook"),
-		"webhook_secret" => env("TELEGRAM_WEBHOOK_SECRET"),
-		"admin" => env("TELEGRAM_ADMINS", ""), // String of id with comma separated
-	],
-
 	"table_fields" => [
 		"fillable" => [
 			"telegram_id",
@@ -57,5 +46,11 @@ return [
 			"app.address",
 			"Jl. antah berantah, Dagelan, Indonesia"
 		),
+	],
+
+	"hooks" => [
+		"enabled" => env("WALLET_HOOKS_ENABLED", true),
+		"service" => \Modules\Core\Services\HookService::class,
+		"name" => "main-apps",
 	],
 ];
