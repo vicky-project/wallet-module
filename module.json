@@ -3,7 +3,7 @@
 	"alias": "wallet",
 	"description": "",
 	"keywords": [],
-	"priority": 0,
+	"priority": 5,
 	"providers": [
 		"Modules\\Wallet\\Providers\\WalletServiceProvider",
 		"Modules\\Wallet\\Providers\\RepositoryServiceProvider"
