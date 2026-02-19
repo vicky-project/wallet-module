@@ -51,6 +51,6 @@ return [
 	"hooks" => [
 		"enabled" => env("WALLET_HOOKS_ENABLED", true),
 		"service" => \Modules\Core\Services\HookService::class,
-		"name" => "main-apps",
+		"name" => "dashboard-widgets",
 	],
 ];
