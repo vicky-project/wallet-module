@@ -14,12 +14,15 @@ class PostInstallation
 
 			if ($returnCode !== 0) {
 				throw new \Exception(
-					"This module required qpdf installed. Please find the way to install it in yout server."
+					"This module required qpdf installed. Please find the way to install it in your server."
 				);
 			}
 
-			$module = Module::find($moduleName);
-			$module->enable();
+			$modules = array_merge(["core", "telegram"], [$moduleName]);
+			foreach ($modules as $modulename) {
+				$module = Module::find($modulename);
+				$module->enable();
+			}
 
 			$result = $this->insertTraitToUserModel();
 			logger()->info($result["message"]);
