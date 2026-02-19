@@ -39,5 +39,7 @@
 		"psr-4": {
 			"Modules\\Wallet\\Tests\\": "tests/"
 		}
-	}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }
