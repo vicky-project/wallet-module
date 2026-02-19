@@ -2,6 +2,7 @@
 	"name": "vicky-project/wallet-module",
 	"type": "laravel-module",
 	"description": "",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Vicky Rahman",
@@ -15,9 +16,17 @@
 		}
 	},
 	"require": {
-		"bavix/laravel-wallet": "^11.4",
-		"vicky-project/menumanagement-module": "^1.0",
-		"vicky-project/viewmanager-module": "^1.0"
+		"php": "^8.2",
+		"joshbrw/laravel-module-installer": "^1.0",
+		"brick/money": "^0.10",
+		"akaunting/laravel-money": "^6.0",
+		"maatwebsite/excel": "^3.1",
+		"smalot/pdfparser": "^2.12",
+		"setasign/fpdi": "^2.6",
+		"dompdf/dompdf": "^3.1.4",
+		"google/apiclient": "^2.19",
+		"vicky-project/core-module": "^1.0",
+		"vicky-project/telegram-module": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {

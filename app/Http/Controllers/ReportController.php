@@ -1,0 +1,255 @@
+<?php
+
+namespace Modules\Wallet\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Wallet\Models\Account;
+use Modules\Wallet\Services\ReportService;
+use Modules\Wallet\Services\ExportService;
+
+class ReportController extends Controller
+{
+	protected $reportService;
+
+	public function __construct(ReportService $reportService)
+	{
+		$this->reportService = $reportService;
+	}
+
+	public function index(Request $request)
+	{
+		$user = $request->user();
+		$accounts = Account::where("user_id", $user->id)
+			->active()
+			->orderBy("name")
+			->get(["id", "name", "balance"]);
+		return view("wallet::reports", compact("accounts"));
+	}
+
+	public function dashboardSummary(Request $request): JsonResponse
+	{
+		try {
+			$request->validate([
+				"start_date" => "nullable|date",
+				"end_date" => "nullable|date|after_or_equal:start_date",
+				"account_id" => "nullable|exists:accounts,id",
+			]);
+
+			$data = $this->reportService->getDashboardSummary(
+				auth()->id(),
+				$request->only(["start_date", "end_date", "account_id"])
+			);
+
+			return response()->json([
+				"success" => true,
+				"data" => $data,
+			]);
+		} catch (\Exception $e) {
+			dd($e);
+		}
+	}
+
+	public function monthlyReport(
+		Request $request,
+		int $year,
+		int $month
+	): JsonResponse {
+		$request->validate([
+			"account_id" => "nullable|integer|exists:accounts,id",
+		]);
+
+		$data = $this->reportService->getMonthlyReport(
+			auth()->id(),
+			$year,
+			$month,
+			$request->account_id
+		);
+
+		return response()->json([
+			"success" => true,
+			"data" => $data,
+		]);
+	}
+
+	public function yearlyReport(Request $request, int $year): JsonResponse
+	{
+		$request->validate([
+			"account_id" => "nullable|integer|exists:accounts,id",
+		]);
+
+		$data = $this->reportService->getYearlyReport(
+			auth()->id(),
+			$year,
+			$request->account_id
+		);
+
+		return response()->json([
+			"success" => true,
+			"data" => $data,
+		]);
+	}
+
+	public function customReport(Request $request): JsonResponse
+	{
+		$request->validate([
+			"account_id" => "nullable|integer|exists:accounts,id",
+			"report_type" =>
+				"required|in:financial_summary,income_expense_trend,category_analysis,budget_analysis,account_analysis,transaction_analysis",
+			"start_date" => "nullable|date",
+			"end_date" => "nullable|date|after_or_equal:start_date",
+			"type" => "nullable|in:income,expense",
+			"group_by" => "nullable|in:day,week,month,year",
+			"period" => "nullable|in:current,monthly,yearly",
+			"limit" => "nullable|integer|min:1|max:50",
+		]);
+
+		$data = $this->reportService->getCustomReport(
+			auth()->id(),
+			$request->report_type,
+			$request->only([
+				"account_id",
+				"start_date",
+				"end_date",
+				"type",
+				"group_by",
+				"period",
+				"limit",
+			])
+		);
+
+		return response()->json([
+			"success" => true,
+			"data" => $data,
+		]);
+	}
+
+	public function exportReport(Request $request): JsonResponse
+	{
+		$request->validate([
+			"account_id" => "nullable|exists:accounts,id",
+			"start_date" => "nullable|date",
+			"end_date" => "nullable|date|after_or_equal:start_date",
+			"format" => "nullable|in:json,pdf,csv,xls,xlsx,gsheet",
+		]);
+
+		if ($request->format == "gsheet") {
+			return response()->json([
+				"success" => false,
+				"message" => "In development progress. Coming soon...",
+			]);
+		}
+
+		$data = $this->reportService->getExportData(
+			auth()->id(),
+			$request->only(["account_id", "start_date", "end_date"])
+		);
+
+		return match ($request->format) {
+			"json" => $this->exportToJson($data),
+			"xls", "xlsx", "csv", "pdf", "gsheet" => $this->exportToFile(
+				$data,
+				$request->format
+			),
+			default => response()->json(
+				[
+					"success" => false,
+					"message" => "Unsupported format: " . $request->format,
+				],
+				400
+			),
+		};
+	}
+
+	private function exportToJson(array $data): JsonResponse
+	{
+		return response()->json(["success" => true, "data" => $data]);
+	}
+
+	private function exportToFile(array $data, string $format): JsonResponse
+	{
+		try {
+			// Validasi data
+			if (empty($data) || !isset($data["report_data"])) {
+				throw new \Exception("Data laporan tidak valid");
+			}
+
+			// Buat instance export
+			$export = new \Modules\Wallet\Exports\Sheets\MultipleSheetsExport($data);
+
+			if ($format === "gsheet") {
+				// Generate file content
+				$csvContent = \Maatwebsite\Excel\Facades\Excel::raw(
+					$export,
+					\Maatwebsite\Excel\Excel::CSV
+				);
+				$gSheetService = new \Modules\Wallet\Services\GoogleSheetsExportService();
+				$filename =
+					"Laporan-keuangan-" . now()->format("d-m-Y") . "-vickyserver";
+				$spreadsheet = $gSheetService->createSpreadsheetFromCsv(
+					$csvContent,
+					$filename
+				);
+
+				return response()->json([
+					"success" => true,
+					"spreadsheet_url" => $spreadsheet->getWebViewLink(),
+					"filename" => $filename . ".xlsx",
+				]);
+			}
+
+			// Tentukan format
+			$excelFormat = match ($format) {
+				"xls" => \Maatwebsite\Excel\Excel::XLS,
+				"csv" => \Maatwebsite\Excel\Excel::CSV,
+				"pdf" => \Maatwebsite\Excel\Excel::DOMPDF,
+				default => \Maatwebsite\Excel\Excel::XLSX,
+			};
+
+			// Generate file content
+			$fileContent = \Maatwebsite\Excel\Facades\Excel::raw(
+				$export,
+				$excelFormat
+			);
+
+			// Tentukan MIME type
+			$mimeTypes = [
+				"xlsx" =>
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"xls" => "application/vnd.ms-excel",
+				"csv" => "text/csv",
+				"pdf" => "application/pdf",
+			];
+
+			$mimeType = $mimeTypes[$format] ?? "application/octet-stream";
+			$filename =
+				"laporan-keuangan-" .
+				now()->format("Y-m-d") .
+				"-vickyserver." .
+				$format;
+
+			return response()->json([
+				"success" => true,
+				"download_url" =>
+					"data:" . $mimeType . ";base64," . base64_encode($fileContent),
+				"filename" => $filename,
+				"mime_type" => $mimeType,
+				"has_charts" => false,
+			]);
+		} catch (\Exception $e) {
+			\Log::error(
+				"Export failed: " . $e->getMessage() . "\n" . $e->getTraceAsString()
+			);
+			return response()->json(
+				[
+					"success" => false,
+					"error" => "Gagal menghasilkan file: " . $e->getMessage(),
+					"trace" => $e->getTraceAsString(),
+				],
+				500
+			);
+		}
+	}
+}

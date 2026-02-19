@@ -1,11 +1,12 @@
 {
-    "name": "Wallet",
-    "alias": "wallet",
-    "description": "",
-    "keywords": [],
-    "priority": 0,
-    "providers": [
-        "Modules\\Wallet\\Providers\\WalletServiceProvider"
-    ],
-    "files": []
+	"name": "Wallet",
+	"alias": "wallet",
+	"description": "",
+	"keywords": [],
+	"priority": 0,
+	"providers": [
+		"Modules\\Wallet\\Providers\\WalletServiceProvider",
+		"Modules\\Wallet\\Providers\\RepositoryServiceProvider"
+	],
+	"files": []
 }

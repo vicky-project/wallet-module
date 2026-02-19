@@ -3,6 +3,7 @@ namespace Modules\Wallet\Installations;
 
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Artisan;
+use Modules\Core\Services\Generators\TraitInserter;
 
 class PostInstallation
 {
@@ -20,9 +21,9 @@ class PostInstallation
 			$module = Module::find($moduleName);
 			$module->enable();
 
-			Artisan::call("vendor:publish", [
-				"--tag" => ["laravel-wallet-migration", "laravel-wallet-config"],
-			]);
+			$result = $this->insertTraitToUserModel();
+			logger()->info($result["message"]);
+
 			Artisan::call("migrate", ["--force" => true]);
 		} catch (\Exception $e) {
 			logger()->error(
@@ -32,5 +33,10 @@ class PostInstallation
 
 			throw $e;
 		}
+	}
+
+	private function insertTraitToUserModel()
+	{
+		return TraitInserter::insertTrait("Modules\Wallet\Traits\HasWallets");
 	}
 }

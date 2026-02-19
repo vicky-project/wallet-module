@@ -9,7 +9,7 @@ class WalletMenuProvider extends BaseMenuProvider
 	protected array $config = [
 		"group" => "application",
 		"location" => "sidebar",
-		"icon" => "fas fa-grip",
+		"icon" => "bi bi-grip",
 		"order" => 1,
 		"permission" => null,
 	];
@@ -28,18 +28,10 @@ class WalletMenuProvider extends BaseMenuProvider
 		return [
 			$this->item([
 				"title" => "Financial",
-				"icon" => "fas fa-dollar",
-				"type" => "dropdown",
+				"icon" => "bi bi-currency-dollar",
 				"order" => 10,
-				"children" => [
-					$this->item([
-						"title" => "Accounts",
-						"icon" => "fas fa-wallet",
-						"route" => "apps.wallet.index",
-						"order" => 1,
-						"permission" => Permissions::VIEW_ACCOUNTS,
-					]),
-				],
+				"route" => "apps.financial",
+				"permission" => Permissions::VIEW_ACCOUNTS,
 			]),
 		];
 	}
