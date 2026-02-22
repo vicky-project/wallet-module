@@ -7,7 +7,7 @@
     <div class="col-12">
         <!-- Ringkasan Saldo (di tengah) -->
         <div class="text-center my-4">
-            <small class="text-muted text-uppercase" style="letter-spacing: 1px; color: var(--tg-theme-hint-color);">Total Saldo</small>
+            <small class="text-uppercase" style="letter-spacing: 1px; color: var(--tg-theme-hint-color);">Total Saldo</small>
             <h1 class="display-4 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h1>
         </div>
 
