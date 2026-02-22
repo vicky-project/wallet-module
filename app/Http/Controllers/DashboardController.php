@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Wallet\Services\DashboardService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Modules\Wallet\Models\Account;
+use Modules\Wallet\Models\Budget;
+use Modules\Wallet\Models\Transaction;
 
 class DashboardController extends Controller
 {
@@ -17,9 +21,57 @@ class DashboardController extends Controller
 	{
 		$user = $request->user();
 
-		$dashboardData = $this->dashboardService->getDashboardData($user);
+		//$dashboardData = $this->dashboardService->getDashboardData($user);
 
-		return view("wallet::index", compact("dashboardData"));
+		//return view("wallet::index", compact("dashboardData"));
+
+		// Total saldo semua akun
+		$totalBalance = Account::where("user_id", $user->id)
+			->where("is_active", true)
+			->sum("balance");
+
+		// Daftar akun aktif
+		$accounts = Account::where("user_id", $user->id)
+			->where("is_active", true)
+			->orderBy("is_default", "desc")
+			->orderBy("name")
+			->get();
+
+		// Transaksi terbaru (10)
+		$recentTransactions = Transaction::with(["category", "account"])
+			->where("user_id", $user->id)
+			->orderBy("transaction_date", "desc")
+			->limit(10)
+			->get();
+
+		// Pengeluaran per kategori bulan ini (untuk progress bar sederhana)
+		$currentMonth = now()->startOfMonth();
+		$expensesByCategory = Transaction::where("user_id", $user->id)
+			->where("type", "expense")
+			->where("transaction_date", ">=", $currentMonth)
+			->select("category_id", DB::raw("SUM(amount) as total"))
+			->groupBy("category_id")
+			->with("category")
+			->get();
+
+		// Anggaran bulan ini (opsional)
+		$budgets = Budget::with("category")
+			->where("user_id", $user->id)
+			->where("year", now()->year)
+			->where("period_type", "monthly")
+			->where("period_value", now()->month)
+			->get();
+
+		return view(
+			"financial.index",
+			compact(
+				"totalBalance",
+				"accounts",
+				"recentTransactions",
+				"expensesByCategory",
+				"budgets"
+			)
+		);
 	}
 
 	public function refresh()
