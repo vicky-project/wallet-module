@@ -63,7 +63,7 @@ class DashboardController extends Controller
 			->get();
 
 		return view(
-			"financial.index",
+			"wallet::index",
 			compact(
 				"totalBalance",
 				"accounts",
