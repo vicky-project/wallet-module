@@ -5,35 +5,22 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <!-- Ringkasan Saldo -->
-        <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, var(--tg-theme-button-color) 0%, rgba(var(--tg-theme-button-color-rgb, 64,167,227), 0.8) 100%);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="opacity-75">Total Saldo</small>
-                        <h2 class="display-6 mb-0 fw-bold">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h2>
-                    </div>
-                    <div class="text-end">
-                        <a href="#" class="btn btn-light btn-sm rounded-pill px-3" onclick="showToast('Tambah transaksi', 'info')">
-                            <i class="bi bi-plus-circle me-1"></i> Transaksi
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <!-- Ringkasan Saldo (di tengah) -->
+        <div class="text-center my-4">
+            <small class="text-muted text-uppercase" style="letter-spacing: 1px; color: var(--tg-theme-hint-color);">Total Saldo</small>
+            <h1 class="display-4 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h1>
         </div>
 
-        <!-- Daftar Akun -->
+        <!-- Daftar Akun (maksimal 5) -->
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">
-                    <i class="bi bi-wallet2 me-2" style="color: var(--tg-theme-button-color);"></i>Akun Saya
-                </h5>
-                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Tambah akun', 'info')">
-                    + Tambah
-                </a>
+                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Akun</h5>
+                @if($accounts->count() > 5)
+                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua akun', 'info')">Lihat semua</a>
+                @endif
             </div>
             <div class="row g-3">
-                @forelse($accounts as $account)
+                @forelse($accounts->take(5) as $account)
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                         <div class="card-body p-3">
@@ -51,7 +38,6 @@
                             <p class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">
                                 Rp {{ number_format($account->balance, 0, ',', '.') }}
                             </p>
-                            <small class="text-muted">{{ $account->account_number ?? 'Tanpa nomor' }}</small>
                         </div>
                     </div>
                 </div>
@@ -66,48 +52,13 @@
             </div>
         </div>
 
-        <!-- Anggaran Bulan Ini (jika ada) -->
-        @if($budgets->count() > 0)
-        <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">
-                    <i class="bi bi-pie-chart me-2" style="color: var(--tg-theme-button-color);"></i>Anggaran {{ now()->format('F Y') }}
-                </h5>
-                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Kelola anggaran', 'info')">Kelola</a>
-            </div>
-            <div class="row g-3">
-                @foreach($budgets as $budget)
-                @php
-                    $percentage = $budget->amount > 0 ? min(round(($budget->spent / $budget->amount) * 100), 100) : 0;
-                    $status = $percentage >= 100 ? 'danger' : ($percentage >= 80 ? 'warning' : 'success');
-                @endphp
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm" style="background-color: var(--tg-theme-secondary-bg-color);">
-                        <div class="card-body p-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span style="color: var(--tg-theme-text-color);">{{ $budget->category->name }}</span>
-                                <span style="color: var(--tg-theme-text-color);">
-                                    Rp {{ number_format($budget->spent, 0, ',', '.') }} / Rp {{ number_format($budget->amount, 0, ',', '.') }}
-                                </span>
-                            </div>
-                            <div class="progress" style="height: 8px; background-color: var(--tg-theme-hint-color);">
-                                <div class="progress-bar bg-{{ $status }}" role="progressbar" style="width: {{ $percentage }}%;" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
-
         <!-- Transaksi Terbaru -->
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">
-                    <i class="bi bi-clock-history me-2" style="color: var(--tg-theme-button-color);"></i>Transaksi Terbaru
-                </h5>
-                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua', 'info')">Lihat semua</a>
+                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
+                @if($recentTransactions->count() > 0)
+                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua transaksi', 'info')">Lihat semua</a>
+                @endif
             </div>
             @forelse($recentTransactions as $transaction)
             <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
@@ -140,12 +91,13 @@
             @endforelse
         </div>
 
-        <!-- Pengeluaran per Kategori Bulan Ini (grafik sederhana) -->
+        <!-- Kategori Pengeluaran Bulan Ini -->
         @if($expensesByCategory->count() > 0)
         <div class="mb-4">
-            <h5 class="fw-bold mb-3" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-bar-chart me-2" style="color: var(--tg-theme-button-color);"></i>Pengeluaran Bulan Ini
-            </h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Kategori Pengeluaran</h5>
+                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua kategori', 'info')">Lihat semua</a>
+            </div>
             @foreach($expensesByCategory as $expense)
             @php
                 $totalExpense = $expensesByCategory->sum('total');
@@ -170,15 +122,29 @@
         @endif
     </div>
 </div>
+
+<!-- Floating Action Button untuk Tambah Transaksi -->
+<button class="btn rounded-circle shadow-lg position-fixed" style="bottom: 20px; right: 20px; width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; z-index: 1000;" onclick="showToast('Tambah transaksi', 'info')">
+    <i class="bi bi-plus-lg fs-4"></i>
+</button>
 @endsection
+
+@push('styles')
+<style>
+    /* Tambahkan padding-bottom agar konten tidak tertutup FAB */
+    .content {
+        padding-bottom: 80px;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
-    // Fungsi showToast sudah ada di layout, tapi kita pastikan
+    // Pastikan showToast tersedia (fallback jika belum)
     if (typeof showToast !== 'function') {
-        function showToast(message, type) {
+        window.showToast = function(message, type) {
             alert(message);
-        }
+        };
     }
 </script>
 @endpush
