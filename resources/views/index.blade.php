@@ -16,7 +16,7 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h5 class="fw-bold mb-0" style="color: var(--tg-theme-section-header-text-color);">Akun</h5>
               @if($dashboardData['accounts']->count() > 5)
-                <a href="#" class="small" style="color: var(--tg-theme-link-color);" onclick="showToast('Lihat semua akun', 'info')">Lihat semua</a>
+                <a href="{{ route('apps.accounts.index') }}" class="small" style="color: var(--tg-theme-link-color);" onclick="showToast('Lihat semua akun', 'info')">Lihat semua</a>
               @endif
             </div>
             @if($dashboardData['accounts']->count() > 0)
@@ -48,9 +48,9 @@
               <div class="text-center py-4">
                 <i class="bi bi-wallet2 display-6" style="color: var(--tg-theme-hint-color);"></i>
                 <p class="mt-2" style="color: var(--tg-theme-hint-color);">Belum ada akun. Tambahkan akun baru.</p>
-                <button class="btn btn-sm mt-2" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;" onclick="showToast('Tambah akun');">
+                <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm mt-2" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;">
                   <i class="bi bi-plus-circle me-1"></i> Tambah akun
-                </button>
+                </a>
               </div>
             @endif
         </div>

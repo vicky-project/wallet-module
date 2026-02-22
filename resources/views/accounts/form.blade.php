@@ -47,7 +47,7 @@
               <select id="accountType" name="type" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Tipe</option>
                 @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
-                  <option value="{{ $type->value ?? $type }}" data-icon="{{ $type->icon() }}" data-color="{{ $type->color() ?? '' }}" data-label="{{ $type->label() }}" data-bank="{{ in_array($type->value, ['bank', 'credit_card', 'ewallet']) 'yes' : 'no'}}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value)>
+                  <option value="{{ $type->value ?? $type }}" data-icon="{{ $type->icon() }}" data-color="{{ $type->color() ?? '' }}" data-label="{{ $type->label() }}" data-bank="{{ in_array($type->value, ['bank', 'credit_card', 'ewallet']) ? 'yes' : 'no' }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value)>
                     {{ ucfirst($type->label() ?? $type) }}
                   </option>
                 @endforeach
