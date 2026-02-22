@@ -31,7 +31,7 @@
             <!-- Nama Akun -->
             <div class="col-md-6">
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-tag me-1" style="color: var(--tg-theme-accent-text-color);"></i>Nama Akun
+                <i class="bi bi-tag me-2" style="color: var(--tg-theme-accent-text-color);"></i>Nama Akun <span class="text-danger">*</span>
               </label>
               <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $account->name ?? '') }}" placeholder="Contoh: Kas Harian" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               @error('name')
@@ -42,7 +42,7 @@
             <!-- Tipe Akun -->
             <div class="col-md-6">
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-grid me-1" style="color: var(--tg-theme-accent-text-color);"></i>Tipe Akun
+                <i class="bi bi-grid me-2" style="color: var(--tg-theme-accent-text-color);"></i>Tipe Akun <span class="text-danger">*</span>
               </label>
               <select id="accountType" name="type" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Tipe</option>
@@ -61,7 +61,7 @@
             @if(!isset($account))
               <div class="col-md-6">
                 <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                  <i class="bi bi-cash me-1" style="color: var(--tg-theme-accent-text-color);"></i>Saldo Awal
+                  <i class="bi bi-cash me-2" style="color: var(--tg-theme-accent-text-color);"></i>Saldo Awal
                 </label>
                 <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" name="initial_balance" value="{{ old('initial_balance', 0) }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 @error('initial_balance')
@@ -73,7 +73,7 @@
             <!-- Mata Uang -->
             <div class="col-md-6">
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-currency-exchange me-1" style="color: var(--tg-theme-accent-text-color);"></i>Mata Uang
+                <i class="bi bi-currency-exchange me-2" style="color: var(--tg-theme-accent-text-color);"></i>Mata Uang
               </label>
               <select name="currency" class="form-select" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 @foreach(\Modules\Wallet\Helpers\Helper::listCurrencies() as $name => $currency)
@@ -88,7 +88,7 @@
               <!-- Nomor Rekening -->
               <div class="col-md-6">
                 <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                  <i class="bi bi-credit-card me-1" style="color: var(--tg-theme-accent-text-color);"></i>Nomor Rekening (opsional)
+                  <i class="bi bi-credit-card me-2" style="color: var(--tg-theme-accent-text-color);"></i>Nomor Rekening (opsional)
                 </label>
                 <input type="text" class="form-control" name="account_number" value="{{ old('account_number', $account->account_number ?? '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               </div>
@@ -96,7 +96,7 @@
               <!-- Nama Bank -->
               <div class="col-md-6">
                 <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                  <i class="bi bi-bank me-1" style="color: var(--tg-theme-accent-text-color);"></i>Nama Bank (opsional)
+                  <i class="bi bi-bank me-2" style="color: var(--tg-theme-accent-text-color);"></i>Nama Bank (opsional)
                 </label>
                 <input type="text" class="form-control" name="bank_name" value="{{ old('bank_name', $account->bank_name ?? '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               </div>
@@ -105,7 +105,7 @@
             <!-- Warna -->
             <div class="col-md-6">
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-palette me-1" style="color: var(--tg-theme-accent-text-color);"></i>Warna
+                <i class="bi bi-palette me-2" style="color: var(--tg-theme-accent-text-color);"></i>Warna
               </label>
               <input type="color" id="colorPicker" class="form-control form-control-color" name="color" value="{{ old('color', $account->color ?? '#40a7e3') }}" style="width: 100%; height: 45px;">
             </div>
@@ -131,7 +131,7 @@
             <!-- Catatan -->
             <div class="col-12">
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-pencil me-1" style="color: var(--tg-theme-accent-text-color);"></i>Catatan (opsional)
+                <i class="bi bi-pencil me-2" style="color: var(--tg-theme-accent-text-color);"></i>Catatan (opsional)
               </label>
               <textarea class="form-control" name="notes" rows="3" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">{{ old('notes', $account->notes ?? '') }}</textarea>
             </div>
@@ -140,9 +140,9 @@
           <!-- Tombol Aksi -->
           <div class="row mt-5">
             <div class="col-12 d-flex justify-content-between">
-              <a href="{{ route('apps.financial') }}" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
+              <button type="button" onclick="goBack();" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
                 <i class="bi bi-arrow-left me-2"></i>Batal
-              </a>
+              </button>
               <button type="submit" class="btn px-4 py-2" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
                 <i class="bi bi-check-circle me-2"></i>{{ isset($account) ? 'Perbarui' : 'Simpan' }}
               </button>
