@@ -140,7 +140,7 @@
           <!-- Tombol Aksi -->
           <div class="row mt-5">
             <div class="col-12 d-flex justify-content-between">
-              <a href="{{ route('financial.index') }}" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
+              <a href="{{ route('apps.financial') }}" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
                 <i class="bi bi-arrow-left me-2"></i>Batal
               </a>
               <button type="submit" class="btn px-4 py-2" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
