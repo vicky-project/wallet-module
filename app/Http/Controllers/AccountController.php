@@ -53,7 +53,7 @@ class AccountController extends BaseController
 	 */
 	public function create()
 	{
-		return view("wallet::accounts.create");
+		return view("wallet::accounts.form");
 	}
 
 	/**
