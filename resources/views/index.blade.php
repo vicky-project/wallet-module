@@ -7,8 +7,8 @@
   <div class="col-12">
         <!-- Ringkasan Saldo (di tengah) -->
         <div class="text-center mt-2 mb-4">
-            <small class="text-uppercase" style="letter-spacing: 1px; color: var(--tg-theme-subtitle-text-color);">Total Saldo</small>
-            <h1 class="display-4 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h1>
+          <small class="text-uppercase" style="letter-spacing: 1px; color: var(--tg-theme-subtitle-text-color);">Total Saldo</small>
+          <h1 class="display-1 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h1>
         </div>
 
         <!-- Daftar Akun (maksimal 5) -->
