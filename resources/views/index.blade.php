@@ -8,20 +8,20 @@
         <!-- Ringkasan Saldo (di tengah) -->
         <div class="text-center mt-2 mb-4">
           <small class="text-uppercase" style="letter-spacing: 1px; color: var(--tg-theme-subtitle-text-color);">Total Saldo</small>
-          <h1 class="display-1 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h1>
+          <h1 class="display-1 fw-bold currency" style="color: var(--tg-theme-text-color);">Rp {{ $dashboardData['total_balance'] }}</h1>
         </div>
 
         <!-- Daftar Akun (maksimal 5) -->
         <div class="section-card mb-4" style="background-color: var(--tg-theme-section-bg-color);border-radius: 12px;padding: 16px;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-section-header-text-color);">Akun</h5>
-                @if($accounts->count() > 5)
+              <h5 class="fw-bold mb-0" style="color: var(--tg-theme-section-header-text-color);">Akun</h5>
+              @if($dashboardData['accounts']->count() > 5)
                 <a href="#" class="small" style="color: var(--tg-theme-link-color);" onclick="showToast('Lihat semua akun', 'info')">Lihat semua</a>
-                @endif
+              @endif
             </div>
-            @if($accounts->count() > 0)
+            @if($dashboardData['accounts']->count() > 0)
               <div class="row g-3">
-                @foreach($accounts->take(5) as $account)
+                @foreach($dashboardData['accounts']->take(5) as $account)
                 <div class="col-6 col-md-4 col-lg-3">
                   <div class="card border-0 h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
@@ -59,11 +59,11 @@
         <div class="section-card mb-4" style="background-color: var(--tg-theme-section-bg-color);border-radius: 12px;padding: 16px;">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
-            @if($recentTransactions->count() > 0)
+            @if(count($dashboardData['recent_transactions']) > 0)
               <a href="#" class="small" style="color: var(--tg-theme-link-color);" onclick="showToast('Lihat semua transaksi', 'info')">Lihat semua</a>
             @endif
           </div>
-          @forelse($recentTransactions as $transaction)
+          @forelse($dashboardData['recent_transactions'] as $transaction)
             <div class="card border-0 mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
               <div class="card-body p-3">
                 <div class="d-flex align-items-center">
@@ -96,36 +96,6 @@
             </div>
           @endforelse
         </div>
-
-        <!-- Kategori Pengeluaran Bulan Ini -->
-        @if($expensesByCategory->count() > 0)
-        <div class="section-card mb-4" style="background-color: var(--tg-theme-section-bg-color);border-radius: 12px;padding: 16px;">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0" style="color: var(--tg-theme-section-header-text-color);">Kategori Pengeluaran</h5>
-            <a href="#" class="small" style="color: var(--tg-theme-link-color);" onclick="showToast('Lihat semua kategori', 'info')">Lihat semua</a>
-          </div>
-          @foreach($expensesByCategory as $expense)
-            @php
-              $totalExpense = $expensesByCategory->sum('total');
-              $percentage = $totalExpense > 0 ? round(($expense->total / $totalExpense) * 100) : 0;
-            @endphp
-            <div class="d-flex align-items-center mb-2">
-              <div class="me-2" style="width: 30px; color: {{ $expense->category->color ?? '#6c757d' }};">
-                <i class="bi {{ $expense->category->icon ?? 'bi-tag' }}"></i>
-              </div>
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between small mb-1">
-                  <span style="color: var(--tg-theme-text-color);">{{ $expense->category->name }}</span>
-                  <span style="color: var(--tg-theme-subtitle-text-color);">{{ $percentage }}%</span>
-                </div>
-                <div class="progress" style="height: 6px; background-color: var(--tg-theme-hint-color);">
-                  <div class="progress-bar" role="progressbar" style="width: {{ $percentage }}%; background-color: {{ $expense->category->color ?? 'var(--tg-theme-accent-text-color)' }};" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-          @endforeach
-        </div>
-        @endif
   </div>
 </div>
 
@@ -149,11 +119,25 @@
 
 @push('scripts')
 <script>
-    // Pastikan showToast tersedia (fallback jika belum)
-    if (typeof showToast !== 'function') {
-        window.showToast = function(message, type) {
-            alert(message);
-        };
-    }
+  // Pastikan showToast tersedia (fallback jika belum)
+  if (typeof showToast !== 'function') {
+    window.showToast = function(message, type) {
+      alert(message);
+    };
+  }
+    
+  document.addEventListener('DOMContentLoaded', function() {
+      // Format semua currency
+    document.querySelectorAll('.currency').forEach(element => {
+        const value = element.textContent;
+        if (!isNaN(value)) {
+            element.textContent = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
+        }
+    });
+  });
 </script>
 @endpush
