@@ -21,7 +21,8 @@ class DashboardController extends Controller
 	{
 		$user = $request->user();
 
-		//$dashboardData = $this->dashboardService->getDashboardData($user);
+		$dashboardData = $this->dashboardService->getDashboardData($user);
+		dd($dashboardData);
 
 		//return view("wallet::index", compact("dashboardData"));
 
