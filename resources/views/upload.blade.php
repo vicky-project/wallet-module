@@ -62,7 +62,7 @@
                 File Transaksi
               </label>
               <input type="file" class="form-control @error('file') is-invalid @enderror" name="file" accept=".csv,.txt,.pdf,.xls,.xlsx" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
-              <small class="text-muted" style="color: var(--tg-theme-hint-color);">
+              <small style="color: var(--tg-theme-hint-color);">
                 Format yang didukung: CSV, TXT, PDF, Excel (.xls, .xlsx)
               </small>
               @error('file')
@@ -73,11 +73,11 @@
             <!-- Password (opsional) -->
             <div class="col-md-6">
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                                <i class="bi bi-lock me-1" style="color: var(--tg-theme-accent-text-color);"></i>
-                                Password (jika file diproteksi)
-                            </label>
+                <i class="bi bi-lock me-2" style="color: var(--tg-theme-accent-text-color);"></i>
+                Password (jika file diproteksi)
+              </label>
               <input type="password" class="form-control" name="password" value="{{ old('password') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
-              <small class="text-muted" style="color: var(--tg-theme-hint-color);">Kosongkan jika tidak ada password</small>
+              <small style="color: var(--tg-theme-hint-color);">Kosongkan jika tidak ada password</small>
             </div>
 
             <!-- Opsi Otomatis -->
