@@ -2,8 +2,9 @@
 
 @section('title', isset($transaction) ? 'Edit Transaksi' : 'Tambah Transaksi')
 
-@use('\Modules\Wallet\Enums\TransactionType')
+@use('\Modules\Wallet\Enums\PaymentMethod')
 @use('\Modules\Wallet\Enums\RecurringFreq')
+@use('\Modules\Wallet\Enums\TransactionType')
 
 @section('content')
 <div class="row justify-content-center">
@@ -133,7 +134,14 @@
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
                 <i class="bi bi-credit-card me-2" style="color: var(--tg-theme-accent-text-color);"></i>Metode Pembayaran (opsional)
               </label>
-              <input type="text" class="form-control" name="payment_method" value="{{ old('payment_method', $transaction->payment_method ?? '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+              <select name="payment_method" id="payment_method" class="form-select @error('payment_method') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                <option value="">Pilih Metode Pembayaran</option>
+                @foreach(PaymentMethod::cases() as $method)
+                  <option value="{{ $method->value }}" @selected(old('payment_method', $transaction->payment_method ?? '') == $method->value)>
+                    {{ $method->name }}
+                  </option>
+                @endforeach
+              </select>
             </div>
 
             <!-- Nomor Referensi -->
