@@ -62,7 +62,7 @@
                 File Transaksi
               </label>
               <input type="file" class="form-control @error('file') is-invalid @enderror" name="file" accept=".csv,.txt,.pdf,.xls,.xlsx" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
-              <small class="text-muted" style="color: var(--tg-theme-accent-text-color);">
+              <small style="color: var(--tg-theme-accent-text-color);">
                 Format yang didukung: CSV, TXT, PDF, Excel (.xls, .xlsx)
               </small>
               @error('file')
