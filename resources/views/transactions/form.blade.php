@@ -16,7 +16,7 @@
         </h5>
       </div>
       <div class="card-body p-4">
-        <form method="POST" action="{{ isset($transaction) ? route('financial.transaction.update', $transaction->id) : route('financial.transaction.store') }}">
+        <form method="POST" action="{{ isset($transaction) ? route('apps.transactions.update', $transaction) : route('apps.transactions.store') }}">
           @csrf
           @if(isset($transaction))
             @method('PUT')
