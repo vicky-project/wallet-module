@@ -84,7 +84,7 @@
             <div class="col-12">
               <div class="d-flex gap-4">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="auto_create_categories" value="1" id="autoCreateCategories" @checked(old('auto_create_categories'))>
+                  <input class="form-check-input" type="checkbox" name="auto_create_categories" value="1" id="autoCreateCategories" @checked(old('auto_create_categories', true))>
                   <label class="form-check-label" for="autoCreateCategories" style="color: var(--tg-theme-text-color);">
                     Buat kategori otomatis
                   </label>
