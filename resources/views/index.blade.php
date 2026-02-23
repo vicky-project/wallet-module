@@ -106,7 +106,7 @@
       <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.transactions.create') }}'" title="Tambah Transaksi">
         <i class="bi bi-plus-lg"></i>
       </button>
-      <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.upload') }}'" title="Upload Transaksi">
+      <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.uploads') }}'" title="Upload Transaksi">
         <i class="bi bi-upload"></i>
       </button>
       <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.reports') }}'" title="Laporan Transaksi">
