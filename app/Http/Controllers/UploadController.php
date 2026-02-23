@@ -24,8 +24,9 @@ class UploadController extends Controller
 		$accounts = Account::forUser($user->id)
 			->active()
 			->get();
+		$appsOptions = ["firefly", "vickyserver", "e-statement"];
 
-		return view("wallet::upload", compact("accounts"));
+		return view("wallet::upload", compact("accounts", "appsOptions"));
 	}
 
 	public function upload(UploadRequest $request)
@@ -44,7 +45,7 @@ class UploadController extends Controller
 			$factory = ImportServiceFactory::createReader(
 				$fileType,
 				$filepath,
-				$password
+				$password,
 			);
 			$data = $factory->read();
 
@@ -52,7 +53,7 @@ class UploadController extends Controller
 				$appsName,
 				$data,
 				$account,
-				$validated
+				$validated,
 			);
 			$result = $importer->load();
 

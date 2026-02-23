@@ -90,29 +90,66 @@
             <div class="text-center py-4">
               <i class="bi bi-receipt display-6" style="color: var(--tg-theme-hint-color);"></i>
               <p class="mt-2" style="color: var(--tg-theme-hint-color);">Belum ada transaksi.</p>
-              <button class="btn btn-sm mt-2" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;" onclick="showToast('Show transaksi');">
+              <a href="{{ route('apps.transactions.create') }}" class="btn btn-sm mt-2" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;" role="button">
                 <i class="bi bi-plus-circle me-1"></i> Tambah Transaksi
-              </button>
+              </a>
             </div>
           @endforelse
         </div>
   </div>
 </div>
 
-<!-- Floating Action Button untuk Tambah Transaksi -->
-<button class="btn rounded-circle shadow-lg position-fixed" style="bottom: 20px; right: 20px; width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; z-index: 1000;" onclick="showToast('Tambah transaksi', 'info')">
-    <i class="bi bi-plus-lg fs-4"></i>
-</button>
+<!-- Multi Action Floating Button -->
+<div class="fab-container position-fixed" style="bottom: 20px;right: 20px;z-index: 1000;">
+  <div class="fab-options" id="fabOptions" style="display: none; margin-bottom: 10px;">
+    <div class="d-flex flex-column align-items-end gap-2">
+      <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.transactions.create') }}'" title="Tambah Transaksi">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+      <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.uploads') }}'" title="Upload Transaksi">
+        <i class="bi bi-upload"></i>
+      </button>
+      <button class="btn rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="window.location.href='{{ route('apps.reports') }}'" title="Laporan Transaksi">
+        <i class="bi bi-file-earmark-bar-graph"></i>
+      </button>
+    </div>
+  </div>
+  <button class="btn rounded-circle shadow-lg d-flex align-items-center justify-content-center" id="fabMain" style="width: 56px;height: 56px;background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;">
+    <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
+  </button>
+</div>
 @endsection
 
 @push('styles')
 <style>
     /* Tambahkan padding-bottom agar konten tidak tertutup FAB */
     .content {
-        padding-bottom: 80px;
+        padding-bottom: 100px;
     }
     .section-card {
       transition: background-color 0.2s;
+    }
+    .fab-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .fab-options {
+      transition: all 0.2s ease;
+    }
+    .fab-options .btn {
+      animation: slideIn 0.2s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 </style>
 @endpush
@@ -137,6 +174,30 @@
                 minimumFractionDigits: 0
             }).format(value);
         }
+    });
+    
+    const fabMain = document.getElementById('fabMain');
+    const fabOptions = document.getElementById('fabOptions');
+    const fabIcon = document.getElementById('fabIcon');
+    let isOpen = false;
+    
+    fabMain.addEventListener('click', function() {
+      isOpen = !isOpen;
+      if(isOpen) {
+        fabOptions.style.display = 'block';
+        fabIcon.className = 'bi bi-x-lg fs-4';
+      } else {
+        fabOptions.style.display = 'none';
+        fabIcon.className = 'bi bi-plus-lg fs-4';
+      }
+    });
+    
+    document.addEventListener('click', function(event) {
+      if(!fabMain.contains(event.target) && !fabOptions.contains(event.target)) {
+        isOpen = false;
+        fabOptions.style.display = 'none';
+        fabIcon.className = 'bi bi-plus-lg fs-4';
+      }
     });
   });
 </script>

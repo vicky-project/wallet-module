@@ -28,7 +28,7 @@ class TransactionController extends Controller
 		TransactionService $transactionService,
 		AccountRepository $accountRepository,
 		CategoryRepository $categoryRepository,
-		TransactionRepository $transactionRepository
+		TransactionRepository $transactionRepository,
 	) {
 		$this->transactionService = $transactionService;
 		$this->accountRepository = $accountRepository;
@@ -88,7 +88,8 @@ class TransactionController extends Controller
 		$accounts = $this->accountRepository->getUserAccounts($user, [
 			"is_active" => true,
 		]);
-		$categories = $this->categoryRepository->getUserCategories();
+
+		$categories = $this->categoryRepository->getUserCategories($user);
 
 		// Filter categories by type if specified
 		$type = $request->get("type", TransactionType::EXPENSE->value);
@@ -96,18 +97,10 @@ class TransactionController extends Controller
 			$categories = $categories->where("type", $type);
 		}
 
-		// Get today's transaction count
-		$todayTransactions = $this->transactionRepository
-			->query()
-			->where("user_id", $user->id)
-			->whereDate("transaction_date", today())
-			->count();
-
 		return view("wallet::transactions.form", [
 			"transaction" => null,
 			"accounts" => $accounts,
 			"categories" => $categories,
-			"todayTransactions" => $todayTransactions,
 		]);
 	}
 
@@ -190,7 +183,7 @@ class TransactionController extends Controller
 		$result = $this->transactionService->updateTransaction(
 			$uuid,
 			$validated,
-			$user
+			$user,
 		);
 
 		if ($result["success"]) {
@@ -214,7 +207,7 @@ class TransactionController extends Controller
 
 		$result = $this->transactionService->deleteTransaction(
 			$transaction->uuid,
-			$user
+			$user,
 		);
 
 		if ($result["success"]) {
@@ -244,7 +237,7 @@ class TransactionController extends Controller
 
 		$result = $this->transactionService->getPaginatedTransactionsDeleted(
 			$filters,
-			10
+			10,
 		);
 
 		if (!$result["success"]) {
@@ -279,7 +272,7 @@ class TransactionController extends Controller
 		$budget = $budgetRepo->getActiveBudgetForDate(
 			$category,
 			$user->id,
-			\Carbon\Carbon::parse($request->date)
+			\Carbon\Carbon::parse($request->date),
 		);
 
 		if ($budget) {
@@ -287,7 +280,7 @@ class TransactionController extends Controller
 			$currentSpent = $budget->spent;
 			$newTotal = $currentSpent->plus(
 				(int) $request->amount,
-				RoundingMode::DOWN
+				RoundingMode::DOWN,
 			);
 
 			return response()->json([
@@ -325,7 +318,7 @@ class TransactionController extends Controller
 
 			$result = $this->transactionService->transactionRepository->getForExport(
 				$user->id,
-				$id
+				$id,
 			);
 
 			if ($result->isEmpty()) {
@@ -416,7 +409,7 @@ class TransactionController extends Controller
 			$result = $this->transactionService->importTransactions(
 				$data,
 				$user,
-				$extension
+				$extension,
 			);
 
 			if ($result["success"]) {
@@ -489,7 +482,7 @@ class TransactionController extends Controller
 						"success" => false,
 						"message" => $result["message"],
 					],
-					400
+					400,
 				);
 			}
 		} catch (\Exception $e) {
@@ -503,7 +496,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				500,
 			);
 		}
 	}
@@ -532,7 +525,7 @@ class TransactionController extends Controller
 						"success" => false,
 						"message" => $result["message"],
 					],
-					400
+					400,
 				);
 			}
 		} catch (\Exception $e) {
@@ -546,7 +539,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				500,
 			);
 		}
 	}
@@ -574,7 +567,7 @@ class TransactionController extends Controller
 						"success" => false,
 						"message" => $result["message"],
 					],
-					400
+					400,
 				);
 			}
 		} catch (\Exception $e) {
@@ -588,7 +581,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				500,
 			);
 		}
 	}
@@ -611,7 +604,7 @@ class TransactionController extends Controller
 		$result = $this->transactionService->bulkUpdate(
 			$request->ids,
 			$data,
-			$user
+			$user,
 		);
 
 		if ($result["success"]) {
@@ -626,7 +619,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $result["message"],
 				],
-				400
+				400,
 			);
 		}
 	}
@@ -650,7 +643,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $result["message"],
 				],
-				400
+				400,
 			);
 		}
 	}
@@ -670,7 +663,7 @@ class TransactionController extends Controller
 		$result = $this->transactionService->getDailySummary(
 			$user,
 			$request->start_date,
-			$request->end_date
+			$request->end_date,
 		);
 
 		if ($result["success"]) {
@@ -681,7 +674,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $result["message"],
 				],
-				400
+				400,
 			);
 		}
 	}
@@ -703,7 +696,7 @@ class TransactionController extends Controller
 					"success" => false,
 					"message" => $result["message"],
 				],
-				400
+				400,
 			);
 		}
 	}
@@ -713,7 +706,7 @@ class TransactionController extends Controller
 	 */
 	private function validateTransaction(
 		Request $request,
-		bool $isUpdate = false
+		bool $isUpdate = false,
 	): array {
 		$rules = [
 			"account_id" => "required|exists:accounts,id",
