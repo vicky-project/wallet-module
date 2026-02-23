@@ -67,7 +67,7 @@ class AccountController extends BaseController
 			$account = $this->service->createAccount($user, $request->validated());
 
 			return redirect()
-				->route("apps.accounts.index")
+				->route("apps.financial")
 				->with("success", "Akun berhasil dibuat");
 		} catch (\Exception $e) {
 			return redirect()
@@ -104,7 +104,7 @@ class AccountController extends BaseController
 	public function edit(Account $account)
 	{
 		try {
-			return view("wallet::accounts.edit", compact("account"));
+			return view("wallet::accounts.form", compact("account"));
 		} catch (\Exception $e) {
 			return redirect()
 				->back()

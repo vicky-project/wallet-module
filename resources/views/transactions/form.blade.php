@@ -1,816 +1,331 @@
-@extends('wallet::layouts.app')
+@extends('layouts.app')
 
-@section('title', $transaction ? 'Edit Transaksi' : 'Tambah Transaksi Baru')
+@section('title', isset($transaction) ? 'Edit Transaksi' : 'Tambah Transaksi')
 
-@use('Modules\Wallet\Enums\TransactionType')
-@use('Modules\Wallet\Enums\PaymentMethod')
-@use('Modules\Wallet\Enums\RecurringFreq')
-
-@push('styles')
-<style>
-    .account-option {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 12px;
-        border-radius: 6px;
-        margin-bottom: 5px;
-        transition: background-color 0.2s;
-    }
-    
-    .account-option:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    .account-option.selected {
-        background-color: rgba(var(--primary-color-rgb), 0.1);
-        border-left: 3px solid var(--primary-color);
-    }
-    
-    .account-balance {
-        font-size: 0.85rem;
-        color: #666;
-    }
-    
-    .form-section {
-        background-color: rgba(0, 0, 0, 0.02);
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .form-section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: var(--primary-color);
-        border-bottom: 2px solid var(--primary-color);
-        padding-bottom: 5px;
-    }
-    
-    .transaction-type-badge {
-        font-size: 0.9rem;
-        padding: 6px 12px;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: all 0.3s;
-        border: 2px solid transparent;
-    }
-    
-    .transaction-type-badge.active {
-        border-color: currentColor;
-        transform: scale(1.05);
-    }
-    
-    .category-icon-preview {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 10px;
-        font-size: 1.2rem;
-    }
-</style>
-@endpush
+@use('\Modules\Wallet\Enums\TransactionType')
+@use('\Modules\Wallet\Enums\RecurringFreq')
 
 @section('content')
 <div class="row justify-content-center">
-  <div class="col-lg-8">
-    <div class="card border-0 shadow-sm">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm" style="background-color: var(--tg-theme-section-bg-color);">
+      <div class="card-header py-3" style="background-color: transparent; border-bottom: 1px solid var(--tg-theme-section-separator-color);">
+        <h5 class="card-title mb-0 fw-bold" style="color: var(--tg-theme-section-header-text-color);">
+          <i class="bi bi-cash-stack me-2" style="color: var(--tg-theme-accent-text-color);"></i>
+          {{ isset($transaction) ? 'Edit Transaksi' : 'Tambah Transaksi Baru' }}
+        </h5>
+      </div>
       <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h2 class="page-title">{{ $transaction ? 'Edit Transaksi' : 'Tambah Transaksi Baru' }}</h2>
-            <p class="text-muted mb-0">Isi form berikut untuk {{ $transaction ? 'mengedit' : 'menambahkan' }} transaksi</p>
-          </div>
-          <div>
-            <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-secondary">
-              <i class="bi bi-arrow-left me-2"></i> Kembali
-            </a>
-          </div>
-        </div>
-                
-        @if($transaction)
-          <div class="alert alert-info mb-4">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-info-circle me-3 fs-4"></i>
-              <div>
-                <strong>ID Transaksi:</strong> {{ $transaction->uuid }}<br>
-                <strong>Dibuat:</strong> {{ $transaction->created_at->format('d/m/Y H:i') }}
-                @if($transaction->updated_at != $transaction->created_at)
-                  <br><strong>Terakhir diubah:</strong> {{ $transaction->updated_at->format('d/m/Y H:i') }}
-                @endif
-              </div>
-            </div>
-          </div>
-        @endif
-                
-        <form method="POST" action="{{ $transaction ? route('apps.transactions.update', $transaction->uuid) : route('apps.transactions.store') }}" id="transactionForm">
+        <form method="POST" action="{{ isset($transaction) ? route('financial.transaction.update', $transaction->id) : route('financial.transaction.store') }}">
           @csrf
-          @if($transaction) @method('PUT') @endif
-                    
-          <!-- Transaction Type -->
-          <div class="form-section">
-            <h5 class="form-section-title">Jenis Transaksi</h5>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="d-flex flex-wrap gap-3">
-                  @foreach(TransactionType::cases() as $type)
-                    <div class="transaction-type-badge bg-{{ $type->color() }} bg-opacity-10 text-{{ $type->color() }} {{ (!$transaction && request('type') == $type->value) || ($transaction && $transaction->type == $type) ? 'active' : '' }}" data-type="{{ $type->value }}">
-                      <i class="bi {{ $type->icon() }} me-2"></i>
-                      {{ $type->name }}
-                    </div>
-                  @endforeach
-                </div>
-                <input type="hidden" name="type" id="type" value="{{ $transaction ? $transaction->type : (request('type') ?? TransactionType::EXPENSE->value) }}">
-                @error('type')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-              </div>
+          @if(isset($transaction))
+            @method('PUT')
+          @endif
+
+          <div class="row g-4">
+            <!-- Tipe Transaksi -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-arrow-left-right me-2" style="color: var(--tg-theme-accent-text-color);"></i>Tipe Transaksi
+              </label>
+              <select name="type" id="transactionType" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                <option value="">Pilih Tipe</option>
+                @foreach(TransactionType::cases() as $type)
+                  <option value="{{ $type->value }}" @selected(old('type', $transaction->type ?? '') == $type->value)>
+                    {{ $type->label() }}
+                  </option>
+                @endforeach
+              </select>
+              @error('type')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
-          </div>
-                    
-          <!-- Basic Information -->
-          <div class="form-section">
-            <h5 class="form-section-title">Informasi Dasar</h5>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="description" class="form-label">Keterangan *</label>
-                <input type="text" name="description" id="description" class="form-control @error('description') is-invalid @enderror" value="{{ old('description', $transaction->description ?? '') }}" placeholder="Deskripsi transaksi..." required>
-                @error('description')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3">
-                <label for="transaction_date" class="form-label">Tanggal & Waktu *</label>
-                <input type="datetime-local" name="transaction_date" id="transaction_date" class="form-control @error('transaction_date') is-invalid @enderror" value="{{ old('transaction_date', $transaction ? $transaction->transaction_date->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" required>
-                @error('transaction_date')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3">
-                <label for="amount" class="form-label">Jumlah (Rp) *</label>
-                <div class="input-group">
-                  <span class="input-group-text" id="account-currency">Rp</span>
-                  <input type="number" name="amount" id="amount" class="form-control @error('amount') is-invalid @enderror" value="{{ old('amount', $transaction ? $transaction->amount->getAmount()->toInt() : '') }}" min="1" required>
-                </div>
-                <small class="text-muted" id="amountHelp"></small>
-                @error('amount')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3">
-                <label for="payment_method" class="form-label">Metode Pembayaran</label>
-                <select name="payment_method" id="payment_method" class="form-select @error('payment_method') is-invalid @enderror">
-                  <option value="">Pilih Metode</option>
-                  @foreach(PaymentMethod::cases() as $method)
-                    <option value="{{ $method->value }}" @selected(old('payment_method', $transaction->payment_method ?? '') == $method->value)>
-                      {{ $method->name }}
-                    </option>
-                  @endforeach
-                </select>
-                @error('payment_method')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
+
+            <!-- Akun -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-wallet2 me-2" style="color: var(--tg-theme-accent-text-color);"></i>Akun
+              </label>
+              <select name="account_id" class="form-select @error('account_id') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                <option value="">Pilih Akun</option>
+                @foreach($accounts as $account)
+                  <option value="{{ $account->id }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
+                    {{ $account->name }} (Rp {{ number_format($account->balance, 0, ',', '.') }})
+                  </option>
+                @endforeach
+              </select>
+              @error('account_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
             </div>
-          </div>
-                    
-          <!-- Accounts -->
-          <div class="form-section">
-            <h5 class="form-section-title">Akun</h5>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="account_id" class="form-label" id="accountLabel">
-                  {{ ($transaction && $transaction->type == TransactionType::TRANSFER) || request('type') == TransactionType::TRANSFER->value ? 'Dari Akun *' : 'Akun *' }}
+
+            <!-- Akun Tujuan (Transfer) - disembunyikan default -->
+            <div class="col-md-6" id="toAccountField" style="display: none;">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-arrow-right-circle me-2" style="color: var(--tg-theme-accent-text-color);"></i>Akun Tujuan
+              </label>
+              <select name="to_account_id" class="form-select @error('to_account_id') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                <option value="">Pilih Akun Tujuan</option>
+                @foreach($accounts as $account)
+                  <option value="{{ $account->id }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
+                    {{ $account->name }}
+                  </option>
+                @endforeach
+              </select>
+              @error('to_account_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <!-- Kategori -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-tags me-2" style="color: var(--tg-theme-accent-text-color);"></i>Kategori
+              </label>
+              <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                <option value="">Pilih Kategori</option>
+                @foreach($categories as $category)
+                  <option value="{{ $category->id }}" @selected(old('category_id', $transaction->category_id ?? '') == $category->id)>
+                    {{ $category->name }}
+                  </option>
+                @endforeach
+              </select>
+              @error('category_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <!-- Jumlah -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-cash me-2" style="color: var(--tg-theme-accent-text-color);"></i>Jumlah (Rp)
+              </label>
+              <input type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $transaction->amount ?? '') }}" min="0" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+              @error('amount')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <!-- Deskripsi -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-card-text me-2" style="color: var(--tg-theme-accent-text-color);"></i>Deskripsi
+              </label>
+              <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description', $transaction->description ?? '') }}" maxlength="255" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+              @error('description')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <!-- Tanggal Transaksi -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-calendar me-2" style="color: var(--tg-theme-accent-text-color);"></i>Tanggal Transaksi
+              </label>
+              <input type="datetime-local" class="form-control @error('transaction_date') is-invalid @enderror" name="transaction_date" value="{{ old('transaction_date', isset($transaction) ? \Carbon\Carbon::parse($transaction->transaction_date)->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+              @error('transaction_date')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-credit-card me-2" style="color: var(--tg-theme-accent-text-color);"></i>Metode Pembayaran (opsional)
+              </label>
+              <input type="text" class="form-control" name="payment_method" value="{{ old('payment_method', $transaction->payment_method ?? '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+            </div>
+
+            <!-- Nomor Referensi -->
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-upc-scan me-2" style="color: var(--tg-theme-accent-text-color);"></i>Nomor Referensi (opsional)
+              </label>
+              <input type="text" class="form-control" name="reference_number" value="{{ old('reference_number', $transaction->reference_number ?? '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+            </div>
+
+            <!-- Catatan -->
+            <div class="col-12">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-pencil me-2" style="color: var(--tg-theme-accent-text-color);"></i>Catatan (opsional)
+              </label>
+              <textarea class="form-control" name="notes" rows="2" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">{{ old('notes', $transaction->notes ?? '') }}</textarea>
+            </div>
+
+            <!-- Opsi Berulang -->
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_recurring" value="1" id="isRecurring" {{ old('is_recurring', $transaction->is_recurring ?? false) ? 'checked' : '' }}>
+                <label class="form-check-label" for="isRecurring" style="color: var(--tg-theme-text-color);">
+                  Transaksi Berulang
                 </label>
-                <select name="account_id" id="account_id" class="form-select @error('account_id') is-invalid @enderror" required>
-                  <option value="">Pilih Akun</option>
-                  @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-balance="{{ $account->balance->getAmount()->toInt() }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
-                      {{ $account->name }} 
-                      (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
-                    </option>
-                  @endforeach
-                </select>
-                <small class="text-muted" id="accountBalance"></small>
-                @error('account_id')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3" id="toAccountField" style="{{ ($transaction && $transaction->type == TransactionType::TRANSFER) || request('type') == TransactionType::TRANSFER->value ? '' : 'display: none;' }}">
-                <label for="to_account_id" class="form-label">Ke Akun *</label>
-                <select name="to_account_id" id="to_account_id" class="form-select @error('to_account_id') is-invalid @enderror">
-                  <option value="">Pilih Akun Tujuan</option>
-                  @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-balance="{{ $account->balance->getAmount()->toInt() }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
-                      {{ $account->name }} 
-                      (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
-                    </option>
-                  @endforeach
-                </select>
-                <small class="text-muted" id="toAccountBalance"></small>
-                @error('to_account_id')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
               </div>
             </div>
-          </div>
-                    
-          <!-- Category -->
-          <div class="form-section">
-            <h5 class="form-section-title">Kategori</h5>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="category_id" class="form-label">Kategori *</label>
-                <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
-                  <option value="">Pilih Kategori</option>
-                  @foreach($categories as $category)
-                    <option value="{{ $category->id }}" data-type="{{ $category->type }}" data-icon="{{ $category->icon }}" @selected(old('category_id', $transaction->category_id ?? '') == $category->id)>
-                      <i class="bi {{ $category->icon }} me-2"></i>
-                      {{ $category->name }}
-                    </option>
-                  @endforeach
-                </select>
-                @error('category_id')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3" id="budgetInfo" style="display: none;">
-                <label class="form-label">Informasi Anggaran</label>
-                <div class="card text-bg-light">
-                  <div class="card-body py-2">
-                    <div id="budgetMessage"></div>
-                  </div>
+
+            <!-- Field Berulang (ditampilkan jika recurring dicentang) -->
+            <div id="recurringFields" style="display: none; width: 100%;">
+              <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Frekuensi</label>
+                  <select name="frequency" id="frequency" class="form-select" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                    <option value="">Pilih Frekuensi</option>
+                    @foreach(RecurringFreq::cases() as $freq)
+                      <option value="{{ $freq->value }}" {{ old('frequency', $transaction->frequency ?? '') == $freq->value ? 'selected' : '' }}>
+                        {{ ucfirst($freq->value) }}
+                      </option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Interval</label>
+                  <input type="number" class="form-control" name="interval" value="{{ old('interval', $transaction->interval ?? 1) }}" min="1" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Tanggal Mulai</label>
+                  <input type="date" class="form-control" name="start_date" value="{{ old('start_date', isset($transaction) ? \Carbon\Carbon::parse($transaction->start_date)->format('Y-m-d') : now()->format('Y-m-d')) }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Tanggal Berakhir (opsional)</label>
+                  <input type="date" class="form-control" name="end_date" value="{{ old('end_date', isset($transaction) && $transaction->end_date ? \Carbon\Carbon::parse($transaction->end_date)->format('Y-m-d') : '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Sisa Kejadian (opsional)</label>
+                  <input type="number" class="form-control" name="remaining_occurrences" value="{{ old('remaining_occurrences', $transaction->remaining_occurrences ?? '') }}" min="0" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                </div>
+                <!-- Field khusus frekuensi -->
+                <div class="col-md-6" id="dayOfWeekField" style="display: none;">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Hari dalam Minggu</label>
+                  <select name="day_of_week" class="form-select" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                    <option value="">Pilih Hari</option>
+                    <option value="0" {{ old('day_of_week', $transaction->day_of_week ?? '') == '0' ? 'selected' : '' }}>Minggu</option>
+                    <option value="1" {{ old('day_of_week', $transaction->day_of_week ?? '') == '1' ? 'selected' : '' }}>Senin</option>
+                    <option value="2" {{ old('day_of_week', $transaction->day_of_week ?? '') == '2' ? 'selected' : '' }}>Selasa</option>
+                    <option value="3" {{ old('day_of_week', $transaction->day_of_week ?? '') == '3' ? 'selected' : '' }}>Rabu</option>
+                    <option value="4" {{ old('day_of_week', $transaction->day_of_week ?? '') == '4' ? 'selected' : '' }}>Kamis</option>
+                    <option value="5" {{ old('day_of_week', $transaction->day_of_week ?? '') == '5' ? 'selected' : '' }}>Jumat</option>
+                    <option value="6" {{ old('day_of_week', $transaction->day_of_week ?? '') == '6' ? 'selected' : '' }}>Sabtu</option>
+                  </select>
+                </div>
+                <div class="col-md-6" id="dayOfMonthField" style="display: none;">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Tanggal dalam Bulan</label>
+                  <input type="number" class="form-control" name="day_of_month" value="{{ old('day_of_month', $transaction->day_of_month ?? '') }}" min="1" max="31" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+                </div>
+                <div class="col-12" id="customScheduleField" style="display: none;">
+                  <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">Jadwal Kustom (pisahkan dengan koma)</label>
+                  <textarea class="form-control" name="custom_schedule" rows="2" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">{{ old('custom_schedule', is_array($transaction->custom_schedule ?? null) ? implode(', ', $transaction->custom_schedule) : '') }}</textarea>
                 </div>
               </div>
             </div>
           </div>
-          
-          <!-- Tags -->
-          <div class="form-section">
-            <h5 class="form-section-title">Tags Available</h5>
-            <div class="row">
-              <div class="col-md-12">
-                @include('wallet::partials.tag-input', [
-                'selectedTags' => isset($transaction) ? $transaction->tags : collect(),
-                'transaction' => $transaction ?? null
-                ])
-              </div>
-            </div>
-          </div>
-                    
-          <!-- Additional Information -->
-          <div class="form-section">
-            <h5 class="form-section-title">Informasi Tambahan</h5>
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label for="notes" class="form-label">Catatan</label>
-                <textarea name="notes" id="notes" rows="3" class="form-control @error('notes') is-invalid @enderror" placeholder="Catatan tambahan...">{{ old('notes', $transaction->notes ?? '') }}</textarea>
-                @error('notes')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3">
-                <label for="reference_number" class="form-label">Nomor Referensi</label>
-                <input type="text" name="reference_number" id="reference_number" class="form-control @error('reference_number') is-invalid @enderror" value="{{ old('reference_number', $transaction->reference_number ?? '') }}" placeholder="No. invoice, kode transaksi, dll.">
-                @error('reference_number')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-                            
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Transaksi Berulang</label>
-                <div class="form-check">
-                  <input type="checkbox" name="is_recurring" id="is_recurring" class="form-check-input" value="1" @checked(old('is_recurring', $transaction->is_recurring ?? false))>
-                  <label class="form-check-label" for="is_recurring">
-                    Jadikan transaksi berulang
-                  </label>
-                </div>
-                <small class="text-muted">Centang jika transaksi ini terjadi secara berkala</small>
-              </div>
-            </div>
-            <div id="recurringOptions" style="display: none;margin-top: 1rem;">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="frequency" class="form-label">Period</label>
-                    <select class="form-select" name="frequency" id="frequency">
-                      <option value="">Pilih Period</option>
-                      @foreach(RecurringFreq::cases() as $freq)
-                        <option value="{{ $freq->value }}" @selected(old('recurring_period') == $freq->value)>{{ $freq->label() }}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="interval">Interval</label>
-                    <input type="number" class="form-control" name="interval" id="interval" value="1" min="1" value="{{ old('interval') }}">
-                    <small class="form-text text-muted">Repeat every X frequency units.</small>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="start_date">Tanggal Mulai</label>
-                    <input type="date" class="form-control" id="start_date" name="start_date">
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="end_date" class="form-label">Tanggal Berakhir (Optional)</label>
-                    <input type="date" class="form-control" name="end_date" id="end_date" value="{{ old('recurring_end_date') }}">
-                    <small class="form-text text-muted">Biarkan kosong jika tidak ada tanggal berakhir</small>
-                  </div>
-                </div>
-              </div>
-              <div id="frequencyFields"></div>
-              <div class="form-group mt-3">
-                <label for="remaining_occurrences">Number of Occurrences (Optional)</label>
-                <input type="number" class="form-control" id="remaining_occurrences" name="remaining_occurrences" min="1">
-                <small class="form-text text-muted">Leave empty for unlimited occurrences</small>
-              </div>
-            </div>
-          </div>
-                    
-          <!-- Submit Buttons -->
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <button type="reset" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-clockwise me-2"></i> Reset
-                  </button>
-                </div>
-                <div>
-                  <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>
-                    {{ $transaction ? 'Simpan Perubahan' : 'Simpan Transaksi' }}
-                  </button>
-                  @if($transaction)
-                    <a href="{{ route('apps.transactions.index') }}" class="btn btn-outline-danger ms-2">
-                      <i class="bi bi-x-circle me-2"></i> Batal
-                    </a>
-                  @endif
-                </div>
-              </div>
+
+          <!-- Tombol Aksi -->
+          <div class="row mt-5">
+            <div class="col-12 d-flex justify-content-between">
+              <button type="button" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);" onclick="goBack();">
+                <i class="bi bi-arrow-left me-2"></i>Batal
+              </button>
+              <button type="submit" class="btn px-4 py-2" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
+                <i class="bi bi-check-circle me-2"></i>{{ isset($transaction) ? 'Perbarui' : 'Simpan' }}
+              </button>
             </div>
           </div>
         </form>
       </div>
     </div>
   </div>
-        
-  <!-- Quick Stats -->
-  @if(!$transaction)
-    <div class="row mt-4">
-      <div class="col-md-4 mb-3">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body text-center py-3">
-            <h6 class="text-muted mb-1">Total Akun Aktif</h6>
-            <h4 class="mb-0">{{ $accounts->count() }}</h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-3">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body text-center py-3">
-            <h6 class="text-muted mb-1">Total Kategori</h6>
-            <h4 class="mb-0">{{ $categories->count() }}</h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-3">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body text-center py-3">
-            <h6 class="text-muted mb-1">Transaksi Hari Ini</h6>
-            <h4 class="mb-0">{{ $todayTransactions }}</h4>
-          </div>
-        </div>
-      </div>
-    </div>
-  @endif
-</div>
-
-<!-- Create Tag Modal -->
-<div class="modal fade" id="createTagModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Buat Tag Baru</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form id="createTagForm">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Nama Tag</label>
-            <input type="text" class="form-control" id="newTagName" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Warna</label>
-            <input type="color" class="form-control form-control-color" id="newTagColor" value="#0d6efd">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Ikon (Opsional)</label>
-            <select class="form-select" id="newTagIcon">
-              <option value="">Pilih ikon</option>
-              <option value="tag">Tag</option>
-              <option value="cart">Keranjang</option>
-              <option value="car-front">Mobil</option>
-              <option value="cup">Cangkir</option>
-              <option value="house">Rumah</option>
-              <option value="heart">Hati</option>
-              <option value="bag">Tas</option>
-              <option value="film">Film</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-      </form>
-    </div>
-  </div>
 </div>
 @endsection
 
+@push('styles')
+<style>
+    .form-control, .form-select {
+        border-width: 1px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--tg-theme-button-color);
+        box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
+    }
+    .form-check-input:checked {
+        background-color: var(--tg-theme-button-color);
+        border-color: var(--tg-theme-button-color);
+    }
+    .form-check-input:focus {
+        border-color: var(--tg-theme-button-color);
+        box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
-  function updateFrequencyFields() {
-    const frequencySelect = document.getElementById('frequency');
-    const frequency = frequencySelect.value;
-    const frequencyFields = document.getElementById('frequencyFields');
-        
-    let html = '';
-        
-    switch(frequency) {
-      case 'weekly':
-        html = `
-          <div class="form-group">
-            <label for="day_of_week">Day of Week</label>
-            <select name="day_of_week" id="day_of_week" class="form-control">
-              <option value="0">Sunday</option>
-              <option value="1">Monday</option>
-              <option value="2">Tuesday</option>
-              <option value="3">Wednesday</option>
-              <option value="4">Thursday</option>
-              <option value="5">Friday</option>
-              <option value="6">Saturday</option>
-            </select>
-          </div>
-        `;
-        break;
-                
-      case 'monthly':
-      case 'quarterly':
-        html = `
-          <div class="form-group">
-            <label for="day_of_month">Day of Month</label>
-            <input type="number" name="day_of_month" id="day_of_month" class="form-control" min="1" max="31">
-          </div>
-        `;
-        break;
-
-      case 'custom':
-        html = `
-          <div class="form-group">
-            <label for="custom_schedule">Custom Schedule (YYYY-MM-DD)</label>
-            <textarea name="custom_schedule" id="custom_schedule" class="form-control" rows="3" placeholder="Enter dates separated by commas or new lines&#10;Example: 2024-01-15, 2024-02-15, 2024-03-15"></textarea>
-            <small class="form-text text-muted">Enter specific dates for the transaction to occur</small>
-          </div>
-        `;
-        break;
-    }
-        
-    frequencyFields.innerHTML = html;
-  }
-  
-  // Filter categories based on transaction type
-  function filterCategories(type) {
-    const categorySelect = document.getElementById('category_id');
-    const categoryOptions = categorySelect.options;
-            
-    for (let i = 0; i < categoryOptions.length; i++) {
-      const option = categoryOptions[i];
-      if (option.value === '') continue;
-                
-      const categoryType = option.dataset.type;
-                
-      if (type === 'transfer') {
-        // Show all categories for transfer
-        option.style.display = '';
-      } else {
-        // Show only matching categories
-        option.style.display = (categoryType === type) ? '' : 'none';
-      }
-    }
-            
-    // Reset selection if current selection doesn't match
-    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
-    if (selectedOption && selectedOption.style.display === 'none') {
-      categorySelect.value = '';
-      categorySelect.dispatchEvent(new Event('change'));
-    }
-  }
-        
-  // Update account balance display
-  function updateAccountBalance() {
-    const accountSelect = document.getElementById('account_id');
-    const accountOption = accountSelect.options[accountSelect.selectedIndex];
-    if (accountOption && accountOption.value) {
-      const balance = parseInt(accountOption.dataset.balance) || 0;
-      document.getElementById('accountBalance').textContent = `Saldo saat ini: Rp ${balance.toLocaleString('id-ID')}`;
-    } else {
-      document.getElementById('accountBalance').textContent = '';
-    }
-    
-    const toAccountSelect = document.getElementById('to_account_id');
-    const toAccountOption = toAccountSelect.options[toAccountSelect.selectedIndex];
-    if (toAccountOption && toAccountOption.value) {
-      const toBalance = parseInt(toAccountOption.dataset.balance) || 0;
-      document.getElementById('toAccountBalance').textContent = `Saldo saat ini: Rp ${toBalance.toLocaleString('id-ID')}`;
-    } else {
-      document.getElementById('toAccountBalance').textContent = '';
-    }
-  }
-  
-  function amountHelpText(amount) {
-    const amountHelp = document.getElementById('amountHelp');
-    if (amount > 0) {
-      amountHelp.textContent = `Rp ${amount.toLocaleString('id-ID')}`;
-    } else {
-      amountHelp.textContent = '';
-    }
-  }
-  
-  function submitForm(e) {
-    const typeInput = document.getElementById('type');
-    const amountInput = document.getElementById('amount');
-    const accountSelect = document.getElementById('account_id');
-    const toAccountSelect = document.getElementById('to_account_id');
-    
-    const type = typeInput.value;
-    const amount = parseInt(amountInput.value) || 0;
-    const accountId = accountSelect.value;
-    const toAccountId = toAccountSelect.value;
-            
-    // Get account balance
-    const accountOption = accountSelect.options[accountSelect.selectedIndex];
-    const accountBalance = parseInt(accountOption?.dataset.balance) || 0;
-            
-    // Validate minimum amount
-    if (amount < 1) {
-      e.preventDefault();
-      alert('Jumlah transaksi harus lebih dari 0.');
-      return;
-    }
-            
-    // Validate account selection
-    if (!accountId) {
-      e.preventDefault();
-      alert('Harap pilih akun.');
-      return;
-    }
-
-    // Check balance for expense or transfer
-    if ((type === '{{ TransactionType::EXPENSE->value }}' || type === '{{ TransactionType::TRANSFER->value }}') && amount > accountBalance) {
-      e.preventDefault();
-      alert('Saldo akun tidak mencukupi untuk transaksi ini.');
-      return;
-    }
-            
-    // Validate to account for transfer
-    if (type === '{{ TransactionType::TRANSFER->value }}') {
-      if (!toAccountId) {
-        e.preventDefault();
-        alert('Harap pilih akun tujuan untuk transfer.');
-        return;
-      }
-                
-      if (accountId === toAccountId) {
-        e.preventDefault();
-        alert('Tidak dapat transfer ke akun yang sama.');
-        return;
-      }
-    }
-            
-    // Validate category
-    if (!categorySelect.value) {
-      e.preventDefault();
-      alert('Harap pilih kategori.');
-      return;
-    }
-  }
-  
-  function renderBudgetTextInfo(data, amount) {
-    let message = '';
-    const usage = Math.round((data.current_spent + amount) / data.budget_amount * 100);
-
-    if (data.current_spent + amount > data.budget_amount) {
-      message = `
-      <div class="text-danger">
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        <strong>Peringatan:</strong> Anggaran akan terlampaui!
-        <br>
-        <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
-      </div>
-      `;
-    } else if (usage >= 80) {
-      message = `
-      <div class="text-warning">
-        <i class="bi bi-exclamation-circle me-2"></i>
-        <strong>Perhatian:</strong> Anggaran hampir habis.
-        <br>
-        <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
-      </div>
-      `;
-    } else {
-      message = `
-      <div class="text-success">
-        <i class="bi bi-check-circle me-2"></i>
-        <strong>Anggaran tersedia:</strong> ${data.formatted_budget_amount}
-        <br>
-        <small>Penggunaan: ${usage}% (${data.formatted_spent} + Rp ${amount.toLocaleString('id-ID')} / ${data.formatted_budget_amount})</small>
-      </div>
-      `;
-    }
-    
-    return message;
-  }
-  
-  // Check budget when category is selected
-  function checkBudget(categoryId, amount, date) {
-    if (!categoryId || !amount) return;
-    
-    const budgetInfo = document.getElementById('budgetInfo');
-    const budgetMessage = document.getElementById('budgetMessage');
-            
-    fetch("{{ secure_url(config('app.url')) }}/apps/transactions/check-budget", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({
-        category_id: categoryId,
-        amount: amount,
-        date: date
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.has_budget) {
-          budgetInfo.style.display = 'block';
-          budgetMessage.innerHTML = renderBudgetTextInfo(data, amount);
-        } else {
-          budgetInfo.style.display = 'none';
-        }
-      })
-        .catch(error => {
-          console.error('Error checking budget:', error);
-        });
-  }
-        
-  document.addEventListener('DOMContentLoaded', function() {
-        // Elements
-        const typeBadges = document.querySelectorAll('.transaction-type-badge');
-        const typeInput = document.getElementById('type');
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('transactionType');
         const toAccountField = document.getElementById('toAccountField');
-        const accountLabel = document.getElementById('accountLabel');
-        const accountSelect = document.getElementById('account_id');
-        const toAccountSelect = document.getElementById('to_account_id');
-        const categorySelect = document.getElementById('category_id');
-        const amountInput = document.getElementById('amount');
-        const budgetInfo = document.getElementById('budgetInfo');
-        const budgetMessage = document.getElementById('budgetMessage');
-        
-        // Initialize tag input
-        if(typeof window.allTags === 'undefined') {
-          window.allTags = [];
-        }
-        
-        // Toggle recurring options
-        const isRecurring = document.getElementById('is_recurring');
-        const recurringOptions = document.getElementById('recurringOptions');
+        const isRecurringCheck = document.getElementById('isRecurring');
+        const recurringFields = document.getElementById('recurringFields');
         const frequencySelect = document.getElementById('frequency');
-    
-        if(isRecurring) {
-        isRecurring.addEventListener('change', function () {
-          recurringOptions.style.display = this.checked ? 'block' : 'none';
-        });
-        }
-    
-        if(frequencySelect) {
-        frequencySelect.addEventListener('change', updateFrequencyFields);
-        }
-        updateFrequencyFields();
-        
-        
-        // Transaction type selection
-        typeBadges.forEach(badge => {
-          if(badge) {
-            badge.addEventListener('click', function() {
-                const type = this.dataset.type;
-                
-                // Update active badge
-                typeBadges.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Update hidden input
-                typeInput.value = type;
-                
-                // Update form based on type
-                updateFormForType(type);
-            });
-          }
-        });
-        
-        // Update form based on transaction type
-        function updateFormForType(type) {
-            // Show/hide to account field for transfers
-            if (type === 'transfer') {
+        const dayOfWeekField = document.getElementById('dayOfWeekField');
+        const dayOfMonthField = document.getElementById('dayOfMonthField');
+        const customScheduleField = document.getElementById('customScheduleField');
+
+        // Fungsi untuk menampilkan/menyembunyikan field transfer
+        function toggleTransferField() {
+            if (typeSelect.value === 'transfer') {
                 toAccountField.style.display = 'block';
-                accountLabel.textContent = 'Dari Akun *';
-                toAccountSelect.required = true;
             } else {
                 toAccountField.style.display = 'none';
-                accountLabel.textContent = 'Akun *';
-                toAccountSelect.required = false;
             }
-            
-            // Filter categories based on type
-            filterCategories(type);
-            
-            // Update account balance display
-            updateAccountBalance();
         }
-        
-        // Event Listeners
-        if(accountSelect) {
-        accountSelect.addEventListener('change', updateAccountBalance);
-        }
-        if(toAccountSelect) {
-        toAccountSelect.addEventListener('change', updateAccountBalance);
-        }
-        
-        if(categorySelect) {
-        categorySelect.addEventListener('change', function() {
-            const categoryId = this.value;
-            const amount = parseInt(amountInput.value) || 0;
-            const date = document.getElementById('transaction_date').value;
-            
-            if (categoryId && amount > 0) {
-                checkBudget(categoryId, amount, date);
+
+        // Fungsi untuk menampilkan/menyembunyikan field recurring
+        function toggleRecurringFields() {
+            if (isRecurringCheck.checked) {
+                recurringFields.style.display = 'block';
+            } else {
+                recurringFields.style.display = 'none';
             }
-        });
         }
-        
-        if(amountInput) {
-        amountInput.addEventListener('input', function() {
-            const amount = parseInt(this.value) || 0;
-            const categoryId = categorySelect.value;
-            const date = document.getElementById('transaction_date').value;
-            
-            if (categoryId && amount > 0) {
-                checkBudget(categoryId, amount, date);
+
+        // Fungsi untuk menampilkan field khusus frekuensi
+        function toggleFrequencyFields() {
+            const freq = frequencySelect.value;
+            dayOfWeekField.style.display = 'none';
+            dayOfMonthField.style.display = 'none';
+            customScheduleField.style.display = 'none';
+
+            if (freq === 'weekly') {
+                dayOfWeekField.style.display = 'block';
+            } else if (freq === 'monthly' || freq === 'quarterly') {
+                dayOfMonthField.style.display = 'block';
+            } else if (freq === 'custom') {
+                customScheduleField.style.display = 'block';
             }
-            
-            // Format amount helper
-            amountHelpText(amount);
-        });
         }
-        
-        // Form validation
-        document.getElementById('transactionForm')?.addEventListener('submit', (e) => submitForm(e) );
-        
-        // Initialize form
-        const initialType = typeInput.value;
-        updateFormForType(initialType);
-        
-        // Trigger initial budget check if editing
-        @if($transaction && $transaction->type == TransactionType::EXPENSE)
-            const initialCategoryId = '{{ $transaction->category_id }}';
-            const initialAmount = {{ $transaction->amount->getAmount()->toInt() }};
-            const initialDate = '{{ $transaction->transaction_date->format("Y-m-d\TH:i") }}';
-            
-            if (initialCategoryId && initialAmount > 0) {
-                checkBudget(initialCategoryId, initialAmount, initialDate);
-            }
+
+        // Event listeners
+        typeSelect.addEventListener('change', toggleTransferField);
+        isRecurringCheck.addEventListener('change', toggleRecurringFields);
+        frequencySelect.addEventListener('change', toggleFrequencyFields);
+
+        // Initial state
+        toggleTransferField();
+        toggleRecurringFields();
+        toggleFrequencyFields();
+
+        // Jika ada old value untuk transfer, pastikan field tampil
+        @if(old('type') === 'transfer' || (isset($transaction) && $transaction->type === 'transfer'))
+            toAccountField.style.display = 'block';
         @endif
-        
-        @if($transaction)
-          amountHelpText(parseInt(amountInput.value))
+
+        // Jika ada old value untuk recurring
+        @if(old('is_recurring') || (isset($transaction) && $transaction->is_recurring))
+            recurringFields.style.display = 'block';
+        @endif
+
+        // Jika ada old value untuk frequency
+        @if(old('frequency') || (isset($transaction) && $transaction->frequency))
+            toggleFrequencyFields();
         @endif
     });
 </script>
