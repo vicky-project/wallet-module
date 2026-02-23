@@ -28,7 +28,7 @@
               <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
                 <i class="bi bi-arrow-left-right me-2" style="color: var(--tg-theme-accent-text-color);"></i>Tipe Transaksi
               </label>
-              <select name="type" id="transactionType" class="form-select @error('type') is-invalid @else is-valid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+              <select name="type" id="transactionType" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Tipe</option>
                 @foreach(TransactionType::cases() as $type)
                   <option value="{{ $type->value }}" @selected(old('type', $transaction->type ?? '') == $type->value)>
