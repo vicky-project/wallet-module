@@ -88,7 +88,8 @@ class TransactionController extends Controller
 		$accounts = $this->accountRepository->getUserAccounts($user, [
 			"is_active" => true,
 		]);
-		$categories = $this->categoryRepository->getUserCategories();
+
+		$categories = $this->categoryRepository->getUserCategories($user);
 
 		// Filter categories by type if specified
 		$type = $request->get("type", TransactionType::EXPENSE->value);

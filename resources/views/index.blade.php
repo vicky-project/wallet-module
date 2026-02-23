@@ -90,9 +90,9 @@
             <div class="text-center py-4">
               <i class="bi bi-receipt display-6" style="color: var(--tg-theme-hint-color);"></i>
               <p class="mt-2" style="color: var(--tg-theme-hint-color);">Belum ada transaksi.</p>
-              <button class="btn btn-sm mt-2" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;" onclick="showToast('Show transaksi');">
+              <a href="{{ route('apps.transactions.create') }}" class="btn btn-sm mt-2" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);border: none;" role="button">
                 <i class="bi bi-plus-circle me-1"></i> Tambah Transaksi
-              </button>
+              </a>
             </div>
           @endforelse
         </div>
