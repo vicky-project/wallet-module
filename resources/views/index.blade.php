@@ -190,7 +190,7 @@
         fabOptions.style.display = 'none';
         fabIcon.className = 'bi bi-plus-lg fs-4';
       }
-    }):
+    });
     
     document.addEventListener('click', function(event) {
       if(!fabMain.contains(event.target) && !fabOptions.contains(event.target)) {
