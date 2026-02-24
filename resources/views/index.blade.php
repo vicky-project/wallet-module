@@ -118,26 +118,116 @@
   </div>
 </div>
 
-  <!-- Menu FAB -->
-  <div class="d-flex flex-column align-items-end gap-2 mb-2 d-none bottom-20 end-0" id="fabMenu">
-    <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
+<!-- Floating Action Button (FAB) -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;" id="fabContainer">
+  <div class="fab-menu" id="fabMenu">
+    <a href="#" class="fab-item" id="fabIncome">
+      <i class="bi bi-plus-circle fab-income"></i>
+      <span class="fab-label">Tambah Pemasukan</span>
     </a>
-    <a href="{{ route('apps.uploads') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-upload me-2"></i>Upload File
+    <a href="#" class="fab-item" id="fabExpense">
+      <i class="bi bi-dash-circle fab-expense"></i>
+      <span class="fab-label">Tambah Pengeluaran</span>
     </a>
-    <a href="{{ route('apps.reports') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-bar-chart me-2"></i>Laporan
+    <a href="#" class="fab-item" id="fabReport">
+      <i class="bi bi-file-earmark-text fab-report"></i>
+      <span class="fab-label">Laporan</span>
+    </a>
+    <a href="#" class="fab-item" id="fabUpload">
+      <i class="bi bi-cloud-upload fab-upload"></i>
+      <span class="fab-label">Upload</span>
     </a>
   </div>
-<!-- Container FAB -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
-  <!-- Tombol FAB utama -->
-  <button class="btn rounded-circle shadow-lg" style="width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="toggleFabMenu()">
-    <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
+  <button class="fab-main" id="fabMain">
+    <i class="bi bi-plus-lg" id="fabIcon"></i>
   </button>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Elemen FAB
+  const fabMain = document.getElementById('fabMain');
+  const fabMenu = document.getElementById('fabMenu');
+  const fabIcon = document.getElementById('fabIcon');
+  const fabIncome = document.getElementById('fabIncome');
+  const fabExpense = document.getElementById('fabExpense');
+  const fabRecurring = document.getElementById('fabRecurring');
+  const fabReport = document.getElementById('fabReport');
+  const fabUpload= document.getElementById('fabUpload');
+  
+  // FAB Toggle Functionality
+  function toggleFabMenu() {
+    fabMain.classList.toggle('active');
+    fabMenu.classList.toggle('active');
+                
+    if (fabMain.classList.contains('active')) {
+      fabIcon.classList.remove('bi-plus-lg');
+      fabIcon.classList.add('bi-x');
+    } else {
+      fabIcon.classList.remove('bi-x');
+      fabIcon.classList.add('bi-plus-lg');
+    }
+  }
+
+  // Toggle FAB Menu
+  fabMain.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleFabMenu();
+  });
+
+  // Tutup FAB Menu ketika klik di luar
+  document.addEventListener('click', function(e) {
+    if (!fabMain.contains(e.target) && !fabMenu.contains(e.target)) {
+      if (fabMenu.classList.contains('active')) {
+        toggleFabMenu();
+      }
+    }
+  });
+  
+  window.addEventListener('resize', function(){
+    if(fabMenu.classList.contains('active')) {
+      toggleFabMenu();
+    }
+  });
+
+  // Tutup FAB Menu ketika klik item menu
+  [fabIncome, fabExpense, fabRecurring, fabReport, fabUpload].forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const action = this.id.replace('fab', '').toLowerCase();
+      console.log(`Aksi FAB: ${action}`);
+
+      // Tutup menu setelah memilih
+      setTimeout(() => {
+        if (fabMenu.classList.contains('active')) {
+          toggleFabMenu();
+        }
+      }, 300);
+
+      // Simulasi aksi (dalam implementasi nyata akan redirect ke halaman tertentu)
+      switch(action) {
+        case 'income':
+          window.location.href = '{{ route("apps.transactions.create", ["type" => "income"]) }}';
+          break;
+        case 'expense':
+          window.location.href = '{{ route("apps.transactions.create", ["type" => "expense"]) }}';
+          break;
+        case 'recurring':
+          window.location.href = '{{ route("apps.recurrings.index") }}';
+          break;
+        case 'report':
+          window.location.href = '{{ route("apps.reports") }}';
+          break;
+        case 'upload':
+          //alert('Upload feature is coming soon.');
+          window.location.href = '{{ route("apps.uploads") }}';
+          break;
+      }
+    });
+  });
+</script>
+@endpush
 
 @push('styles')
 <style>
@@ -157,6 +247,120 @@
       max-width: 100%;
     }
     
+            .fab-main {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tg-theme-button-color), var(--tg-theme-button-color));
+            color: var(--tg-theme-button-text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .fab-main:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.5);
+        }
+        
+        .fab-main.active {
+            transform: rotate(45deg);
+        }
+        
+        .fab-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .fab-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .fab-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-decoration: none;
+            transform: translateX(10px);
+            opacity: 0;
+        }
+        
+        .fab-menu.active .fab-item {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .fab-menu.active .fab-item:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+        
+        .fab-menu.active .fab-item:nth-child(2) {
+            transition-delay: 0.1s;
+        }
+        
+        .fab-menu.active .fab-item:nth-child(3) {
+            transition-delay: 0.15s;
+        }
+        
+        .fab-menu.active .fab-item:nth-child(4) {
+            transition-delay: 0.2s;
+        }
+        
+        .fab-item:hover {
+            transform: translateX(-5px) !important;
+        }
+        
+        .fab-item i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .fab-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+        
+        .fab-income {
+            color: #10b981;
+        }
+        
+        .fab-expense {
+            color: #ef4444;
+        }
+        
+        .fab-recurring {
+            color: #3b82f6;
+        }
+        
+        .fab-report {
+            color: #f59e0b;
+        }
+    
     @media (min-width: 768px) {
       .text-truncate {
         white-space: normal !important;
@@ -165,29 +369,4 @@
       }
     }
 </style>
-@endpush
-
-@push('scripts')
-<script>
-  function toggleFabMenu() {
-    const menu = document.getElementById('fabMenu');
-    const icon = document.getElementById('fabIcon');
-    menu.classList.toggle('d-none');
-    if (menu.classList.contains('d-none')) {
-        icon.className = 'bi bi-x-lg fs-4';
-    } else {
-        icon.className = 'bi bi-plus-lg fs-4';
-    }
-}
-
-// Klik di luar untuk menutup menu
-document.addEventListener('click', function(event) {
-    const fabContainer = document.querySelector('.position-fixed.bottom-0.end-0.p-3');
-    if (fabContainer && !fabContainer.contains(event.target)) {
-        const menu = document.getElementById('fabMenu');
-        menu.classList.remove('d-none');
-        document.getElementById('fabIcon').className = 'bi bi-plus-lg fs-4';
-    }
-});
-</script>
 @endpush
