@@ -118,10 +118,10 @@
   </div>
 </div>
 
-<!-- Container untuk FAB dan menu -->
+<!-- Container FAB -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
   <!-- Menu FAB -->
-  <div class="d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu" style="display: none;">
+  <div class="fab-menu d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu">
     <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
       <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
     </a>
@@ -156,6 +156,12 @@
       text-overflow: ellipsis;
       max-width: 100%;
     }
+    .fab-menu {
+      display: none;
+    }
+    .fab-menu.show {
+      display: flex;
+    }
     
     @media (min-width: 768px) {
       .text-truncate {
@@ -172,20 +178,20 @@
   function toggleFabMenu() {
     const menu = document.getElementById('fabMenu');
     const icon = document.getElementById('fabIcon');
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'flex';
+    menu.classList.toggle('show');
+    if (menu.classList.contains('show')) {
         icon.className = 'bi bi-x-lg fs-4';
     } else {
-        menu.style.display = 'none';
         icon.className = 'bi bi-plus-lg fs-4';
     }
-  }
+}
 
 // Klik di luar untuk menutup menu
 document.addEventListener('click', function(event) {
     const fabContainer = document.querySelector('.position-fixed.bottom-0.end-0.p-3');
     if (fabContainer && !fabContainer.contains(event.target)) {
-        document.getElementById('fabMenu').style.display = 'none';
+        const menu = document.getElementById('fabMenu');
+        menu.classList.remove('show');
         document.getElementById('fabIcon').className = 'bi bi-plus-lg fs-4';
     }
 });
