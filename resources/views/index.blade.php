@@ -118,10 +118,8 @@
   </div>
 </div>
 
-<!-- Container FAB -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
   <!-- Menu FAB -->
-  <div class="d-flex flex-column align-items-end gap-2 mb-2 d-none" id="fabMenu">
+  <div class="d-flex flex-column align-items-end gap-2 mb-2 d-none bottom-20 end-0" id="fabMenu">
     <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
       <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
     </a>
@@ -132,6 +130,8 @@
       <i class="bi bi-bar-chart me-2"></i>Laporan
     </a>
   </div>
+<!-- Container FAB -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
   <!-- Tombol FAB utama -->
   <button class="btn rounded-circle shadow-lg" style="width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="toggleFabMenu()">
     <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
