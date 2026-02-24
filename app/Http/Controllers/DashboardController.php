@@ -18,6 +18,7 @@ class DashboardController extends Controller
 		$user = $request->user();
 
 		$dashboardData = $this->dashboardService->getDashboardData($user);
+		dd($dashboardData);
 
 		return view("wallet::index", compact("dashboardData"));
 	}
@@ -79,7 +80,7 @@ class DashboardController extends Controller
 	{
 		$transactions = $this->transactionService->transactionRepository->getPaginatedTransactions(
 			["limit" => 10],
-			10
+			10,
 		);
 
 		return collect($transactions["transactions"] ?? [])
