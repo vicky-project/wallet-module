@@ -8,7 +8,7 @@ use Modules\Wallet\Models\Account;
 use Modules\Wallet\Repositories\AccountRepository;
 use Modules\Wallet\Enums\AccountType;
 use Modules\Wallet\Enums\TransactionType;
-use Modules\Wallet\Events\TelegramNotificationEvent;
+use Modules\Wallet\Events\LowBalanceEvent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -129,7 +129,7 @@ class AccountService
 				!$this->repository->isNameUniqueForUser(
 					$account->user,
 					$data["name"],
-					$account->id
+					$account->id,
 				)
 			) {
 				throw new \Exception("Account name already exists for this user");
@@ -185,12 +185,12 @@ class AccountService
 	public function updateAccountBalance(
 		Account $account,
 		Money $amount,
-		bool $increment = true
+		bool $increment = true,
 	): bool {
 		return $this->repository->updateBalance(
 			$account->id,
 			$amount->getAmount()->toInt(),
-			$increment
+			$increment,
 		);
 	}
 
@@ -200,12 +200,12 @@ class AccountService
 	public function transferBalance(
 		Account $fromAccount,
 		Account $toAccount,
-		Money $amount
+		Money $amount,
 	): bool {
 		// Validate accounts belong to same user
 		if ($fromAccount->user_id !== $toAccount->user_id) {
 			throw new \Exception(
-				"Cannot transfer between accounts of different users"
+				"Cannot transfer between accounts of different users",
 			);
 		}
 
@@ -217,7 +217,7 @@ class AccountService
 		return $this->repository->transferBalance(
 			$fromAccount->id,
 			$toAccount->id,
-			$amount->getAmount()->toInt()
+			$amount->getAmount()->toInt(),
 		);
 	}
 
@@ -233,7 +233,7 @@ class AccountService
 						->transactions()
 						->income()
 						->sum("amount"),
-					isInteger: false
+					isInteger: false,
 				)
 				->getAmount()
 				->toInt();
@@ -244,7 +244,7 @@ class AccountService
 						->transactions()
 						->expense()
 						->sum("amount"),
-					isInteger: false
+					isInteger: false,
 				)
 				->getAmount()
 				->toInt();
@@ -281,10 +281,9 @@ class AccountService
 				$user = $account->user;
 
 				event(
-					new TelegramNotificationEvent($user, "low_balance", [
-						"account" => $account,
+					new LowBalanceEvent($user, $account, false, [
 						"threshold" => $threshold,
-					])
+					]),
 				);
 			}
 			return $result;
@@ -313,7 +312,7 @@ class AccountService
 	public function getAccountAnalytics(
 		User $user,
 		$startDate = null,
-		$endDate = null
+		$endDate = null,
 	): array {
 		$startDate = $startDate ?? now()->startOfMonth();
 		$endDate = $endDate ?? now()->endOfMonth();
@@ -327,11 +326,11 @@ class AccountService
 		foreach ($accounts as $account) {
 			$income = $this->repository->toMoney(
 				$account->getIncomeForPeriod($startDate, $endDate),
-				$account->currency
+				$account->currency,
 			);
 			$expense = $this->repository->toMoney(
 				$account->getExpenseForPeriod($startDate, $endDate),
-				$account->currency
+				$account->currency,
 			);
 			$netFlow = $account->getNetFlowForPeriod($startDate, $endDate);
 
@@ -371,7 +370,7 @@ class AccountService
 	 */
 	private function ensureSingleDefaultAccount(
 		User $user,
-		int $excludeId = null
+		int $excludeId = null,
 	): void {
 		$query = Account::where("user_id", $user->id)->where("is_default", true);
 
