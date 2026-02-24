@@ -19,7 +19,7 @@ class DashboardService
 		TransactionService $transactionService,
 		BudgetService $budgetService,
 		CategoryService $categoryService,
-		RecurringTransactionService $recurringService
+		RecurringTransactionService $recurringService,
 	) {
 		$this->accountService = $accountService;
 		$this->transactionService = $transactionService;
@@ -49,20 +49,20 @@ class DashboardService
 		$services = [
 			"accounts" => fn() => $this->accountService->getDashboardData(
 				$user,
-				$now
+				$now,
 			),
 			"transactions" => fn() => $this->transactionService->getDashboardData(
 				$user,
-				$now
+				$now,
 			),
 			"budgets" => fn() => $this->budgetService->getDashboardData($user, $now),
 			"categories" => fn() => $this->categoryService->getDashboardData(
 				$user,
-				$now
+				$now,
 			),
 			"recurring" => fn() => $this->recurringService->getDashboardData(
 				$user,
-				$now
+				$now,
 			),
 		];
 
@@ -167,7 +167,7 @@ class DashboardService
 			"income_count" => $data["transactions"]["income_count"] ?? 0,
 			"expense_count" => $data["transactions"]["expense_count"] ?? 0,
 			"budget_usage_percentage" => $this->calculateAverageBudgetUsage(
-				$data["budgets"]
+				$data["budgets"],
 			),
 			"budget_stats" => $data["budgets"]["stats"] ?? [],
 			"budget_summary" => $data["budgets"]["summary"] ?? [],
@@ -179,8 +179,9 @@ class DashboardService
 			],
 			"accounts" => $this->formatAccountsData($data["accounts"]),
 			"category_analysis" => $data["categories"]["analysis"] ?? [],
+			"category_stats" => $data["categories"]["stats"],
 			"transaction_stats" => $this->formatTransactionStats(
-				$data["transactions"]
+				$data["transactions"],
 			),
 			"recent_transactions" => $data["transactions"]["recent"] ?? [],
 			"upcoming_recurring" => $data["recurring"]["upcoming"] ?? [],
@@ -193,11 +194,11 @@ class DashboardService
 	protected function formatAccountsData(array $accountData): Collection
 	{
 		return collect($accountData["accounts"] ?? [])->map(function (
-			$account
+			$account,
 		) use ($accountData) {
 			$analytics = collect($accountData["analytics"] ?? [])->firstWhere(
 				"account.id",
-				$account["id"]
+				$account["id"],
 			);
 
 			return [

@@ -5,56 +5,56 @@
 @section('content')
 <div class="row">
   <div class="col-12">
-        <!-- Total Saldo -->
-        <div class="text-center my-4">
-            <small class="text-muted text-uppercase" style="color: var(--tg-theme-hint-color);">Total Saldo</small>
-            <h1 class="display-4 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($totalBalance, 0, ',', '.') }}</h1>
-        </div>
+    <!-- Total Saldo -->
+    <div class="text-center my-4">
+      <small class="text-muted text-uppercase" style="color: var(--tg-theme-hint-color);">Total Saldo</small>
+      <h1 class="display-4 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($dashboardData['total_balance'], 0, ',', '.') }}</h1>
+    </div>
 
-        <!-- Widget Stats -->
-        <div class="row g-3 mb-4">
-            <!-- Akun Widget -->
-            <div class="col-4">
-                <a href="{{ route('financial.accounts') }}" class="text-decoration-none">
-                    <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
-                        <div class="card-body p-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="rounded-circle p-2 me-2" style="background-color: rgba(64, 167, 227, 0.1); color: #40a7e3;">
-                                    <i class="bi bi-wallet2"></i>
-                                </div>
-                                <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Akun</h6>
-                            </div>
-                            <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $accountStats['total'] }}</p>
-                            @if($accountStats['default'])
-                                <small class="text-muted">Default: {{ $accountStats['default']->name }}</small>
-                            @else
-                                <small class="text-muted">Belum ada akun default</small>
-                            @endif
-                        </div>
-                    </div>
-                </a>
+    <!-- Widget Stats -->
+    <div class="row g-3 mb-4">
+      <!-- Akun Widget -->
+      <div class="col-4">
+        <a href="{{ route('apps.accounts.index') }}" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center mb-2">
+                <div class="rounded-circle p-2 me-2" style="background-color: rgba(64, 167, 227, 0.1); color: #40a7e3;">
+                  <i class="bi bi-wallet2"></i>
+                </div>
+                <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Akun</h6>
+              </div>
+              <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['account_stats']['total'] }}</p>
+              @if($dashboardData['account_stats']['active'])
+                <small class="text-muted">Active: {{ $dashboardData['account_stats']['active']->name }}</small>
+              @else
+                <small class="text-muted">Belum ada akun aktif</small>
+              @endif
             </div>
+          </div>
+        </a>
+      </div>
 
-            <!-- Kategori Widget -->
-            <div class="col-4">
-                <a href="{{ route('financial.categories') }}" class="text-decoration-none">
-                    <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
-                        <div class="card-body p-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="rounded-circle p-2 me-2" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
-                                    <i class="bi bi-tags"></i>
-                                </div>
-                                <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Kategori</h6>
-                            </div>
-                            <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $categoryStats['total'] }}</p>
-                            <small class="text-muted">{{ $categoryStats['expense'] }} pengeluaran, {{ $categoryStats['income'] }} pemasukan</small>
-                        </div>
-                    </div>
-                </a>
+      <!-- Kategori Widget -->
+      <div class="col-4">
+        <a href="{{ route('apps.categories.index') }}" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center mb-2">
+                <div class="rounded-circle p-2 me-2" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                  <i class="bi bi-tags"></i>
+                </div>
+                <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Kategori</h6>
+              </div>
+              <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $categoryStats['total'] }}</p>
+              <small class="text-muted">{{ $categoryStats['expense'] }} pengeluaran, {{ $categoryStats['income'] }} pemasukan</small>
             </div>
+          </div>
+        </a>
+      </div>
 
-            <!-- Anggaran Widget -->
-            <div class="col-4">
+      <!-- Anggaran Widget -->
+      <div class="col-4">
                 <a href="{{ route('financial.budgets') }}" class="text-decoration-none">
                     <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                         <div class="card-body p-3">
@@ -75,10 +75,10 @@
                     </div>
                 </a>
             </div>
-        </div>
+    </div>
 
-        <!-- Transaksi Terbaru -->
-        <div class="mb-4">
+    <!-- Transaksi Terbaru -->
+    <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
                 <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua transaksi', 'info')">Lihat semua</a>
