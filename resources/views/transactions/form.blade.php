@@ -32,7 +32,7 @@
               <select name="type" id="transactionType" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Tipe</option>
                 @foreach(TransactionType::cases() as $type)
-                  <option value="{{ $type->value }}" @selected(old('type', $transaction->type ?? '') == $type->value)>
+                  <option value="{{ $type->value }}" @selected(old('type', $transaction->type ?? request()->input('type')) == $type->value)>
                     {{ $type->label() }}
                   </option>
                 @endforeach
