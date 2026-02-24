@@ -274,7 +274,7 @@
         
         .fab-menu {
             position: absolute;
-            bottom: 70px;
+            bottom: 100px;
             right: 0;
             display: flex;
             flex-direction: column;
@@ -343,22 +343,6 @@
             font-size: 0.9rem;
             font-weight: 500;
             margin-right: 10px;
-        }
-        
-        .fab-income {
-            color: #10b981;
-        }
-        
-        .fab-expense {
-            color: #ef4444;
-        }
-        
-        .fab-recurring {
-            color: #3b82f6;
-        }
-        
-        .fab-report {
-            color: #f59e0b;
         }
     
     @media (min-width: 768px) {
