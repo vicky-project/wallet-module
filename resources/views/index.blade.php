@@ -78,13 +78,14 @@
     </div>
 
     <!-- Transaksi Terbaru -->
-    <div class="mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
-        <a href="{{ route('apps.transactions.index') }}" class="small" style="color: var(--tg-theme-button-color);">Lihat semua</a>
-      </div>
-      @forelse($dashboardData['recent_transactions'] as $transaction)
-        <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
+          <a href="{{ route('apps.transactions.index') }}" class="small" style="color: var(--tg-theme-button-color);">Lihat semua</a>
+        </div>
+        @forelse($dashboardData['recent_transactions'] as $transaction)
+          <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
           <div class="card-body p-3">
             <div class="d-flex align-items-center">
               <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #6c757d20; color: #6c757d;">
@@ -106,12 +107,13 @@
             </div>
           </div>
         </div>
-      @empty
-        <div class="text-center py-4" style="color: var(--tg-theme-hint-color);">
-          <i class="bi bi-receipt display-6"></i>
-          <p class="mt-2">Belum ada transaksi.</p>
-        </div>
-      @endforelse
+        @empty
+          <div class="text-center py-4" style="color: var(--tg-theme-hint-color);">
+            <i class="bi bi-receipt display-6"></i>
+            <p class="mt-2">Belum ada transaksi.</p>
+          </div>
+        @endforelse
+      </div>
     </div>
   </div>
 </div>
