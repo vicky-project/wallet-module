@@ -116,24 +116,24 @@
   </div>
 </div>
 
-<!-- Floating Action Button -->
-<button class="btn rounded-circle shadow-lg position-fixed" style="bottom: 20px; right: 20px; width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; z-index: 1000;" onclick="toggleFabMenu()">
-  <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
-</button>
-
-<!-- FAB Menu -->
-<div class="position-fixed end-0 p-3" style="z-index: 999; display: none; bottom: 20px;" id="fabMenu">
-  <div class="d-flex flex-column align-items-end gap-2">
-    <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
-    </a>
-    <a href="{{ route('apps.uploads') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-upload me-2"></i>Upload File
-    </a>
-    <a href="{{ route('apps.reports') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-bar-chart me-2"></i>Laporan
-    </a>
-  </div>
+<!-- Container untuk FAB dan menu -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
+    <!-- Menu FAB (muncul di atas tombol) -->
+    <div class="d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu" style="display: none;">
+        <a href="{{ route('financial.transaction.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+            <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
+        </a>
+        <a href="{{ route('financial.upload.form') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+            <i class="bi bi-upload me-2"></i>Upload File
+        </a>
+        <a href="#" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;" onclick="showToast('Laporan', 'info')">
+            <i class="bi bi-bar-chart me-2"></i>Laporan
+        </a>
+    </div>
+    <!-- Tombol FAB utama -->
+    <button class="btn rounded-circle shadow-lg" style="width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="toggleFabMenu()">
+        <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
+    </button>
 </div>
 @endsection
 
@@ -165,26 +165,25 @@
 
 @push('scripts')
 <script>
-    function toggleFabMenu() {
-        const menu = document.getElementById('fabMenu');
-        const icon = document.getElementById('fabIcon');
-        if (menu.style.display === 'none' || menu.style.display === '') {
-            menu.style.display = 'block';
-            icon.className = 'bi bi-x-lg fs-4';
-        } else {
-            menu.style.display = 'none';
-            icon.className = 'bi bi-plus-lg fs-4';
-        }
+  function toggleFabMenu() {
+    const menu = document.getElementById('fabMenu');
+    const icon = document.getElementById('fabIcon');
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'flex';
+        icon.className = 'bi bi-x-lg fs-4';
+    } else {
+        menu.style.display = 'none';
+        icon.className = 'bi bi-plus-lg fs-4';
     }
+  }
 
-    // Klik di luar FAB untuk menutup menu (opsional)
-    document.addEventListener('click', function(event) {
-        const fab = document.querySelector('.position-fixed.bottom-0.end-0.p-3');
-        const fabButton = document.querySelector('button[onclick="toggleFabMenu()"]');
-        if (!fab.contains(event.target) && !fabButton.contains(event.target)) {
-            document.getElementById('fabMenu').style.display = 'none';
-            document.getElementById('fabIcon').className = 'bi bi-plus-lg fs-4';
-        }
-    });
+// Klik di luar untuk menutup menu
+document.addEventListener('click', function(event) {
+    const fabContainer = document.querySelector('.position-fixed.bottom-0.end-0.p-3');
+    if (fabContainer && !fabContainer.contains(event.target)) {
+        document.getElementById('fabMenu').style.display = 'none';
+        document.getElementById('fabIcon').className = 'bi bi-plus-lg fs-4';
+  }
+});
 </script>
 @endpush
