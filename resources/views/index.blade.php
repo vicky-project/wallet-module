@@ -46,8 +46,8 @@
                 </div>
                 <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Kategori</h6>
               </div>
-              <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $categoryStats['total'] }}</p>
-              <small class="text-muted">{{ $categoryStats['expense'] }} pengeluaran, {{ $categoryStats['income'] }} pemasukan</small>
+              <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['category_stats']['total'] }}</p>
+              <small class="text-muted">{{ $dashboardData['category_stats']['expense'] }} pengeluaran, {{ $dashboardData['category_stats']['income'] }} pemasukan</small>
             </div>
           </div>
         </a>
@@ -55,64 +55,64 @@
 
       <!-- Anggaran Widget -->
       <div class="col-4">
-                <a href="{{ route('financial.budgets') }}" class="text-decoration-none">
-                    <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
-                        <div class="card-body p-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="rounded-circle p-2 me-2" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
-                                    <i class="bi bi-pie-chart"></i>
-                                </div>
-                                <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Anggaran</h6>
-                            </div>
-                            <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $budgetStats['total'] }}</p>
-                            @if($budgetStats['total'] > 0)
-                                @php $percentage = $budgetStats['total_amount'] > 0 ? round(($budgetStats['total_spent'] / $budgetStats['total_amount']) * 100) : 0; @endphp
-                                <small class="text-muted">Terpakai {{ $percentage }}%</small>
-                            @else
-                                <small class="text-muted">Belum ada anggaran</small>
-                            @endif
-                        </div>
-                    </div>
-                </a>
+        <a href="{{ route('apps.budgets.index') }}" class="text-decoration-none">
+          <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center mb-2">
+                <div class="rounded-circle p-2 me-2" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                  <i class="bi bi-pie-chart"></i>
+                </div>
+                <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Anggaran</h6>
+              </div>
+              <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['budget_stats']['total'] }}</p>
+              @if($dashboardData['budget_stats']['total'] > 0)
+                @php $percentage = $budgetStats['total_amount'] > 0 ? round(($dashboardData['budget_stats']['total_spent'] / $dashboardData['budget_stats']['total_amount']) * 100) : 0; @endphp
+                <small class="text-muted">Terpakai {{ $percentage }}%</small>
+              @else
+                <small class="text-muted">Belum ada anggaran</small>
+              @endif
             </div>
+          </div>
+        </a>
+      </div>
     </div>
 
     <!-- Transaksi Terbaru -->
     <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
                 <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua transaksi', 'info')">Lihat semua</a>
             </div>
-            @forelse($recentTransactions as $transaction)
-            <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-center">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: {{ $transaction->category?->color ?? '#6c757d' }}20; color: {{ $transaction->category?->color ?? '#6c757d' }};">
-                            <i class="bi {{ $transaction->category?->icon ?? 'bi-tag' }}"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ $transaction->description }}</h6>
-                                    <small class="text-muted">{{ $transaction->account->name }} • {{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d M H:i') }}</small>
-                                </div>
-                                <div class="text-end">
-                                    <span class="fw-bold {{ $transaction->type == 'income' ? 'text-success' : 'text-danger' }}">
-                                        {{ $transaction->type == 'income' ? '+' : '-' }} Rp {{ number_format($transaction->amount, 0, ',', '.') }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      @forelse($dashboardData['recent_transactions'] as $transaction)
+        <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
+          <div class="card-body p-3">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #6c757d20; color: #6c757d;">
+                <i class="bi {{ $transaction['category_icon'] ?? 'bi-tag' }}"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
+                    <small class="text-muted">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}">
+                      {{ $transaction['type'] == 'income' ? '+' : '-' }} Rp {{ number_format($transaction['amount'], 0, ',', '.') }}
+                    </span>
+                  </div>
                 </div>
+              </div>
             </div>
-            @empty
-            <div class="text-center py-4" style="color: var(--tg-theme-hint-color);">
-                <i class="bi bi-receipt display-6"></i>
-                <p class="mt-2">Belum ada transaksi.</p>
-            </div>
-            @endforelse
+          </div>
         </div>
+      @empty
+        <div class="text-center py-4" style="color: var(--tg-theme-hint-color);">
+          <i class="bi bi-receipt display-6"></i>
+          <p class="mt-2">Belum ada transaksi.</p>
+        </div>
+      @endforelse
+    </div>
   </div>
 </div>
 
