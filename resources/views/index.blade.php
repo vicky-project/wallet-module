@@ -64,6 +64,7 @@
             @endif
           </div>
           @forelse($dashboardData['recent_transactions'] as $transaction)
+          {{ dd($transaction) }}
             <div class="card border-0 mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
               <div class="card-body p-3">
                 <div class="d-flex align-items-center">
