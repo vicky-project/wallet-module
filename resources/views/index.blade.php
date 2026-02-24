@@ -121,7 +121,7 @@
 <!-- Container FAB -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
   <!-- Menu FAB -->
-  <div class="fab-menu d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu">
+  <div class="d-flex flex-column align-items-end gap-2 mb-2 d-none" id="fabMenu">
     <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
       <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
     </a>
@@ -156,12 +156,6 @@
       text-overflow: ellipsis;
       max-width: 100%;
     }
-    .fab-menu {
-      display: none;
-    }
-    .fab-menu.show {
-      display: flex;
-    }
     
     @media (min-width: 768px) {
       .text-truncate {
@@ -178,8 +172,8 @@
   function toggleFabMenu() {
     const menu = document.getElementById('fabMenu');
     const icon = document.getElementById('fabIcon');
-    menu.classList.toggle('show');
-    if (menu.classList.contains('show')) {
+    menu.classList.toggle('d-none');
+    if (menu.classList.contains('d-none')) {
         icon.className = 'bi bi-x-lg fs-4';
     } else {
         icon.className = 'bi bi-plus-lg fs-4';
@@ -191,7 +185,7 @@ document.addEventListener('click', function(event) {
     const fabContainer = document.querySelector('.position-fixed.bottom-0.end-0.p-3');
     if (fabContainer && !fabContainer.contains(event.target)) {
         const menu = document.getElementById('fabMenu');
-        menu.classList.remove('show');
+        menu.classList.remove('d-none');
         document.getElementById('fabIcon').className = 'bi bi-plus-lg fs-4';
     }
 });
