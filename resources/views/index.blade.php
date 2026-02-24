@@ -86,27 +86,27 @@
         </div>
         @forelse($dashboardData['recent_transactions'] as $transaction)
           <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
-          <div class="card-body p-3">
-            <div class="d-flex align-items-center">
-              <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #6c757d20; color: #6c757d;">
-                <i class="bi {{ $transaction['category_icon'] ?? 'bi-tag' }}"></i>
-              </div>
-              <div class="flex-grow-1" style="min-width: 0;">
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <h6 class="mb-0 text-truncate" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
-                    <small class="text-truncate d-block" style="color: var(--tg-theme-hint-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
-                  </div>
-                  <div class="text-end ms-2 flex-shrink-0">
-                    <span class="fw-bold {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}">
-                      {{ $transaction['type'] == 'income' ? '+' : '-' }} Rp {{ number_format($transaction['amount'], 0, ',', '.') }}
-                    </span>
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center">
+                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #6c757d20; color: #6c757d;">
+                  <i class="bi {{ $transaction['category_icon'] ?? 'bi-tag' }}"></i>
+                </div>
+                <div class="flex-grow-1" style="min-width: 0;">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <h6 class="mb-0 text-truncate" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
+                      <small class="text-truncate d-block" style="color: var(--tg-theme-hint-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
+                    </div>
+                    <div class="text-end ms-2 flex-shrink-0">
+                      <span class="fw-bold {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}">
+                        {{ $transaction['type'] == 'income' ? '+' : '-' }} Rp {{ number_format($transaction['amount'], 0, ',', '.') }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         @empty
           <div class="text-center py-4" style="color: var(--tg-theme-hint-color);">
             <i class="bi bi-receipt display-6"></i>
@@ -118,25 +118,7 @@
   </div>
 </div>
 
-<!-- Container untuk FAB dan menu -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
-  <!-- Menu FAB (muncul di atas tombol) -->
-  <div class="d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu" style="display: none;">
-    <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
-    </a>
-    <a href="{{ route('apps.uploads') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-upload me-2"></i>Upload File
-    </a>
-    <a href="{{ route('apps.reports') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-      <i class="bi bi-bar-chart me-2"></i>Laporan
-    </a>
-  </div>
-  <!-- Tombol FAB utama -->
-  <button class="btn rounded-circle shadow-lg" style="width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="toggleFabMenu()">
-    <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
-  </button>
-</div>
+
 @endsection
 
 @push('styles')
