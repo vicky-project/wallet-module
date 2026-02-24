@@ -118,22 +118,22 @@
 
 <!-- Container untuk FAB dan menu -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
-    <!-- Menu FAB (muncul di atas tombol) -->
-    <div class="d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu" style="display: none;">
-        <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-            <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
-        </a>
-        <a href="{{ route('apps.uploads') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-            <i class="bi bi-upload me-2"></i>Upload File
-        </a>
-        <a href="{{ route('apps.reports') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
-            <i class="bi bi-bar-chart me-2"></i>Laporan
-        </a>
-    </div>
-    <!-- Tombol FAB utama -->
-    <button class="btn rounded-circle shadow-lg" style="width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="toggleFabMenu()">
-        <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
-    </button>
+  <!-- Menu FAB (muncul di atas tombol) -->
+  <div class="d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu" style="display: none;">
+    <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+      <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
+    </a>
+    <a href="{{ route('apps.uploads') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+      <i class="bi bi-upload me-2"></i>Upload File
+    </a>
+    <a href="{{ route('apps.reports') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+      <i class="bi bi-bar-chart me-2"></i>Laporan
+    </a>
+  </div>
+  <!-- Tombol FAB utama -->
+  <button class="btn rounded-circle shadow-lg" style="width: 56px; height: 56px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;" onclick="toggleFabMenu()">
+    <i class="bi bi-plus-lg fs-4" id="fabIcon"></i>
+  </button>
 </div>
 @endsection
 
@@ -154,7 +154,7 @@
       text-overflow: ellipsis;
     }
     
-    @media(min-width: 768px){
+    @media (min-width: 768px) {
       .text-truncate {
         white-space: normal !important;
         overflow: visible !important;
@@ -183,7 +183,7 @@ document.addEventListener('click', function(event) {
     if (fabContainer && !fabContainer.contains(event.target)) {
         document.getElementById('fabMenu').style.display = 'none';
         document.getElementById('fabIcon').className = 'bi bi-plus-lg fs-4';
-  }
+    }
 });
 </script>
 @endpush
