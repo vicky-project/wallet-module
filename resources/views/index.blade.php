@@ -73,7 +73,7 @@
                   <div class="flex-grow-1">
                     <div class="d-flex justify-content-between">
                       <div>
-                        <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ str($transaction['description'])->limit(50) }}</h6>
+                        <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ str($transaction['description'])->limit(20) }}</h6>
                         <small style="color: var(--tg-theme-subtitle-text-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
                       </div>
                       <div class="text-end">
