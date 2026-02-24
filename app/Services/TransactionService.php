@@ -28,7 +28,7 @@ class TransactionService
 		TransactionRepository $transactionRepository,
 		AccountRepository $accountRepository,
 		CategoryRepository $categoryRepository,
-		BudgetRepository $budgetRepository
+		BudgetRepository $budgetRepository,
 	) {
 		$this->transactionRepository = $transactionRepository;
 		$this->accountRepository = $accountRepository;
@@ -41,8 +41,8 @@ class TransactionService
 	 */
 	public function getDashboardData(User $user, Carbon $now): array
 	{
-		$startOfMonth = $now->copy()->startOfMonth();
-		$endOfMonth = $now->copy()->endOfMonth();
+		$startOfMonth = $now->copy()->startOfWeek();
+		$endOfMonth = $now->copy()->endOfWeek();
 
 		// Get all transaction data in optimized queries
 		$data = $this->transactionRepository->getDashboardData($user, [
@@ -185,7 +185,7 @@ class TransactionService
 				Carbon::parse($templateData["start_date"]),
 				Carbon::parse($templateData["end_date"]),
 				$templateData["frequency"],
-				$templateData["interval"]
+				$templateData["interval"],
 			);
 		}
 
@@ -198,7 +198,7 @@ class TransactionService
 	public function updateTransaction(
 		string $uuid,
 		array $data,
-		User $user
+		User $user,
 	): array {
 		try {
 			$transaction = $this->transactionRepository->getByUuid($uuid);
@@ -238,7 +238,7 @@ class TransactionService
 			// Update transaction
 			$updatedTransaction = $this->transactionRepository->updateTransaction(
 				$transaction,
-				$data
+				$data,
 			);
 
 			return [
@@ -321,12 +321,12 @@ class TransactionService
 	 */
 	public function getPaginatedTransactions(
 		array $filters = [],
-		int $perPage = 20
+		int $perPage = 20,
 	): array {
 		try {
 			$paginator = $this->transactionRepository->getPaginatedTransactions(
 				$filters,
-				$perPage
+				$perPage,
 			);
 
 			// Calculate totals
@@ -354,13 +354,13 @@ class TransactionService
 
 	public function getPaginatedTransactionsDeleted(
 		array $filters = [],
-		int $perPage = 20
+		int $perPage = 20,
 	): array {
 		try {
 			$paginator = $this->transactionRepository->getPaginatedTransactions(
 				$filters,
 				$perPage,
-				true
+				true,
 			);
 
 			return ["success" => true, "transactions" => $paginator];
@@ -412,7 +412,7 @@ class TransactionService
 			// Get monthly trends
 			$monthlyTrends = $this->transactionRepository->getMonthlyTrends(
 				$user->id,
-				6
+				6,
 			);
 
 			// Get daily totals for current month
@@ -420,7 +420,7 @@ class TransactionService
 			$dailyTotals = $this->transactionRepository->getDailyTotals(
 				$user->id,
 				$now->startOfMonth()->format("Y-m-d"),
-				$now->endOfMonth()->format("Y-m-d")
+				$now->endOfMonth()->format("Y-m-d"),
 			);
 
 			return [
@@ -443,7 +443,7 @@ class TransactionService
 	public function importTransactions(
 		array $data,
 		User $user,
-		string $format = "excel"
+		string $format = "excel",
 	): array {
 		try {
 			// Parse data based on format
@@ -456,7 +456,7 @@ class TransactionService
 			// Import transactions
 			$results = $this->transactionRepository->importTransactions(
 				$parsedData,
-				$user
+				$user,
 			);
 
 			return [
@@ -465,7 +465,7 @@ class TransactionService
 				"message" => sprintf(
 					"Import selesai. Berhasil: %d, Gagal: %d",
 					$results["success"],
-					$results["failed"]
+					$results["failed"],
 				),
 			];
 		} catch (\Exception $e) {
@@ -491,7 +491,7 @@ class TransactionService
 		$budget = $this->budgetRepository->getActiveBudgetForDate(
 			$category,
 			$user->id,
-			Carbon::parse($transactionDate)
+			Carbon::parse($transactionDate),
 		);
 
 		if ($budget) {
@@ -557,14 +557,14 @@ class TransactionService
 			$transaction = [
 				"account_id" => $this->mapAccountName($row["Akun"] ?? $row["account"]),
 				"category_id" => $this->mapCategoryName(
-					$row["Kategori"] ?? $row["category"]
+					$row["Kategori"] ?? $row["category"],
 				),
 				"type" => $this->mapTransactionType($row["Tipe"] ?? $row["type"]),
 				"amount" => $this->parseAmount($row["Jumlah"] ?? $row["amount"]),
 				"description" => $row["Deskripsi"] ?? $row["description"],
 				"transaction_date" => $this->parseDate(
 					$row["Tanggal"] ?? $row["date"],
-					$row["Waktu"] ?? $row["time"]
+					$row["Waktu"] ?? $row["time"],
 				),
 				"notes" => $row["Catatan"] ?? ($row["notes"] ?? ""),
 				"payment_method" =>
@@ -576,7 +576,7 @@ class TransactionService
 			// For transfers, map to_account
 			if ($transaction["type"] === "transfer") {
 				$transaction["to_account_id"] = $this->mapAccountName(
-					$row["Akun Tujuan"] ?? $row["to_account"]
+					$row["Akun Tujuan"] ?? $row["to_account"],
 				);
 			}
 
@@ -687,7 +687,7 @@ class TransactionService
 
 			if ($transactions !== count($ids)) {
 				throw new \Exception(
-					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses."
+					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses.",
 				);
 			}
 
@@ -722,7 +722,7 @@ class TransactionService
 
 			if ($transactions !== count($ids)) {
 				throw new \Exception(
-					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses."
+					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses.",
 				);
 			}
 
@@ -754,7 +754,7 @@ class TransactionService
 
 			if ($transactions !== count($ids)) {
 				throw new \Exception(
-					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses."
+					"Beberapa transaksi tidak ditemukan atau tidak dapat diakses.",
 				);
 			}
 
@@ -791,7 +791,7 @@ class TransactionService
 			}
 
 			$duplicated = $this->transactionRepository->duplicateTransaction(
-				$transaction
+				$transaction,
 			);
 
 			return [
@@ -848,13 +848,13 @@ class TransactionService
 	public function getDailySummary(
 		User $user,
 		string $startDate,
-		string $endDate
+		string $endDate,
 	): array {
 		try {
 			$dailySummary = $this->transactionRepository->getDailySummary(
 				$user->id,
 				$startDate,
-				$endDate
+				$endDate,
 			);
 
 			return [
@@ -903,21 +903,21 @@ class TransactionService
 			$summary = $this->transactionRepository->getSummaryByType(
 				$user->id,
 				$startDate->format("Y-m-d"),
-				$endDate->format("Y-m-d")
+				$endDate->format("Y-m-d"),
 			);
 
 			// Get category spending
 			$categorySpending = $this->transactionRepository->getCategorySpending(
 				$user->id,
 				$startDate->format("Y-m-d"),
-				$endDate->format("Y-m-d")
+				$endDate->format("Y-m-d"),
 			);
 
 			// Get daily totals
 			$dailyTotals = $this->transactionRepository->getDailyTotals(
 				$user->id,
 				$startDate->format("Y-m-d"),
-				$endDate->format("Y-m-d")
+				$endDate->format("Y-m-d"),
 			);
 
 			return [
@@ -995,7 +995,7 @@ class TransactionService
 		Carbon $startDate,
 		Carbon $endDate,
 		RecurringFreq $frequency,
-		int $interval
+		int $interval,
 	): int {
 		return match ($frequency) {
 			RecurringFreq::DAILY => $startDate->diffInDays($endDate) / $interval,
@@ -1010,7 +1010,7 @@ class TransactionService
 
 	private function handleRecurringUpdate(
 		Transaction $transaction,
-		array $data
+		array $data,
 	): bool {
 		$template = $transaction->recurringTemplate;
 
