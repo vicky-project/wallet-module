@@ -22,23 +22,22 @@
             @if($dashboardData['accounts']->count() > 0)
               <div class="row g-3">
                 @foreach($dashboardData['accounts']->take(5) as $account)
-                {{ dd($account) }}
                 <div class="col-6 col-md-4 col-lg-3">
                   <div class="card border-0 h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
                       <div class="d-flex align-items-center mb-2">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: {{ $account->color }}20; color: {{ $account->color }};">
-                          <i class="bi {{ $account->icon }}"></i>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: {{ $account['color'] }}20; color: {{ $account['color'] }};">
+                          <i class="bi {{ $account['icon'] }}"></i>
                         </div>
                         <div class="flex-grow-1">
-                          <h6 class="mb-0 text-truncate" style="color: var(--tg-theme-text-color);">{{ $account->name }}</h6>
-                          @if($account->is_default)
+                          <h6 class="mb-0 text-truncate" style="color: var(--tg-theme-text-color);">{{ $account['name'] }}</h6>
+                          @if($account['is_default'])
                             <span class="badge bg-info" style="font-size: 0.6rem;">Utama</span>
                           @endif
                         </div>
                       </div>
                       <p class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">
-                        Rp {{ number_format($account->balance, 0, ',', '.') }}
+                        Rp {{ number_format($account['balance'], 0, ',', '.') }}
                       </p>
                     </div>
                   </div>
