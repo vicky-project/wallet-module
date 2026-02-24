@@ -64,22 +64,21 @@
             @endif
           </div>
           @forelse($dashboardData['recent_transactions'] as $transaction)
-          {{ dd($transaction) }}
             <div class="card border-0 mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
               <div class="card-body p-3">
                 <div class="d-flex align-items-center">
-                  <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: {{ $transaction->category?->color ?? '#6c757d' }}20; color: {{ $transaction->category?->color ?? '#6c757d' }};">
-                    <i class="bi {{ $transaction->category?->icon ?? 'bi-tag' }}"></i>
+                  <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #6c757d20; color: #6c757d;">
+                    <i class="bi {{ $transaction['category_icon'] ?? 'bi-tag' }}"></i>
                   </div>
                   <div class="flex-grow-1">
                     <div class="d-flex justify-content-between">
                       <div>
-                        <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ $transaction->description }}</h6>
-                        <small style="color: var(--tg-theme-subtitle-text-color);">{{ $transaction->account->name }} • {{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d M H:i') }}</small>
+                        <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
+                        <small style="color: var(--tg-theme-subtitle-text-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
                       </div>
                       <div class="text-end">
-                        <span class="fw-bold" style="color: {{ $transaction->type == 'income' ? 'var(--tg-theme-accent-text-color)' : 'var(--tg-theme-destructive-text-color)' }};">
-                          {{ $transaction->type == 'income' ? '+' : '-' }} Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+                        <span class="fw-bold" style="color: {{ $transaction['type'] == 'income' ? 'var(--tg-theme-accent-text-color)' : 'var(--tg-theme-destructive-text-color)' }};">
+                          {{ $transaction['type'] == 'income' ? '+' : '-' }} Rp {{ number_format($transaction['amount'], 0, ',', '.') }}
                         </span>
                       </div>
                     </div>
