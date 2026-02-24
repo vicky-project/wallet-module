@@ -26,7 +26,7 @@
               </div>
               <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['account_stats']['total'] }}</p>
               @if($dashboardData['account_stats']['active'])
-                <small class="text-muted">Active: {{ $dashboardData['account_stats']['active']->name }}</small>
+                <small class="text-muted">Active: {{ $dashboardData['account_stats']['active'] }}</small>
               @else
                 <small class="text-muted">Belum ada akun aktif</small>
               @endif
