@@ -152,7 +152,6 @@
   const fabIcon = document.getElementById('fabIcon');
   const fabIncome = document.getElementById('fabIncome');
   const fabExpense = document.getElementById('fabExpense');
-  const fabRecurring = document.getElementById('fabRecurring');
   const fabReport = document.getElementById('fabReport');
   const fabUpload= document.getElementById('fabUpload');
   
@@ -192,7 +191,7 @@
   });
 
   // Tutup FAB Menu ketika klik item menu
-  [fabIncome, fabExpense, fabRecurring, fabReport, fabUpload].forEach(item => {
+  [fabIncome, fabExpense, fabReport, fabUpload].forEach(item => {
     item.addEventListener('click', function(e) {
       e.stopPropagation();
       const action = this.id.replace('fab', '').toLowerCase();
