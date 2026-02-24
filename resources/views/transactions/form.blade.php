@@ -51,7 +51,7 @@
                 <option value="">Pilih Akun</option>
                 @foreach($accounts as $account)
                   <option value="{{ $account->id }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
-                    {{ $account->name }} (Rp {{ number_format($account->balance, 0, ',', '.') }})
+                    {{ $account->name }} (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
                   </option>
                 @endforeach
               </select>
