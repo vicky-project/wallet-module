@@ -90,13 +90,13 @@
               <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #6c757d20; color: #6c757d;">
                 <i class="bi {{ $transaction['category_icon'] ?? 'bi-tag' }}"></i>
               </div>
-              <div class="flex-grow-1">
+              <div class="flex-grow-1" style="min-width: 0;">
                 <div class="d-flex justify-content-between">
                   <div>
-                    <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
-                    <small style="color: var(--tg-theme-hint-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
+                    <h6 class="mb-0 text-truncate" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
+                    <small class="text-truncate d-block" style="color: var(--tg-theme-hint-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
                   </div>
-                  <div class="text-end">
+                  <div class="text-end ms-2 flex-shrink-0">
                     <span class="fw-bold {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}">
                       {{ $transaction['type'] == 'income' ? '+' : '-' }} Rp {{ number_format($transaction['amount'], 0, ',', '.') }}
                     </span>
@@ -147,6 +147,18 @@
     }
     .card:hover {
         transform: translateY(-2px);
+    }
+    .text-truncate {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    @media(min-width: 768px){
+      .text-truncate {
+        white-space: normal !important;
+        overflow: visible !important;
+      }
     }
 </style>
 @endpush
