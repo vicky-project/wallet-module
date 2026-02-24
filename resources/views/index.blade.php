@@ -80,9 +80,9 @@
     <!-- Transaksi Terbaru -->
     <div class="mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
-                <a href="#" class="small" style="color: var(--tg-theme-button-color);" onclick="showToast('Lihat semua transaksi', 'info')">Lihat semua</a>
-            </div>
+        <h5 class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">Transaksi Terbaru</h5>
+        <a href="{{ route('apps.transactions.index') }}" class="small" style="color: var(--tg-theme-button-color);">Lihat semua</a>
+      </div>
       @forelse($dashboardData['recent_transactions'] as $transaction)
         <div class="card border-0 shadow-sm mb-2" style="background-color: var(--tg-theme-secondary-bg-color);">
           <div class="card-body p-3">
@@ -94,7 +94,7 @@
                 <div class="d-flex justify-content-between">
                   <div>
                     <h6 class="mb-0" style="color: var(--tg-theme-text-color);">{{ $transaction['description'] }}</h6>
-                    <small class="text-muted">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
+                    <small style="color: var(--tg-theme-hint-color);">{{ $transaction['account_name'] }} • {{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d M H:i') }}</small>
                   </div>
                   <div class="text-end">
                     <span class="fw-bold {{ $transaction['type'] == 'income' ? 'text-success' : 'text-danger' }}">
@@ -122,7 +122,7 @@
 </button>
 
 <!-- FAB Menu -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 999; display: none;" id="fabMenu">
+<div class="position-fixed end-0 p-3" style="z-index: 999; display: none; bottom: 20px;" id="fabMenu">
   <div class="d-flex flex-column align-items-end gap-2">
     <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
       <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
