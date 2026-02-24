@@ -120,13 +120,13 @@
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
     <!-- Menu FAB (muncul di atas tombol) -->
     <div class="d-flex flex-column align-items-end gap-2 mb-2" id="fabMenu" style="display: none;">
-        <a href="{{ route('financial.transaction.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+        <a href="{{ route('apps.transactions.create') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
             <i class="bi bi-plus-circle me-2"></i>Transaksi Baru
         </a>
-        <a href="{{ route('financial.upload.form') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
+        <a href="{{ route('apps.uploads') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
             <i class="bi bi-upload me-2"></i>Upload File
         </a>
-        <a href="#" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;" onclick="showToast('Laporan', 'info')">
+        <a href="{{ route('apps.reports') }}" class="btn rounded-pill shadow-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; padding: 10px 20px;">
             <i class="bi bi-bar-chart me-2"></i>Laporan
         </a>
     </div>
