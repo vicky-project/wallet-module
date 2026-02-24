@@ -26,7 +26,7 @@
               <select name="apps_name" class="form-select @error('apps_name') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Aplikasi</option>
                 @foreach($appsOptions as $app)
-                  <option value="{{ $app }}" {{ old('apps_name') == $app ? 'selected' : '' }}>
+                  <option value="{{ $app }}" @selected(old('apps_name') == $app)>
                     {{ ucfirst($app) }}
                   </option>
                 @endforeach

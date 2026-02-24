@@ -22,6 +22,7 @@
             @if($dashboardData['accounts']->count() > 0)
               <div class="row g-3">
                 @foreach($dashboardData['accounts']->take(5) as $account)
+                {{ dd($account) }}
                 <div class="col-6 col-md-4 col-lg-3">
                   <div class="card border-0 h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
