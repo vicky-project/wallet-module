@@ -7,14 +7,14 @@
   <div class="col-12">
     <!-- Total Saldo -->
     <div class="text-center my-4">
-      <small class="text-muted text-uppercase" style="color: var(--tg-theme-hint-color);">Total Saldo</small>
-      <h1 class="display-4 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($dashboardData['total_balance'], 0, ',', '.') }}</h1>
+      <small class="text-uppercase" style="color: var(--tg-theme-hint-color);">Total Saldo</small>
+      <h1 class="display-1 fw-bold" style="color: var(--tg-theme-text-color);">Rp {{ number_format($dashboardData['total_balance'], 0, ',', '.') }}</h1>
     </div>
 
     <!-- Widget Stats -->
     <div class="row g-3 mb-4">
       <!-- Akun Widget -->
-      <div class="col-4">
+      <div class="col-md-4">
         <a href="{{ route('apps.accounts.index') }}" class="text-decoration-none">
           <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
             <div class="card-body p-3">
@@ -26,9 +26,9 @@
               </div>
               <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['account_stats']['total'] }}</p>
               @if($dashboardData['account_stats']['active'])
-                <small class="text-muted">Active: {{ $dashboardData['account_stats']['active'] }}</small>
+                <small style="color: var(--tg-theme-hint-color);">Active: {{ $dashboardData['account_stats']['active'] }}</small>
               @else
-                <small class="text-muted">Belum ada akun aktif</small>
+                <small style="color: var(--tg-theme-hint-color);">Belum ada akun aktif</small>
               @endif
             </div>
           </div>
@@ -36,7 +36,7 @@
       </div>
 
       <!-- Kategori Widget -->
-      <div class="col-4">
+      <div class="col-md-4">
         <a href="{{ route('apps.categories.index') }}" class="text-decoration-none">
           <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
             <div class="card-body p-3">
@@ -47,14 +47,14 @@
                 <h6 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">Kategori</h6>
               </div>
               <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['category_stats']['total'] }}</p>
-              <small class="text-muted">{{ $dashboardData['category_stats']['expense'] }} pengeluaran, {{ $dashboardData['category_stats']['income'] }} pemasukan</small>
+              <small style="color: var(--tg-theme-hint-color);">{{ $dashboardData['category_stats']['expense'] }} pengeluaran, {{ $dashboardData['category_stats']['income'] }} pemasukan</small>
             </div>
           </div>
         </a>
       </div>
 
       <!-- Anggaran Widget -->
-      <div class="col-4">
+      <div class="col-md-4">
         <a href="{{ route('apps.budgets.index') }}" class="text-decoration-none">
           <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
             <div class="card-body p-3">
@@ -67,9 +67,9 @@
               <p class="fw-bold mb-1" style="color: var(--tg-theme-text-color); font-size: 1.2rem;">{{ $dashboardData['budget_stats']['total'] }}</p>
               @if($dashboardData['budget_stats']['total'] > 0)
                 @php $percentage = $budgetStats['total_amount'] > 0 ? round(($dashboardData['budget_stats']['total_spent'] / $dashboardData['budget_stats']['total_amount']) * 100) : 0; @endphp
-                <small class="text-muted">Terpakai {{ $percentage }}%</small>
+                <small style="color: var(--tg-theme-hint-color);">Terpakai {{ $percentage }}%</small>
               @else
-                <small class="text-muted">Belum ada anggaran</small>
+                <small style="color: var(--tg-theme-hint-color);">Belum ada anggaran</small>
               @endif
             </div>
           </div>
