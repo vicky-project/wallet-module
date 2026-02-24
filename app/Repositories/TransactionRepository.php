@@ -45,17 +45,17 @@ class TransactionRepository extends BaseRepository
 					])
 					->select(
 						DB::raw(
-							'SUM(CASE WHEN t.type = "income" THEN t.amount ELSE 0 END) as income'
+							'SUM(CASE WHEN t.type = "income" THEN t.amount ELSE 0 END) as income',
 						),
 						DB::raw(
-							'SUM(CASE WHEN t.type = "expense" THEN t.amount ELSE 0 END) as expense'
+							'SUM(CASE WHEN t.type = "expense" THEN t.amount ELSE 0 END) as expense',
 						),
 						DB::raw(
-							'COUNT(CASE WHEN t.type = "income" THEN 1 END) as income_count'
+							'COUNT(CASE WHEN t.type = "income" THEN 1 END) as income_count',
 						),
 						DB::raw(
-							'COUNT(CASE WHEN t.type = "expense" THEN 1 END) as expense_count'
-						)
+							'COUNT(CASE WHEN t.type = "expense" THEN 1 END) as expense_count',
+						),
 					)
 					->first();
 
@@ -75,10 +75,10 @@ class TransactionRepository extends BaseRepository
 						"t.transaction_date",
 						"a.name as account_name",
 						"c.name as category_name",
-						"c.icon as category_icon"
+						"c.icon as category_icon",
 					)
 					->orderBy("t.transaction_date", "desc")
-					->limit(10)
+					->limit(5)
 					->get()
 					->map(function ($recent) {
 						return [
@@ -167,7 +167,7 @@ class TransactionRepository extends BaseRepository
 	 */
 	protected function getTransactionStatsSingleQuery(
 		User $user,
-		Carbon $now
+		Carbon $now,
 	): object {
 		$today = $now->toDateString();
 		$sevenDaysAgo = $now
@@ -229,11 +229,11 @@ class TransactionRepository extends BaseRepository
 			->select(
 				DB::raw("DAY(transaction_date) as day"),
 				DB::raw(
-					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income'
+					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income',
 				),
 				DB::raw(
-					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense'
-				)
+					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense',
+				),
 			)
 			->groupBy(DB::raw("DAY(transaction_date)"))
 			->orderBy("day")
@@ -272,7 +272,7 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function getUserTransactions(
 		array $filters = [],
-		bool $withRelations = true
+		bool $withRelations = true,
 	): Collection {
 		$user = auth()->user();
 		$cacheKey = Helper::generateCacheKey("user_transactions", [
@@ -338,7 +338,7 @@ class TransactionRepository extends BaseRepository
 					->orderBy("transaction_date", "desc")
 					->orderBy("created_at", "desc")
 					->get();
-			}
+			},
 		);
 	}
 
@@ -348,13 +348,13 @@ class TransactionRepository extends BaseRepository
 	public function getPaginatedTransactions(
 		array $filters = [],
 		int $perPage = 20,
-		bool $onlyTrash = false
+		bool $onlyTrash = false,
 	): LengthAwarePaginator {
 		$user = auth()->user();
 
 		$query = Transaction::with(["account", "toAccount", "category"])->where(
 			"user_id",
-			$user->id
+			$user->id,
 		);
 
 		if ($onlyTrash) {
@@ -448,12 +448,12 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function updateTransaction(
 		Transaction $transaction,
-		array $data
+		array $data,
 	): Transaction {
 		try {
 			$transaction = app(BalanceUpdateManager::class)->updateTransaction(
 				$transaction->id,
-				$data
+				$data,
 			);
 
 			// Invalidate cache
@@ -515,7 +515,7 @@ class TransactionRepository extends BaseRepository
 				return Transaction::with(["account", "toAccount", "category", "user"])
 					->where("uuid", $uuid)
 					->first();
-			}
+			},
 		);
 	}
 
@@ -524,7 +524,7 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function getRecentTransactions(
 		int $userId,
-		int $limit = 10
+		int $limit = 10,
 	): Collection {
 		$cacheKey = Helper::generateCacheKey("recent_transactions", [
 			"user_id" => $userId,
@@ -541,7 +541,7 @@ class TransactionRepository extends BaseRepository
 					->orderBy("created_at", "desc")
 					->limit($limit)
 					->get();
-			}
+			},
 		);
 	}
 
@@ -551,7 +551,7 @@ class TransactionRepository extends BaseRepository
 	public function getSummaryByType(
 		int $userId,
 		string $startDate,
-		string $endDate
+		string $endDate,
 	): array {
 		$cacheKey = Helper::generateCacheKey("transactions_summary", [
 			"user_id" => $userId,
@@ -569,7 +569,7 @@ class TransactionRepository extends BaseRepository
 					->select(
 						"type",
 						DB::raw("SUM(amount) as total_amount"),
-						DB::raw("COUNT(*) as count")
+						DB::raw("COUNT(*) as count"),
 					)
 					->groupBy("type")
 					->get()
@@ -589,7 +589,7 @@ class TransactionRepository extends BaseRepository
 				}
 
 				return $results;
-			}
+			},
 		);
 	}
 
@@ -599,7 +599,7 @@ class TransactionRepository extends BaseRepository
 	public function getCategorySpending(
 		int $userId,
 		string $startDate,
-		string $endDate
+		string $endDate,
 	): Collection {
 		$cacheKey = Helper::generateCacheKey("category_spending", [
 			"user_id" => $userId,
@@ -619,7 +619,7 @@ class TransactionRepository extends BaseRepository
 						"categories.type",
 						"categories.icon",
 						DB::raw("SUM(transactions.amount) as total_spent"),
-						DB::raw("COUNT(transactions.id) as transaction_count")
+						DB::raw("COUNT(transactions.id) as transaction_count"),
 					)
 					->where("transactions.user_id", $userId)
 					->where("transactions.type", TransactionType::EXPENSE)
@@ -631,11 +631,11 @@ class TransactionRepository extends BaseRepository
 						"categories.id",
 						"categories.name",
 						"categories.type",
-						"categories.icon"
+						"categories.icon",
 					)
 					->orderBy("total_spent", "desc")
 					->get();
-			}
+			},
 		);
 	}
 
@@ -645,19 +645,19 @@ class TransactionRepository extends BaseRepository
 	public function getDailyTotals(
 		int $userId,
 		string $startDate,
-		string $endDate
+		string $endDate,
 	): Collection {
 		return Transaction::where("user_id", $userId)
 			->whereBetween("transaction_date", [$startDate, $endDate])
 			->select(
 				DB::raw("DATE(transaction_date) as date"),
 				DB::raw(
-					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income'
+					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income',
 				),
 				DB::raw(
-					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense'
+					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense',
 				),
-				DB::raw("COUNT(*) as count")
+				DB::raw("COUNT(*) as count"),
 			)
 			->groupBy("date")
 			->orderBy("date")
@@ -693,11 +693,11 @@ class TransactionRepository extends BaseRepository
 	 */
 	public function getByCategory(
 		int $categoryId,
-		array $filters = []
+		array $filters = [],
 	): Collection {
 		$query = Transaction::with(["account", "category"])->where(
 			"category_id",
-			$categoryId
+			$categoryId,
 		);
 
 		if (isset($filters["start_date"])) {
@@ -731,11 +731,11 @@ class TransactionRepository extends BaseRepository
 				DB::raw("YEAR(transaction_date) as year"),
 				DB::raw("MONTH(transaction_date) as month"),
 				DB::raw(
-					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income'
+					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income',
 				),
 				DB::raw(
-					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense'
-				)
+					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense',
+				),
 			)
 			->groupBy("year", "month")
 			->orderBy("year", "asc")
@@ -745,7 +745,7 @@ class TransactionRepository extends BaseRepository
 		$trends = [];
 		foreach ($results as $result) {
 			$monthName = Carbon::create($result->year, $result->month, 1)->format(
-				"M Y"
+				"M Y",
 			);
 			$trends[$monthName] = [
 				"income" => $result->income,
@@ -762,7 +762,7 @@ class TransactionRepository extends BaseRepository
 	 */
 	private function updateBudgetSpent(
 		Transaction $transaction,
-		string $operation
+		string $operation,
 	): void {
 		$budgetRepo = app(BudgetRepository::class);
 
@@ -770,7 +770,7 @@ class TransactionRepository extends BaseRepository
 		$budget = $budgetRepo->getActiveBudgetForDate(
 			$transaction->category,
 			$transaction->user_id,
-			$transaction->transaction_date
+			$transaction->transaction_date,
 		);
 
 		if ($budget) {
@@ -778,13 +778,13 @@ class TransactionRepository extends BaseRepository
 				$budgetRepo->updateSpentAmount(
 					$budget->id,
 					$transaction->amount,
-					"add"
+					"add",
 				);
 			} else {
 				$budgetRepo->updateSpentAmount(
 					$budget->id,
 					$transaction->amount,
-					"subtract"
+					"subtract",
 				);
 			}
 		}
@@ -796,7 +796,7 @@ class TransactionRepository extends BaseRepository
 	private function getActiveBudgetForDate(
 		Category $category,
 		int $userId,
-		Carbon $date
+		Carbon $date,
 	): ?\Modules\Wallet\Models\Budget {
 		$budgetRepo = app(BudgetRepository::class);
 		return $budgetRepo->getActiveBudgetForDate($category, $userId, $date);
@@ -857,13 +857,13 @@ class TransactionRepository extends BaseRepository
 		$summary = $this->getSummaryByType(
 			$user->id,
 			$startOfMonth->format("Y-m-d"),
-			$endOfMonth->format("Y-m-d")
+			$endOfMonth->format("Y-m-d"),
 		);
 
 		$categorySpending = $this->getCategorySpending(
 			$user->id,
 			$startOfMonth->format("Y-m-d"),
-			$endOfMonth->format("Y-m-d")
+			$endOfMonth->format("Y-m-d"),
 		);
 
 		$recentTransactions = $this->getRecentTransactions($user->id, 5);
@@ -889,7 +889,7 @@ class TransactionRepository extends BaseRepository
 	{
 		$query = Transaction::with(["account", "toAccount", "category"])->where(
 			"user_id",
-			$userId
+			$userId,
 		);
 
 		if (!is_array($ids)) {
@@ -988,7 +988,7 @@ class TransactionRepository extends BaseRepository
 			$newData["uuid"],
 			$newData["created_at"],
 			$newData["updated_at"],
-			$newData["deleted_at"]
+			$newData["deleted_at"],
 		);
 
 		// Set new UUID
@@ -1074,7 +1074,7 @@ class TransactionRepository extends BaseRepository
 	public function getDailySummary(
 		int $userId,
 		string $startDate,
-		string $endDate
+		string $endDate,
 	): Collection {
 		return Transaction::where("user_id", $userId)
 			->whereBetween("transaction_date", [$startDate, $endDate])
@@ -1082,14 +1082,14 @@ class TransactionRepository extends BaseRepository
 				DB::raw("DATE(transaction_date) as date"),
 				DB::raw("COUNT(*) as total_transactions"),
 				DB::raw(
-					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income'
+					'SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income',
 				),
 				DB::raw(
-					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense'
+					'SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expense',
 				),
 				DB::raw(
-					'SUM(CASE WHEN type = "transfer" THEN amount ELSE 0 END) as total_transfer'
-				)
+					'SUM(CASE WHEN type = "transfer" THEN amount ELSE 0 END) as total_transfer',
+				),
 			)
 			->groupBy("date")
 			->orderBy("date", "desc")
@@ -1104,7 +1104,7 @@ class TransactionRepository extends BaseRepository
 		$user = auth()->user();
 		$query = Transaction::with(["account", "toAccount", "category"])->where(
 			"user_id",
-			$user->id
+			$user->id,
 		);
 
 		// Amount range
@@ -1140,7 +1140,7 @@ class TransactionRepository extends BaseRepository
 			$query->where(function ($q) use ($filters) {
 				$q->whereIn("account_id", $filters["account_ids"])->orWhereIn(
 					"to_account_id",
-					$filters["account_ids"]
+					$filters["account_ids"],
 				);
 			});
 		}
