@@ -108,25 +108,25 @@
 
 <!-- Modal Konfirmasi Hapus -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background-color: var(--tg-theme-section-bg-color); border: none;">
-            <div class="modal-header" style="border-bottom-color: var(--tg-theme-section-separator-color);">
-                <h5 class="modal-title" id="deleteModalLabel" style="color: var(--tg-theme-text-color);">Konfirmasi Hapus</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
-            </div>
-            <div class="modal-body" style="color: var(--tg-theme-text-color);">
-                Apakah Anda yakin ingin menghapus akun <strong id="deleteAccountName"></strong>? Semua transaksi terkait akan ikut terhapus.
-            </div>
-            <div class="modal-footer" style="border-top-color: var(--tg-theme-section-separator-color);">
-                <button type="button" class="btn" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);" data-bs-dismiss="modal">Batal</button>
-                <form id="delete-form" method="POST" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn" style="background-color: var(--tg-theme-destructive-text-color); color: white; border: none;">Hapus</button>
-                </form>
-            </div>
-        </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: var(--tg-theme-section-bg-color); border: none;">
+      <div class="modal-header" style="border-bottom-color: var(--tg-theme-section-separator-color);">
+        <h5 class="modal-title" id="deleteModalLabel" style="color: var(--tg-theme-text-color);">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+      </div>
+      <div class="modal-body" style="color: var(--tg-theme-text-color);">
+        Apakah Anda yakin ingin menghapus akun <strong id="deleteAccountName"></strong>? Semua transaksi terkait akan ikut terhapus.
+      </div>
+      <div class="modal-footer" style="border-top-color: var(--tg-theme-section-separator-color);">
+        <button type="button" class="btn" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);" data-bs-dismiss="modal">Batal</button>
+        <form id="delete-form" method="POST" style="display: inline;">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn" style="background-color: var(--tg-theme-destructive-text-color); color: white; border: none;">Hapus</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 @endsection
 
