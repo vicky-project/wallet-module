@@ -18,11 +18,11 @@
     <!-- Grid Daftar Akun -->
     <div class="row g-3">
       @forelse($accounts as $account)
-        <div class="col-6 col-md-4 col-lg-3">
+        <div class="col-6 col-md-6 col-lg-3">
           <div class="card border-0 shadow-sm h-100 position-relative" style="background-color: var(--tg-theme-secondary-bg-color);">
             <!-- Tombol Aksi (Edit & Hapus) -->
             <div class="position-absolute top-0 end-0 p-2 d-flex gap-1">
-              <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-sm rounded-circle" style="width: 32px; height: 32px; padding: 0; background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);" title="Edit">
+              <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 32px; height: 32px; padding: 0; background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);" title="Edit">
                 <i class="bi bi-pencil"></i>
               </a>
               <button type="button" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 32px; height: 32px; padding: 0;" onclick="confirmDelete({{ $account->id }}, '{{ $account->name }}')" title="Hapus">
