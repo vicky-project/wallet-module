@@ -56,7 +56,7 @@ class CategoryService
 			return $this->categoryRepository->getUserCategoriesWithStats();
 		} catch (\Exception $e) {
 			throw new \RuntimeException(
-				"Failed to fetch categories data: " . $e->getMessage()
+				"Failed to fetch categories data: " . $e->getMessage(),
 			);
 		}
 	}
@@ -68,12 +68,12 @@ class CategoryService
 		int $perPage = 15,
 		string $type = null,
 		string $search = null,
-		bool $includeInactive = false
+		bool $includeInactive = false,
 	) {
 		$user = auth()->user();
 
 		// Get base query
-		$query = Category::where("user_id", $user->id);
+		$query = Category::withCount("transactions")->where("user_id", $user->id);
 
 		// Apply filters
 		if ($type && in_array($type, CategoryType::cases())) {
@@ -85,7 +85,7 @@ class CategoryService
 				$q->where("name", "LIKE", "%{$search}%")->orWhere(
 					"description",
 					"LIKE",
-					"%{$search}%"
+					"%{$search}%",
 				);
 			});
 		}
@@ -172,7 +172,7 @@ class CategoryService
 		} catch (\Exception $e) {
 			DB::rollBack();
 			throw new \RuntimeException(
-				"Failed to create category: " . $e->getMessage()
+				"Failed to create category: " . $e->getMessage(),
 			);
 		}
 	}
@@ -187,7 +187,7 @@ class CategoryService
 		// Check authorization
 		if ($category->user_id !== $user->id) {
 			throw new \Illuminate\Auth\Access\AuthorizationException(
-				"You are not authorized to update this category"
+				"You are not authorized to update this category",
 			);
 		}
 
@@ -199,7 +199,7 @@ class CategoryService
 				$data["slug"] = $this->generateSlug(
 					$data["name"],
 					$user->id,
-					$category->id
+					$category->id,
 				);
 			}
 
@@ -212,7 +212,7 @@ class CategoryService
 			// Update category
 			$updatedCategory = $this->categoryRepository->updateCategory(
 				$category,
-				$data
+				$data,
 			);
 
 			DB::commit();
@@ -221,7 +221,7 @@ class CategoryService
 		} catch (\Exception $e) {
 			DB::rollBack();
 			throw new \RuntimeException(
-				"Failed to update category: " . $e->getMessage()
+				"Failed to update category: " . $e->getMessage(),
 			);
 		}
 	}
@@ -236,7 +236,7 @@ class CategoryService
 		// Check authorization
 		if ($category->user_id !== $user->id) {
 			throw new \Illuminate\Auth\Access\AuthorizationException(
-				"You are not authorized to delete this category"
+				"You are not authorized to delete this category",
 			);
 		}
 
@@ -255,7 +255,7 @@ class CategoryService
 		} catch (\Exception $e) {
 			DB::rollBack();
 			throw new \RuntimeException(
-				"Failed to delete category: " . $e->getMessage()
+				"Failed to delete category: " . $e->getMessage(),
 			);
 		}
 	}
@@ -270,7 +270,7 @@ class CategoryService
 		// Check authorization
 		if ($category->user_id !== $user->id) {
 			throw new \Illuminate\Auth\Access\AuthorizationException(
-				"You are not authorized to modify this category"
+				"You are not authorized to modify this category",
 			);
 		}
 
@@ -281,7 +281,7 @@ class CategoryService
 			return $category;
 		} catch (\Exception $e) {
 			throw new \RuntimeException(
-				"Failed to toggle category status: " . $e->getMessage()
+				"Failed to toggle category status: " . $e->getMessage(),
 			);
 		}
 	}
@@ -332,13 +332,13 @@ class CategoryService
 	 */
 	public function getCategoriesWithMonthlyTotals(
 		int $month = null,
-		int $year = null
+		int $year = null,
 	): Collection {
 		$user = auth()->user();
 		return $this->categoryRepository->getWithMonthlyTotals(
 			$user,
 			$month,
-			$year
+			$year,
 		);
 	}
 
@@ -348,7 +348,7 @@ class CategoryService
 	private function generateSlug(
 		string $name,
 		int $userId,
-		?int $exceptId = null
+		?int $exceptId = null,
 	): string {
 		$slug = \Illuminate\Support\Str::slug($name);
 		$originalSlug = $slug;
@@ -377,21 +377,21 @@ class CategoryService
 	public function getCategoryUsage(
 		Category $category,
 		?string $startDate = null,
-		?string $endDate = null
+		?string $endDate = null,
 	): array {
 		$user = auth()->user();
 
 		// Check authorization
 		if ($category->user_id !== $user->id) {
 			throw new \Illuminate\Auth\Access\AuthorizationException(
-				"You are not authorized to view this category"
+				"You are not authorized to view this category",
 			);
 		}
 
 		return $this->categoryRepository->getCategoryUsage(
 			$category,
 			$startDate,
-			$endDate
+			$endDate,
 		);
 	}
 
@@ -400,13 +400,13 @@ class CategoryService
 	 */
 	public function getAllCategoriesUsage(
 		?string $startDate = null,
-		?string $endDate = null
+		?string $endDate = null,
 	): Collection {
 		$user = auth()->user();
 		return $this->categoryRepository->getAllCategoriesUsage(
 			$user,
 			$startDate,
-			$endDate
+			$endDate,
 		);
 	}
 
@@ -416,7 +416,7 @@ class CategoryService
 	public function searchCategories(
 		User $user,
 		string $search,
-		string $type = null
+		string $type = null,
 	): Collection {
 		return $this->categoryRepository->search($search, $user, $type);
 	}
@@ -426,13 +426,13 @@ class CategoryService
 	 */
 	public function getPopularCategories(
 		int $limit = 5,
-		string $type = null
+		string $type = null,
 	): Collection {
 		$user = auth()->user();
 		return $this->categoryRepository->getPopularCategories(
 			$user,
 			$limit,
-			$type
+			$type,
 		);
 	}
 
@@ -441,13 +441,13 @@ class CategoryService
 	 */
 	public function getUnbudgetedCategories(
 		int $month = null,
-		int $year = null
+		int $year = null,
 	): Collection {
 		$user = auth()->user();
 		return $this->categoryRepository->getUnbudgetedCategories(
 			$user,
 			$month,
-			$year
+			$year,
 		);
 	}
 
@@ -480,7 +480,7 @@ class CategoryService
 		} catch (\Exception $e) {
 			DB::rollBack();
 			throw new \RuntimeException(
-				"Failed to bulk update categories: " . $e->getMessage()
+				"Failed to bulk update categories: " . $e->getMessage(),
 			);
 		}
 	}
@@ -509,7 +509,7 @@ class CategoryService
 					if (!isset($categoryData["slug"]) && isset($categoryData["name"])) {
 						$categoryData["slug"] = $this->generateSlug(
 							$categoryData["name"],
-							$user->id
+							$user->id,
 						);
 					}
 
@@ -534,7 +534,7 @@ class CategoryService
 		} catch (\Exception $e) {
 			DB::rollBack();
 			throw new \RuntimeException(
-				"Failed to import categories: " . $e->getMessage()
+				"Failed to import categories: " . $e->getMessage(),
 			);
 		}
 	}

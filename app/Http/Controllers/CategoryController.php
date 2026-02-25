@@ -38,7 +38,6 @@ class CategoryController extends Controller
 
 		// Get budget warnings for alert
 		$budgetWarnings = $this->categoryService->getBudgetWarnings();
-		dd($categories, $data, $budgetWarnings);
 
 		return view("wallet::categories.index", [
 			"categories" => $categories,
