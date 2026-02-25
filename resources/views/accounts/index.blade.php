@@ -7,52 +7,52 @@
   <div class="col-12">
     <!-- Header dengan judul dan tombol tambah -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold" style="color: var(--tg-theme-text-color);">
-                <i class="bi bi-wallet2 me-2" style="color: var(--tg-theme-accent-text-color);"></i>Semua Akun
-            </h4>
-            <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
-                <i class="bi bi-plus-circle me-1"></i>Tambah
-            </a>
-        </div>
+      <h4 class="fw-bold" style="color: var(--tg-theme-text-color);">
+        <i class="bi bi-wallet2 me-2" style="color: var(--tg-theme-accent-text-color);"></i>Semua Akun
+      </h4>
+      <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
+        <i class="bi bi-plus-circle me-1"></i>Tambah
+      </a>
+    </div>
 
     <!-- Statistik Akun -->
     <div class="row g-3 mb-4">
-            <div class="col-6 col-md-6">
-                <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
-                    <div class="card-body p-3">
-                        <div class="d-flex align-items-center">
-                            <div class="rounded-circle p-2 me-2" style="background-color: rgba(64, 167, 227, 0.1); color: #40a7e3;">
-                                <i class="bi bi-wallet2"></i>
-                            </div>
-                            <div>
-                                <small class="text-muted">Total Akun</small>
-                                <h5 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">{{ $stats['total_accounts'] }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <div class="col-6 col-md-6">
+        <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
+          <div class="card-body p-3">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle p-2 me-2" style="background-color: rgba(64, 167, 227, 0.1); color: #40a7e3;">
+                <i class="bi bi-wallet2"></i>
+              </div>
+              <div>
+                <small style="color: var(--tg-theme-hint-color);">Total Akun</small>
+                <h5 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">{{ $stats['total_accounts'] }}</h5>
+              </div>
             </div>
-            <div class="col-6 col-md-6">
-                <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
-                    <div class="card-body p-3">
-                        <div class="d-flex align-items-center">
-                            <div class="rounded-circle p-2 me-2" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
-                                <i class="bi bi-cash-stack"></i>
-                            </div>
-                            <div>
-                                <small class="text-muted">Total Saldo</small>
-                                <h5 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">{{ $stats['formatted_total_balance'] }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="col-6 col-md-6">
+        <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
+          <div class="card-body p-3">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle p-2 me-2" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="bi bi-cash-stack"></i>
+              </div>
+              <div>
+                <small style="color: var(--tg-theme-hint-color);">Total Saldo</small>
+                <h5 class="mb-0 fw-bold" style="color: var(--tg-theme-text-color);">{{ $stats['formatted_total_balance'] }}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Grid Daftar Akun -->
     <div class="row g-3">
             @forelse($accounts as $account)
-            <div class="col-6 col-md-6 col-lg-3">
+            <div class="col-md-6 col-lg-3">
                 <div class="card border-0 shadow-sm h-100 position-relative" style="background-color: var(--tg-theme-secondary-bg-color); transition: transform 0.2s, box-shadow 0.2s;">
                     <!-- Tombol Aksi (Edit & Hapus) -->
                     <div class="position-absolute top-0 end-0 p-2 d-flex gap-1">
