@@ -35,6 +35,7 @@ class AccountController extends BaseController
 				->getRepository()
 				->getUserAccounts($user, $filters);
 			$stats = $this->service->getAccountSummary($user);
+			dd($accounts, $stats);
 
 			return view("wallet::accounts.index", compact("accounts", "stats"));
 		} catch (\Exception $e) {
@@ -200,7 +201,7 @@ class AccountController extends BaseController
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				500
+				500,
 			);
 		}
 	}
@@ -210,7 +211,7 @@ class AccountController extends BaseController
 	 */
 	public function recalculateBalance(
 		Request $request,
-		Account $account
+		Account $account,
 	): JsonResponse|RedirectResponse {
 		try {
 			$this->service->validateAccount($account, $request->user());
@@ -218,7 +219,7 @@ class AccountController extends BaseController
 
 			return back()->with(
 				"success",
-				"Account balance recalculated successfully"
+				"Account balance recalculated successfully",
 			);
 
 			/* return response()->json([
@@ -233,7 +234,7 @@ class AccountController extends BaseController
 					"message" => "Failed to recalculate balance",
 					"error" => $e->getMessage(),
 				],
-				Response::HTTP_BAD_REQUEST
+				Response::HTTP_BAD_REQUEST,
 			);
 		}
 	}
