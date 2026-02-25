@@ -150,7 +150,7 @@
 
     <!-- Pagination -->
     <div class="d-flex d-flex-column flex-md-row justify-content-center mt-4 gap-3">
-      @if($categories->total > 0)
+      @if($categories->total() > 0)
         <div style="color: var(--tg-theme-hint-color);font-size: 0.9rem;">
           Menampilkan {{ $categories->firstItem() }} - {{ $categories->lastItem() }} dari {{ $categories->total() }} data.
         </div>
