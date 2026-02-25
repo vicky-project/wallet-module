@@ -4,9 +4,9 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12">
-        <!-- Header dengan judul dan tombol tambah -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="col-12">
+    <!-- Header dengan judul dan tombol tambah -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold" style="color: var(--tg-theme-text-color);">
                 <i class="bi bi-wallet2 me-2" style="color: var(--tg-theme-accent-text-color);"></i>Semua Akun
             </h4>
@@ -15,8 +15,8 @@
             </a>
         </div>
 
-        <!-- Statistik Akun -->
-        <div class="row g-3 mb-4">
+    <!-- Statistik Akun -->
+    <div class="row g-3 mb-4">
             <div class="col-6 col-md-6">
                 <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
@@ -49,8 +49,8 @@
             </div>
         </div>
 
-        <!-- Grid Daftar Akun -->
-        <div class="row g-3">
+    <!-- Grid Daftar Akun -->
+    <div class="row g-3">
             @forelse($accounts as $account)
             <div class="col-6 col-md-6 col-lg-3">
                 <div class="card border-0 shadow-sm h-100 position-relative" style="background-color: var(--tg-theme-secondary-bg-color); transition: transform 0.2s, box-shadow 0.2s;">
@@ -83,7 +83,7 @@
                         @if($account->account_number)
                             <small class="text-muted d-block text-truncate">{{ $account->account_number }}</small>
                         @endif
-                        <small class="text-muted">{{ ucfirst(str_replace('_', ' ', $account->type)) }}</small>
+                        <small class="text-muted">{{ ucfirst(str_replace('_', ' ', $account->type->value)) }}</small>
                     </a>
                 </div>
             </div>
@@ -97,13 +97,13 @@
             @endforelse
         </div>
 
-        <!-- Tombol Kembali -->
-        <div class="mt-4">
+    <!-- Tombol Kembali -->
+    <div class="mt-4">
             <a href="{{ route('apps.financial') }}" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
                 <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
             </a>
         </div>
-    </div>
+  </div>
 </div>
 
 <!-- Modal Konfirmasi Hapus -->
