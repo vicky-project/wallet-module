@@ -18,7 +18,7 @@
     <!-- Grid Daftar Akun -->
     <div class="row g-3">
       @forelse($accounts as $account)
-        <div class="col-6 col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3">
           <div class="card border-0 shadow-sm h-100 position-relative" style="background-color: var(--tg-theme-secondary-bg-color);">
             <!-- Tombol Aksi (Edit & Hapus) -->
             <div class="position-absolute top-0 end-0 p-2 d-flex gap-1">
