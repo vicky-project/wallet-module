@@ -56,12 +56,12 @@
           <div class="card border-0 shadow-sm h-100 position-relative" style="background-color: var(--tg-theme-secondary-bg-color); transition: transform 0.2s, box-shadow 0.2s;">
             <!-- Tombol Aksi (Edit & Hapus) -->
             <div class="position-absolute top-0 end-0 p-2 d-flex gap-1">
-               <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 32px; height: 32px; padding: 1rem; background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </a>
+               <a href="{{ route('apps.accounts.edit', $account) }}" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 32px; height: 32px; background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
               <button type="button" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 32px; height: 32px; padding: 0;" onclick="showDeleteModal({{ $account->id }}, '{{ $account->name }}')" title="Hapus">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                <i class="bi bi-trash"></i>
+              </button>
             </div>
 
             <!-- Konten Akun (dapat diklik ke detail) -->
