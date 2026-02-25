@@ -17,6 +17,12 @@ $middleware = ["auth"];
 if (class_exists(RequireTrustedDevice::class)) {
 	$middleware[] = RequireTrustedDevice::class;
 }
+if (
+	Module::collections()->has("Telegram") &&
+	class_exists(\Modules\Telegram\Auth\TelegramGuard::class)
+) {
+	$middlewares[] = "auth:telegram";
+}
 
 Route::middleware($middleware)->group(function () {
 	Route::prefix("apps")
@@ -27,7 +33,7 @@ Route::middleware($middleware)->group(function () {
 			});
 
 			Route::get("preview", [DashboardController::class, "index"])->name(
-				"financial"
+				"financial",
 			);
 			Route::get("preview/refresh", [
 				DashboardController::class,
@@ -90,7 +96,7 @@ Route::middleware($middleware)->group(function () {
 				"bulkUpdate",
 			])->name("categories.bulk-update");
 			Route::post("categories/import", [CategoryController::class, ""])->name(
-				"categories.import"
+				"categories.import",
 			);
 			Route::delete("categories/bulk-delete", [
 				CategoryController::class,
@@ -150,19 +156,19 @@ Route::middleware($middleware)->group(function () {
 
 			// Report routes
 			Route::get("reports/tags", [ReportController::class, "reportTag"])->name(
-				"reports.tags"
+				"reports.tags",
 			);
 			Route::get("reports", [ReportController::class, "index"])->name(
-				"reports"
+				"reports",
 			);
 
 			// Tag routes
 			Route::get("tags/trash", [TagController::class, "trash"])->name(
-				"tags.trash"
+				"tags.trash",
 			);
 			Route::resource("tags", TagController::class);
 			Route::post("tags/merge", [TagController::class, "merge"])->name(
-				"tags.merge"
+				"tags.merge",
 			);
 			Route::post("tags/bulk-assign", [
 				TagController::class,
@@ -179,10 +185,10 @@ Route::middleware($middleware)->group(function () {
 
 			// Upload routes
 			Route::get("uploads", [UploadController::class, "index"])->name(
-				"uploads"
+				"uploads",
 			);
 			Route::post("uploads", [UploadController::class, "upload"])->name(
-				"uploads.store"
+				"uploads.store",
 			);
 		});
 });
