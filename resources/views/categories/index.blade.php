@@ -6,9 +6,9 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="col-12">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold" style="color: var(--tg-theme-text-color);">
                 <i class="bi bi-tags me-2" style="color: var(--tg-theme-accent-text-color);"></i>Semua Kategori
             </h4>
@@ -17,8 +17,8 @@
             </a>
         </div>
 
-        <!-- Statistik Kategori -->
-        <div class="row g-3 mb-4">
+    <!-- Statistik Kategori -->
+    <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
@@ -81,8 +81,8 @@
             </div>
         </div>
 
-        <!-- Tabel Kategori -->
-        <div class="card border-0 shadow-sm" style="background-color: var(--tg-theme-secondary-bg-color);">
+    <!-- Tabel Kategori -->
+    <div class="card border-0 shadow-sm" style="background-color: var(--tg-theme-secondary-bg-color);">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0" style="color: var(--tg-theme-text-color);">
@@ -109,7 +109,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge {{ $category->type == CategoryType::EXPENSE ? 'bg-danger' : 'bg-success' }}">{{ ucfirst($category->type) }}</span>
+                                    <span class="badge {{ $category->type == CategoryType::EXPENSE ? 'bg-danger' : 'bg-success' }}">{{ ucfirst($category->type->value) }}</span>
                                 </td>
                                 <td><code>{{ $category->icon ?? '-' }}</code></td>
                                 <td>
@@ -148,18 +148,18 @@
             </div>
         </div>
 
-        <!-- Pagination -->
-        <div class="mt-4 d-flex justify-content-center">
+    <!-- Pagination -->
+    <div class="mt-4 d-flex justify-content-center">
             {{ $categories->links() }}
         </div>
 
-        <!-- Tombol Kembali -->
-        <div class="mt-4">
+    <!-- Tombol Kembali -->
+    <div class="mt-4">
             <a href="{{ route('apps.financial') }}" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
                 <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
             </a>
         </div>
-    </div>
+  </div>
 </div>
 
 <!-- Modal Konfirmasi Hapus -->
