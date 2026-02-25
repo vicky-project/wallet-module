@@ -199,7 +199,7 @@
 <style>
     .table {
         --bs-table-bg: transparent;
-        --bs-table-hover-bg: rgba(var(--tg-theme-button-color-rgb), 0.05);
+        --bs-table-hover-bg: rgba(var(--tg-theme-button-color-rgb), 0.5);
     }
     .table th {
         font-weight: 600;
