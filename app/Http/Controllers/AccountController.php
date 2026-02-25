@@ -35,7 +35,6 @@ class AccountController extends BaseController
 				->getRepository()
 				->getUserAccounts($user, $filters);
 			$stats = $this->service->getAccountSummary($user);
-			dd($accounts, $stats);
 
 			return view("wallet::accounts.index", compact("accounts", "stats"));
 		} catch (\Exception $e) {

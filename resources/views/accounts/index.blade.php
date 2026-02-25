@@ -17,7 +17,7 @@
 
         <!-- Statistik Akun -->
         <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-6">
                 <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
                         <div class="d-flex align-items-center">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-6">
                 <div class="card border-0 shadow-sm h-100" style="background-color: var(--tg-theme-secondary-bg-color);">
                     <div class="card-body p-3">
                         <div class="d-flex align-items-center">
@@ -52,7 +52,7 @@
         <!-- Grid Daftar Akun -->
         <div class="row g-3">
             @forelse($accounts as $account)
-            <div class="col-6 col-md-4 col-lg-3">
+            <div class="col-6 col-md-6 col-lg-3">
                 <div class="card border-0 shadow-sm h-100 position-relative" style="background-color: var(--tg-theme-secondary-bg-color); transition: transform 0.2s, box-shadow 0.2s;">
                     <!-- Tombol Aksi (Edit & Hapus) -->
                     <div class="position-absolute top-0 end-0 p-2 d-flex gap-1">
