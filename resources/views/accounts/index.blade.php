@@ -44,7 +44,7 @@
                 </div>
               </div>
               <p class="fw-bold mb-0" style="color: var(--tg-theme-text-color);">
-                Rp {{ number_format($account->balance, 0, ',', '.') }}
+                Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }}
               </p>
               @if($account->account_number)
                 <small class="text-muted">{{ $account->account_number }}</small>
