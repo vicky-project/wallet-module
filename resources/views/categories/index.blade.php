@@ -125,7 +125,7 @@
                   </td>
                   <td class="text-end pe-4">
                     <div class="d-flex gap-1 justify-content-end">
-                      <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-outline-success rounded-circle" style="width: 32px; height: 32px;" title="Show">
+                      <a href="{{ route('apps.categories.show', $category) }}" class="btn btn-sm btn-outline-success rounded-circle" style="width: 32px; height: 32px;" title="Show">
                         <i class="bi bi-eye"></i>
                       </a>
                       <a href="{{ route('apps.categories.edit', $category) }}" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 32px; height: 32px;" title="Edit">
