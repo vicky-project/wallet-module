@@ -79,7 +79,7 @@ class DashboardController extends Controller
 	{
 		$transactions = $this->transactionService->transactionRepository->getPaginatedTransactions(
 			["limit" => 10],
-			10
+			10,
 		);
 
 		return collect($transactions["transactions"] ?? [])

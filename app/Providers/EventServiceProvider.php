@@ -3,6 +3,7 @@
 namespace Modules\Wallet\Providers;
 
 use Modules\Wallet\Events\NewTransactionEvent;
+use Modules\Wallet\Events\LowBalanceEvent;
 use Modules\Telegram\Listeners\SendTelegramNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -15,6 +16,7 @@ class EventServiceProvider extends ServiceProvider
 	 */
 	protected $listen = [
 		NewTransactionEvent::class => [SendTelegramNotification::class],
+		LowBalanceEvent::class => [SendTelegramNotification::class],
 	];
 
 	/**

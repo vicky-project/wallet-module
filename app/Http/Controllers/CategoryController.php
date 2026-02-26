@@ -33,7 +33,7 @@ class CategoryController extends Controller
 			perPage: $request->get("per_page", 15),
 			type: $request->get("type"),
 			search: $request->get("search"),
-			includeInactive: $request->boolean("include_inactive")
+			includeInactive: $request->boolean("include_inactive"),
 		);
 
 		// Get budget warnings for alert
@@ -60,7 +60,7 @@ class CategoryController extends Controller
 			$user = $request->user();
 			$category = $this->categoryService->createCategory(
 				$user,
-				$request->validated()
+				$request->validated(),
 			);
 
 			return redirect()
@@ -89,7 +89,7 @@ class CategoryController extends Controller
 		try {
 			$updatedCategory = $this->categoryService->updateCategory(
 				$category,
-				$request->validated()
+				$request->validated(),
 			);
 
 			return redirect()
@@ -137,7 +137,7 @@ class CategoryController extends Controller
 			$usage = $this->categoryService->getCategoryUsage(
 				$category,
 				$request->get("start_date"),
-				$request->get("end_date")
+				$request->get("end_date"),
 			);
 
 			return response()->json([
@@ -150,7 +150,7 @@ class CategoryController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				400
+				400,
 			);
 		}
 	}
@@ -170,12 +170,12 @@ class CategoryController extends Controller
 		try {
 			$count = $this->categoryService->bulkUpdate(
 				$request->category_ids,
-				$request->only(["is_active", "is_budgetable"])
+				$request->only(["is_active", "is_budgetable"]),
 			);
 
 			return back()->with(
 				"success",
-				"{$count} categories updated successfully"
+				"{$count} categories updated successfully",
 			);
 		} catch (\Exception $e) {
 			return response()->json(
@@ -183,7 +183,7 @@ class CategoryController extends Controller
 					"success" => false,
 					"message" => $e->getMessage(),
 				],
-				400
+				400,
 			);
 		}
 	}
@@ -198,7 +198,7 @@ class CategoryController extends Controller
 	public function dropdown(Request $request)
 	{
 		$categories = $this->categoryService->getCategoriesForDropdown(
-			$request->get("type")
+			$request->get("type"),
 		);
 
 		return response()->json([
