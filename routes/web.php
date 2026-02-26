@@ -13,18 +13,19 @@ use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
 use Rappasoft\LaravelAuthenticationLog\Middleware\RequireTrustedDevice;
 
-$middleware = ["auth"];
+$middlewares = ["auth"];
 if (class_exists(RequireTrustedDevice::class)) {
-	$middleware[] = RequireTrustedDevice::class;
+	$middlewares[] = RequireTrustedDevice::class;
 }
 if (
 	Module::collections()->has("Telegram") &&
-	class_exists(\Modules\Telegram\Auth\TelegramGuard::class)
+	Modules::isEnabled("Telegram") &&
+	class_exists(\Modules\Telegram\Http\Middleware\VerifyTelegramData::class)
 ) {
-	$middlewares[] = "auth:telegram";
+	$middlewares[] = "telegram";
 }
 
-Route::middleware($middleware)->group(function () {
+Route::middleware($middlewares)->group(function () {
 	Route::prefix("apps")
 		->name("apps.")
 		->group(function () {
