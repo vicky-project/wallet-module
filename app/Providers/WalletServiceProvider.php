@@ -52,7 +52,7 @@ class WalletServiceProvider extends ServiceProvider
 			$this->registerTelegramMiddlewares($dispatcher);
 		} else {
 			\Log::warning(
-				"Telegram CommandDispatcher not bound. Skipping command registration."
+				"Telegram CommandDispatcher not bound. Skipping command registration.",
 			);
 		}
 
@@ -77,72 +77,72 @@ class WalletServiceProvider extends ServiceProvider
 	}
 
 	protected function registerTelegramCommands(
-		CommandDispatcher $dispatcher
+		CommandDispatcher $dispatcher,
 	): void {
 		$dispatcher->registerCommand(
 			new AccountCommand(
 				$this->app->make(TelegramService::class),
 				$this->app->make(TelegramApi::class),
-				$this->app->make(InlineKeyboardBuilder::class)
+				$this->app->make(InlineKeyboardBuilder::class),
 			),
-			["auth"]
+			["auth"],
 		);
 		$dispatcher->registerCommand(
 			new AddCommand(
 				$this->app->make(TelegramApi::class),
-				$this->app->make(TelegramService::class)
+				$this->app->make(TelegramService::class),
 			),
-			["auth"]
+			["auth"],
 		);
 		$dispatcher->registerCommand(
 			new CategoryCommand(
 				$this->app->make(TelegramService::class),
 				$this->app->make(TelegramApi::class),
-				$this->app->make(InlineKeyboardBuilder::class)
+				$this->app->make(InlineKeyboardBuilder::class),
 			),
-			["auth"]
+			["auth"],
 		);
 	}
 
 	protected function registerTelegramMiddlewares(
-		CommandDispatcher $dispatcher
+		CommandDispatcher $dispatcher,
 	): void {
 		// $dispatcher->registerMiddleware();
 	}
 
 	protected function registerReplyHandlers(
-		ReplyDispatcher $replyDispatcher
+		ReplyDispatcher $replyDispatcher,
 	): void {
 		$replyDispatcher->registerHandler(
 			new CreateAccountReply($this->app->make(TelegramApi::class)),
-			["auth"]
+			["auth"],
 		);
 	}
 
 	protected function registerReplyMiddlewares(
-		ReplyDispatcher $replyDispatcher
+		ReplyDispatcher $replyDispatcher,
 	): void {
 		// $replyDispatcher->registerMiddleware();
 	}
 
 	protected function registerCallbackHandlers(
-		TelegramCallbackHandler $callback
+		TelegramCallbackHandler $callback,
 	): void {
 		$callback->registerHandler(
 			new CallbackHandler($this->app->make(TelegramApi::class)),
-			["auth", "module-callback"]
+			["auth", "module-callback"],
 		);
 	}
 
 	protected function registerCallbackMiddlewares(
-		TelegramCallbackHandler $callback
+		TelegramCallbackHandler $callback,
 	): void {
 		$callback->registerMiddleware(
 			"module-callback",
 			new CallbackMiddleware(
 				$this->app->make(AccountService::class),
-				$this->app->make(TelegramService::class)
-			)
+				$this->app->make(TelegramService::class),
+			),
 		);
 	}
 
@@ -161,11 +161,11 @@ class WalletServiceProvider extends ServiceProvider
 			config($this->nameLower . ".hooks.name"),
 			function ($data) {
 				if (\Auth::check()) {
-					return view("wallet::hooks.financial")->render();
+					return view($this->nameLower . "::hooks.financial")->render();
 				}
 				return "";
 			},
-			10
+			10,
 		);
 	}
 
@@ -221,7 +221,7 @@ class WalletServiceProvider extends ServiceProvider
 		} else {
 			$this->loadTranslationsFrom(
 				module_path($this->name, "lang"),
-				$this->nameLower
+				$this->nameLower,
 			);
 			$this->loadJsonTranslationsFrom(module_path($this->name, "lang"));
 		}
@@ -234,12 +234,12 @@ class WalletServiceProvider extends ServiceProvider
 	{
 		$configPath = module_path(
 			$this->name,
-			config("modules.paths.generator.config.path")
+			config("modules.paths.generator.config.path"),
 		);
 
 		if (is_dir($configPath)) {
 			$iterator = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator($configPath)
+				new RecursiveDirectoryIterator($configPath),
 			);
 
 			foreach ($iterator as $file) {
@@ -247,12 +247,12 @@ class WalletServiceProvider extends ServiceProvider
 					$config = str_replace(
 						$configPath . DIRECTORY_SEPARATOR,
 						"",
-						$file->getPathname()
+						$file->getPathname(),
 					);
 					$config_key = str_replace(
 						[DIRECTORY_SEPARATOR, ".php"],
 						[".", ""],
-						$config
+						$config,
 					);
 					$segments = explode(".", $this->nameLower . "." . $config_key);
 
@@ -271,7 +271,7 @@ class WalletServiceProvider extends ServiceProvider
 
 					$this->publishes(
 						[$file->getPathname() => config_path($config)],
-						"config"
+						"config",
 					);
 					$this->merge_config_from($file->getPathname(), $key);
 				}
@@ -300,17 +300,17 @@ class WalletServiceProvider extends ServiceProvider
 
 		$this->publishes(
 			[$sourcePath => $viewPath],
-			["views", $this->nameLower . "-module-views"]
+			["views", $this->nameLower . "-module-views"],
 		);
 
 		$this->loadViewsFrom(
 			array_merge($this->getPublishableViewPaths(), [$sourcePath]),
-			$this->nameLower
+			$this->nameLower,
 		);
 
 		Blade::componentNamespace(
 			config("modules.namespace") . "\\" . $this->name . "\\View\\Components",
-			$this->nameLower
+			$this->nameLower,
 		);
 	}
 
