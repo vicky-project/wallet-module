@@ -14,9 +14,6 @@ use Modules\Wallet\Http\Controllers\UploadController;
 use Rappasoft\LaravelAuthenticationLog\Middleware\RequireTrustedDevice;
 
 $middlewares = [];
-if (class_exists(RequireTrustedDevice::class)) {
-  $middlewares[] = RequireTrustedDevice::class;
-}
 if (
   Module::collections()->has("Telegram") &&
   Modules::isEnabled("Telegram") &&
@@ -24,7 +21,11 @@ if (
 ) {
   $middlewares[] = "telegram.or.web";
 } else {
-  $middlewares[] = "auth";
+  if (class_exists(RequireTrustedDevice::class)) {
+    $middlewares[] = "device.trusted";
+  } else {
+    $middlewares[] = "auth";
+  }
 }
 
 Route::middleware($middlewares)->group(function () {
