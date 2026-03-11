@@ -7,39 +7,37 @@ use Modules\Core\Services\Generators\TraitInserter;
 
 class PostInstallation
 {
-	public function handle(string $moduleName)
-	{
-		try {
-			exec("which qpdf", $output, $returnCode);
+  public function handle(string $moduleName) {
+    try {
+      exec("which qpdf", $output, $returnCode);
 
-			if ($returnCode !== 0) {
-				throw new \Exception(
-					"This module required qpdf installed. Please find the way to install it in your server."
-				);
-			}
+      if ($returnCode !== 0) {
+        throw new \Exception(
+          "This module required qpdf installed. Please find the way to install it in your server."
+        );
+      }
 
-			$modules = array_merge(["core", "telegram"], [$moduleName]);
-			foreach ($modules as $modulename) {
-				$module = Module::find($modulename);
-				$module->enable();
-			}
+      $modules = array_merge(["coreui", "telegram"], [$moduleName]);
+      foreach ($modules as $modulename) {
+        $module = Module::find($modulename);
+        $module->enable();
+      }
 
-			$result = $this->insertTraitToUserModel();
-			logger()->info($result["message"]);
+      //$result = $this->insertTraitToUserModel();
+      //logger()->info($result["message"]);
 
-			Artisan::call("migrate", ["--force" => true]);
-		} catch (\Exception $e) {
-			logger()->error(
-				"Failed to run post installation of financial module: " .
-					$e->getMessage()
-			);
+      Artisan::call("migrate", ["--force" => true]);
+    } catch (\Exception $e) {
+      logger()->error(
+        "Failed to run post installation of financial module: " .
+        $e->getMessage()
+      );
 
-			throw $e;
-		}
-	}
+      throw $e;
+    }
+  }
 
-	private function insertTraitToUserModel()
-	{
-		return TraitInserter::insertTrait("Modules\Wallet\Traits\HasWallets");
-	}
+  private function insertTraitToUserModel() {
+    return TraitInserter::insertTrait("Modules\Wallet\Traits\HasWallets");
+  }
 }
