@@ -11,20 +11,20 @@ use Modules\Wallet\Http\Controllers\ReportController;
 use Modules\Wallet\Http\Controllers\TelegramController;
 use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
-use Rappasoft\LaravelAuthenticationLog\Middleware\RequireTrustedDevice;
+use Modules\Telegram\Http\Middleware\TrustedDeviceOrTelegram;
 
 $middlewares = [];
 if (
   Module::collections()->has("Telegram") &&
   Modules::isEnabled("Telegram") &&
-  class_exists(\Modules\Telegram\Http\Middleware\TelegramOrWebAuth::class)
+  class_exists(\Modules\Telegram\Http\Middleware\AuthenticateWithTokenOrSession::class)
 ) {
-  $middlewares[] = "telegram.or.web";
+  $middlewares[] = "auth.token_or_session";
 } else {
   $middlewares[] = "auth";
 }
 
-if (class_exists(RequireTrustedDevice::class)) {
+if (class_exists(TrustedDeviceOrTelegram::class)) {
   $middlewares[] = "trusted.device.or.telegram";
 }
 
