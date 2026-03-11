@@ -21,11 +21,11 @@ if (
 ) {
   $middlewares[] = "telegram.or.web";
 } else {
-  if (class_exists(RequireTrustedDevice::class)) {
-    $middlewares[] = "device.trusted";
-  } else {
-    $middlewares[] = "auth";
-  }
+  $middlewares[] = "auth";
+}
+
+if (class_exists(RequireTrustedDevice::class)) {
+  $middlewares[] = "trusted.device.or.telegram";
 }
 
 Route::middleware($middlewares)->group(function () {
