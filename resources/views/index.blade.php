@@ -3,7 +3,7 @@
 @section('content')
 <div class="row mb-4">
   <div class="col">
-    <a href="{{ route('apps.index') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color);color: var(--tg-theme-button-text-color);">
+    <a href="{{ route('apps.index') }}" class="btn btn-sm" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
       <i class="bi bi-arrow-left me-2"></i>
       Kembali
     </a>
