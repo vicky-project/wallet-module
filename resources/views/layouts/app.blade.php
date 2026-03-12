@@ -488,7 +488,7 @@
       @stack('styles')
       </head>
       <body>
-      @if(session("is_telegram_app"))
+      @if(!session("is_telegram_app", false))
       <!-- Sidebar Navigation -->
       @include('wallet::partials.sidebar')
       @endif
