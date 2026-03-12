@@ -1,4 +1,4 @@
-@extends('waller::layouts.app')
+@extends('wallet::layouts.app')
 
 @section('title', 'Semua Kategori')
 
