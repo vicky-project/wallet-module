@@ -12,9 +12,14 @@
       <h4 class="fw-bold" style="color: var(--tg-theme-text-color);">
         <i class="bi bi-tags me-2" style="color: var(--tg-theme-accent-text-color);"></i>Semua Kategori
       </h4>
-      <a href="{{ route('apps.categories.create') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
-        <i class="bi bi-plus-circle me-1"></i>Tambah
-      </a>
+      <div class="float-end ms-auto gap-2">
+        <a href="{{ route('apps.financial') }}" class="btn btn-sm" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
+          <i class="bi bi-arrow-left"></i>
+        </a>
+        <a href="{{ route('apps.categories.create') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
+          <i class="bi bi-plus-circle me-1"></i>Tambah
+        </a>
+      </div>
     </div>
 
     <!-- Statistik Kategori -->
@@ -165,13 +170,6 @@
       <div>
         {{ $categories->links() }}
       </div>
-    </div>
-
-    <!-- Tombol Kembali -->
-    <div class="mt-4">
-      <a href="{{ route('apps.financial') }}" class="btn px-4 py-2" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
-        <i class="bi bi-arrow-left me-2"></i>Kembali ke Dashboard
-      </a>
     </div>
   </div>
 </div>
