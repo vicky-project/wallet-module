@@ -1,7 +1,5 @@
 @extends('wallet::layouts.app')
-
 @section('title', 'Keuangan')
-
 @section('content')
 <div class="row">
   <div class="col-12">
