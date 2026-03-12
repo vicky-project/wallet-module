@@ -1,4 +1,4 @@
-@extends('coreui::layouts.app')
+@extends('wallet::layouts.app')
 
 @section('title', 'Keuangan')
 
