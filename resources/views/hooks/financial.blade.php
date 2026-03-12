@@ -1,5 +1,5 @@
 <div class="col-4 col-md-2 mb-2">
-  <a href="{{ route('apps.financial')}}" class="app-item">
+  <a href="{{ route('apps.financial')}}" class="app-item" disabled>
     <i class="bi bi-currency-dollar"></i>
     <span>Financial</span>
   </a>
