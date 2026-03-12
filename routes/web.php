@@ -17,15 +17,15 @@ $middlewares = [];
 if (
   Module::collections()->has("Telegram") &&
   Modules::isEnabled("Telegram") &&
-  class_exists(\Modules\Telegram\Http\Middleware\AuthenticateWithTokenOrSession::class)
+  class_exists($tokenOrSession = \Modules\Telegram\Http\Middleware\AuthenticateWithTokenOrSession::class)
 ) {
-  $middlewares[] = "auth.token_or_session";
+  $middlewares[] = $tokenOrSession;
 } else {
   $middlewares[] = "auth";
 }
 
 if (class_exists(TrustedDeviceOrTelegram::class)) {
-  $middlewares[] = "trusted.device.or.telegram";
+  $middlewares[] = TrustedDeviceOrTelegram::class;
 }
 
 Route::middleware($middlewares)->group(function () {
