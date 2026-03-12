@@ -12,8 +12,9 @@ use Modules\Wallet\Http\Controllers\TelegramController;
 use Modules\Wallet\Http\Controllers\TagController;
 use Modules\Wallet\Http\Controllers\UploadController;
 use Modules\Telegram\Http\Middleware\TrustedDeviceOrTelegram;
+use Modules\Users\Http\Middleware\SelectAuthGuard;
 
-$middlewares = [];
+$middlewares = [SelectAuthGuard::class];
 if (
   Module::has("Telegram") &&
   Module::isEnabled("Telegram") &&
