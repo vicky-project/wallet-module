@@ -1,7 +1,15 @@
 @extends('wallet::layouts.app')
 @section('title', 'Keuangan')
 @section('content')
-<div class="row">
+<div class="row mb-4">
+  <div class="col">
+    <a href="{{ route('apps.index') }}" class="btn btn-sm">
+      <i class="bi bi-arrow-left me-2"></i>
+      Kembali
+    </a>
+  </div>
+</div>
+<div class="row mt-4">
   <div class="col-12">
     <!-- Total Saldo -->
     <div class="text-center my-4">
