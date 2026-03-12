@@ -488,8 +488,10 @@
       @stack('styles')
       </head>
       <body>
+      @if(session("is_telegram_app"))
       <!-- Sidebar Navigation -->
       @include('wallet::partials.sidebar')
+      @endif
 
       <!-- Overlay untuk menutup sidebar di mobile -->
       <div class="sidebar-overlay" id="sidebarOverlay"></div>
