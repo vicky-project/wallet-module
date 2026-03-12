@@ -615,6 +615,20 @@
       }
       } else {
       // Di Telegram, toggle tema disembunyikan via CSS, jadi tidak perlu event listener
+      // Sebaliknya, kita perlu mendekorasi ulang navigasi link
+      const initData = window.Telegram?.WebApp?.initData || @json(request()->get("initData", ""));
+      if(!initData) return;
+
+      const token = localStorage.getItem("telegram_token") || '{{ request()->get("token") }}';
+      if(!token) return;
+
+      const navLinks = document.querySelectorAll("a");
+      navLinks.forEach(function(link) {
+      const urlObj = new URL(link.href, window.location.origin);
+      urlObj.searchParams.set("token", token);
+      urlObj.searchParams.set("initData", initData);
+      link.href = urlObj.toString();
+      });
       }
 
       // Responsif: saat resize window
