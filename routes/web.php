@@ -15,8 +15,8 @@ use Modules\Telegram\Http\Middleware\TrustedDeviceOrTelegram;
 
 $middlewares = [];
 if (
-  Module::collections()->has("Telegram") &&
-  Modules::isEnabled("Telegram") &&
+  Module::has("Telegram") &&
+  Module::isEnabled("Telegram") &&
   class_exists($tokenOrSession = \Modules\Telegram\Http\Middleware\AuthenticateWithTokenOrSession::class)
 ) {
   \Log::debug("Using token or session middleware");
