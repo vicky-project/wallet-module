@@ -19,10 +19,8 @@ if (
   Module::isEnabled("Telegram") &&
   class_exists($tokenOrSession = \Modules\Telegram\Http\Middleware\AuthenticateWithTokenOrSession::class)
 ) {
-  \Log::debug("Using token or session middleware");
   $middlewares[] = $tokenOrSession;
 } else {
-  \Log::debug("Using auth middleware");
   $middlewares[] = "auth";
 }
 
