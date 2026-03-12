@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('wallet::layouts.app')
 
 @section('title', isset($transaction) ? 'Edit Transaksi' : 'Tambah Transaksi')
 
@@ -20,7 +20,7 @@
         <form method="POST" action="{{ isset($transaction) ? route('apps.transactions.update', $transaction) : route('apps.transactions.store') }}">
           @csrf
           @if(isset($transaction))
-            @method('PUT')
+          @method('PUT')
           @endif
 
           <div class="row g-4">
@@ -32,13 +32,15 @@
               <select name="type" id="transactionType" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Tipe</option>
                 @foreach(TransactionType::cases() as $type)
-                  <option value="{{ $type->value }}" @selected(old('type', $transaction->type ?? request()->input('type')) == $type->value)>
-                    {{ $type->label() }}
-                  </option>
+                <option value="{{ $type->value }}" @selected(old('type', $transaction->type ?? request()->input('type')) == $type->value)>
+                  {{ $type->label() }}
+                </option>
                 @endforeach
               </select>
               @error('type')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -50,13 +52,15 @@
               <select name="account_id" class="form-select @error('account_id') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Akun</option>
                 @foreach($accounts as $account)
-                  <option value="{{ $account->id }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
-                    {{ $account->name }} (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
-                  </option>
+                <option value="{{ $account->id }}" @selected(old('account_id', $transaction->account_id ?? '') == $account->id)>
+                  {{ $account->name }} (Rp {{ number_format($account->balance->getAmount()->toInt(), 0, ',', '.') }})
+                </option>
                 @endforeach
               </select>
               @error('account_id')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -68,13 +72,15 @@
               <select name="to_account_id" class="form-select @error('to_account_id') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Akun Tujuan</option>
                 @foreach($accounts as $account)
-                  <option value="{{ $account->id }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
-                    {{ $account->name }}
-                  </option>
+                <option value="{{ $account->id }}" @selected(old('to_account_id', $transaction->to_account_id ?? '') == $account->id)>
+                  {{ $account->name }}
+                </option>
                 @endforeach
               </select>
               @error('to_account_id')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -86,13 +92,15 @@
               <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Kategori</option>
                 @foreach($categories as $category)
-                  <option value="{{ $category->id }}" @selected(old('category_id', $transaction->category_id ?? '') == $category->id)>
-                    {{ $category->name }}
-                  </option>
+                <option value="{{ $category->id }}" @selected(old('category_id', $transaction->category_id ?? '') == $category->id)>
+                  {{ $category->name }}
+                </option>
                 @endforeach
               </select>
               @error('category_id')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -103,7 +111,9 @@
               </label>
               <input type="number" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $transaction->amount ?? '') }}" min="0" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               @error('amount')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -114,7 +124,9 @@
               </label>
               <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description', $transaction->description ?? '') }}" maxlength="255" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               @error('description')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -125,7 +137,9 @@
               </label>
               <input type="datetime-local" class="form-control @error('transaction_date') is-invalid @enderror" name="transaction_date" value="{{ old('transaction_date', isset($transaction) ? \Carbon\Carbon::parse($transaction->transaction_date)->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               @error('transaction_date')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -137,9 +151,9 @@
               <select name="payment_method" id="payment_method" class="form-select @error('payment_method') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Metode Pembayaran</option>
                 @foreach(PaymentMethod::cases() as $method)
-                  <option value="{{ $method->value }}" @selected(old('payment_method', $transaction->payment_method ?? '') == $method->value)>
-                    {{ $method->name }}
-                  </option>
+                <option value="{{ $method->value }}" @selected(old('payment_method', $transaction->payment_method ?? '') == $method->value)>
+                  {{ $method->name }}
+                </option>
                 @endforeach
               </select>
             </div>
@@ -178,9 +192,9 @@
                   <select name="frequency" id="frequency" class="form-select" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                     <option value="">Pilih Frekuensi</option>
                     @foreach(RecurringFreq::cases() as $freq)
-                      <option value="{{ $freq->value }}" {{ old('frequency', $transaction->frequency ?? '') == $freq->value ? 'selected' : '' }}>
-                        {{ ucfirst($freq->value) }}
-                      </option>
+                    <option value="{{ $freq->value }}" {{ old('frequency', $transaction->frequency ?? '') == $freq->value ? 'selected' : '' }}>
+                      {{ ucfirst($freq->value) }}
+                    </option>
                     @endforeach
                   </select>
                 </div>
@@ -246,95 +260,95 @@
 
 @push('styles')
 <style>
-    .form-control, .form-select {
-        border-width: 1px;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-    .form-control:focus, .form-select:focus {
-        border-color: var(--tg-theme-button-color);
-        box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
-    }
-    .form-check-input:checked {
-        background-color: var(--tg-theme-button-color);
-        border-color: var(--tg-theme-button-color);
-    }
-    .form-check-input:focus {
-        border-color: var(--tg-theme-button-color);
-        box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
-    }
+  .form-control, .form-select {
+    border-width: 1px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--tg-theme-button-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
+  }
+  .form-check-input:checked {
+    background-color: var(--tg-theme-button-color);
+    border-color: var(--tg-theme-button-color);
+  }
+  .form-check-input:focus {
+    border-color: var(--tg-theme-button-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
+  }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const typeSelect = document.getElementById('transactionType');
-        const toAccountField = document.getElementById('toAccountField');
-        const isRecurringCheck = document.getElementById('isRecurring');
-        const recurringFields = document.getElementById('recurringFields');
-        const frequencySelect = document.getElementById('frequency');
-        const dayOfWeekField = document.getElementById('dayOfWeekField');
-        const dayOfMonthField = document.getElementById('dayOfMonthField');
-        const customScheduleField = document.getElementById('customScheduleField');
+  document.addEventListener('DOMContentLoaded', function() {
+  const typeSelect = document.getElementById('transactionType');
+  const toAccountField = document.getElementById('toAccountField');
+  const isRecurringCheck = document.getElementById('isRecurring');
+  const recurringFields = document.getElementById('recurringFields');
+  const frequencySelect = document.getElementById('frequency');
+  const dayOfWeekField = document.getElementById('dayOfWeekField');
+  const dayOfMonthField = document.getElementById('dayOfMonthField');
+  const customScheduleField = document.getElementById('customScheduleField');
 
-        // Fungsi untuk menampilkan/menyembunyikan field transfer
-        function toggleTransferField() {
-            if (typeSelect.value === 'transfer') {
-                toAccountField.style.display = 'block';
-            } else {
-                toAccountField.style.display = 'none';
-            }
-        }
+  // Fungsi untuk menampilkan/menyembunyikan field transfer
+  function toggleTransferField() {
+  if (typeSelect.value === 'transfer') {
+  toAccountField.style.display = 'block';
+  } else {
+  toAccountField.style.display = 'none';
+  }
+  }
 
-        // Fungsi untuk menampilkan/menyembunyikan field recurring
-        function toggleRecurringFields() {
-            if (isRecurringCheck.checked) {
-                recurringFields.style.display = 'block';
-            } else {
-                recurringFields.style.display = 'none';
-            }
-        }
+  // Fungsi untuk menampilkan/menyembunyikan field recurring
+  function toggleRecurringFields() {
+  if (isRecurringCheck.checked) {
+  recurringFields.style.display = 'block';
+  } else {
+  recurringFields.style.display = 'none';
+  }
+  }
 
-        // Fungsi untuk menampilkan field khusus frekuensi
-        function toggleFrequencyFields() {
-            const freq = frequencySelect.value;
-            dayOfWeekField.style.display = 'none';
-            dayOfMonthField.style.display = 'none';
-            customScheduleField.style.display = 'none';
+  // Fungsi untuk menampilkan field khusus frekuensi
+  function toggleFrequencyFields() {
+  const freq = frequencySelect.value;
+  dayOfWeekField.style.display = 'none';
+  dayOfMonthField.style.display = 'none';
+  customScheduleField.style.display = 'none';
 
-            if (freq === 'weekly') {
-                dayOfWeekField.style.display = 'block';
-            } else if (freq === 'monthly' || freq === 'quarterly') {
-                dayOfMonthField.style.display = 'block';
-            } else if (freq === 'custom') {
-                customScheduleField.style.display = 'block';
-            }
-        }
+  if (freq === 'weekly') {
+  dayOfWeekField.style.display = 'block';
+  } else if (freq === 'monthly' || freq === 'quarterly') {
+  dayOfMonthField.style.display = 'block';
+  } else if (freq === 'custom') {
+  customScheduleField.style.display = 'block';
+  }
+  }
 
-        // Event listeners
-        typeSelect.addEventListener('change', toggleTransferField);
-        isRecurringCheck.addEventListener('change', toggleRecurringFields);
-        frequencySelect.addEventListener('change', toggleFrequencyFields);
+  // Event listeners
+  typeSelect.addEventListener('change', toggleTransferField);
+  isRecurringCheck.addEventListener('change', toggleRecurringFields);
+  frequencySelect.addEventListener('change', toggleFrequencyFields);
 
-        // Initial state
-        toggleTransferField();
-        toggleRecurringFields();
-        toggleFrequencyFields();
+  // Initial state
+  toggleTransferField();
+  toggleRecurringFields();
+  toggleFrequencyFields();
 
-        // Jika ada old value untuk transfer, pastikan field tampil
-        @if(old('type') === 'transfer' || (isset($transaction) && $transaction->type === 'transfer'))
-            toAccountField.style.display = 'block';
-        @endif
+  // Jika ada old value untuk transfer, pastikan field tampil
+  @if(old('type') === 'transfer' || (isset($transaction) && $transaction->type === 'transfer'))
+  toAccountField.style.display = 'block';
+  @endif
 
-        // Jika ada old value untuk recurring
-        @if(old('is_recurring') || (isset($transaction) && $transaction->is_recurring))
-            recurringFields.style.display = 'block';
-        @endif
+  // Jika ada old value untuk recurring
+  @if(old('is_recurring') || (isset($transaction) && $transaction->is_recurring))
+  recurringFields.style.display = 'block';
+  @endif
 
-        // Jika ada old value untuk frequency
-        @if(old('frequency') || (isset($transaction) && $transaction->frequency))
-            toggleFrequencyFields();
-        @endif
-    });
+  // Jika ada old value untuk frequency
+  @if(old('frequency') || (isset($transaction) && $transaction->frequency))
+  toggleFrequencyFields();
+  @endif
+  });
 </script>
 @endpush

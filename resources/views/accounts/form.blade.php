@@ -1,4 +1,4 @@
-@extends('core::layouts.app')
+@extends('wallet::layouts.app')
 
 @section('title', isset($account) ? 'Edit Akun' : 'Tambah Akun')
 
@@ -16,9 +16,9 @@
         <form method="POST" action="{{ isset($account) ? route('apps.accounts.update', $account) : route('apps.accounts.store') }}">
           @csrf
           @if(isset($account))
-            @method('PUT')
+          @method('PUT')
           @endif
-          
+
           <!-- Preview Ikon -->
           <div class="text-center mb-4">
             <div class="d-inline-block p-3 rounded-circle" style="background-color: {{ old('color', $account->color ?? '#40a7e3') }}20; border: 2px solid {{ old('color', $account->color ?? '#40a7e3') }};">
@@ -35,7 +35,9 @@
               </label>
               <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $account->name ?? '') }}" placeholder="Contoh: Kas Harian" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               @error('name')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
@@ -47,27 +49,31 @@
               <select id="accountType" name="type" class="form-select @error('type') is-invalid @enderror" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 <option value="">Pilih Tipe</option>
                 @foreach(\Modules\Wallet\Enums\AccountType::cases() as $type)
-                  <option value="{{ $type->value ?? $type }}" data-icon="{{ $type->icon() }}" data-label="{{ $type->label() }}" data-bank="{{ in_array($type->value, ['bank', 'credit_card', 'ewallet']) ? 'yes' : 'no' }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value)>
-                    {{ ucfirst($type->label() ?? $type) }}
-                  </option>
+                <option value="{{ $type->value ?? $type }}" data-icon="{{ $type->icon() }}" data-label="{{ $type->label() }}" data-bank="{{ in_array($type->value, ['bank', 'credit_card', 'ewallet']) ? 'yes' : 'no' }}" @selected(old('type', isset($account) ? $account->type->value : '') == $type->value)>
+                  {{ ucfirst($type->label() ?? $type) }}
+                </option>
                 @endforeach
               </select>
               @error('type')
-                <div class="invalid-feedback">{{ $message }}</div>
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
               @enderror
             </div>
 
             <!-- Saldo Awal (hanya untuk create) -->
             @if(!isset($account))
-              <div class="col-md-6">
-                <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
-                  <i class="bi bi-cash me-2" style="color: var(--tg-theme-accent-text-color);"></i>Saldo Awal
-                </label>
-                <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" name="initial_balance" value="{{ old('initial_balance', 0) }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
-                @error('initial_balance')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="col-md-6">
+              <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
+                <i class="bi bi-cash me-2" style="color: var(--tg-theme-accent-text-color);"></i>Saldo Awal
+              </label>
+              <input type="number" class="form-control @error('initial_balance') is-invalid @enderror" name="initial_balance" value="{{ old('initial_balance', 0) }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
+              @error('initial_balance')
+              <div class="invalid-feedback">
+                {{ $message }}
               </div>
+              @enderror
+            </div>
             @endif
 
             <!-- Mata Uang -->
@@ -77,9 +83,9 @@
               </label>
               <select name="currency" class="form-select" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
                 @foreach(\Modules\Wallet\Helpers\Helper::listCurrencies() as $name => $currency)
-                  <option value="{{ $name }}" @selected(old('currency', $account->currency ?? 'IDR') == $name)>
-                    {{ $currency}}
-                  </option>
+                <option value="{{ $name }}" @selected(old('currency', $account->currency ?? 'IDR') == $name)>
+                  {{ $currency}}
+                </option>
                 @endforeach
               </select>
             </div>
@@ -92,7 +98,7 @@
                 </label>
                 <input type="text" class="form-control" name="account_number" value="{{ old('account_number', $account->account_number ?? '') }}" style="background-color: var(--tg-theme-bg-color); border-color: var(--tg-theme-hint-color); color: var(--tg-theme-text-color);">
               </div>
-            
+
               <!-- Nama Bank -->
               <div class="col-md-6">
                 <label class="form-label fw-medium" style="color: var(--tg-theme-text-color);">
@@ -158,75 +164,75 @@
 @push('scripts')
 <script>
   (function() {
-    const typeSelect = document.getElementById('accountType');
-    const iconPreview = document.getElementById('iconPreview');
-    const iconInput = document.getElementById('iconInput');
-    const colorPicker = document.getElementById('colorPicker');
-    const bankFields = document.getElementById('bankFields');
-    
-    // Fungsi untuk update ikon dan warna
-    function updatePreview() {
-      const selectedOption = typeSelect.options[typeSelect.selectedIndex];
-      if(selectedOption && selectedOption.value) {
-        const icon = selectedOption.getAttribute('data-icon') || 'bi-wallet';
-        const color = colorPicker.value;
-        iconPreview.className = `bi ${icon} fs-1`;
-        iconPreview.style.color = color;
-        iconInput.value = icon;
-      } else {
-        iconPreview.className = 'bi bi-wallet fs-1';
-        iconPreview.style.color = colorPicker.value;
-        iconInput.value = 'bi-wallet';
-      }
-    }
-    
-    function toggleBankFields() {
-      const selectedOption = typeSelect.options[typeSelect.selectedIndex];
-      if(selectedOption && selectedOption.value) {
-        const needBank = selectedOption.getAttribute('data-bank') === 'yes';
-        bankFields.style.display = needBank ? '' : 'none';
-      } else {
-        bankFields.style.display = 'none';
-      }
-    }
-    
-    typeSelect.addEventListener('change', function() {
-      updatePreview();
-      toggleBankFields();
-    });
-    
-    colorPicker.addEventListener('input', function() {
-      iconPreview.style.color = this.value;
-    });
-    
-    if(typeSelect.value) {
-      updatePreview();
-      toggleBankFields();
-    } else {
-      bankFields.style.display = 'none';
-    }
+  const typeSelect = document.getElementById('accountType');
+  const iconPreview = document.getElementById('iconPreview');
+  const iconInput = document.getElementById('iconInput');
+  const colorPicker = document.getElementById('colorPicker');
+  const bankFields = document.getElementById('bankFields');
+
+  // Fungsi untuk update ikon dan warna
+  function updatePreview() {
+  const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+  if(selectedOption && selectedOption.value) {
+  const icon = selectedOption.getAttribute('data-icon') || 'bi-wallet';
+  const color = colorPicker.value;
+  iconPreview.className = `bi ${icon} fs-1`;
+  iconPreview.style.color = color;
+  iconInput.value = icon;
+  } else {
+  iconPreview.className = 'bi bi-wallet fs-1';
+  iconPreview.style.color = colorPicker.value;
+  iconInput.value = 'bi-wallet';
+  }
+  }
+
+  function toggleBankFields() {
+  const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+  if(selectedOption && selectedOption.value) {
+  const needBank = selectedOption.getAttribute('data-bank') === 'yes';
+  bankFields.style.display = needBank ? '' : 'none';
+  } else {
+  bankFields.style.display = 'none';
+  }
+  }
+
+  typeSelect.addEventListener('change', function() {
+  updatePreview();
+  toggleBankFields();
+  });
+
+  colorPicker.addEventListener('input', function() {
+  iconPreview.style.color = this.value;
+  });
+
+  if(typeSelect.value) {
+  updatePreview();
+  toggleBankFields();
+  } else {
+  bankFields.style.display = 'none';
+  }
   })();
 </script>
 @endpush
 
 @push('styles')
 <style>
-    /* Styling tambahan untuk form */
-    .form-control, .form-select {
-        border-width: 1px;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-    .form-control:focus, .form-select:focus {
-        border-color: var(--tg-theme-button-color);
-        box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
-    }
-    .form-check-input:checked {
-        background-color: var(--tg-theme-button-color);
-        border-color: var(--tg-theme-button-color);
-    }
-    .form-check-input:focus {
-        border-color: var(--tg-theme-button-color);
-        box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
-    }
+  /* Styling tambahan untuk form */
+  .form-control, .form-select {
+    border-width: 1px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--tg-theme-button-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
+  }
+  .form-check-input:checked {
+    background-color: var(--tg-theme-button-color);
+    border-color: var(--tg-theme-button-color);
+  }
+  .form-check-input:focus {
+    border-color: var(--tg-theme-button-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--tg-theme-button-color-rgb, 64, 167, 227), 0.25);
+  }
 </style>
 @endpush
