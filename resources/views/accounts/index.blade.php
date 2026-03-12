@@ -10,12 +10,14 @@
       <h4 class="fw-bold" style="color: var(--tg-theme-text-color);">
         <i class="bi bi-wallet2 me-2" style="color: var(--tg-theme-accent-text-color);"></i>Semua Akun
       </h4>
-      <a href="{{ route('apps.financial') }}" class="btn btn-sm" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
-        <i class="bi bi-arrow-left"></i>
-      </a>
-      <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
-        <i class="bi bi-plus-circle me-1"></i>Tambah
-      </a>
+      <div class="float-end ms-auto">
+        <a href="{{ route('apps.financial') }}" class="btn btn-sm" style="background-color: transparent; color: var(--tg-theme-button-color); border: 1px solid var(--tg-theme-button-color);">
+          <i class="bi bi-arrow-left"></i>
+        </a>
+        <a href="{{ route('apps.accounts.create') }}" class="btn btn-sm" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none;">
+          <i class="bi bi-plus-circle me-1"></i>Tambah
+        </a>
+      </div>
     </div>
 
     <!-- Statistik Akun -->
