@@ -13,7 +13,7 @@
   <!-- Chart.js untuk visualisasi -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Telegram WebApp SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js?61"></script>
 
   @include('wallet::partials.styles')
   @stack('styles')
