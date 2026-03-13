@@ -54,7 +54,7 @@
 
     // Deteksi Telegram Mini App
     const tg = window.Telegram?.WebApp;
-    if (tg) {
+    if (tg?.initData) {
     document.body.classList.add('telegram-app');
     alert("telegram mode");
     tg.ready();
@@ -143,7 +143,6 @@
     } else {
     // Di Telegram, toggle tema disembunyikan via CSS, jadi tidak perlu event listener
     // Sebaliknya, kita perlu mendekorasi ulang navigasi link
-    alert("telgram mode init");
     const initData = window.Telegram?.WebApp?.initData || @json(request()->get("initData", ""));
     if(!initData) return;
 
