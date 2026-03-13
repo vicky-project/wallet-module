@@ -6,7 +6,9 @@
   --danger-color: #f72585;
   --warning-color: #f8961e;
   --bg-color: #f8f9fa;
-  --text-color: #333;
+  --text-color: #212529;
+  /* lebih gelap untuk kontras */
+  --text-muted: #6c757d;
   --card-bg: rgba(255, 255, 255, 0.9);
   --card-border: none;
   --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,13 +17,17 @@
   --border-color: rgba(0, 0, 0, 0.05);
   --hover-bg: rgba(0, 0, 0, 0.02);
   --fab-bg: #ffffff;
-  --fab-text: #333;
+  --fab-text: #212529;
   --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
   --body-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --body-bg-attachment: fixed;
   --card-blur: blur(10px);
   --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  --input-bg: #ffffff;
+  --input-border: #ced4da;
+  --input-color: #212529;
+  --label-color: #495057;
   }
 
   body[data-bs-theme="dark"] {
@@ -31,27 +37,32 @@
   --danger-color: #f56565;
   --warning-color: #ed8936;
   --bg-color: #121212;
-  --text-color: #f8f9fa;
-  --card-bg: #1e1e1e;
+  --text-color: #e9ecef; /* lebih terang */
+  --text-muted: #adb5bd;
+  --card-bg: rgba(30, 30, 30, 0.95); /* lebih solid */
   --card-border: 1px solid #2d3748;
   --header-bg: #1e1e1e;
   --sidebar-bg: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
-  --sidebar-text: #f8f9fa;
-  --border-color: rgba(255, 255, 255, 0.05);
+  --sidebar-text: #e9ecef;
+  --border-color: rgba(255, 255, 255, 0.1);
   --hover-bg: rgba(255, 255, 255, 0.05);
   --fab-bg: #2d3748;
-  --fab-text: #f8f9fa;
+  --fab-text: #e9ecef;
   --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   --body-bg: #121212;
   --card-blur: none;
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --input-bg: #2d3748;
+  --input-border: #4a5568;
+  --input-color: #e9ecef;
+  --label-color: #cbd5e0;
   }
 
   body.telegram-app {
   --primary-color: var(--tg-theme-button-color, #4361ee);
   --secondary-color: var(--tg-theme-button-color, #3f37c9);
   --bg-color: var(--tg-theme-bg-color, #f8f9fa);
-  --text-color: var(--tg-theme-text-color, #333);
+  --text-color: var(--tg-theme-text-color, #212529);
   --card-bg: var(--tg-theme-bg-color, #ffffff);
   --card-border: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.05));
   --header-bg: var(--tg-theme-header-bg-color, #ffffff);
@@ -60,7 +71,7 @@
   --border-color: var(--tg-theme-hint-color, rgba(0,0,0,0.05));
   --hover-bg: var(--tg-theme-hint-color, rgba(0,0,0,0.02));
   --fab-bg: var(--tg-theme-bg-color, #ffffff);
-  --fab-text: var(--tg-theme-text-color, #333);
+  --fab-text: var(--tg-theme-text-color, #212529);
   --fab-shadow: 0 4px 12px var(--tg-theme-hint-color, rgba(0,0,0,0.1));
   --body-bg: var(--tg-theme-bg-color, #f8f9fa);
   --card-blur: none;
@@ -240,6 +251,7 @@
   padding: 1rem 1.5rem;
   border-radius: 1rem 1rem 0 0;
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* tambah bayangan teks agar lebih terbaca */
   }
 
   .card-header i {
@@ -439,28 +451,36 @@
   /* Form Elements - Inspired by Auth Layout */
   .form-label {
   font-weight: 500;
-  color: #495057;
+  color: var(--label-color);
   }
 
-  body[data-bs-theme="dark"] .form-label {
-  color: #adb5bd;
+  .form-control, .input-group-text {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--input-color);
+  }
+
+  .form-control:focus {
+  background-color: var(--input-bg);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+  color: var(--input-color);
   }
 
   .input-group .btn-outline-secondary {
-  border-color: #ced4da;
-  background-color: white;
-  color: #495057;
+  border-color: var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-muted);
   }
 
   .input-group .btn-outline-secondary:hover {
-  background-color: #f8f9fa;
-  color: #0d6efd;
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
   }
 
   .input-group-text {
-  background-color: white;
   border-right: none;
-  color: #6c757d;
+  color: var(--text-muted);
   }
 
   .input-group .form-control {
@@ -469,7 +489,7 @@
 
   .input-group .form-control:focus {
   box-shadow: none;
-  border-color: #86b7fe;
+  border-color: var(--primary-color);
   }
 
   .btn-primary {
@@ -478,17 +498,18 @@
   padding: 0.6rem 1.2rem;
   font-weight: 500;
   border-radius: 25px;
+  color: white;
   }
   .btn-primary:hover {
   background-color: #0b5ed7;
   }
 
   .btn-link {
-  color: #6c757d;
+  color: var(--text-muted);
   text-decoration: none;
   }
   .btn-link:hover {
-  color: #0d6efd;
+  color: var(--primary-color);
   }
 
   /* Responsive */
