@@ -18,7 +18,7 @@
   @include('wallet::partials.styles')
   @stack('styles')
 </head>
-<body>
+<body class="{{ request()->has('token') ? 'telegram-app' : ''}}">
   <!-- Sidebar Navigation -->
   @include('wallet::partials.sidebar')
 
@@ -55,7 +55,6 @@
     // Deteksi Telegram Mini App
     const tg = window.Telegram?.WebApp;
     if (tg?.initData) {
-    document.body.classList.add('telegram-app');
     alert("telegram mode");
     tg.ready();
     tg.expand();
