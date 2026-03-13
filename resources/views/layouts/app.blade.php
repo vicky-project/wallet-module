@@ -55,7 +55,6 @@
     // Deteksi Telegram Mini App
     const tg = window.Telegram?.WebApp;
     if (tg?.initData) {
-    alert("telegram mode");
     tg.ready();
     tg.expand();
     }
