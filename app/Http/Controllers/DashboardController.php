@@ -15,7 +15,7 @@ class DashboardController extends Controller
     $user = $request->user();
 
     $dashboardData = $this->dashboardService->getDashboardData($user);
-    dd($request->all(), session()->has("token"));
+    dd($request->all(), session()->has("is_telegram_app"));
 
     return view("wallet::index", compact("dashboardData"));
   }
