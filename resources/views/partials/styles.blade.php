@@ -6,11 +6,12 @@
   --danger-color: #f72585;
   --warning-color: #f8961e;
   --bg-color: #f8f9fa;
+  /* solid light background */
   --text-color: #212529;
-  /* lebih gelap untuk kontras */
+  /* dark text */
   --text-muted: #6c757d;
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --card-border: none;
+  --card-bg: #ffffff;
+  --card-border: 1px solid #dee2e6;
   --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --sidebar-bg: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   --sidebar-text: #ffffff;
@@ -20,10 +21,10 @@
   --fab-text: #212529;
   --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
-  --body-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --body-bg-attachment: fixed;
-  --card-blur: blur(10px);
-  --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  --body-bg: #f8f9fa; /* solid light */
+  --body-bg-attachment: scroll;
+  --card-blur: none;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   --input-bg: #ffffff;
   --input-border: #ced4da;
   --input-color: #212529;
@@ -36,12 +37,12 @@
   --success-color: #38b2ac;
   --danger-color: #f56565;
   --warning-color: #ed8936;
-  --bg-color: #121212;
-  --text-color: #e9ecef; /* lebih terang */
-  --text-muted: #adb5bd;
-  --card-bg: rgba(30, 30, 30, 0.95); /* lebih solid */
-  --card-border: 1px solid #2d3748;
-  --header-bg: #1e1e1e;
+  --bg-color: #1a202c; /* solid dark */
+  --text-color: #e9ecef;
+  --text-muted: #a0aec0;
+  --card-bg: #2d3748;
+  --card-border: 1px solid #4a5568;
+  --header-bg: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
   --sidebar-bg: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
   --sidebar-text: #e9ecef;
   --border-color: rgba(255, 255, 255, 0.1);
@@ -49,9 +50,10 @@
   --fab-bg: #2d3748;
   --fab-text: #e9ecef;
   --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --body-bg: #121212;
+  --body-bg: #1a202c;
+  --body-bg-attachment: scroll;
   --card-blur: none;
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   --input-bg: #2d3748;
   --input-border: #4a5568;
   --input-color: #e9ecef;
@@ -74,8 +76,13 @@
   --fab-text: var(--tg-theme-text-color, #212529);
   --fab-shadow: 0 4px 12px var(--tg-theme-hint-color, rgba(0,0,0,0.1));
   --body-bg: var(--tg-theme-bg-color, #f8f9fa);
+  --body-bg-attachment: scroll;
   --card-blur: none;
   --card-shadow: none;
+  --input-bg: var(--tg-theme-bg-color, #ffffff);
+  --input-border: var(--tg-theme-hint-color, #ced4da);
+  --input-color: var(--tg-theme-text-color, #212529);
+  --label-color: var(--tg-theme-hint-color, #495057);
   }
 
   /* Sembunyikan sidebar dan header saat diakses dari Telegram Mini App */
@@ -93,7 +100,6 @@
   body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--body-bg);
-  background-attachment: var(--body-bg-attachment);
   color: var(--text-color);
   transition: background-color var(--transition-speed), color var(--transition-speed);
   overflow-x: hidden;
@@ -195,10 +201,10 @@
   margin-left: 0;
   }
 
-  /* Header Styling */
+  /* Header Styling - menggunakan gradien */
   .header {
   height: var(--header-height);
-  background-color: var(--header-bg);
+  background: var(--header-bg);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 0 20px;
   display: flex;
@@ -207,12 +213,11 @@
   position: sticky;
   top: 0;
   z-index: 1030;
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.8);
+  /* Hilangkan blur, biarkan solid */
   }
 
   body[data-bs-theme="dark"] .header {
-  background-color: rgba(30, 30, 30, 0.8);
+  /* header sudah menggunakan gradien gelap dari variabel */
   }
 
   .header-left {
@@ -226,20 +231,30 @@
   gap: 10px;
   }
 
-  /* Card Styling - Modern Glassmorphism */
+  /* Tombol di dalam header harus kontras */
+  .header .btn, .header .profile-btn, .header .theme-btn {
+  color: white; /* teks putih di atas gradien */
+  border-color: rgba(255,255,255,0.3);
+  }
+  .header .btn:hover, .header .profile-btn:hover, .header .theme-btn:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-color: white;
+  color: white;
+  }
+
+  /* Card Styling */
   .card {
   background: var(--card-bg);
   border: var(--card-border);
   border-radius: 1rem;
   box-shadow: var(--card-shadow);
-  backdrop-filter: var(--card-blur);
   transition: transform 0.2s, box-shadow 0.2s;
   height: 100%;
   }
 
   .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   }
 
   .card-header {
@@ -251,7 +266,6 @@
   padding: 1rem 1.5rem;
   border-radius: 1rem 1rem 0 0;
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* tambah bayangan teks agar lebih terbaca */
   }
 
   .card-header i {
@@ -276,7 +290,7 @@
   color: white;
   }
 
-  /* Theme Toggle Button */
+  /* Theme Toggle Button (di header) */
   .theme-btn {
   width: 40px;
   height: 40px;
@@ -284,19 +298,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid currentColor;
   background-color: transparent;
-  color: var(--text-color);
   transition: all 0.3s ease;
   }
 
-  .theme-btn:hover {
-  background-color: var(--hover-bg);
-  border-color: var(--text-color);
-  }
-
   body.telegram-app .theme-btn {
-  display: none; /* Sembunyikan toggle tema di Telegram Mini App */
+  display: none;
   }
 
   /* Profile Button */
@@ -307,16 +315,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid currentColor;
   background-color: transparent;
-  color: var(--text-color);
   transition: all 0.3s ease;
   padding: 0;
-  }
-
-  .profile-btn:hover {
-  background-color: var(--hover-bg);
-  border-color: var(--text-color);
   }
 
   /* Transaction List */
@@ -448,7 +450,7 @@
   .fab-recurring { color: #3b82f6; }
   .fab-report { color: #f59e0b; }
 
-  /* Form Elements - Inspired by Auth Layout */
+  /* Form Elements */
   .form-label {
   font-weight: 500;
   color: var(--label-color);
@@ -582,8 +584,8 @@
   justify-content: center;
   padding: 0;
   background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
+  border: 1px solid currentColor;
+  color: inherit;
   }
   .sidebar-toggle.active i {
   transform: rotate(90deg);
