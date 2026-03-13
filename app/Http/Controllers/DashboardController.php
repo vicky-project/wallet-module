@@ -15,7 +15,7 @@ class DashboardController extends Controller
     $user = $request->user();
 
     $dashboardData = $this->dashboardService->getDashboardData($user);
-    dd($request->all(), session()->all());
+    dd($request->all(), session()->has("token"));
 
     return view("wallet::index", compact("dashboardData"));
   }
