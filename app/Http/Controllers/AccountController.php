@@ -15,11 +15,7 @@ use Modules\Wallet\Http\Resources\AccountResource;
 
 class AccountController extends Controller
 {
-  protected AccountService $service;
-
-  public function __construct(AccountService $service) {
-    $this->service = $service;
-  }
+  public function __construct(protected AccountService $service) {}
 
   /**
   * Display a listing of accounts

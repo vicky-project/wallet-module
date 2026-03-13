@@ -403,8 +403,8 @@
   .fab-item {
   display: flex;
   align-items: center;
-  background-color: var(--fab-text);
-  color: white;
+  background-color: var(--fab-bg);
+  color: var(--fab-text);
   padding: 12px 20px;
   border-radius: 50px;
   box-shadow: var(--fab-shadow);
