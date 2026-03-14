@@ -219,24 +219,35 @@
   }, 300);
 
   // Simulasi aksi (dalam implementasi nyata akan redirect ke halaman tertentu)
+  let targetUrl;
   switch(action) {
   case 'income':
-  window.location.href = '{{ route("apps.transactions.create", ["type" => "income"]) }}';
+  targetUrl = '{{ route("apps.transactions.create", ["type" => "income"]) }}';
   break;
   case 'expense':
-  window.location.href = '{{ route("apps.transactions.create", ["type" => "expense"]) }}';
+  targetUrl = '{{ route("apps.transactions.create", ["type" => "expense"]) }}';
   break;
   case 'recurring':
-  window.location.href = '{{ route("apps.recurrings.index") }}';
+  targetUrl = '{{ route("apps.recurrings.index") }}';
   break;
   case 'report':
-  window.location.href = '{{ route("apps.reports") }}';
+  targetUrl = '{{ route("apps.reports") }}';
   break;
   case 'upload':
   //alert('Upload feature is coming soon.');
-  window.location.href = '{{ route("apps.uploads") }}';
+  targetUrl = '{{ route("apps.uploads") }}';
   break;
   }
+
+  const initData = window.Telegram?.WebApp?.initData || @json(request()->get("initData", ""));
+
+  const token = window.Telegram.WebApp.SecureStorage.getItem("telegram_token", (error, value) => value) || '{{ request()->get("token") }}';
+
+  const urlObj = new URL(targetUrl, window.location.origin);
+  urlObj.searchParams.set("token", token);
+  urlObj.searchParams.set("initData", initData);
+
+  window.location.href = urlObj.toString();
   });
   });
 </script>
