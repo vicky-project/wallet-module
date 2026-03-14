@@ -26,7 +26,7 @@ class PostInstallation
       //$result = $this->insertTraitToUserModel();
       //logger()->info($result["message"]);
 
-      Artisan::call("migrate", ["--force" => true]);
+      Artisan::call("migrate");
     } catch (\Exception $e) {
       logger()->error(
         "Failed to run post installation of financial module: " .
