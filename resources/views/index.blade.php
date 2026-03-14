@@ -135,19 +135,19 @@
 <!-- Floating Action Button (FAB) -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;" id="fabContainer">
   <div class="fab-menu" id="fabMenu">
-    <a href="#" class="fab-item" id="fabIncome">
+    <a href="{{ route('apps.transactions.create', ['type' => 'income']) }}" class="fab-item" id="fabIncome">
       <i class="bi bi-plus-circle fab-income"></i>
       <span class="fab-label">Tambah Pemasukan</span>
     </a>
-    <a href="#" class="fab-item" id="fabExpense">
+    <a href="{{ route('apps.transactions.create', ['type' => 'expense']) }}" class="fab-item" id="fabExpense">
       <i class="bi bi-dash-circle fab-expense"></i>
       <span class="fab-label">Tambah Pengeluaran</span>
     </a>
-    <a href="#" class="fab-item" id="fabReport">
+    <a href="{{ route('apps.recurrings.index') }}" class="fab-item" id="fabReport">
       <i class="bi bi-file-earmark-text fab-report"></i>
       <span class="fab-label">Laporan</span>
     </a>
-    <a href="#" class="fab-item" id="fabUpload">
+    <a href="{{ route('apps.reports') }}" class="fab-item" id="fabUpload">
       <i class="bi bi-cloud-upload fab-upload"></i>
       <span class="fab-label">Upload</span>
     </a>
@@ -217,26 +217,6 @@
   toggleFabMenu();
   }
   }, 300);
-
-  // Simulasi aksi (dalam implementasi nyata akan redirect ke halaman tertentu)
-  switch(action) {
-  case 'income':
-  window.location.href = '{{ route("apps.transactions.create", ["type" => "income"]) }}';
-  break;
-  case 'expense':
-  window.location.href = '{{ route("apps.transactions.create", ["type" => "expense"]) }}';
-  break;
-  case 'recurring':
-  window.location.href = '{{ route("apps.recurrings.index") }}';
-  break;
-  case 'report':
-  window.location.href = '{{ route("apps.reports") }}';
-  break;
-  case 'upload':
-  //alert('Upload feature is coming soon.');
-  window.location.href = '{{ route("apps.uploads") }}';
-  break;
-  }
   });
   });
 </script>
